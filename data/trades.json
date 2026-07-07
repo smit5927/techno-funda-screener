@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-07T18:44:43.240Z",
+  "updatedAt": "2026-07-07T18:48:17.090Z",
   "liveModeStartedAt": "2026-07-07T04:17:45.096Z",
   "baselineInitialized": true,
   "baselineScanAt": "2026-07-07T04:17:45.077Z",
@@ -7,2521 +7,2522 @@
     "default:CHOICEIN": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:EMCURE": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:FORTIS": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GRANULES": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JSWINFRA": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JUBLINGREA": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MAXHEALTH": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:RADICO": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ACMESOLAR": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:AARTIIND": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:AEGISLOG": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ABDL": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ANANDRATHI": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:APOLLOHOSP": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ATHERENERG": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BHARATFORG": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CGCL": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CEMPRO": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CHOLAHLDNG": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CREDITACC": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:DATAPATTNS": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NYKAA": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GABRIEL": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GLAND": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HONASA": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HONAUT": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:IKS": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:IPCALAB": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:KAJARIACER": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:KPIL": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:KIRLOSENG": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:LAURUSLABS": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:LUPIN": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MANKIND": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MINDACORP": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NAVINFLUOR": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NEULANDLAB": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:OLECTRA": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:OFSS": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PARADEEP": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PHOENIXLTD": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PRESTIGE": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:RRKABEL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SCHAEFFLER": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SUMICHEM": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:UNITDSPR": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:3MINDIA": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:AADHARHFC": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:AAVAS": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ACUTAAS": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ABSLAMC": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:AEGISVOPAK": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BALRAMCHIN": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BDL": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BOSCHLTD": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CARTRADE": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:DIXON": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:FIVESTAR": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GMRAIRPORT": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MEDANTA": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GODREJIND": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HDBFS": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HFCL": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HOMEFIRST": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:INTELLECT": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:KPRMILL": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:THELEELA": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:LODHA": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NAM-INDIA": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PAYTM": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SAILIFE": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TBOTEK": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TORNTPHARM": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TARIL": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TRENT": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ZYDUSLIFE": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ZYDUSWELL": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:AUBANK": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ADANIGREEN": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ABCAPITAL": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:AJANTPHARM": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ASTERDM": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:AUROPHARMA": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BERGEPAINT": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CCL": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CAPLIPOINT": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:DELHIVERY": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:LALPATHLAB": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:EMMVEE": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:FEDERALBNK": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GRAVITA": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:FLUOROCHEM": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ITCHOTELS": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:INDHOTEL": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JBCHEPHARM": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JSWCEMENT": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MEESHO": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:OBEROIRLTY": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PAGEIND": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PWL": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PIDILITIND": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PIRAMALFIN": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PPLPHARMA": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:POONAWALLA": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:RBLBANK": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:RAINBOW": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SHRIRAMFIN": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SONACOMS": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SUNPHARMA": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SYRMA": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:VTL": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:WELCORP": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:WELSPUNLIV": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ACE": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ADANIENT": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:APTUS": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BAJAJHLDNG": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BLUEJET": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CARBORUNIV": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CHOLAFIN": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:DLF": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:DEEPAKFERT": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:DRREDDY": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GAIL": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GODREJPROP": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ICICIBANK": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:INDUSINDBK": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:J&KBANK": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:KIMS": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:LTF": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MANAPPURAM": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MOTILALOFS": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NESTLEIND": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NUVAMA": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PCBL": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PNBHOUSING": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:POLYMED": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:REDINGTON": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SCHNEIDER": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:STARHEALTH": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:AIIL": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CIPLA": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:INDIGO": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NIVABUPA": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CEATLTD": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CHALET": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SHREECEM": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ULTRACEMCO": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BHARTIARTL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GODREJCP": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HINDPETRO": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JKCEMENT": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MSUMI": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SRF": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SOBHA": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TATACAP": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:RAMCOCEM": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TRIDENT": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ALKEM": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:APOLLOTYRE": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ASAHIINDIA": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ASHOKLEY": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BAJFINANCE": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BAJAJFINSV": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CUB": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ETERNAL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GLAXO": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HDFCBANK": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:IDFCFIRSTB": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JKTYRE": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JYOTICNC": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:LEMONTREE": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MRF": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MARUTI": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NUVOCO": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TVSMOTOR": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BEL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BPCL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BBTC": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CANFINHOME": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:COROMANDEL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:DALBHARAT": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HEXT": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:IOC": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:LICI": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:M&MFIN": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:RITES": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SBIN": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:UNOMINDA": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ECLERX": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:AFFLE": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:AMBUJACEM": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BAYERCROP": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BRITANNIA": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MAPMYINDIA": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CRISIL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CONCORDBIO": {
       "status": "ENTRY",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:DOMS": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:DABUR": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:EIHOTEL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ESCORTS": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:FSL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:FORCEMOT": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HINDCOPPER": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:IDBI": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:INDIACEM": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NAUKRI": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:KAYNES": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:LT": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:M&M": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MRPL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MPHASIS": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ONGC": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SONATSOFTW": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TMCV": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:UPL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:VEDL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ZENSARTECH": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:APLAPOLLO": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ARE&M": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ASTRAL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ATUL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BHARTIHEXA": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BLUESTARCO": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CANHLIFE": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CENTRALBK": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:EMAMILTD": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GPIL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HAVELLS": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HEROMOTOCO": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HINDUNILVR": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HINDZINC": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HYUNDAI": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:IRB": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ITC": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:IOB": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JMFINANCIL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JINDALSTEL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JIOFIN": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JUBLFOOD": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:KEC": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:KFINTECH": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:LTTS": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:LTM": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:LATENTVIEW": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PGEL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PERSISTENT": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PINELABS": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SBFC": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SUNDARMFIN": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SUPREMEIND": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SWANCORP": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TATACONSUM": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TATASTEEL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TTML": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:UCOBANK": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:UTIAMC": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:VMM": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ACC": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ABFRL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ABLBL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:AMBER": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BLS": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BALKRISIND": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BATAINDIA": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BSOFT": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:FIRSTCRY": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CASTROLIND": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:COLPAL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CONCOR": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:DEEPAKNTR": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:DEVYANI": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:EIDPARRY": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:IRFC": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:INFY": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JSL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:KARURVYSYA": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MGL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MUTHOOTFIN": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NTPC": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NATIONALUM": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NEWGEN": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:OIL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PETRONET": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:RELIANCE": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SBILIFE": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SAGILITY": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SARDAEN": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SYNGENE": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TMPV": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TECHM": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TEGA": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:WIPRO": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ZFCVINDIA": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:AWL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BANKINDIA": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BLUEDART": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BRIGADE": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CANBK": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CLEAN": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:DCMSHRIRAM": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GILLETTE": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HCLTECH": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HDFCLIFE": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ICICIGI": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ICICIPRULI": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:INDIAMART": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:IEX": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:IRCTC": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:INOXWIND": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JAINREC": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:LTFOODS": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NCC": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:POWERGRID": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:RVNL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:RAILTEL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:RPOWER": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SBICARD": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SJVN": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SAPPHIRE": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SIGNATURE": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SWIGGY": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TCS": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TORNTPOWER": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:UNIONBANK": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:VOLTAS": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:WAAREEENER": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:WHIRLPOOL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ANURAS": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BANKBARODA": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CYIENT": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GICRE": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GRAPHITE": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:IRCON": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:INDIANB": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:IGL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MFSL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PATANJALI": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PNB": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:RHIM": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SUNTV": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TATAELXSI": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:UBL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:AFCONS": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:INDUSTOWER": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JWL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:KPITTECH": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:KOTAKBANK": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PIIND": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TATACHEM": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GRASIM": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SAREGAMA": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:USHAMART": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CPPLUS": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ANANTRAJ": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:DIVISLAB": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GLENMARK": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HSCL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HAL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JBMA": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:LLOYDSME": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PTCIL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:POLYCAB": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MOTHERSON": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SHYAMMETL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TITAGARH": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:VIJAYA": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:360ONE": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:AIAENG": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ABBOTINDIA": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ADANIENSOL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ANGELONE": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ANTHEM": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ASIANPAINT": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BEML": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BSE": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BAJAJHFL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BIKAJI": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BIOCON": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CGPOWER": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CHENNPETRO": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:COFORGE": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CAMS": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CRAFTSMAN": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CUMMINSIND": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:EICHERMOT": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ELGIEQUIP": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ERIS": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:FINCABLES": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GVT&D": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GALLANTT": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GRSE": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JSWDULUX": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:KEI": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:LENSKART": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MARICO": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NHPC": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NH": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NETWEB": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:RKFORGE": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SUZLON": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TITAN": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TRAVELFOOD": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:WOCKPHARMA": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ADANIPORTS": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ATGL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BAJAJ-AUTO": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BHEL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CIEINDIA": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CHAMBLFERT": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ENDURANCE": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:EXIDEIND": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GESHIP": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HDFCAMC": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JSWSTEEL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:KALYANKJIL": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MAZDOCK": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NSLNISP": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:POLICYBZR": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PVRINOX": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PREMIERENE": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SOLARINDS": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SAIL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TENNIND": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:THERMAX": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ADANIPOWER": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ABREL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:APARINDS": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:AXISBANK": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BANDHANBNK": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MAHABANK": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GROWW": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CESC": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CDSL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:COCHINSHIP": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ENGINERSIN": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HEG": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HBLENGINE": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:POWERINDIA": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:IIFL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:IREDA": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JSWENERGY": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JINDALSAW": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JUBLPHARMA": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:LINDEINDIA": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NLCINDIA": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:OLAELEC": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:RECLTD": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SCI": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ENRIN": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SPLPETRO": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NIACL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:VBL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:IDEA": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:YESBANK": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:COHANCE": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:CROMPTON": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ELECON": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GODFRYPHLP": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HUDCO": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:IFCI": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ITI": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:INDGN": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:IGIL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:LGEINDIA": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:LICHSGFIN": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MMTC": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:MCX": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NBCC": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ONESOURCE": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SAMMAANCAP": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TATACOMM": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TEJASNET": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TIINDIA": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ZEEL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ZENTEC": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:BELRISE": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:FACT": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GODIGIT": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:HINDALCO": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NMDC": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NTPCGREEN": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NAVA": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PFIZER": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TATATECH": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TECHNOE": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TIMKEN": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TRITURBINE": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:URBANCO": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ABB": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:DMART": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:COALINDIA": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:GMDCLTD": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:PFC": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TATAINVEST": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:TATAPOWER": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:JPPOWER": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:SIEMENS": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:NATCOPHARM": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "default:ICICIAMC": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "custom:LT": {
       "status": "EXIT",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "custom:MIDHANI": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "custom:CDSL": {
       "status": "WATCH",
       "asOf": "2026-07-06",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     },
     "custom:BSE:500325": {
-      "status": "ERROR",
-      "scannedAt": "2026-07-07T18:44:43.211Z"
+      "status": "EXIT",
+      "asOf": "2026-07-02",
+      "scannedAt": "2026-07-07T18:48:17.059Z"
     }
   },
   "tradeCapitalPerStock": 100000,
