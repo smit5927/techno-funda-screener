@@ -60,6 +60,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add config/custom-list.csv data/results.json data/trades.json data/fundamentals-cache.json data/techno-funda-trade-sheet.xlsx data/techno-funda-trade-sheet.csv
           git diff --cached --quiet || git commit -m "Update techno funda screener data"
+          git push
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
