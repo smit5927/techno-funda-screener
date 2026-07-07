@@ -25,7 +25,7 @@ MIDHANI.NS
 BSE:500325
 ```
 
-If the first row has a column named `Symbol`, `Ticker`, `TradingView Symbol`, `Trading Symbol`, `TV Symbol`, `Scrip`, or `Stock`, only that column is imported. Otherwise the app scans the first sheet and extracts symbol-like values automatically. After import, My Custom List is scanned automatically and the trade sheet is refreshed.
+If the first row has a column named `Symbol`, `Ticker`, `TradingView Symbol`, `Trading Symbol`, `TV Symbol`, `Scrip`, or `Stock`, only that column is imported. Otherwise the app scans the first sheet and extracts symbol-like values automatically.
 
 For free cloud mode, upload the Excel/CSV directly from the website with the Techno Funda access code.
 
@@ -88,7 +88,7 @@ It uses:
 - GitHub Actions for the daily morning scan.
 - GitHub Pages for the mobile website.
 - Supabase free database and Edge Function for website upload/results.
-- Telegram bot secrets stored in GitHub.
+- Telegram settings saved from the website into the Techno Funda Supabase table.
 - Repository files for scan history, trade journal, and downloadable Excel/CSV trade sheet.
 
 The workflow file is:
@@ -116,11 +116,9 @@ Supabase free tier is used only for Techno Funda data with `techno_funda_*` name
 1. Create a public GitHub repository.
 2. Push this project folder to that repo.
 3. In GitHub repo settings, open `Settings > Secrets and variables > Actions`.
-4. Add these repository secrets:
+4. Add this repository secret:
 
 ```text
-TELEGRAM_BOT_TOKEN
-TELEGRAM_CHAT_ID
 TECHNO_FUNDA_INTERNAL_KEY
 ```
 
@@ -131,7 +129,7 @@ TECHNO_FUNDA_INTERNAL_KEY
 
 ### Website Custom Excel Upload
 
-Open the website, click `Edit My List`, enter the Techno Funda access code, choose your Excel/CSV file, and click `Import Excel & Scan`.
+Open the website, click `Edit My List`, enter the Techno Funda access code, choose your Excel/CSV file, and click `Import Excel & Save`.
 
 The first sheet can have a column named `TradingView Symbol`, `Symbol`, `Ticker`, `Trading Symbol`, `TV Symbol`, `Scrip`, or `Stock`.
 
@@ -146,38 +144,6 @@ BSE:500325
 
 After upload, the cloud list is saved immediately. The next scheduled scan uses that list automatically. You can also run the GitHub workflow manually.
 
-## Cloud Deployment For Mobile Without PC
+### Website Telegram Setup
 
-Use Render with the included `render.yaml`.
-
-Important: this app needs persistent storage for `trades.json`, the Excel file, and your custom list. Render persistent disks are available on paid plans. The Blueprint uses:
-
-```yaml
-plan: starter
-disk:
-  mountPath: /var/data
-  sizeGB: 1
-```
-
-Deployment flow:
-
-1. Push this folder to a GitHub repository.
-2. Open Render Dashboard.
-3. Create a new Blueprint from that GitHub repo.
-4. Render will read `render.yaml`.
-5. Fill `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`.
-6. Deploy.
-7. Open the Render URL on mobile.
-
-After deployment your mobile URL will look like:
-
-```text
-https://techno-funda-screener.onrender.com
-```
-
-The server runs the weekday morning scan automatically:
-
-```text
-SCAN_CRON=15 8 * * 1-5
-SCAN_TIMEZONE=Asia/Kolkata
-```
+Open the website, click `Telegram`, enter the same Techno Funda access code, add the bot token and chat ID, then click `Save Telegram`. The public website never shows the saved token.

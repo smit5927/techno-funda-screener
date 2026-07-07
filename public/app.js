@@ -29,7 +29,9 @@ const elements = {
   scoreFilter: document.querySelector("#scoreFilter"),
   exportButton: document.querySelector("#exportButton"),
   editListButton: document.querySelector("#editListButton"),
+  telegramSettingsButton: document.querySelector("#telegramSettingsButton"),
   customListPanel: document.querySelector("#customListPanel"),
+  telegramPanel: document.querySelector("#telegramPanel"),
   accessRow: document.querySelector(".accessRow"),
   customFileInput: document.querySelector("#customFileInput"),
   importCustomFileButton: document.querySelector("#importCustomFileButton"),
@@ -38,6 +40,11 @@ const elements = {
   saveCustomListButton: document.querySelector("#saveCustomListButton"),
   scanCustomListButton: document.querySelector("#scanCustomListButton"),
   customListStatus: document.querySelector("#customListStatus"),
+  telegramAccessCodeInput: document.querySelector("#telegramAccessCodeInput"),
+  telegramBotTokenInput: document.querySelector("#telegramBotTokenInput"),
+  telegramChatIdInput: document.querySelector("#telegramChatIdInput"),
+  saveTelegramButton: document.querySelector("#saveTelegramButton"),
+  telegramStatus: document.querySelector("#telegramStatus"),
   excelDownloadLink: document.querySelector("#excelDownloadLink"),
   csvDownloadLink: document.querySelector("#csvDownloadLink"),
   detailPanel: document.querySelector("#detailPanel")
@@ -58,9 +65,17 @@ elements.editListButton.addEventListener("click", async () => {
   elements.customListPanel.hidden = !elements.customListPanel.hidden;
   if (!elements.customListPanel.hidden) await loadCustomList();
 });
+elements.telegramSettingsButton.addEventListener("click", () => {
+  elements.telegramPanel.hidden = !elements.telegramPanel.hidden;
+  if (!elements.telegramPanel.hidden) {
+    elements.telegramAccessCodeInput.value = getAccessCode();
+    elements.telegramStatus.textContent = elements.telegramStatus.textContent || "Telegram not configured";
+  }
+});
 elements.saveCustomListButton.addEventListener("click", saveCustomList);
 elements.scanCustomListButton.addEventListener("click", () => runScan("custom"));
 elements.importCustomFileButton.addEventListener("click", importCustomFile);
+elements.saveTelegramButton.addEventListener("click", saveTelegramSettings);
 
 document.querySelectorAll(".listTab").forEach((button) => {
   button.addEventListener("click", () => {
@@ -92,6 +107,7 @@ async function loadResults() {
     if (payload.customList?.count != null) {
       elements.customListStatus.textContent = `${payload.customList.count} cloud stocks`;
     }
+    if (payload.telegram) renderTelegramStatus(payload.telegram);
     return;
   }
 
@@ -353,7 +369,58 @@ async function saveCloudCustomList(symbols) {
   const payload = await response.json().catch(() => ({}));
   if (!response.ok || payload.error) throw new Error(payload.error || "Cloud upload failed");
   localStorage.setItem("tfAccessCode", accessCode);
+  syncAccessCodeInputs(accessCode);
   elements.customListStatus.textContent = `${payload.count} stocks saved in cloud`;
+}
+
+async function saveTelegramSettings() {
+  if (!cloudMode) {
+    elements.telegramStatus.textContent = "Telegram cloud setup is not active";
+    return;
+  }
+
+  const accessCode = getAccessCode();
+  const botToken = String(elements.telegramBotTokenInput.value || "").trim();
+  const chatId = String(elements.telegramChatIdInput.value || "").trim();
+
+  if (!accessCode) {
+    elements.telegramStatus.textContent = "Enter access code first";
+    return;
+  }
+  if (!botToken || !chatId) {
+    elements.telegramStatus.textContent = "Enter bot token and chat ID";
+    return;
+  }
+
+  elements.saveTelegramButton.disabled = true;
+  elements.telegramStatus.textContent = "Saving Telegram...";
+  try {
+    const response = await fetch(cloudApiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "save-telegram-config",
+        accessCode,
+        botToken,
+        chatId
+      })
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || payload.error) throw new Error(payload.error || "Telegram save failed");
+    localStorage.setItem("tfAccessCode", accessCode);
+    syncAccessCodeInputs(accessCode);
+    elements.telegramBotTokenInput.value = "";
+    renderTelegramStatus(payload.telegram || { configured: true });
+  } catch (error) {
+    elements.telegramStatus.textContent = `Telegram save failed: ${error.message}`;
+  } finally {
+    elements.saveTelegramButton.disabled = false;
+  }
+}
+
+function renderTelegramStatus(status) {
+  if (!elements.telegramStatus) return;
+  elements.telegramStatus.textContent = status?.configured ? "Telegram configured" : "Telegram not configured";
 }
 
 function checkHtml(label, check, asPercent = false) {
@@ -417,12 +484,19 @@ function configureMode() {
     elements.importCustomFileButton.textContent = "Import Excel & Save";
     elements.scanCustomListButton.hidden = true;
   }
+  if (!cloudMode) {
+    elements.telegramSettingsButton.hidden = true;
+    elements.telegramPanel.hidden = true;
+  }
   if (!staticMode) return;
   elements.scanButton.disabled = true;
   elements.scanButton.title = "Scan runs automatically in GitHub Actions";
   if (!cloudMode) elements.editListButton.hidden = true;
   if (elements.accessCodeInput) {
     elements.accessCodeInput.value = localStorage.getItem("tfAccessCode") || "";
+  }
+  if (elements.telegramAccessCodeInput) {
+    elements.telegramAccessCodeInput.value = localStorage.getItem("tfAccessCode") || "";
   }
   elements.excelDownloadLink.href = "data/techno-funda-trade-sheet.xlsx";
   elements.csvDownloadLink.href = "data/techno-funda-trade-sheet.csv";
@@ -583,5 +657,15 @@ function normalizeTradingViewSymbol(value) {
 }
 
 function getAccessCode() {
-  return String(elements.accessCodeInput?.value || localStorage.getItem("tfAccessCode") || "").trim();
+  return String(
+    elements.accessCodeInput?.value ||
+      elements.telegramAccessCodeInput?.value ||
+      localStorage.getItem("tfAccessCode") ||
+      ""
+  ).trim();
+}
+
+function syncAccessCodeInputs(accessCode) {
+  if (elements.accessCodeInput) elements.accessCodeInput.value = accessCode;
+  if (elements.telegramAccessCodeInput) elements.telegramAccessCodeInput.value = accessCode;
 }

@@ -19,6 +19,20 @@ export async function pullCloudCustomList(config = appConfig) {
   return { ok: true, count, symbols };
 }
 
+export async function pullCloudTelegramConfig() {
+  const cloud = cloudConfig();
+  if (!cloud.enabled) {
+    return { ok: false, reason: "cloud sync not configured", telegram: null };
+  }
+
+  const payload = await postCloud(cloud, {
+    action: "get-telegram-config",
+    internalKey: cloud.internalKey
+  });
+
+  return { ok: true, telegram: payload.telegram || null };
+}
+
 export async function pushCloudState(state) {
   const cloud = cloudConfig();
   if (!cloud.enabled) {

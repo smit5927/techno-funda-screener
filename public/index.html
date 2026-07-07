@@ -66,7 +66,10 @@
           <button class="listTab" data-list="custom" type="button">My List</button>
           <button class="listTab" data-list="all" type="button">All Lists</button>
         </div>
-        <button id="editListButton" type="button">Edit My List</button>
+        <div class="listActions">
+          <button id="editListButton" type="button">Edit My List</button>
+          <button id="telegramSettingsButton" type="button">Telegram</button>
+        </div>
       </section>
 
       <section id="customListPanel" class="customListPanel" hidden>
@@ -82,6 +85,18 @@
           <button id="saveCustomListButton" type="button">Save My List</button>
           <button id="scanCustomListButton" type="button">Scan My List</button>
           <span id="customListStatus"></span>
+        </div>
+      </section>
+
+      <section id="telegramPanel" class="telegramPanel" hidden>
+        <div class="telegramInputs">
+          <input id="telegramAccessCodeInput" type="password" inputmode="numeric" placeholder="Access code" autocomplete="one-time-code" />
+          <input id="telegramBotTokenInput" type="password" placeholder="Bot token" autocomplete="off" />
+          <input id="telegramChatIdInput" type="text" placeholder="Chat ID" autocomplete="off" />
+        </div>
+        <div class="customActions">
+          <button id="saveTelegramButton" type="button">Save Telegram</button>
+          <span id="telegramStatus"></span>
         </div>
       </section>
 

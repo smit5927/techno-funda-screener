@@ -1,4 +1,5 @@
-import { pullCloudCustomList, pushCloudState } from "./cloud-sync.js";
+import { appConfig } from "./config.js";
+import { pullCloudCustomList, pullCloudTelegramConfig, pushCloudState } from "./cloud-sync.js";
 import { runScreener } from "./screener.js";
 
 try {
@@ -8,6 +9,12 @@ try {
       ? `Cloud custom list loaded: ${pulled.count} symbols`
       : `Cloud custom list skipped: ${pulled.reason}`
   );
+
+  const telegram = await pullCloudTelegramConfig();
+  if (telegram.ok && telegram.telegram?.enabled !== false) {
+    appConfig.telegram.botToken = appConfig.telegram.botToken || telegram.telegram?.botToken || "";
+    appConfig.telegram.chatId = appConfig.telegram.chatId || telegram.telegram?.chatId || "";
+  }
 
   const result = await runScreener({ sendTelegram: true });
   const pushed = await pushCloudState(result);

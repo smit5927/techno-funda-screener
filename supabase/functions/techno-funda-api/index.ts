@@ -45,6 +45,32 @@ Deno.serve(async (request: Request) => {
       return json({ ok: true, count: symbols.length, symbols });
     }
 
+    if (action === "save-telegram-config") {
+      const accessCode = String(body.accessCode || "");
+      if (!(await verifyCode("access_hash", accessCode))) {
+        return json({ error: "Invalid access code" }, 401);
+      }
+
+      const botToken = String(body.botToken || "").trim();
+      const chatId = String(body.chatId || "").trim();
+      if (!botToken || !chatId) {
+        return json({ error: "Bot token and chat ID are required" }, 400);
+      }
+
+      const config = {
+        botToken,
+        chatId,
+        enabled: body.enabled !== false,
+        updatedAt: new Date().toISOString(),
+        source: "website"
+      };
+      await upsertValue("telegram_config", config);
+      return json({
+        ok: true,
+        telegram: publicTelegramStatus(config)
+      });
+    }
+
     if (action === "get-custom-list") {
       const internalKey = String(body.internalKey || "");
       if (!(await verifyCode("internal_hash", internalKey))) {
@@ -52,6 +78,22 @@ Deno.serve(async (request: Request) => {
       }
       const customList = await readValue("custom_list", { symbols: [] });
       return json({ ok: true, symbols: Array.isArray(customList.symbols) ? customList.symbols : [] });
+    }
+
+    if (action === "get-telegram-config") {
+      const internalKey = String(body.internalKey || "");
+      if (!(await verifyCode("internal_hash", internalKey))) {
+        return json({ error: "Invalid internal key" }, 401);
+      }
+      const config = await readValue("telegram_config", {});
+      return json({
+        ok: true,
+        telegram: {
+          botToken: typeof config.botToken === "string" ? config.botToken : "",
+          chatId: typeof config.chatId === "string" ? config.chatId : "",
+          enabled: config.enabled !== false
+        }
+      });
     }
 
     if (action === "save-state") {
@@ -75,9 +117,10 @@ Deno.serve(async (request: Request) => {
 });
 
 async function getState() {
-  const [state, customList] = await Promise.all([
+  const [state, customList, telegramConfig] = await Promise.all([
     readValue("latest_state", null),
-    readValue("custom_list", { symbols: [] })
+    readValue("custom_list", { symbols: [] }),
+    readValue("telegram_config", {})
   ]);
   return {
     ok: true,
@@ -85,7 +128,17 @@ async function getState() {
     customList: {
       count: Array.isArray(customList.symbols) ? customList.symbols.length : 0,
       updatedAt: customList.updatedAt || null
-    }
+    },
+    telegram: publicTelegramStatus(telegramConfig)
+  };
+}
+
+function publicTelegramStatus(config: any) {
+  const configured = Boolean(config?.botToken && config?.chatId && config?.enabled !== false);
+  return {
+    configured,
+    enabled: config?.enabled !== false,
+    updatedAt: config?.updatedAt || null
   };
 }
 

@@ -76,6 +76,7 @@ select {
 .filters,
 .tabs,
 .listTabs,
+.listActions,
 .customActions {
   display: flex;
   align-items: center;
@@ -164,7 +165,8 @@ button:hover {
 
 .tradeBand,
 .listBand,
-.customListPanel {
+.customListPanel,
+.telegramPanel {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -227,7 +229,8 @@ button:hover {
   display: block;
 }
 
-.customListPanel[hidden] {
+.customListPanel[hidden],
+.telegramPanel[hidden] {
   display: none;
 }
 
@@ -270,6 +273,25 @@ button:hover {
 }
 
 #customListStatus {
+  color: var(--muted);
+}
+
+.telegramPanel {
+  display: block;
+}
+
+.telegramInputs {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.8fr) minmax(220px, 1.4fr) minmax(160px, 0.8fr);
+  gap: 8px;
+}
+
+.telegramInputs input {
+  width: 100%;
+  padding: 0 12px;
+}
+
+#telegramStatus {
   color: var(--muted);
 }
 
@@ -510,6 +532,14 @@ tbody tr:hover {
     flex-direction: column;
   }
 
+  .listActions {
+    width: 100%;
+  }
+
+  .listActions button {
+    flex: 1;
+  }
+
   .tradeBand {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -555,6 +585,10 @@ tbody tr:hover {
   }
 
   .uploadRow {
+    grid-template-columns: 1fr;
+  }
+
+  .telegramInputs {
     grid-template-columns: 1fr;
   }
 }
