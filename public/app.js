@@ -107,7 +107,9 @@ async function loadResults() {
     if (payload.customList?.count != null) {
       elements.customListStatus.textContent = `${payload.customList.count} cloud stocks`;
     }
-    if (payload.telegram) renderTelegramStatus(payload.telegram);
+    if (payload.telegram || payload.state?.telegram) {
+      renderTelegramStatus(payload.telegram, payload.state?.telegram);
+    }
     return;
   }
 
@@ -437,8 +439,13 @@ async function saveTelegramSettings() {
   }
 }
 
-function renderTelegramStatus(status) {
+function renderTelegramStatus(status, latestStatus = null) {
   if (!elements.telegramStatus) return;
+  const latestReason = String(latestStatus?.reason || "");
+  if (latestStatus && latestStatus.sent === false && !["disabled", "no new entry/exit trade events"].some((text) => latestReason.includes(text))) {
+    elements.telegramStatus.textContent = `Telegram configured, latest alert failed: ${latestReason}`;
+    return;
+  }
   elements.telegramStatus.textContent = status?.configured ? "Telegram configured" : "Telegram not configured";
 }
 
