@@ -2,6 +2,13 @@ name: Daily Techno Funda Screener
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "data/**"
+      - "site/**"
+      - "analysis/**"
   schedule:
     - cron: "45 2 * * 1-5"
 
