@@ -18535,5 +18535,42 @@
         }
       }
     }
+  },
+  "ICICIAMC.NS": {
+    "updatedAt": "2026-07-07T18:44:38.444Z",
+    "value": {
+      "available": true,
+      "score": 2,
+      "maxScore": 5,
+      "currentPe": 49.997002,
+      "ebitdaMargin": 0.705855597524077,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": true,
+          "latest": 32982600000,
+          "previous": 26506600000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": true,
+          "latest": 41883200000,
+          "previous": 32547100000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": false,
+          "latest": 0.705855597524077,
+          "previous": 0.8247605088897252
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "peRising": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        }
+      }
+    }
   }
 }
