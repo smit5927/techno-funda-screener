@@ -46,6 +46,7 @@ export const appConfig = {
   port: numberEnv("PORT", 3000),
   rules,
   benchmarkSymbol: process.env.BENCHMARK_SYMBOL || rules.benchmark || "^CRSLDX",
+  benchmarkLabel: process.env.BENCHMARK_LABEL || rules.benchmarkLabel || "NIFTY 500",
   lists: [
     {
       id: "default",

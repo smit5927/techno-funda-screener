@@ -18,6 +18,7 @@ app.use(express.static(path.join(appConfig.rootDir, "public")));
 app.get("/api/config", (_request, response) => {
   response.json({
     benchmark: appConfig.benchmarkSymbol,
+    benchmarkLabel: appConfig.benchmarkLabel,
     lists: appConfig.lists.map((list) => ({
       id: list.id,
       label: list.label,
@@ -37,6 +38,7 @@ app.get("/api/results", (request, response) => {
     response.json({
       scannedAt: payload.scannedAt,
       benchmark: payload.benchmark,
+      benchmarkLabel: payload.benchmarkLabel,
       rules: payload.rules,
       tradeSummary: payload.tradeSummary,
       ...(payload.lists?.[listId] || emptyList(listId))
@@ -183,6 +185,7 @@ function emptyResult() {
   return {
     scannedAt: null,
     benchmark: appConfig.benchmarkSymbol,
+    benchmarkLabel: appConfig.benchmarkLabel,
     lists,
     summary: { total: 0, entry: 0, exit: 0, watch: 0, error: 0 },
     results: [],

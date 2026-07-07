@@ -164,8 +164,9 @@ function renderSummary(payload) {
   elements.closedTradesCount.textContent = payload.tradeSummary?.closed || 0;
   elements.realizedPnl.textContent = compact(payload.tradeSummary?.realizedPnl || 0);
   const listLabel = state.currentList === "all" ? "All Lists" : listPayload?.label || state.currentList;
+  const benchmarkLabel = payload.benchmarkLabel || payload.rules?.benchmarkLabel || payload.benchmark;
   elements.scanMeta.textContent = payload.scannedAt
-    ? `Last scan ${formatDateTime(payload.scannedAt)} | ${listLabel} | Benchmark ${payload.benchmark}`
+    ? `Last scan ${formatDateTime(payload.scannedAt)} | ${listLabel} | Benchmark ${benchmarkLabel}`
     : "Waiting for first scan";
 }
 

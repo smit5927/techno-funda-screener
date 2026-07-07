@@ -73,6 +73,7 @@ export async function runScreener(options = {}) {
   const payload = {
     scannedAt: new Date().toISOString(),
     benchmark: config.benchmarkSymbol,
+    benchmarkLabel: config.benchmarkLabel || rules.benchmarkLabel || config.benchmarkSymbol,
     lists: mergedLists,
     scannedListIds: lists.map((list) => list.id),
     rules,
