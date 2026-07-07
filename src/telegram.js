@@ -71,8 +71,10 @@ function addTradeEvents(lines, events) {
   for (const event of events.slice(0, 40)) {
     const trade = event.trade;
     if (event.type === "ENTRY_TRADE_OPENED") {
+      const score = trade.entrySnapshot?.score;
+      const setupScore = trade.entrySnapshot?.setupStrengthScore;
       lines.push(
-        `OPEN ${trade.symbol} (${trade.listLabel}) ${trade.entryDate} @ ${fmt(trade.entryPrice)} qty ${trade.quantity}`
+        `OPEN ${trade.symbol} (${trade.listLabel}) ${trade.entryDate} @ ${fmt(trade.entryPrice)} qty ${trade.quantity} score ${fmt(score)} setup ${fmt(setupScore)}`
       );
       lines.push(`   Reason: ${(trade.entryReason || []).join(" ")}`);
     }

@@ -44,6 +44,20 @@
     "weeklyRsBelow": 0,
     "logic": "weekly_rs_below_zero_on_closed_candle"
   },
+  "setupStrength": {
+    "compulsory": false,
+    "dailyRecentHighPeriod": 55,
+    "dailyYearHighPeriod": 252,
+    "nearYearHighPct": 15,
+    "volumeAveragePeriod": 50,
+    "volumeExpansionMultiple": 1.5,
+    "riskToSupertrendMaxPct": 7,
+    "rsTrendLookback": 5,
+    "smaFastPeriod": 50,
+    "smaSlowPeriod": 200,
+    "sectorBreadthMinPct": 50,
+    "sectorBreadthMinStocks": 5
+  },
   "fundamentals": {
     "compulsory": false,
     "checks": [

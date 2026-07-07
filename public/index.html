@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Techno Funda Screener</title>
-    <link rel="stylesheet" href="styles.css?v=20260707-benchmark" />
+    <link rel="stylesheet" href="styles.css?v=20260707-video-rs" />
   </head>
   <body>
     <header class="topbar">
@@ -112,9 +112,9 @@
           <input id="searchInput" type="search" placeholder="Search symbol or name" />
           <select id="scoreFilter" aria-label="Strength score">
             <option value="0">Any strength</option>
-            <option value="5">5+ score</option>
-            <option value="7">7+ score</option>
-            <option value="9">9+ score</option>
+            <option value="8">8+ strong</option>
+            <option value="11">11+ very strong</option>
+            <option value="14">14+ best setup</option>
           </select>
           <button id="exportButton" type="button">CSV</button>
         </div>
@@ -147,6 +147,6 @@
 
     <aside id="detailPanel" class="detailPanel" aria-live="polite"></aside>
 
-    <script src="app.js?v=20260707-benchmark" type="module"></script>
+    <script src="app.js?v=20260707-video-rs" type="module"></script>
   </body>
 </html>

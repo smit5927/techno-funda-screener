@@ -5,7 +5,8 @@ import {
   calculateSupertrend,
   latestIndex,
   latestValue,
-  priceAboveSma
+  priceAboveSma,
+  simpleMovingAverage
 } from "./indicators.js";
 import { createFundamentalsService } from "./fundamentals.js";
 import { loadWatchlist } from "./watchlist.js";
@@ -52,7 +53,7 @@ export async function runScreener(options = {}) {
       }
     });
 
-    const sorted = results.sort(sortResults);
+    const sorted = applySectorStrength(results, rules).sort(sortResults);
     scannedLists[list.id] = {
       id: list.id,
       label: list.label,
@@ -156,6 +157,15 @@ async function scanSymbol(item, list, benchmarkDaily, benchmarkWeekly, rules, fu
   const dailyLongRs = latestValue(dailyLongRsSeries);
   const dailyShortRs = latestValue(dailyShortRsSeries);
   const dailySupertrend = latestValue(dailySupertrendSeries);
+  const setupStrength = buildSetupStrength({
+    dailyCandles,
+    close,
+    dailySupertrend,
+    weeklyRsSeries,
+    dailyLongRsSeries,
+    dailyShortRsSeries,
+    rules
+  });
 
   const technicalReady = [
     dailyRsi,
@@ -194,17 +204,26 @@ async function scanSymbol(item, list, benchmarkDaily, benchmarkWeekly, rules, fu
     supertrendMultiplier
   });
   const exitReason = buildExitReasons(exitChecks, { weeklyRs });
+  const setupReason = buildSetupStrengthReasons(setupStrength);
+  const weaknessReason = buildWeaknessReasons({
+    dailyShortRs,
+    dailyLongRs,
+    close,
+    dailySupertrend,
+    setupStrength
+  });
   const signalReason =
     status === "ENTRY"
-      ? entryReason
+      ? [...entryReason, ...setupReason]
       : status === "EXIT"
         ? exitReason
         : technicalReady
-          ? ["No entry: one or more compulsory entry checks are not satisfied."]
+          ? ["No entry: one or more compulsory entry checks are not satisfied.", ...weaknessReason]
           : ["Indicator data incomplete."];
 
   const fundamental = await fundamentals.get(item.yahooSymbol, dailyCandles);
   const technicalScore = Object.values(entryChecks).filter(Boolean).length;
+  const setupStrengthScore = setupStrength.score;
 
   const dailyLongPriceOk = priceAboveSma(
     dailyCandles,
@@ -241,22 +260,184 @@ async function scanSymbol(item, list, benchmarkDaily, benchmarkWeekly, rules, fu
     exitChecks,
     entryReason,
     exitReason,
+    setupReason,
+    weaknessReason,
     signalReason,
     priceConfirmation: {
       weekly: weeklyPriceOk,
       dailyLong: dailyLongPriceOk,
       dailyShort: dailyShortPriceOk
     },
+    setupStrength,
     fundamental,
     technicalScore,
+    setupStrengthScore,
     fundamentalScore: fundamental.score,
-    score: technicalScore + fundamental.score,
+    sectorStrengthScore: 0,
+    score: technicalScore + setupStrengthScore + fundamental.score,
     lastIndicatorIndex: {
       dailyRsi: latestIndex(dailyRsiSeries),
       weeklyRsi: latestIndex(weeklyRsiSeries),
       dailySupertrend: latestIndex(dailySupertrendSeries)
     }
   };
+}
+
+function buildSetupStrength({ dailyCandles, close, dailySupertrend, weeklyRsSeries, dailyLongRsSeries, dailyShortRsSeries, rules }) {
+  const setupRules = rules.setupStrength || {};
+  const latestDailyIndex = dailyCandles.length - 1;
+  const previousCandle = dailyCandles[latestDailyIndex - 1] || null;
+  const currentCandle = dailyCandles[latestDailyIndex] || null;
+  const recentHighPeriod = setupRules.dailyRecentHighPeriod || 55;
+  const yearHighPeriod = setupRules.dailyYearHighPeriod || 252;
+  const volumeAveragePeriod = setupRules.volumeAveragePeriod || 50;
+  const volumeExpansionMultiple = setupRules.volumeExpansionMultiple || 1.5;
+  const nearYearHighPct = setupRules.nearYearHighPct || 15;
+  const riskToSupertrendMaxPct = setupRules.riskToSupertrendMaxPct || 7;
+  const rsTrendLookback = setupRules.rsTrendLookback || 5;
+  const smaFastPeriod = setupRules.smaFastPeriod || 50;
+  const smaSlowPeriod = setupRules.smaSlowPeriod || 200;
+
+  const priorRecentHigh = highestHigh(dailyCandles, recentHighPeriod, latestDailyIndex - 1);
+  const priorYearHigh = highestHigh(dailyCandles, yearHighPeriod, latestDailyIndex - 1);
+  const recentHighBreakout = Number.isFinite(priorRecentHigh) && close > priorRecentHigh;
+  const yearHighBreakout = Number.isFinite(priorYearHigh) && close > priorYearHigh;
+  const nearYearHigh =
+    Number.isFinite(priorYearHigh) && close >= priorYearHigh * (1 - nearYearHighPct / 100);
+
+  const volumeAverage = averageVolume(dailyCandles, volumeAveragePeriod, latestDailyIndex - 1);
+  const volumeRatio =
+    Number.isFinite(currentCandle?.volume) && Number.isFinite(volumeAverage) && volumeAverage > 0
+      ? currentCandle.volume / volumeAverage
+      : null;
+  const volumeExpansion =
+    Number.isFinite(volumeRatio) && volumeRatio >= volumeExpansionMultiple;
+
+  const weeklyRsRising = risingOverLookback(weeklyRsSeries, rsTrendLookback);
+  const dailyLongRsRising = risingOverLookback(dailyLongRsSeries, rsTrendLookback);
+  const dailyShortRsRising = risingOverLookback(dailyShortRsSeries, rsTrendLookback);
+  const smaFast = latestValue(simpleMovingAverage(dailyCandles, smaFastPeriod));
+  const smaSlow = latestValue(simpleMovingAverage(dailyCandles, smaSlowPeriod));
+  const closeAboveSmaFast = Number.isFinite(smaFast) && close > smaFast;
+  const closeAboveSmaSlow = Number.isFinite(smaSlow) && close > smaSlow;
+  const smaFastAboveSlow = Number.isFinite(smaFast) && Number.isFinite(smaSlow) && smaFast > smaSlow;
+
+  const previousLow = Number.isFinite(previousCandle?.low) ? previousCandle.low : null;
+  const twoCandleLow = lowestLow(dailyCandles, 2, latestDailyIndex - 1);
+  const fourCandleLow = lowestLow(dailyCandles, 4, latestDailyIndex - 1);
+  const riskToSupertrendPct =
+    Number.isFinite(close) && Number.isFinite(dailySupertrend) && close > 0
+      ? ((close - dailySupertrend) / close) * 100
+      : null;
+  const riskToPreviousLowPct =
+    Number.isFinite(close) && Number.isFinite(previousLow) && close > 0
+      ? ((close - previousLow) / close) * 100
+      : null;
+  const favorableRiskToSupertrend =
+    Number.isFinite(riskToSupertrendPct) &&
+    riskToSupertrendPct >= 0 &&
+    riskToSupertrendPct <= riskToSupertrendMaxPct;
+
+  const checks = {
+    recentHighBreakout,
+    yearHighBreakout,
+    nearYearHigh,
+    volumeExpansion,
+    weeklyRsRising,
+    dailyLongRsRising,
+    dailyShortRsRising,
+    closeAboveSmaFast,
+    closeAboveSmaSlow,
+    smaFastAboveSlow,
+    favorableRiskToSupertrend
+  };
+
+  return {
+    score: Object.values(checks).filter(Boolean).length,
+    checks,
+    values: {
+      priorRecentHigh,
+      priorYearHigh,
+      volumeAverage,
+      volumeRatio,
+      smaFast,
+      smaSlow,
+      previousLow,
+      twoCandleLow,
+      fourCandleLow,
+      riskToSupertrendPct,
+      riskToPreviousLowPct,
+      recentHighPeriod,
+      yearHighPeriod,
+      nearYearHighPct,
+      volumeAveragePeriod,
+      volumeExpansionMultiple,
+      riskToSupertrendMaxPct,
+      smaFastPeriod,
+      smaSlowPeriod
+    }
+  };
+}
+
+function applySectorStrength(results, rules) {
+  const setupRules = rules.setupStrength || {};
+  const minPct = setupRules.sectorBreadthMinPct ?? 50;
+  const minStocks = setupRules.sectorBreadthMinStocks ?? 5;
+  const groups = new Map();
+
+  for (const row of results) {
+    const key = String(row.industry || "").trim() || "Unknown";
+    if (!groups.has(key)) groups.set(key, { total: 0, strong: 0, entry: 0 });
+    const group = groups.get(key);
+    if (row.status === "ERROR") continue;
+    group.total += 1;
+    if (
+      row.dailyRsi > (rules.entry?.dailyRsiAbove ?? 50) &&
+      row.dailyLongRs > (rules.entry?.dailyLongRsAbove ?? 0) &&
+      row.dailyShortRs > (rules.entry?.dailyShortRsAbove ?? 0) &&
+      row.dailyPriceAboveSupertrend
+    ) {
+      group.strong += 1;
+    }
+    if (row.status === "ENTRY") group.entry += 1;
+  }
+
+  return results.map((row) => {
+    const key = String(row.industry || "").trim() || "Unknown";
+    const group = groups.get(key) || { total: 0, strong: 0, entry: 0 };
+    const breadthPct = group.total > 0 ? (group.strong / group.total) * 100 : null;
+    const ok =
+      Number.isFinite(breadthPct) &&
+      group.total >= minStocks &&
+      breadthPct >= minPct;
+    const sectorStrength = {
+      industry: key,
+      total: group.total,
+      strong: group.strong,
+      entry: group.entry,
+      breadthPct,
+      ok,
+      minPct,
+      minStocks
+    };
+    const sectorStrengthScore = ok ? 1 : 0;
+    const sectorReason =
+      ok
+        ? `Sector breadth strong: ${key} has ${group.strong}/${group.total} stocks (${fmt(breadthPct)}%) passing daily strength.`
+        : null;
+
+    return {
+      ...row,
+      sectorStrength,
+      sectorStrengthScore,
+      setupStrengthScore: (row.setupStrengthScore || 0) + sectorStrengthScore,
+      score: (row.score || 0) + sectorStrengthScore,
+      signalReason:
+        row.status === "ENTRY" && sectorReason
+          ? [...(row.signalReason || []), sectorReason]
+          : row.signalReason
+    };
+  });
 }
 
 function buildEntryReasons(checks, values) {
@@ -301,6 +482,66 @@ function buildExitReasons(checks, values) {
   return reasons;
 }
 
+function buildSetupStrengthReasons(setupStrength) {
+  const checks = setupStrength.checks || {};
+  const values = setupStrength.values || {};
+  const reasons = [];
+
+  if (checks.recentHighBreakout) {
+    reasons.push(
+      `Price action strength: close crossed ${values.recentHighPeriod}-day high ${fmt(values.priorRecentHigh)}.`
+    );
+  } else if (checks.nearYearHigh) {
+    reasons.push(
+      `Price action strength: close is within ${values.nearYearHighPct}% of 52-week high ${fmt(values.priorYearHigh)}.`
+    );
+  }
+  if (checks.yearHighBreakout) {
+    reasons.push(`52-week breakout: close crossed prior 52-week high ${fmt(values.priorYearHigh)}.`);
+  }
+  if (checks.volumeExpansion) {
+    reasons.push(
+      `Volume shocker: latest volume is ${fmt(values.volumeRatio)}x the ${values.volumeAveragePeriod}-day average.`
+    );
+  }
+  if (checks.weeklyRsRising && checks.dailyLongRsRising) {
+    reasons.push("RS trend strength: weekly RS and daily RS55 are rising.");
+  } else if (checks.dailyLongRsRising) {
+    reasons.push("RS trend strength: daily RS55 is rising.");
+  }
+  if (checks.closeAboveSmaFast && checks.closeAboveSmaSlow && checks.smaFastAboveSlow) {
+    reasons.push(
+      `Trend strength: close is above ${values.smaFastPeriod}-DMA and ${values.smaSlowPeriod}-DMA, with fast DMA above slow DMA.`
+    );
+  }
+  if (checks.favorableRiskToSupertrend) {
+    reasons.push(
+      `Risk reference: close is ${fmt(values.riskToSupertrendPct)}% above daily Supertrend.`
+    );
+  }
+
+  if (reasons.length === 0) reasons.push("Optional setup strength is neutral.");
+  return reasons;
+}
+
+function buildWeaknessReasons({ dailyShortRs, dailyLongRs, close, dailySupertrend, setupStrength }) {
+  const reasons = [];
+  if (Number.isFinite(dailyShortRs) && dailyShortRs < 0) {
+    reasons.push(`Early weakness: daily short RS21 ${fmtPct(dailyShortRs)} is below 0.`);
+  }
+  if (Number.isFinite(dailyLongRs) && dailyLongRs < 0) {
+    reasons.push(`Early weakness: daily long RS55 ${fmtPct(dailyLongRs)} is below 0.`);
+  }
+  if (Number.isFinite(close) && Number.isFinite(dailySupertrend) && close < dailySupertrend) {
+    reasons.push(`Early weakness: daily close ${fmt(close)} is below Supertrend ${fmt(dailySupertrend)}.`);
+  }
+  const previousLow = setupStrength?.values?.previousLow;
+  if (Number.isFinite(close) && Number.isFinite(previousLow) && close < previousLow) {
+    reasons.push(`Price weakness: close is below previous candle low ${fmt(previousLow)}.`);
+  }
+  return reasons;
+}
+
 function summarize(results) {
   return {
     total: results.length,
@@ -341,4 +582,52 @@ function fmt(value) {
 
 function fmtPct(value) {
   return Number.isFinite(value) ? `${(value * 100).toFixed(1)}%` : "NA";
+}
+
+function highestHigh(candles, period, endIndex) {
+  const start = Math.max(0, endIndex - period + 1);
+  let highest = null;
+  for (let index = start; index <= endIndex; index += 1) {
+    const high = candles[index]?.high;
+    if (Number.isFinite(high)) highest = highest == null ? high : Math.max(highest, high);
+  }
+  return highest;
+}
+
+function lowestLow(candles, period, endIndex) {
+  const start = Math.max(0, endIndex - period + 1);
+  let lowest = null;
+  for (let index = start; index <= endIndex; index += 1) {
+    const low = candles[index]?.low;
+    if (Number.isFinite(low)) lowest = lowest == null ? low : Math.min(lowest, low);
+  }
+  return lowest;
+}
+
+function averageVolume(candles, period, endIndex) {
+  const start = Math.max(0, endIndex - period + 1);
+  let sum = 0;
+  let count = 0;
+  for (let index = start; index <= endIndex; index += 1) {
+    const volume = candles[index]?.volume;
+    if (!Number.isFinite(volume)) continue;
+    sum += volume;
+    count += 1;
+  }
+  return count > 0 ? sum / count : null;
+}
+
+function risingOverLookback(values, lookback) {
+  const currentIndex = latestIndex(values);
+  if (currentIndex < 0) return false;
+  const previousIndex = previousFiniteIndex(values, currentIndex - lookback);
+  if (previousIndex < 0) return false;
+  return values[currentIndex] > values[previousIndex];
+}
+
+function previousFiniteIndex(values, startIndex) {
+  for (let index = Math.min(startIndex, values.length - 1); index >= 0; index -= 1) {
+    if (Number.isFinite(values[index])) return index;
+  }
+  return -1;
 }

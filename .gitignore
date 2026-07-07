@@ -5,3 +5,6 @@ site/
 data/*.tmp
 data/test-*.xlsx
 npm-debug.log*
+analysis/
+raw/*.mp4
+*.wav

@@ -218,6 +218,10 @@ function rowHtml(row, index) {
 
 function renderDetail(row) {
   const checks = row.fundamental?.checks || {};
+  const setup = row.setupStrength || {};
+  const setupChecks = setup.checks || {};
+  const setupValues = setup.values || {};
+  const sector = row.sectorStrength || {};
   elements.detailPanel.innerHTML = `
     <div class="detailHeader">
       <div>
@@ -237,6 +241,20 @@ function renderDetail(row) {
       ${checkHtml("EBITDA margin QoQ", checks.ebitdaMarginQoQUp, true)}
       ${checkHtml("EBITDA margin YoY", checks.ebitdaMarginYoYUp, true)}
       ${checkHtml("P/E rising", checks.peRising)}
+    </div>
+    <div class="reasonBlock">
+      <strong>Video RS Strength</strong>
+      <p>${escapeHtml((row.setupReason || []).join(" "))}</p>
+    </div>
+    <div class="checkGrid">
+      ${setupCheckHtml("55D breakout", setupChecks.recentHighBreakout, setupValues.priorRecentHigh)}
+      ${setupCheckHtml("52W high zone", setupChecks.nearYearHigh, setupValues.priorYearHigh)}
+      ${setupCheckHtml("Volume shocker", setupChecks.volumeExpansion, setupValues.volumeRatio, "x")}
+      ${setupCheckHtml("RS55 rising", setupChecks.dailyLongRsRising)}
+      ${setupCheckHtml("50/200 DMA", setupChecks.smaFastAboveSlow)}
+      ${setupCheckHtml("Risk to ST", setupChecks.favorableRiskToSupertrend, setupValues.riskToSupertrendPct, "%")}
+      ${setupCheckHtml("Sector breadth", sector.ok, sector.breadthPct, "%")}
+      ${setupCheckHtml("Prev candle low", Number.isFinite(setupValues.previousLow), setupValues.previousLow)}
     </div>
   `;
   elements.detailPanel.classList.add("visible");
@@ -438,6 +456,19 @@ function checkHtml(label, check, asPercent = false) {
   `;
 }
 
+function setupCheckHtml(label, ok, value, suffix = "") {
+  const css = ok === true ? "good" : ok === false ? "bad" : "neutral";
+  const status = ok === true ? "Good" : ok === false ? "Weak" : "NA";
+  const number = Number.isFinite(value) ? `${compact(value)}${suffix}` : "";
+  return `
+    <div class="check">
+      <span>${escapeHtml(label)}</span>
+      <strong class="${css}">${status}</strong>
+      <span>${escapeHtml(number)}</span>
+    </div>
+  `;
+}
+
 function exportCsv() {
   const headers = [
     "status",
@@ -453,6 +484,13 @@ function exportCsv() {
     "dailyShortRs",
     "dailyRsi",
     "fundamentalScore",
+    "setupStrengthScore",
+    "sectorBreadth",
+    "near52WeekHigh",
+    "recentHighBreakout",
+    "volumeRatio",
+    "riskToSupertrendPct",
+    "previousLow",
     "score",
     "reason"
   ];
@@ -461,6 +499,20 @@ function exportCsv() {
     const exportRow = {
       ...row,
       list: row.listLabel,
+      sectorBreadth: Number.isFinite(row.sectorStrength?.breadthPct)
+        ? `${compact(row.sectorStrength.breadthPct)}%`
+        : "",
+      near52WeekHigh: row.setupStrength?.checks?.nearYearHigh ? "Yes" : "No",
+      recentHighBreakout: row.setupStrength?.checks?.recentHighBreakout ? "Yes" : "No",
+      volumeRatio: Number.isFinite(row.setupStrength?.values?.volumeRatio)
+        ? compact(row.setupStrength.values.volumeRatio)
+        : "",
+      riskToSupertrendPct: Number.isFinite(row.setupStrength?.values?.riskToSupertrendPct)
+        ? compact(row.setupStrength.values.riskToSupertrendPct)
+        : "",
+      previousLow: Number.isFinite(row.setupStrength?.values?.previousLow)
+        ? compact(row.setupStrength.values.previousLow)
+        : "",
       reason: (row.signalReason || []).join(" ")
     };
     lines.push(headers.map((header) => csvValue(exportRow[header])).join(","));

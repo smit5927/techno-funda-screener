@@ -7,6 +7,7 @@ Daily-close based screener with two lists, Telegram alerts, automatic trade jour
 - Entry: weekly RSI 14 > 50, daily RSI 14 > 50, weekly RS 21 > 0, daily long RS 55 > 0, daily short RS 21 > 0, and daily close above Supertrend.
 - Exit: weekly RS 21 < 0 on closed weekly candle.
 - Fundamentals are optional strength checks, not compulsory entry filters.
+- Video-ingested setup strength adds optional score/context for 55-day breakout, 52-week high zone, volume shocker, RS trend, 50/200 DMA trend, sector breadth, and risk-to-Supertrend. Full notes are in `docs/strategy-rules.md`.
 - Every signal stores the reason on the website, Telegram alert, JSON result, and trade sheet.
 
 ## Lists

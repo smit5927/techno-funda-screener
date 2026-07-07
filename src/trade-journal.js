@@ -170,12 +170,25 @@ function tradeColumns() {
     { header: "P&L", key: "P&L", width: 14 },
     { header: "P&L %", key: "P&L %", width: 12 },
     { header: "Holding Days", key: "Holding Days", width: 14 },
+    { header: "Setup Score", key: "Setup Score", width: 14 },
+    { header: "Sector Breadth", key: "Sector Breadth", width: 16 },
+    { header: "Near 52W High", key: "Near 52W High", width: 14 },
+    { header: "55D Breakout", key: "55D Breakout", width: 14 },
+    { header: "Volume Ratio", key: "Volume Ratio", width: 14 },
+    { header: "Risk To ST %", key: "Risk To ST %", width: 14 },
+    { header: "Previous Low", key: "Previous Low", width: 14 },
+    { header: "2 Candle Low", key: "2 Candle Low", width: 14 },
+    { header: "4 Candle Low", key: "4 Candle Low", width: 14 },
     { header: "Entry Reason", key: "Entry Reason", width: 54 },
     { header: "Exit Reason", key: "Exit Reason", width: 54 }
   ];
 }
 
 function tradeToRow(trade) {
+  const setup = trade.entrySnapshot?.setupStrength || {};
+  const setupValues = setup.values || {};
+  const setupChecks = setup.checks || {};
+  const sector = trade.entrySnapshot?.sectorStrength || {};
   return {
     List: trade.listLabel,
     Symbol: trade.symbol,
@@ -190,6 +203,19 @@ function tradeToRow(trade) {
     "P&L": trade.pnl ?? "",
     "P&L %": trade.pnlPct ?? "",
     "Holding Days": trade.holdingDays ?? "",
+    "Setup Score": trade.entrySnapshot?.setupStrengthScore ?? "",
+    "Sector Breadth": Number.isFinite(sector.breadthPct)
+      ? `${round(sector.breadthPct)}% (${sector.strong}/${sector.total})`
+      : "",
+    "Near 52W High": setupChecks.nearYearHigh ? "Yes" : "No",
+    "55D Breakout": setupChecks.recentHighBreakout ? "Yes" : "No",
+    "Volume Ratio": Number.isFinite(setupValues.volumeRatio) ? round(setupValues.volumeRatio) : "",
+    "Risk To ST %": Number.isFinite(setupValues.riskToSupertrendPct)
+      ? round(setupValues.riskToSupertrendPct)
+      : "",
+    "Previous Low": Number.isFinite(setupValues.previousLow) ? round(setupValues.previousLow) : "",
+    "2 Candle Low": Number.isFinite(setupValues.twoCandleLow) ? round(setupValues.twoCandleLow) : "",
+    "4 Candle Low": Number.isFinite(setupValues.fourCandleLow) ? round(setupValues.fourCandleLow) : "",
     "Entry Reason": (trade.entryReason || []).join(" "),
     "Exit Reason": (trade.exitReason || []).join(" ")
   };
@@ -223,6 +249,10 @@ function snapshot(row) {
     dailyShortRs: row.dailyShortRs,
     dailySupertrend: row.dailySupertrend,
     dailyPriceAboveSupertrend: row.dailyPriceAboveSupertrend,
+    setupStrength: row.setupStrength,
+    setupStrengthScore: row.setupStrengthScore,
+    sectorStrength: row.sectorStrength,
+    sectorStrengthScore: row.sectorStrengthScore,
     fundamentalScore: row.fundamentalScore,
     score: row.score
   };
