@@ -90,7 +90,15 @@ export async function runScreener(options = {}) {
 
   let telegram = { sent: false, reason: "disabled" };
   if (options.sendTelegram) {
-    telegram = await sendTelegramSummary(payload, config);
+    try {
+      telegram = await sendTelegramSummary(payload, config);
+    } catch (error) {
+      telegram = {
+        sent: false,
+        reason: error.message || String(error)
+      };
+      console.error(`Telegram alert failed: ${telegram.reason}`);
+    }
   }
 
   return { ...payload, telegram };
