@@ -31,9 +31,11 @@ function copyFile(filename) {
   const target = path.join(outDir, filename);
   let contents = fs.readFileSync(source, filename.endsWith(".html") || filename.endsWith(".js") || filename.endsWith(".css") ? "utf8" : undefined);
   if (filename === "index.html") {
+    const appScript = contents.match(/<script src="app\.js(?:\?[^"]*)?" type="module"><\/script>/)?.[0];
+    if (!appScript) throw new Error("Could not find app.js module script in public/index.html");
     contents = contents.replace(
-      '<script src="app.js" type="module"></script>',
-      '<script src="vendor/exceljs.min.js"></script>\n    <script src="cloud-config.js"></script>\n    <script>window.TF_STATIC_MODE = true;</script>\n    <script src="app.js" type="module"></script>'
+      appScript,
+      `<script src="vendor/exceljs.min.js"></script>\n    <script src="cloud-config.js"></script>\n    <script>window.TF_STATIC_MODE = true;</script>\n    ${appScript}`
     );
   }
   fs.writeFileSync(target, contents);
