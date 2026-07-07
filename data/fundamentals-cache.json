@@ -18498,5 +18498,42 @@
         }
       }
     }
+  },
+  "500325.BO": {
+    "updatedAt": "2026-07-07T04:37:00.517Z",
+    "value": {
+      "available": true,
+      "score": 2,
+      "maxScore": 5,
+      "currentPe": 21.997822,
+      "ebitdaMargin": 0.11487490605626761,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": true,
+          "latest": 807750000000,
+          "previous": 696480000000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": true,
+          "latest": 1213770000000,
+          "previous": 1124620000000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": false,
+          "latest": 0.11487490605626761,
+          "previous": 0.13706800551140974
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": false,
+          "latest": 0.11487490605626761,
+          "previous": 0.14510013084096574
+        },
+        "peRising": {
+          "ok": false,
+          "latest": 22.52052270061987,
+          "previous": 24.77171167670488
+        }
+      }
+    }
   }
 }
