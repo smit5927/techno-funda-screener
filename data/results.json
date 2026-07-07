@@ -1,6 +1,7 @@
 {
-  "scannedAt": "2026-07-07T04:39:30.879Z",
+  "scannedAt": "2026-07-07T04:52:34.698Z",
   "benchmark": "^CRSLDX",
+  "benchmarkLabel": "NIFTY 500 / CNX500",
   "lists": {
     "default": {
       "id": "default",
@@ -46668,9 +46669,9 @@
       "summary": {
         "total": 4,
         "entry": 0,
-        "exit": 2,
+        "exit": 1,
         "watch": 2,
-        "error": 0
+        "error": 1
       },
       "results": [
         {
@@ -46763,98 +46764,6 @@
             "dailyRsi": 740,
             "weeklyRsi": 261,
             "dailySupertrend": 740
-          }
-        },
-        {
-          "listId": "custom",
-          "listLabel": "My Custom List",
-          "symbol": "BSE:500325",
-          "yahooSymbol": "500325.BO",
-          "name": "BSE:500325",
-          "industry": "BSE",
-          "status": "EXIT",
-          "asOf": "2026-07-02",
-          "weeklyAsOf": "2026-06-29",
-          "close": 1303.800048828125,
-          "dailyRsi": 45.253222117643816,
-          "weeklyRsi": 41.56363860021999,
-          "weeklyRs": -0.09591887712646918,
-          "dailyLongRs": -0.07243576063957458,
-          "dailyShortRs": -0.04174188726582306,
-          "dailySupertrend": 1339.9164855542085,
-          "dailyPriceAboveSupertrend": false,
-          "entryChecks": {
-            "weeklyRsi": false,
-            "dailyRsi": false,
-            "weeklyRs": false,
-            "dailyLongRs": false,
-            "dailyShortRs": false,
-            "dailyPriceAboveSupertrend": false
-          },
-          "exitChecks": {
-            "weeklyRs": true
-          },
-          "entryReason": [
-            "Weekly RSI 41.56 is not above 50.",
-            "Daily RSI 45.25 is not above 50.",
-            "Weekly RS -9.6% is not above 0.",
-            "Daily long RS55 -7.2% is not above 0.",
-            "Daily short RS21 -4.2% is not above 0.",
-            "Daily close 1303.80 is not above Supertrend(10, 3) 1339.92."
-          ],
-          "exitReason": [
-            "Weekly RS -9.6% is below 0 on closed weekly candle."
-          ],
-          "signalReason": [
-            "Weekly RS -9.6% is below 0 on closed weekly candle."
-          ],
-          "priceConfirmation": {
-            "weekly": false,
-            "dailyLong": false,
-            "dailyShort": false
-          },
-          "fundamental": {
-            "available": true,
-            "score": 2,
-            "maxScore": 5,
-            "currentPe": 21.997822,
-            "ebitdaMargin": 0.11487490605626761,
-            "checks": {
-              "netIncomeYoYUp": {
-                "ok": true,
-                "latest": 807750000000,
-                "previous": 696480000000
-              },
-              "operatingIncomeYoYUp": {
-                "ok": true,
-                "latest": 1213770000000,
-                "previous": 1124620000000
-              },
-              "ebitdaMarginQoQUp": {
-                "ok": false,
-                "latest": 0.11487490605626761,
-                "previous": 0.13706800551140974
-              },
-              "ebitdaMarginYoYUp": {
-                "ok": false,
-                "latest": 0.11487490605626761,
-                "previous": 0.14510013084096574
-              },
-              "peRising": {
-                "ok": false,
-                "latest": 22.52052270061987,
-                "previous": 24.77171167670488
-              }
-            },
-            "cacheHit": true
-          },
-          "technicalScore": 0,
-          "fundamentalScore": 2,
-          "score": 2,
-          "lastIndicatorIndex": {
-            "dailyRsi": 735,
-            "weeklyRsi": 260,
-            "dailySupertrend": 735
           }
         },
         {
@@ -47040,6 +46949,23 @@
             "weeklyRsi": 261,
             "dailySupertrend": 740
           }
+        },
+        {
+          "listId": "custom",
+          "listLabel": "My Custom List",
+          "symbol": "BSE:500325",
+          "yahooSymbol": "500325.BO",
+          "name": "BSE:500325",
+          "industry": "BSE",
+          "status": "ERROR",
+          "error": "not enough daily price history",
+          "signalReason": [
+            "Data error: not enough daily price history"
+          ],
+          "entryReason": [],
+          "exitReason": [],
+          "score": 0,
+          "fundamentalScore": 0
         }
       ]
     }
@@ -47108,9 +47034,9 @@
   "summary": {
     "total": 504,
     "entry": 144,
-    "exit": 208,
+    "exit": 207,
     "watch": 151,
-    "error": 1
+    "error": 2
   },
   "results": [
     {
@@ -78102,98 +78028,6 @@
       }
     },
     {
-      "listId": "custom",
-      "listLabel": "My Custom List",
-      "symbol": "BSE:500325",
-      "yahooSymbol": "500325.BO",
-      "name": "BSE:500325",
-      "industry": "BSE",
-      "status": "EXIT",
-      "asOf": "2026-07-02",
-      "weeklyAsOf": "2026-06-29",
-      "close": 1303.800048828125,
-      "dailyRsi": 45.253222117643816,
-      "weeklyRsi": 41.56363860021999,
-      "weeklyRs": -0.09591887712646918,
-      "dailyLongRs": -0.07243576063957458,
-      "dailyShortRs": -0.04174188726582306,
-      "dailySupertrend": 1339.9164855542085,
-      "dailyPriceAboveSupertrend": false,
-      "entryChecks": {
-        "weeklyRsi": false,
-        "dailyRsi": false,
-        "weeklyRs": false,
-        "dailyLongRs": false,
-        "dailyShortRs": false,
-        "dailyPriceAboveSupertrend": false
-      },
-      "exitChecks": {
-        "weeklyRs": true
-      },
-      "entryReason": [
-        "Weekly RSI 41.56 is not above 50.",
-        "Daily RSI 45.25 is not above 50.",
-        "Weekly RS -9.6% is not above 0.",
-        "Daily long RS55 -7.2% is not above 0.",
-        "Daily short RS21 -4.2% is not above 0.",
-        "Daily close 1303.80 is not above Supertrend(10, 3) 1339.92."
-      ],
-      "exitReason": [
-        "Weekly RS -9.6% is below 0 on closed weekly candle."
-      ],
-      "signalReason": [
-        "Weekly RS -9.6% is below 0 on closed weekly candle."
-      ],
-      "priceConfirmation": {
-        "weekly": false,
-        "dailyLong": false,
-        "dailyShort": false
-      },
-      "fundamental": {
-        "available": true,
-        "score": 2,
-        "maxScore": 5,
-        "currentPe": 21.997822,
-        "ebitdaMargin": 0.11487490605626761,
-        "checks": {
-          "netIncomeYoYUp": {
-            "ok": true,
-            "latest": 807750000000,
-            "previous": 696480000000
-          },
-          "operatingIncomeYoYUp": {
-            "ok": true,
-            "latest": 1213770000000,
-            "previous": 1124620000000
-          },
-          "ebitdaMarginQoQUp": {
-            "ok": false,
-            "latest": 0.11487490605626761,
-            "previous": 0.13706800551140974
-          },
-          "ebitdaMarginYoYUp": {
-            "ok": false,
-            "latest": 0.11487490605626761,
-            "previous": 0.14510013084096574
-          },
-          "peRising": {
-            "ok": false,
-            "latest": 22.52052270061987,
-            "previous": 24.77171167670488
-          }
-        },
-        "cacheHit": true
-      },
-      "technicalScore": 0,
-      "fundamentalScore": 2,
-      "score": 2,
-      "lastIndicatorIndex": {
-        "dailyRsi": 735,
-        "weeklyRsi": 260,
-        "dailySupertrend": 735
-      }
-    },
-    {
       "listId": "default",
       "listLabel": "Default Nifty 500",
       "symbol": "ANURAS",
@@ -94120,6 +93954,23 @@
       "error": "not enough weekly price history",
       "signalReason": [
         "Data error: not enough weekly price history"
+      ],
+      "entryReason": [],
+      "exitReason": [],
+      "score": 0,
+      "fundamentalScore": 0
+    },
+    {
+      "listId": "custom",
+      "listLabel": "My Custom List",
+      "symbol": "BSE:500325",
+      "yahooSymbol": "500325.BO",
+      "name": "BSE:500325",
+      "industry": "BSE",
+      "status": "ERROR",
+      "error": "not enough daily price history",
+      "signalReason": [
+        "Data error: not enough daily price history"
       ],
       "entryReason": [],
       "exitReason": [],
