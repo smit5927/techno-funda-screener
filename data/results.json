@@ -1,5 +1,5 @@
 {
-  "scannedAt": "2026-07-07T04:37:00.520Z",
+  "scannedAt": "2026-07-07T04:39:30.879Z",
   "benchmark": "^CRSLDX",
   "lists": {
     "default": {
@@ -46846,7 +46846,7 @@
                 "previous": 24.77171167670488
               }
             },
-            "cacheHit": false
+            "cacheHit": true
           },
           "technicalScore": 0,
           "fundamentalScore": 2,
@@ -78182,7 +78182,7 @@
             "previous": 24.77171167670488
           }
         },
-        "cacheHit": false
+        "cacheHit": true
       },
       "technicalScore": 0,
       "fundamentalScore": 2,
