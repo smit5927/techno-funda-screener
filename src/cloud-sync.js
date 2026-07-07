@@ -1,0 +1,57 @@
+import { appConfig } from "./config.js";
+import { saveCustomWatchlist } from "./watchlist.js";
+
+export async function pullCloudCustomList(config = appConfig) {
+  const cloud = cloudConfig();
+  if (!cloud.enabled) {
+    return { ok: false, reason: "cloud sync not configured", count: 0 };
+  }
+
+  const payload = await postCloud(cloud, {
+    action: "get-custom-list",
+    internalKey: cloud.internalKey
+  });
+  const customList = config.lists.find((list) => list.id === "custom");
+  if (!customList) throw new Error("Custom list is not configured.");
+
+  const symbols = Array.isArray(payload.symbols) ? payload.symbols : [];
+  const count = saveCustomWatchlist(customList.path, symbols.join("\n"));
+  return { ok: true, count, symbols };
+}
+
+export async function pushCloudState(state) {
+  const cloud = cloudConfig();
+  if (!cloud.enabled) {
+    return { ok: false, reason: "cloud sync not configured" };
+  }
+
+  await postCloud(cloud, {
+    action: "save-state",
+    internalKey: cloud.internalKey,
+    state
+  });
+  return { ok: true };
+}
+
+function cloudConfig() {
+  const apiUrl = process.env.TECHNO_FUNDA_CLOUD_API_URL || "";
+  const internalKey = process.env.TECHNO_FUNDA_INTERNAL_KEY || "";
+  return {
+    enabled: Boolean(apiUrl && internalKey),
+    apiUrl,
+    internalKey
+  };
+}
+
+async function postCloud(cloud, body) {
+  const response = await fetch(cloud.apiUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok || payload.error) {
+    throw new Error(payload.error || `Cloud API failed with ${response.status}`);
+  }
+  return payload;
+}

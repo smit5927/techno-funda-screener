@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Techno Funda Screener</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brandMark">TF</div>
+      <div class="titleBlock">
+        <h1>Techno Funda Screener</h1>
+        <p id="scanMeta">Waiting for first scan</p>
+      </div>
+      <div class="actions">
+        <button id="refreshButton" type="button" title="Refresh results">Refresh</button>
+        <button id="scanButton" type="button" title="Run scan now">Run Scan</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="summaryGrid" aria-label="Scan summary">
+        <div class="metric">
+          <span>Total</span>
+          <strong id="totalCount">0</strong>
+        </div>
+        <div class="metric entry">
+          <span>Entry</span>
+          <strong id="entryCount">0</strong>
+        </div>
+        <div class="metric exit">
+          <span>Exit</span>
+          <strong id="exitCount">0</strong>
+        </div>
+        <div class="metric watch">
+          <span>Watch</span>
+          <strong id="watchCount">0</strong>
+        </div>
+        <div class="metric error">
+          <span>Error</span>
+          <strong id="errorCount">0</strong>
+        </div>
+      </section>
+
+      <section class="tradeBand" aria-label="Trade summary">
+        <div>
+          <span>Open Trades</span>
+          <strong id="openTradesCount">0</strong>
+        </div>
+        <div>
+          <span>Closed Trades</span>
+          <strong id="closedTradesCount">0</strong>
+        </div>
+        <div>
+          <span>Realized P&L</span>
+          <strong id="realizedPnl">0.00</strong>
+        </div>
+        <a id="excelDownloadLink" class="downloadButton" href="/api/trades/download">Excel</a>
+        <a id="csvDownloadLink" class="downloadButton" href="/api/trades/download.csv">CSV</a>
+      </section>
+
+      <section class="listBand">
+        <div class="listTabs" role="tablist" aria-label="List filter">
+          <button class="listTab active" data-list="default" type="button">Default Nifty 500</button>
+          <button class="listTab" data-list="custom" type="button">My List</button>
+          <button class="listTab" data-list="all" type="button">All Lists</button>
+        </div>
+        <button id="editListButton" type="button">Edit My List</button>
+      </section>
+
+      <section id="customListPanel" class="customListPanel" hidden>
+        <div class="accessRow">
+          <input id="accessCodeInput" type="password" inputmode="numeric" placeholder="Access code" autocomplete="one-time-code" />
+        </div>
+        <div class="uploadRow">
+          <input id="customFileInput" type="file" accept=".xlsx,.csv,.txt" />
+          <button id="importCustomFileButton" type="button">Import Excel & Scan</button>
+        </div>
+        <textarea id="customSymbolsInput" rows="4" spellcheck="false" placeholder="MIDHANI CDSL LT"></textarea>
+        <div class="customActions">
+          <button id="saveCustomListButton" type="button">Save My List</button>
+          <button id="scanCustomListButton" type="button">Scan My List</button>
+          <span id="customListStatus"></span>
+        </div>
+      </section>
+
+      <section class="controlBand">
+        <div class="tabs" role="tablist" aria-label="Status filter">
+          <button class="tab active" data-filter="ALL" type="button">All</button>
+          <button class="tab" data-filter="ENTRY" type="button">Entry</button>
+          <button class="tab" data-filter="EXIT" type="button">Exit</button>
+          <button class="tab" data-filter="WATCH" type="button">Watch</button>
+          <button class="tab" data-filter="ERROR" type="button">Error</button>
+        </div>
+        <div class="filters">
+          <input id="searchInput" type="search" placeholder="Search symbol or name" />
+          <select id="scoreFilter" aria-label="Strength score">
+            <option value="0">Any strength</option>
+            <option value="5">5+ score</option>
+            <option value="7">7+ score</option>
+            <option value="9">9+ score</option>
+          </select>
+          <button id="exportButton" type="button">CSV</button>
+        </div>
+      </section>
+
+      <section class="tableShell">
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>List</th>
+              <th>Symbol</th>
+              <th>Close</th>
+              <th>D ST</th>
+              <th>W RSI</th>
+              <th>W RS</th>
+              <th>D RS55</th>
+              <th>D RS21</th>
+              <th>D RSI</th>
+              <th>Funda</th>
+              <th>Score</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody id="resultsBody"></tbody>
+        </table>
+        <div id="emptyState" class="emptyState">No rows to show</div>
+      </section>
+    </main>
+
+    <aside id="detailPanel" class="detailPanel" aria-live="polite"></aside>
+
+    <script src="app.js" type="module"></script>
+  </body>
+</html>

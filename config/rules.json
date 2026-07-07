@@ -1,0 +1,57 @@
+{
+  "benchmark": "^CRSLDX",
+  "benchmarkLabel": "NIFTY 500 / CNX500",
+  "rsi": {
+    "length": 14,
+    "source": "close",
+    "threshold": 50,
+    "waitForTimeframeClose": true
+  },
+  "relativeStrength": {
+    "source": "close",
+    "formula": "(stockClose / stockCloseN) / (benchmarkClose / benchmarkCloseN) - 1",
+    "weekly": {
+      "period": 21,
+      "trendRange": 5,
+      "priceConfirmationPeriod": 61
+    },
+    "dailyLong": {
+      "period": 55,
+      "trendRange": 5,
+      "priceConfirmationPeriod": 50
+    },
+    "dailyShort": {
+      "period": 21,
+      "trendRange": 5,
+      "priceConfirmationPeriod": 50
+    }
+  },
+  "supertrend": {
+    "daily": {
+      "atrLength": 10,
+      "multiplier": 3
+    }
+  },
+  "entry": {
+    "weeklyRsiAbove": 50,
+    "dailyRsiAbove": 50,
+    "weeklyRsAbove": 0,
+    "dailyLongRsAbove": 0,
+    "dailyShortRsAbove": 0,
+    "dailyPriceAboveSupertrend": true
+  },
+  "exit": {
+    "weeklyRsBelow": 0,
+    "logic": "weekly_rs_below_zero_on_closed_candle"
+  },
+  "fundamentals": {
+    "compulsory": false,
+    "checks": [
+      "netIncomeYoYUp",
+      "operatingIncomeYoYUp",
+      "ebitdaMarginQoQUp",
+      "ebitdaMarginYoYUp",
+      "peRising"
+    ]
+  }
+}

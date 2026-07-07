@@ -1,0 +1,14 @@
+symbol,name,industry,enabled
+MIDHANI,Mishra Dhatu Nigam,Metals,true
+VEDL,Vedanta,Metals,true
+CDSL,Central Depository Services,Financial Services,true
+LT,Larsen and Toubro,Capital Goods,true
+BLUESTARCO,Blue Star,Consumer Durables,true
+GRAVITA,Gravita India,Metals,true
+MAZDOCK,Mazagon Dock Shipbuilders,Capital Goods,true
+GRSE,Garden Reach Shipbuilders,Capital Goods,true
+TITAN,Titan Company,Consumer Durables,true
+RELIANCE,Reliance Industries,Oil Gas,true
+TCS,Tata Consultancy Services,IT,true
+INFY,Infosys,IT,true
+HDFCBANK,HDFC Bank,Financial Services,true

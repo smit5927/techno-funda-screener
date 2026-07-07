@@ -1,0 +1,29 @@
+{
+  "name": "techno-funda-screener",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Daily close based techno-funda stock screener with Telegram alerts.",
+  "scripts": {
+    "start": "node src/server.js",
+    "scan": "node src/run-scan.js",
+    "prepare:custom": "node src/prepare-custom-list.js",
+    "scan:free": "node src/prepare-custom-list.js && node src/run-scan.js --telegram",
+    "scan:cloud": "node src/run-cloud-scan.js",
+    "reset:live": "node src/reset-live-trades.js",
+    "build:static": "node src/build-static-site.js",
+    "update:universe": "node scripts/update-nifty500.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "exceljs": "^4.4.0",
+    "express": "^4.19.2",
+    "node-cron": "^4.6.0"
+  },
+  "overrides": {
+    "uuid": "^11.1.1"
+  }
+}

@@ -1,0 +1,7 @@
+node_modules/
+.env
+.obsidian/
+site/
+data/*.tmp
+data/test-*.xlsx
+npm-debug.log*

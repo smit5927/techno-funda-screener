@@ -1,0 +1,74 @@
+name: Daily Techno Funda Screener
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "45 2 * * 1-5"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: techno-funda-screener
+  cancel-in-progress: false
+
+jobs:
+  scan-and-publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run cloud screener and Telegram alerts
+        run: npm run scan:cloud
+        env:
+          DATA_DIR: data
+          DEFAULT_WATCHLIST_PATH: config/universe.csv
+          CUSTOM_WATCHLIST_PATH: config/custom-list.csv
+          BENCHMARK_SYMBOL: ^CRSLDX
+          FUNDAMENTALS_ENABLED: "true"
+          FUNDAMENTALS_CACHE_DAYS: "7"
+          SCAN_CONCURRENCY: "6"
+          MAX_SYMBOLS: "0"
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_SEND_EMPTY: "false"
+          TRADE_CAPITAL_PER_STOCK: "100000"
+          TECHNO_FUNDA_CLOUD_API_URL: https://ywvwsumwhmfkqrqrxsvs.supabase.co/functions/v1/techno-funda-api
+          TECHNO_FUNDA_INTERNAL_KEY: ${{ secrets.TECHNO_FUNDA_INTERNAL_KEY }}
+
+      - name: Build mobile website
+        run: npm run build:static
+
+      - name: Commit updated scan and trade sheet
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add config/custom-list.csv data/results.json data/trades.json data/fundamentals-cache.json data/techno-funda-trade-sheet.xlsx data/techno-funda-trade-sheet.csv
+          git diff --cached --quiet || git commit -m "Update techno funda screener data"
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
