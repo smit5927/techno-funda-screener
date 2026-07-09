@@ -18,8 +18,8 @@ try {
     { ok: false, reason: "cloud Telegram settings unavailable", telegram: null }
   );
   if (telegram.ok && telegram.telegram?.enabled !== false) {
-    appConfig.telegram.botToken = appConfig.telegram.botToken || telegram.telegram?.botToken || "";
-    appConfig.telegram.chatId = appConfig.telegram.chatId || telegram.telegram?.chatId || "";
+    appConfig.telegram.botToken = telegram.telegram?.botToken || appConfig.telegram.botToken || "";
+    appConfig.telegram.chatId = telegram.telegram?.chatId || appConfig.telegram.chatId || "";
   }
 
   const result = await runScreener({ sendTelegram: true });

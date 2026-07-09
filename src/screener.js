@@ -18,6 +18,7 @@ import { updateTradeJournal } from "./trade-journal.js";
 
 export async function runScreener(options = {}) {
   const config = options.config || appConfig;
+  const previousScan = readLatestScan();
   const rules = config.rules;
   const fundamentals = createFundamentalsService(config);
   const listFilter = options.listId || "all";
@@ -79,7 +80,7 @@ export async function runScreener(options = {}) {
 
   fundamentals.save();
 
-  const previous = listFilter === "all" ? null : readLatestScan();
+  const previous = listFilter === "all" ? null : previousScan;
   const mergedLists = {
     ...(previous?.lists || {}),
     ...scannedLists
@@ -100,7 +101,12 @@ export async function runScreener(options = {}) {
   const journal = await updateTradeJournal(payload, config);
   payload.tradeSummary = summarizeTrades(journal.trades);
   payload.trades = journal.trades;
-  payload.tradeEvents = journal.events;
+  payload.tradeEvents = mergeTradeEvents(
+    shouldRetryTradeEvents(previousScan, options)
+      ? previousScan.tradeEvents
+      : [],
+    journal.events
+  );
   saveLatestScan(payload);
 
   let telegram = { sent: false, reason: "disabled" };
@@ -116,7 +122,36 @@ export async function runScreener(options = {}) {
     }
   }
 
-  return { ...payload, telegram };
+  const finalPayload = { ...payload, telegram };
+  saveLatestScan(finalPayload);
+  return finalPayload;
+}
+
+function shouldRetryTradeEvents(previousScan, options) {
+  return (
+    options.sendTelegram === true &&
+    Array.isArray(previousScan?.tradeEvents) &&
+    previousScan.tradeEvents.length > 0 &&
+    previousScan.telegram?.sent !== true
+  );
+}
+
+function mergeTradeEvents(previousEvents, currentEvents) {
+  const output = [];
+  const seen = new Set();
+  for (const event of [...(previousEvents || []), ...(currentEvents || [])]) {
+    const key = [
+      event?.type || "",
+      event?.trade?.id || "",
+      event?.trade?.symbol || "",
+      event?.trade?.entrySignalDate || "",
+      event?.trade?.exitSignalDate || ""
+    ].join("|");
+    if (seen.has(key)) continue;
+    seen.add(key);
+    output.push(event);
+  }
+  return output;
 }
 
 function summarizeTrades(trades) {
