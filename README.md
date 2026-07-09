@@ -1,17 +1,18 @@
 # Techno Funda Screener
 
-Daily-close based screener with two lists, Telegram alerts, automatic trade journal, and Excel export.
+Daily-close based screener for all NSE equities, Nifty 500, and a custom uploaded list, with Telegram alerts, next-morning execution, automatic trade journal, and Excel export.
 
 ## Rules
 
 - Entry: weekly RSI 14 > 50, daily RSI 14 > 50, weekly RS 21 > 0, daily long RS 55 > 0, daily short RS 21 > 0, and daily close above Supertrend.
 - Exit: weekly RS 21 < 0 on closed weekly candle.
 - Fundamentals are optional strength checks, not compulsory entry filters.
-- Video-ingested setup strength adds optional score/context for 55-day breakout, 52-week high zone, volume shocker, RS trend, 50/200 DMA trend, sector breadth, and risk-to-Supertrend. Full notes are in `docs/strategy-rules.md`.
+- Video-ingested setup strength adds optional score/context for 55-day breakout, 52-week high zone, volume shocker, RS trend, 50/200 DMA trend, candle confirmation, ATR/liquidity, market regime, sector breadth, and risk-to-Supertrend. Full notes are in `docs/strategy-rules.md` and `docs/video-ingestion.md`.
 - Every signal stores the reason on the website, Telegram alert, JSON result, and trade sheet.
 
 ## Lists
 
+- All NSE Market: `config/all-market.csv`
 - Default Nifty 500: `config/universe.csv`
 - My Custom List: `config/custom-list.csv` locally, or Supabase cloud upload in free online mode
 
@@ -34,7 +35,7 @@ For free cloud mode, upload the Excel/CSV directly from the website with the Tec
 
 ```powershell
 npm.cmd install
-npm.cmd run update:universe
+npm.cmd run update:universes
 npm.cmd run scan -- --no-telegram
 npm.cmd start
 ```
@@ -64,7 +65,7 @@ Every scan updates:
 - `data/techno-funda-trade-sheet.xlsx`
 - `data/techno-funda-trade-sheet.csv`
 
-Entry opens an automatic trade if no open trade exists for the same symbol/list. Exit closes that open trade and calculates P&L, P&L %, holding days, entry reason, and exit reason.
+A new closing signal is executed on the next trading session using the 09:15 five-minute candle open. The journal separates signal dates from execution dates, prevents duplicate positions across lists, and calculates quantity from Rs. 100000, invested value, realized/unrealized P&L, holding days, and full reasons.
 
 Live mode is baseline based:
 
@@ -73,6 +74,8 @@ Live mode is baseline based:
 - Existing/past ENTRY candidates do not open Excel trades.
 - A trade opens only when a symbol changes into ENTRY after the go-live baseline.
 - A trade closes only for trades opened by this system after go-live.
+- Weekly RS below zero remains the compulsory exit; daily weakness remains an early-warning reference.
+- The cloud workflow runs after 09:20 IST so the requested opening-window price is available.
 
 Position sizing uses:
 
@@ -88,7 +91,7 @@ It uses:
 
 - GitHub Actions for the daily morning scan.
 - GitHub Pages for the mobile website.
-- Supabase free database and Edge Function for website upload/results.
+- Supabase free database and Edge Function for website uploads, settings, and cloud-state backup.
 - Telegram settings saved from the website into the Techno Funda Supabase table.
 - Repository files for scan history, trade journal, and downloadable Excel/CSV trade sheet.
 

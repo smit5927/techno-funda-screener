@@ -55,6 +55,11 @@
     "rsTrendLookback": 5,
     "smaFastPeriod": 50,
     "smaSlowPeriod": 200,
+    "atrPeriod": 14,
+    "maxAtrPct": 8,
+    "minimumAverageTurnover": 10000000,
+    "candleConfirmation": true,
+    "marketRegime": true,
     "sectorBreadthMinPct": 50,
     "sectorBreadthMinStocks": 5
   },

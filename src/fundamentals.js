@@ -75,7 +75,7 @@ export function analyseFundamentals(series, candles) {
   };
 }
 
-function emptyFundamentals(reason) {
+export function emptyFundamentals(reason) {
   return {
     available: false,
     reason,

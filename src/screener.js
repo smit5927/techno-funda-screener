@@ -1,5 +1,6 @@
 import { appConfig } from "./config.js";
 import {
+  calculateAtr,
   calculateRelativeStrength,
   calculateRsi,
   calculateSupertrend,
@@ -8,9 +9,9 @@ import {
   priceAboveSma,
   simpleMovingAverage
 } from "./indicators.js";
-import { createFundamentalsService } from "./fundamentals.js";
+import { createFundamentalsService, emptyFundamentals } from "./fundamentals.js";
 import { loadWatchlist } from "./watchlist.js";
-import { fetchCandles } from "./yahoo.js";
+import { aggregateDailyToCompletedWeeks, fetchCandles } from "./yahoo.js";
 import { readLatestScan, saveLatestScan } from "./storage.js";
 import { sendTelegramSummary } from "./telegram.js";
 import { updateTradeJournal } from "./trade-journal.js";
@@ -22,18 +23,33 @@ export async function runScreener(options = {}) {
   const listFilter = options.listId || "all";
   const lists = config.lists.filter((list) => listFilter === "all" || list.id === listFilter);
 
-  const [benchmarkDaily, benchmarkWeekly] = await Promise.all([
-    fetchCandles(config.benchmarkSymbol, "1d", 3),
-    fetchCandles(config.benchmarkSymbol, "1wk", 5)
-  ]);
+  const benchmarkDaily = await fetchCandles(config.benchmarkSymbol, "1d", 3);
+  const benchmarkWeekly = aggregateDailyToCompletedWeeks(benchmarkDaily);
+  const marketContext = buildMarketContext(benchmarkDaily, rules);
 
   const scannedLists = {};
+  const scanCache = new Map();
 
   for (const list of lists) {
     const watchlist = loadWatchlist(list.path, config.maxSymbols);
     const results = await mapLimit(watchlist, config.scanConcurrency, async (item) => {
       try {
-        return await scanSymbol(item, list, benchmarkDaily, benchmarkWeekly, rules, fundamentals);
+        if (!scanCache.has(item.yahooSymbol)) {
+          scanCache.set(
+            item.yahooSymbol,
+            scanSymbol(item, benchmarkDaily, benchmarkWeekly, rules, fundamentals, marketContext)
+          );
+        }
+        const core = await scanCache.get(item.yahooSymbol);
+        return {
+          ...core,
+          listId: list.id,
+          listLabel: list.label,
+          symbol: item.symbol,
+          yahooSymbol: item.yahooSymbol,
+          name: item.name,
+          industry: item.industry
+        };
       } catch (error) {
         return {
           listId: list.id,
@@ -45,8 +61,6 @@ export async function runScreener(options = {}) {
           status: "ERROR",
           error: error.message || String(error),
           signalReason: [`Data error: ${error.message || String(error)}`],
-          entryReason: [],
-          exitReason: [],
           score: 0,
           fundamentalScore: 0
         };
@@ -70,21 +84,22 @@ export async function runScreener(options = {}) {
     ...(previous?.lists || {}),
     ...scannedLists
   };
-  const allResults = Object.values(mergedLists).flatMap((list) => list.results || []);
+  const allResults = uniqueResults(mergedLists);
   const payload = {
     scannedAt: new Date().toISOString(),
     benchmark: config.benchmarkSymbol,
     benchmarkLabel: config.benchmarkLabel || rules.benchmarkLabel || config.benchmarkSymbol,
     lists: mergedLists,
     scannedListIds: lists.map((list) => list.id),
+    marketContext,
     rules,
-    summary: summarize(allResults),
-    results: allResults.sort(sortResults)
+    summary: summarize(allResults)
   };
 
   saveLatestScan(payload);
   const journal = await updateTradeJournal(payload, config);
   payload.tradeSummary = summarizeTrades(journal.trades);
+  payload.trades = journal.trades;
   payload.tradeEvents = journal.events;
   saveLatestScan(payload);
 
@@ -107,23 +122,28 @@ export async function runScreener(options = {}) {
 function summarizeTrades(trades) {
   const open = trades.filter((trade) => trade.status === "OPEN");
   const closed = trades.filter((trade) => trade.status === "CLOSED");
+  const pendingEntry = trades.filter((trade) => trade.status === "PENDING_ENTRY");
+  const pendingExit = trades.filter((trade) => trade.status === "PENDING_EXIT");
   return {
     open: open.length,
     closed: closed.length,
+    pendingEntry: pendingEntry.length,
+    pendingExit: pendingExit.length,
     realizedPnl: Number(
       closed.reduce((sum, trade) => sum + (Number(trade.pnl) || 0), 0).toFixed(2)
+    ),
+    unrealizedPnl: Number(
+      open.reduce((sum, trade) => sum + (Number(trade.unrealizedPnl) || 0), 0).toFixed(2)
     )
   };
 }
 
-async function scanSymbol(item, list, benchmarkDaily, benchmarkWeekly, rules, fundamentals) {
-  const [dailyCandles, weeklyCandles] = await Promise.all([
-    fetchCandles(item.yahooSymbol, "1d", 3),
-    fetchCandles(item.yahooSymbol, "1wk", 5)
-  ]);
+async function scanSymbol(item, benchmarkDaily, benchmarkWeekly, rules, fundamentals, marketContext) {
+  const dailyCandles = await fetchCandles(item.yahooSymbol, "1d", 3);
+  const weeklyCandles = aggregateDailyToCompletedWeeks(dailyCandles);
 
-  if (dailyCandles.length < 80) throw new Error("not enough daily price history");
-  if (weeklyCandles.length < 30) throw new Error("not enough weekly price history");
+  if (dailyCandles.length < 65) throw new Error("not enough daily price history (minimum 65)");
+  if (weeklyCandles.length < 25) throw new Error("not enough completed weekly price history (minimum 25)");
 
   const rsiLength = rules.rsi?.length || 14;
   const weeklyRsPeriod = rules.relativeStrength?.weekly?.period || 21;
@@ -172,6 +192,7 @@ async function scanSymbol(item, list, benchmarkDaily, benchmarkWeekly, rules, fu
     weeklyRsSeries,
     dailyLongRsSeries,
     dailyShortRsSeries,
+    marketContext,
     rules
   });
 
@@ -222,15 +243,25 @@ async function scanSymbol(item, list, benchmarkDaily, benchmarkWeekly, rules, fu
   });
   const signalReason =
     status === "ENTRY"
-      ? [...entryReason, ...setupReason]
+      ? [
+          ...entryReason,
+          ...setupReason,
+          `Execution plan: buy on the next trading session using the 09:15 five-minute candle open.`
+        ]
       : status === "EXIT"
-        ? exitReason
+        ? [
+            ...exitReason,
+            `Execution plan for an open position: sell on the next trading session using the 09:15 five-minute candle open.`
+          ]
         : technicalReady
           ? ["No entry: one or more compulsory entry checks are not satisfied.", ...weaknessReason]
           : ["Indicator data incomplete."];
 
-  const fundamental = await fundamentals.get(item.yahooSymbol, dailyCandles);
   const technicalScore = Object.values(entryChecks).filter(Boolean).length;
+  const fundamental =
+    technicalScore >= 4
+      ? await fundamentals.get(item.yahooSymbol, dailyCandles)
+      : emptyFundamentals("Skipped until at least 4/6 compulsory technical checks pass.");
   const setupStrengthScore = setupStrength.score;
 
   const dailyLongPriceOk = priceAboveSma(
@@ -247,12 +278,6 @@ async function scanSymbol(item, list, benchmarkDaily, benchmarkWeekly, rules, fu
   );
 
   return {
-    listId: list.id,
-    listLabel: list.label,
-    symbol: item.symbol,
-    yahooSymbol: item.yahooSymbol,
-    name: item.name,
-    industry: item.industry,
     status,
     asOf: dailyCandles[latestDailyIndex].date,
     weeklyAsOf: weeklyCandles[latestWeeklyIndex].date,
@@ -266,32 +291,35 @@ async function scanSymbol(item, list, benchmarkDaily, benchmarkWeekly, rules, fu
     dailyPriceAboveSupertrend: close > dailySupertrend,
     entryChecks,
     exitChecks,
-    entryReason,
-    exitReason,
-    setupReason,
-    weaknessReason,
     signalReason,
-    priceConfirmation: {
-      weekly: weeklyPriceOk,
-      dailyLong: dailyLongPriceOk,
-      dailyShort: dailyShortPriceOk
-    },
+    executionPlan:
+      status === "ENTRY"
+        ? "BUY_NEXT_SESSION_0915"
+        : status === "EXIT"
+          ? "SELL_NEXT_SESSION_0915_IF_OPEN"
+          : "NONE",
+    priceConfirmationScore: [weeklyPriceOk, dailyLongPriceOk, dailyShortPriceOk].filter(Boolean).length,
     setupStrength,
     fundamental,
     technicalScore,
     setupStrengthScore,
     fundamentalScore: fundamental.score,
+    setupGrade: setupGrade(technicalScore, setupStrengthScore, fundamental.score),
     sectorStrengthScore: 0,
-    score: technicalScore + setupStrengthScore + fundamental.score,
-    lastIndicatorIndex: {
-      dailyRsi: latestIndex(dailyRsiSeries),
-      weeklyRsi: latestIndex(weeklyRsiSeries),
-      dailySupertrend: latestIndex(dailySupertrendSeries)
-    }
+    score: technicalScore + setupStrengthScore + fundamental.score
   };
 }
 
-function buildSetupStrength({ dailyCandles, close, dailySupertrend, weeklyRsSeries, dailyLongRsSeries, dailyShortRsSeries, rules }) {
+function buildSetupStrength({
+  dailyCandles,
+  close,
+  dailySupertrend,
+  weeklyRsSeries,
+  dailyLongRsSeries,
+  dailyShortRsSeries,
+  marketContext,
+  rules
+}) {
   const setupRules = rules.setupStrength || {};
   const latestDailyIndex = dailyCandles.length - 1;
   const previousCandle = dailyCandles[latestDailyIndex - 1] || null;
@@ -305,6 +333,9 @@ function buildSetupStrength({ dailyCandles, close, dailySupertrend, weeklyRsSeri
   const rsTrendLookback = setupRules.rsTrendLookback || 5;
   const smaFastPeriod = setupRules.smaFastPeriod || 50;
   const smaSlowPeriod = setupRules.smaSlowPeriod || 200;
+  const atrPeriod = setupRules.atrPeriod || 14;
+  const maxAtrPct = setupRules.maxAtrPct || 8;
+  const minimumAverageTurnover = setupRules.minimumAverageTurnover || 10_000_000;
 
   const priorRecentHigh = highestHigh(dailyCandles, recentHighPeriod, latestDailyIndex - 1);
   const priorYearHigh = highestHigh(dailyCandles, yearHighPeriod, latestDailyIndex - 1);
@@ -329,6 +360,14 @@ function buildSetupStrength({ dailyCandles, close, dailySupertrend, weeklyRsSeri
   const closeAboveSmaFast = Number.isFinite(smaFast) && close > smaFast;
   const closeAboveSmaSlow = Number.isFinite(smaSlow) && close > smaSlow;
   const smaFastAboveSlow = Number.isFinite(smaFast) && Number.isFinite(smaSlow) && smaFast > smaSlow;
+  const atr = latestValue(calculateAtr(dailyCandles, atrPeriod));
+  const atrPct = Number.isFinite(atr) && close > 0 ? (atr / close) * 100 : null;
+  const controlledVolatility = Number.isFinite(atrPct) && atrPct <= maxAtrPct;
+  const averageTurnover = averageTradedValue(dailyCandles, 20, latestDailyIndex);
+  const liquidEnough =
+    Number.isFinite(averageTurnover) && averageTurnover >= minimumAverageTurnover;
+  const candle = candleSignals(previousCandle, currentCandle);
+  const marketRegimeStrong = marketContext?.strong === true;
 
   const previousLow = Number.isFinite(previousCandle?.low) ? previousCandle.low : null;
   const twoCandleLow = lowestLow(dailyCandles, 2, latestDailyIndex - 1);
@@ -357,7 +396,13 @@ function buildSetupStrength({ dailyCandles, close, dailySupertrend, weeklyRsSeri
     closeAboveSmaFast,
     closeAboveSmaSlow,
     smaFastAboveSlow,
-    favorableRiskToSupertrend
+    favorableRiskToSupertrend,
+    controlledVolatility,
+    liquidEnough,
+    bullishCandleConfirmation: candle.bullishConfirmation,
+    bullishEngulfing: candle.bullishEngulfing,
+    hammer: candle.hammer,
+    marketRegimeStrong
   };
 
   return {
@@ -370,6 +415,9 @@ function buildSetupStrength({ dailyCandles, close, dailySupertrend, weeklyRsSeri
       volumeRatio,
       smaFast,
       smaSlow,
+      atr,
+      atrPct,
+      averageTurnover,
       previousLow,
       twoCandleLow,
       fourCandleLow,
@@ -382,7 +430,12 @@ function buildSetupStrength({ dailyCandles, close, dailySupertrend, weeklyRsSeri
       volumeExpansionMultiple,
       riskToSupertrendMaxPct,
       smaFastPeriod,
-      smaSlowPeriod
+      smaSlowPeriod,
+      atrPeriod,
+      maxAtrPct,
+      minimumAverageTurnover,
+      candlePattern: candle.label,
+      marketRegimeLabel: marketContext?.label || "Unknown"
     }
   };
 }
@@ -415,6 +468,7 @@ function applySectorStrength(results, rules) {
     const group = groups.get(key) || { total: 0, strong: 0, entry: 0 };
     const breadthPct = group.total > 0 ? (group.strong / group.total) * 100 : null;
     const ok =
+      key !== "NSE Equity" &&
       Number.isFinite(breadthPct) &&
       group.total >= minStocks &&
       breadthPct >= minPct;
@@ -429,6 +483,7 @@ function applySectorStrength(results, rules) {
       minStocks
     };
     const sectorStrengthScore = ok ? 1 : 0;
+    const setupStrengthScore = (row.setupStrengthScore || 0) + sectorStrengthScore;
     const sectorReason =
       ok
         ? `Sector breadth strong: ${key} has ${group.strong}/${group.total} stocks (${fmt(breadthPct)}%) passing daily strength.`
@@ -438,7 +493,8 @@ function applySectorStrength(results, rules) {
       ...row,
       sectorStrength,
       sectorStrengthScore,
-      setupStrengthScore: (row.setupStrengthScore || 0) + sectorStrengthScore,
+      setupStrengthScore,
+      setupGrade: setupGrade(row.technicalScore || 0, setupStrengthScore, row.fundamentalScore || 0),
       score: (row.score || 0) + sectorStrengthScore,
       signalReason:
         row.status === "ENTRY" && sectorReason
@@ -527,6 +583,18 @@ function buildSetupStrengthReasons(setupStrength) {
       `Risk reference: close is ${fmt(values.riskToSupertrendPct)}% above daily Supertrend.`
     );
   }
+  if (checks.bullishCandleConfirmation || checks.bullishEngulfing || checks.hammer) {
+    reasons.push(`Price confirmation: ${values.candlePattern || "bullish daily candle"} is present.`);
+  }
+  if (checks.controlledVolatility) {
+    reasons.push(`Volatility is controlled: ATR(${values.atrPeriod}) is ${fmt(values.atrPct)}% of price.`);
+  }
+  if (checks.liquidEnough) {
+    reasons.push(`Liquidity strength: 20-day average turnover is Rs ${fmt(values.averageTurnover)}.`);
+  }
+  if (checks.marketRegimeStrong) {
+    reasons.push(`Market regime supports longs: ${values.marketRegimeLabel}.`);
+  }
 
   if (reasons.length === 0) reasons.push("Optional setup strength is neutral.");
   return reasons;
@@ -565,6 +633,60 @@ function sortResults(a, b) {
   const rankDiff = (rank[a.status] ?? 9) - (rank[b.status] ?? 9);
   if (rankDiff !== 0) return rankDiff;
   return (b.score ?? 0) - (a.score ?? 0);
+}
+
+function uniqueResults(lists) {
+  const preferred = ["custom", "default", "all-market"];
+  const orderedIds = [
+    ...preferred.filter((id) => lists[id]),
+    ...Object.keys(lists).filter((id) => !preferred.includes(id))
+  ];
+  const seen = new Set();
+  const output = [];
+  for (const id of orderedIds) {
+    for (const row of lists[id]?.results || []) {
+      const key = row.yahooSymbol || row.symbol;
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      output.push(row);
+    }
+  }
+  return output;
+}
+
+function buildMarketContext(benchmarkDaily, rules) {
+  const latest = benchmarkDaily[benchmarkDaily.length - 1];
+  const rsi = latestValue(calculateRsi(benchmarkDaily, rules.rsi?.length || 14));
+  const sma50 = latestValue(simpleMovingAverage(benchmarkDaily, 50));
+  const sma200 = latestValue(simpleMovingAverage(benchmarkDaily, 200));
+  const close = latest?.close;
+  const checks = {
+    rsiAbove50: Number.isFinite(rsi) && rsi > 50,
+    closeAbove50Dma: Number.isFinite(close) && Number.isFinite(sma50) && close > sma50,
+    closeAbove200Dma: Number.isFinite(close) && Number.isFinite(sma200) && close > sma200,
+    fastAboveSlow: Number.isFinite(sma50) && Number.isFinite(sma200) && sma50 > sma200
+  };
+  const score = Object.values(checks).filter(Boolean).length;
+  return {
+    asOf: latest?.date || null,
+    close,
+    rsi,
+    sma50,
+    sma200,
+    checks,
+    score,
+    strong: score >= 3,
+    label: score >= 3 ? "NIFTY 500 bullish/healthy" : score === 2 ? "NIFTY 500 mixed" : "NIFTY 500 weak"
+  };
+}
+
+function setupGrade(technicalScore, setupStrengthScore, fundamentalScore) {
+  if (technicalScore < 6) return "WATCH";
+  const optional = (setupStrengthScore || 0) + (fundamentalScore || 0);
+  if (optional >= 15) return "A+";
+  if (optional >= 11) return "A";
+  if (optional >= 7) return "B";
+  return "C";
 }
 
 async function mapLimit(items, limit, iterator) {
@@ -623,6 +745,53 @@ function averageVolume(candles, period, endIndex) {
     count += 1;
   }
   return count > 0 ? sum / count : null;
+}
+
+function averageTradedValue(candles, period, endIndex) {
+  const start = Math.max(0, endIndex - period + 1);
+  let sum = 0;
+  let count = 0;
+  for (let index = start; index <= endIndex; index += 1) {
+    const candle = candles[index];
+    if (!Number.isFinite(candle?.close) || !Number.isFinite(candle?.volume)) continue;
+    sum += candle.close * candle.volume;
+    count += 1;
+  }
+  return count > 0 ? sum / count : null;
+}
+
+function candleSignals(previous, current) {
+  if (!previous || !current) {
+    return { bullishConfirmation: false, bullishEngulfing: false, hammer: false, label: "None" };
+  }
+  const previousRed = previous.close < previous.open;
+  const currentGreen = current.close > current.open;
+  const bullishEngulfing =
+    previousRed &&
+    currentGreen &&
+    current.open <= previous.close &&
+    current.close >= previous.open;
+  const bullishConfirmation =
+    currentGreen &&
+    Number.isFinite(previous.high) &&
+    current.close > previous.high;
+  const body = Math.abs(current.close - current.open);
+  const lowerWick = Math.min(current.open, current.close) - current.low;
+  const upperWick = current.high - Math.max(current.open, current.close);
+  const hammer =
+    body > 0 &&
+    lowerWick >= body * 2 &&
+    upperWick <= body * 1.25;
+  const labels = [];
+  if (bullishConfirmation) labels.push("previous-high confirmation");
+  if (bullishEngulfing) labels.push("bullish engulfing");
+  if (hammer) labels.push("hammer");
+  return {
+    bullishConfirmation,
+    bullishEngulfing,
+    hammer,
+    label: labels.join(" + ") || "No bullish confirmation pattern"
+  };
 }
 
 function risingOverLookback(values, lookback) {

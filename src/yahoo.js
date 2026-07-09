@@ -53,6 +53,100 @@ export async function fetchCandles(symbol, interval, yearsBack) {
   return dropIncompleteCandles(candles, interval);
 }
 
+export async function fetchOpeningWindowPrice(symbol, afterDate) {
+  const period2 = Math.floor(Date.now() / 1000) + DAY_MS / 1000;
+  const period1 = Math.floor((Date.now() - 30 * DAY_MS) / 1000);
+  const url = new URL(
+    `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}`
+  );
+  url.searchParams.set("period1", String(period1));
+  url.searchParams.set("period2", String(period2));
+  url.searchParams.set("interval", "5m");
+  url.searchParams.set("events", "history");
+  url.searchParams.set("includePrePost", "false");
+
+  const response = await fetchJson(url);
+  const result = response?.chart?.result?.[0];
+  const error = response?.chart?.error;
+  if (error) throw new Error(error.description || error.code || "Yahoo intraday chart error");
+  if (!result) throw new Error("Yahoo intraday chart returned no data");
+
+  const timestamps = result.timestamp || [];
+  const quote = result.indicators?.quote?.[0] || {};
+  const candidates = timestamps
+    .map((timestamp, index) => {
+      const date = new Date(timestamp * 1000);
+      const ist = istParts(date);
+      return {
+        date: ist.ymd,
+        time: date.getTime(),
+        minutes: ist.minutes,
+        open: numberOrNull(quote.open?.[index]),
+        high: numberOrNull(quote.high?.[index]),
+        low: numberOrNull(quote.low?.[index]),
+        close: numberOrNull(quote.close?.[index])
+      };
+    })
+    .filter(
+      (candle) =>
+        candle.date > String(afterDate || "") &&
+        candle.minutes >= 9 * 60 + 15 &&
+        candle.minutes < 9 * 60 + 20 &&
+        Number.isFinite(candle.open)
+    )
+    .sort((a, b) => a.time - b.time);
+
+  const candle = candidates[0];
+  if (!candle) return null;
+  return {
+    date: candle.date,
+    time: candle.time,
+    price: candle.open,
+    source: "09:15 five-minute candle open",
+    window: "09:15-09:20 IST",
+    candle
+  };
+}
+
+export function aggregateDailyToCompletedWeeks(candles, now = new Date()) {
+  const nowParts = istParts(now);
+  const currentWeekStart = weekStartYmd(nowParts.ymd);
+  const currentWeekClosed =
+    nowParts.weekday === 0 ||
+    nowParts.weekday === 6 ||
+    (nowParts.weekday === 5 && nowParts.minutes >= 16 * 60);
+  const groups = new Map();
+
+  for (const candle of candles || []) {
+    const weekStart = weekStartYmd(candle.date);
+    if (weekStart === currentWeekStart && !currentWeekClosed) continue;
+    if (!groups.has(weekStart)) {
+      groups.set(weekStart, {
+        date: weekStart,
+        time: new Date(`${weekStart}T00:00:00Z`).getTime(),
+        open: candle.open,
+        high: candle.high,
+        low: candle.low,
+        close: candle.close,
+        volume: Number(candle.volume) || 0
+      });
+      continue;
+    }
+
+    const weekly = groups.get(weekStart);
+    if (Number.isFinite(candle.high)) {
+      weekly.high = Number.isFinite(weekly.high) ? Math.max(weekly.high, candle.high) : candle.high;
+    }
+    if (Number.isFinite(candle.low)) {
+      weekly.low = Number.isFinite(weekly.low) ? Math.min(weekly.low, candle.low) : candle.low;
+    }
+    if (Number.isFinite(candle.close)) weekly.close = candle.close;
+    if (Number.isFinite(candle.volume)) weekly.volume += candle.volume;
+  }
+
+  return [...groups.values()].sort((a, b) => a.time - b.time);
+}
+
 export async function fetchFundamentalTimeSeries(symbol) {
   const period2 = Math.floor(Date.now() / 1000) + DAY_MS / 1000;
   const period1 = Math.floor(new Date("2016-01-01T00:00:00Z").getTime() / 1000);
@@ -78,17 +172,37 @@ function toYmd(date) {
   return date.toISOString().slice(0, 10);
 }
 
-async function fetchJson(url) {
-  const response = await fetch(url, {
-    headers: {
-      "User-Agent": "Mozilla/5.0",
-      Accept: "application/json,text/plain,*/*"
+async function fetchJson(url, attempts = 4) {
+  let lastError = null;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 30_000);
+    try {
+      const response = await fetch(url, {
+        signal: controller.signal,
+        headers: {
+          "User-Agent": "Mozilla/5.0",
+          Accept: "application/json,text/plain,*/*"
+        }
+      });
+      if (response.ok) return response.json();
+      const retryable = response.status === 429 || response.status >= 500;
+      if (!retryable || attempt === attempts) {
+        const error = new Error(`Yahoo request failed ${response.status} ${response.statusText}`);
+        error.retryable = retryable;
+        throw error;
+      }
+      lastError = new Error(`Yahoo request failed ${response.status} ${response.statusText}`);
+    } catch (error) {
+      lastError = error;
+      if (error?.retryable === false) throw error;
+      if (attempt === attempts) break;
+    } finally {
+      clearTimeout(timer);
     }
-  });
-  if (!response.ok) {
-    throw new Error(`Yahoo request failed ${response.status} ${response.statusText}`);
+    await delay(500 * 2 ** (attempt - 1) + Math.floor(Math.random() * 250));
   }
-  return response.json();
+  throw lastError || new Error("Yahoo request failed");
 }
 
 function dropIncompleteCandles(candles, interval) {
@@ -149,4 +263,8 @@ function weekStartYmd(ymd) {
   const weekday = date.getUTCDay() || 7;
   const monday = new Date(date.getTime() - (weekday - 1) * DAY_MS);
   return monday.toISOString().slice(0, 10);
+}
+
+function delay(milliseconds) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }

@@ -5,14 +5,18 @@
   "type": "module",
   "description": "Daily close based techno-funda stock screener with Telegram alerts.",
   "scripts": {
+    "test": "node --test",
     "start": "node src/server.js",
     "scan": "node src/run-scan.js",
     "prepare:custom": "node src/prepare-custom-list.js",
     "scan:free": "node src/prepare-custom-list.js && node src/run-scan.js --telegram",
     "scan:cloud": "node src/run-cloud-scan.js",
+    "audit:videos": "node scripts/audit-videos.js",
     "reset:live": "node src/reset-live-trades.js",
     "build:static": "node src/build-static-site.js",
-    "update:universe": "node scripts/update-nifty500.js"
+    "update:universe": "node scripts/update-nifty500.js",
+    "update:all-market": "node scripts/update-all-market.js",
+    "update:universes": "npm run update:universe && npm run update:all-market"
   },
   "engines": {
     "node": ">=20"

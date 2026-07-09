@@ -1,10 +1,11 @@
 const state = {
   payload: null,
   rows: [],
-  currentList: "default",
+  currentList: "all-market",
   filter: "ALL",
   search: "",
-  minScore: 0
+  minScore: 0,
+  displayLimit: 250
 };
 
 const staticMode = Boolean(window.TF_STATIC_MODE);
@@ -19,15 +20,21 @@ const elements = {
   watchCount: document.querySelector("#watchCount"),
   errorCount: document.querySelector("#errorCount"),
   openTradesCount: document.querySelector("#openTradesCount"),
+  pendingTradesCount: document.querySelector("#pendingTradesCount"),
   closedTradesCount: document.querySelector("#closedTradesCount"),
   realizedPnl: document.querySelector("#realizedPnl"),
+  unrealizedPnl: document.querySelector("#unrealizedPnl"),
+  positionsBody: document.querySelector("#positionsBody"),
+  positionsEmpty: document.querySelector("#positionsEmpty"),
   resultsBody: document.querySelector("#resultsBody"),
   emptyState: document.querySelector("#emptyState"),
   refreshButton: document.querySelector("#refreshButton"),
   scanButton: document.querySelector("#scanButton"),
   searchInput: document.querySelector("#searchInput"),
+  resultCount: document.querySelector("#resultCount"),
   scoreFilter: document.querySelector("#scoreFilter"),
   exportButton: document.querySelector("#exportButton"),
+  loadMoreButton: document.querySelector("#loadMoreButton"),
   editListButton: document.querySelector("#editListButton"),
   telegramSettingsButton: document.querySelector("#telegramSettingsButton"),
   customListPanel: document.querySelector("#customListPanel"),
@@ -54,13 +61,19 @@ elements.refreshButton.addEventListener("click", loadResults);
 elements.scanButton.addEventListener("click", () => runScan());
 elements.searchInput.addEventListener("input", (event) => {
   state.search = event.target.value.trim().toLowerCase();
+  state.displayLimit = 250;
   renderRows();
 });
 elements.scoreFilter.addEventListener("change", (event) => {
   state.minScore = Number(event.target.value);
+  state.displayLimit = 250;
   renderRows();
 });
 elements.exportButton.addEventListener("click", exportCsv);
+elements.loadMoreButton.addEventListener("click", () => {
+  state.displayLimit += 250;
+  renderRows();
+});
 elements.editListButton.addEventListener("click", async () => {
   elements.customListPanel.hidden = !elements.customListPanel.hidden;
   if (!elements.customListPanel.hidden) await loadCustomList();
@@ -82,6 +95,7 @@ document.querySelectorAll(".listTab").forEach((button) => {
     document.querySelectorAll(".listTab").forEach((tab) => tab.classList.remove("active"));
     button.classList.add("active");
     state.currentList = button.dataset.list;
+    state.displayLimit = 250;
     applyPayload(state.payload);
   });
 });
@@ -91,6 +105,7 @@ document.querySelectorAll(".tab").forEach((button) => {
     document.querySelectorAll(".tab").forEach((tab) => tab.classList.remove("active"));
     button.classList.add("active");
     state.filter = button.dataset.filter;
+    state.displayLimit = 250;
     renderRows();
   });
 });
@@ -99,21 +114,60 @@ await loadResults();
 configureMode();
 
 async function loadResults() {
-  if (cloudMode) {
-    const response = await fetch(cloudApiUrl, { cache: "no-store" });
+  if (staticMode) {
+    const response = await fetch("data/results.json", { cache: "no-store" });
     const payload = await response.json();
-    if (!response.ok || payload.error) throw new Error(payload.error || "Cloud results failed");
-    applyPayload(payload.state || {});
-    if (payload.customList?.count != null) {
-      elements.customListStatus.textContent = `${payload.customList.count} cloud stocks`;
-    }
-    if (payload.telegram || payload.state?.telegram) {
-      renderTelegramStatus(payload.telegram, payload.state?.telegram);
+    if (!response.ok) throw new Error(payload.error || "Static results failed");
+    applyPayload(payload);
+
+    if (cloudMode) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8_000);
+      try {
+        const metaUrl = new URL(cloudApiUrl);
+        metaUrl.searchParams.set("view", "meta");
+        const metaResponse = await fetch(metaUrl, {
+          cache: "no-store",
+          signal: controller.signal
+        });
+        const meta = await metaResponse.json();
+        if (metaResponse.ok && !meta.error) {
+          if (meta.customList?.count != null) {
+            elements.customListStatus.textContent = `${meta.customList.count} cloud stocks`;
+          }
+          renderTelegramStatus(meta.telegram);
+        }
+      } catch {
+        elements.scanMeta.textContent += " | Cloud settings temporarily unavailable";
+      } finally {
+        clearTimeout(timeout);
+      }
     }
     return;
   }
 
-  const response = await fetch(staticMode ? "data/results.json" : "/api/results", { cache: "no-store" });
+  if (cloudMode) {
+    try {
+      const response = await fetch(cloudApiUrl, { cache: "no-store" });
+      const payload = await response.json();
+      if (!response.ok || payload.error || !payload.state) {
+        throw new Error(payload.error || "Cloud results unavailable");
+      }
+      applyPayload(payload.state);
+      if (payload.customList?.count != null) {
+        elements.customListStatus.textContent = `${payload.customList.count} cloud stocks`;
+      }
+      if (payload.telegram || payload.state?.telegram) {
+        renderTelegramStatus(payload.telegram, payload.state?.telegram);
+      }
+      return;
+    } catch (error) {
+      throw error;
+    }
+    return;
+  }
+
+  const response = await fetch("/api/results", { cache: "no-store" });
   const payload = await response.json();
   applyPayload(payload);
 }
@@ -146,11 +200,23 @@ function applyPayload(payload) {
   state.payload = payload || {};
   state.rows = rowsForCurrentList(state.payload);
   renderSummary(state.payload);
+  renderPositions(state.payload);
   renderRows();
 }
 
 function rowsForCurrentList(payload) {
-  if (state.currentList === "all") return payload?.results || [];
+  if (state.currentList === "all") {
+    if (Array.isArray(payload?.results)) return payload.results;
+    const seen = new Set();
+    return Object.values(payload?.lists || {}).flatMap((list) =>
+      (list.results || []).filter((row) => {
+        const key = row.yahooSymbol || row.symbol;
+        if (!key || seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+    );
+  }
   return payload?.lists?.[state.currentList]?.results || [];
 }
 
@@ -163,8 +229,11 @@ function renderSummary(payload) {
   elements.watchCount.textContent = summary.watch || 0;
   elements.errorCount.textContent = summary.error || 0;
   elements.openTradesCount.textContent = payload.tradeSummary?.open || 0;
+  elements.pendingTradesCount.textContent =
+    (payload.tradeSummary?.pendingEntry || 0) + (payload.tradeSummary?.pendingExit || 0);
   elements.closedTradesCount.textContent = payload.tradeSummary?.closed || 0;
   elements.realizedPnl.textContent = compact(payload.tradeSummary?.realizedPnl || 0);
+  elements.unrealizedPnl.textContent = compact(payload.tradeSummary?.unrealizedPnl || 0);
   const listLabel = state.currentList === "all" ? "All Lists" : listPayload?.label || state.currentList;
   const benchmarkLabel = payload.benchmarkLabel || payload.rules?.benchmarkLabel || payload.benchmark;
   elements.scanMeta.textContent = payload.scannedAt
@@ -172,10 +241,42 @@ function renderSummary(payload) {
     : "Waiting for first scan";
 }
 
+function renderPositions(payload) {
+  const trades = (payload?.trades || []).filter((trade) =>
+    ["PENDING_ENTRY", "OPEN", "PENDING_EXIT"].includes(trade.status)
+  );
+  elements.positionsBody.innerHTML = trades
+    .map((trade) => {
+      const pnl = trade.unrealizedPnl;
+      const pnlClass = Number(pnl) > 0 ? "good" : Number(pnl) < 0 ? "bad" : "neutral";
+      const signalDate = trade.exitSignalDate || trade.entrySignalDate || "";
+      const reason =
+        trade.status === "PENDING_EXIT" ? trade.exitReason || [] : trade.entryReason || [];
+      return `
+        <tr>
+          <td><span class="pill ${escapeHtml(trade.status)}">${escapeHtml(trade.status.replace("_", " "))}</span></td>
+          <td class="symbolCell"><strong>${escapeHtml(trade.symbol)}</strong><span>${escapeHtml(trade.listLabel || "")}</span></td>
+          <td>${escapeHtml(signalDate)}</td>
+          <td>${escapeHtml(trade.entryDate || "Waiting")}</td>
+          <td>${fmt(trade.entryPrice)}</td>
+          <td>${trade.quantity ?? "NA"}</td>
+          <td>${fmt(trade.lastPrice)}</td>
+          <td class="${pnlClass}">${compact(pnl)}${Number.isFinite(trade.unrealizedPnlPct) ? ` (${compact(trade.unrealizedPnlPct)}%)` : ""}</td>
+          <td class="reasonCell">${escapeHtml(reason.join(" "))}</td>
+        </tr>
+      `;
+    })
+    .join("");
+  elements.positionsEmpty.classList.toggle("visible", trades.length === 0);
+}
+
 function renderRows() {
-  const rows = filteredRows();
+  const filtered = filteredRows();
+  const rows = filtered.slice(0, state.displayLimit);
   elements.resultsBody.innerHTML = rows.map(rowHtml).join("");
   elements.emptyState.classList.toggle("visible", rows.length === 0);
+  elements.resultCount.textContent = `${rows.length} / ${filtered.length}`;
+  elements.loadMoreButton.hidden = rows.length >= filtered.length;
 
   elements.resultsBody.querySelectorAll("tr").forEach((rowElement) => {
     rowElement.addEventListener("click", () => {
@@ -212,7 +313,7 @@ function rowHtml(row, index) {
       <td class="${classForAbove(row.dailyShortRs, 0)}">${pct(row.dailyShortRs)}</td>
       <td class="${classForAbove(row.dailyRsi, 50)}">${fmt(row.dailyRsi)}</td>
       <td>${row.fundamentalScore || 0}/${row.fundamental?.maxScore || 5}</td>
-      <td><strong>${row.score || 0}</strong></td>
+      <td><strong>${escapeHtml(row.setupGrade || "")} ${row.score || 0}</strong></td>
       <td class="reasonCell">${escapeHtml((row.signalReason || []).join(" "))}</td>
     </tr>
   `;
@@ -246,7 +347,7 @@ function renderDetail(row) {
     </div>
     <div class="reasonBlock">
       <strong>Video RS Strength</strong>
-      <p>${escapeHtml((row.setupReason || []).join(" "))}</p>
+      <p>${escapeHtml(strengthReasons(row).join(" "))}</p>
     </div>
     <div class="checkGrid">
       ${setupCheckHtml("55D breakout", setupChecks.recentHighBreakout, setupValues.priorRecentHigh)}
@@ -255,6 +356,10 @@ function renderDetail(row) {
       ${setupCheckHtml("RS55 rising", setupChecks.dailyLongRsRising)}
       ${setupCheckHtml("50/200 DMA", setupChecks.smaFastAboveSlow)}
       ${setupCheckHtml("Risk to ST", setupChecks.favorableRiskToSupertrend, setupValues.riskToSupertrendPct, "%")}
+      ${setupCheckHtml("ATR control", setupChecks.controlledVolatility, setupValues.atrPct, "%")}
+      ${setupCheckHtml("Liquidity", setupChecks.liquidEnough, setupValues.averageTurnover)}
+      ${setupCheckHtml("Candle", setupChecks.bullishCandleConfirmation || setupChecks.bullishEngulfing || setupChecks.hammer)}
+      ${setupCheckHtml("Market regime", setupChecks.marketRegimeStrong)}
       ${setupCheckHtml("Sector breadth", sector.ok, sector.breadthPct, "%")}
       ${setupCheckHtml("Prev candle low", Number.isFinite(setupValues.previousLow), setupValues.previousLow)}
     </div>
@@ -565,6 +670,25 @@ function configureMode() {
 function classForAbove(value, threshold) {
   if (!Number.isFinite(value)) return "neutral";
   return value > threshold ? "good" : "bad";
+}
+
+function strengthReasons(row) {
+  const prefixes = [
+    "Price action",
+    "52-week",
+    "Volume",
+    "RS trend",
+    "Trend strength",
+    "Risk reference",
+    "Price confirmation",
+    "Volatility",
+    "Liquidity",
+    "Market regime",
+    "Sector breadth"
+  ];
+  return (row.signalReason || []).filter((reason) =>
+    prefixes.some((prefix) => reason.startsWith(prefix))
+  );
 }
 
 function fmt(value) {

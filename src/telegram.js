@@ -45,7 +45,8 @@ function buildMessage(scan, events) {
     `Scan: ${scan.scannedAt}`,
     `New trade alerts: ${events.length}`,
     `Market snapshot: Total ${scan.summary.total} | Entry candidates ${scan.summary.entry} | Exit candidates ${scan.summary.exit} | Watch ${scan.summary.watch}`,
-    `Trades open ${scan.tradeSummary?.open ?? 0} | Closed ${scan.tradeSummary?.closed ?? 0} | Realized P&L ${fmt(scan.tradeSummary?.realizedPnl)}`,
+    `Positions open ${scan.tradeSummary?.open ?? 0} | Pending buy ${scan.tradeSummary?.pendingEntry ?? 0} | Pending sell ${scan.tradeSummary?.pendingExit ?? 0}`,
+    `P&L realized ${fmt(scan.tradeSummary?.realizedPnl)} | unrealized ${fmt(scan.tradeSummary?.unrealizedPnl)}`,
     ""
   ];
 
@@ -68,24 +69,35 @@ function addListSummary(lines, scan) {
 function addTradeEvents(lines, events) {
   if (events.length === 0) return;
   lines.push("", "TRADE SHEET UPDATES");
-  for (const event of events.slice(0, 40)) {
+  for (const event of events) {
     const trade = event.trade;
     if (event.type === "ENTRY_TRADE_OPENED") {
       const score = trade.entrySnapshot?.score;
       const setupScore = trade.entrySnapshot?.setupStrengthScore;
       lines.push(
-        `OPEN ${trade.symbol} (${trade.listLabel}) ${trade.entryDate} @ ${fmt(trade.entryPrice)} qty ${trade.quantity} score ${fmt(score)} setup ${fmt(setupScore)}`
+        `BUY FILLED ${trade.symbol} (${trade.listLabel}) signal ${trade.entrySignalDate} | ${trade.entryDate} ${trade.entryTime} @ ${fmt(trade.entryPrice)} | qty ${trade.quantity} | invested ${fmt(trade.investedValue)} | grade ${trade.entrySnapshot?.setupGrade || "NA"} | score ${fmt(score)} setup ${fmt(setupScore)}`
       );
       lines.push(`   Reason: ${(trade.entryReason || []).join(" ")}`);
     }
     if (event.type === "EXIT_TRADE_CLOSED") {
       lines.push(
-        `CLOSE ${trade.symbol} (${trade.listLabel}) ${trade.exitDate} @ ${fmt(trade.exitPrice)} P&L ${fmt(trade.pnl)} (${fmt(trade.pnlPct)}%)`
+        `SELL FILLED ${trade.symbol} (${trade.listLabel}) signal ${trade.exitSignalDate} | ${trade.exitDate} ${trade.exitTime} @ ${fmt(trade.exitPrice)} | P&L ${fmt(trade.pnl)} (${fmt(trade.pnlPct)}%)`
+      );
+      lines.push(`   Reason: ${(trade.exitReason || []).join(" ")}`);
+    }
+    if (event.type === "ENTRY_SIGNAL_PENDING") {
+      lines.push(
+        `BUY PENDING ${trade.symbol} | closing signal ${trade.entrySignalDate} | waiting for next session 09:15-09:20 price`
+      );
+      lines.push(`   Reason: ${(trade.entryReason || []).join(" ")}`);
+    }
+    if (event.type === "EXIT_SIGNAL_PENDING") {
+      lines.push(
+        `SELL PENDING ${trade.symbol} | closing signal ${trade.exitSignalDate} | waiting for next session 09:15-09:20 price`
       );
       lines.push(`   Reason: ${(trade.exitReason || []).join(" ")}`);
     }
   }
-  if (events.length > 40) lines.push(`...and ${events.length - 40} more trade updates.`);
 }
 
 function splitTelegramMessage(text) {

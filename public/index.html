@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Techno Funda Screener</title>
-    <link rel="stylesheet" href="styles.css?v=20260707-video-rs2" />
+    <link rel="stylesheet" href="styles.css?v=20260709-market-execution" />
   </head>
   <body>
     <header class="topbar">
@@ -49,6 +49,10 @@
           <strong id="openTradesCount">0</strong>
         </div>
         <div>
+          <span>Pending Orders</span>
+          <strong id="pendingTradesCount">0</strong>
+        </div>
+        <div>
           <span>Closed Trades</span>
           <strong id="closedTradesCount">0</strong>
         </div>
@@ -56,13 +60,18 @@
           <span>Realized P&L</span>
           <strong id="realizedPnl">0.00</strong>
         </div>
+        <div>
+          <span>Unrealized P&L</span>
+          <strong id="unrealizedPnl">0.00</strong>
+        </div>
         <a id="excelDownloadLink" class="downloadButton" href="/api/trades/download">Excel</a>
         <a id="csvDownloadLink" class="downloadButton" href="/api/trades/download.csv">CSV</a>
       </section>
 
       <section class="listBand">
         <div class="listTabs" role="tablist" aria-label="List filter">
-          <button class="listTab active" data-list="default" type="button">Default Nifty 500</button>
+          <button class="listTab active" data-list="all-market" type="button">All NSE Market</button>
+          <button class="listTab" data-list="default" type="button">Nifty 500</button>
           <button class="listTab" data-list="custom" type="button">My List</button>
           <button class="listTab" data-list="all" type="button">All Lists</button>
         </div>
@@ -100,6 +109,32 @@
         </div>
       </section>
 
+      <section class="positionsSection" aria-label="Open positions and pending orders">
+        <div class="sectionHeading">
+          <h2>Open Positions</h2>
+          <span>Rs 1,00,000 per trade | 09:15 fill</span>
+        </div>
+        <div class="tableShell positionsShell">
+          <table class="positionsTable">
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Symbol</th>
+                <th>Signal Date</th>
+                <th>Entry Date</th>
+                <th>Entry</th>
+                <th>Qty</th>
+                <th>Last Close</th>
+                <th>Unrealized P&L</th>
+                <th>Reason</th>
+              </tr>
+            </thead>
+            <tbody id="positionsBody"></tbody>
+          </table>
+          <div id="positionsEmpty" class="emptyState">No open or pending positions</div>
+        </div>
+      </section>
+
       <section class="controlBand">
         <div class="tabs" role="tablist" aria-label="Status filter">
           <button class="tab active" data-filter="ALL" type="button">All</button>
@@ -109,6 +144,7 @@
           <button class="tab" data-filter="ERROR" type="button">Error</button>
         </div>
         <div class="filters">
+          <span id="resultCount" class="resultCount">0 / 0</span>
           <input id="searchInput" type="search" placeholder="Search symbol or name" />
           <select id="scoreFilter" aria-label="Strength score">
             <option value="0">Any strength</option>
@@ -117,6 +153,7 @@
             <option value="14">14+ best setup</option>
           </select>
           <button id="exportButton" type="button">CSV</button>
+          <button id="loadMoreButton" type="button">Load More</button>
         </div>
       </section>
 
@@ -147,6 +184,6 @@
 
     <aside id="detailPanel" class="detailPanel" aria-live="polite"></aside>
 
-    <script src="app.js?v=20260707-video-rs2" type="module"></script>
+    <script src="app.js?v=20260709-market-execution" type="module"></script>
   </body>
 </html>

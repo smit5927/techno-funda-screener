@@ -49,6 +49,12 @@ export const appConfig = {
   benchmarkLabel: process.env.BENCHMARK_LABEL || rules.benchmarkLabel || "NIFTY 500",
   lists: [
     {
+      id: "all-market",
+      label: "All NSE Market",
+      path: resolveProjectPath(process.env.ALL_MARKET_WATCHLIST_PATH || "config/all-market.csv"),
+      editable: false
+    },
+    {
       id: "default",
       label: "Default Nifty 500",
       path: resolveProjectPath(process.env.DEFAULT_WATCHLIST_PATH || process.env.WATCHLIST_PATH || defaultUniverse),
@@ -72,7 +78,10 @@ export const appConfig = {
   trade: {
     capitalPerStock: numberEnv("TRADE_CAPITAL_PER_STOCK", 100000),
     defaultQty: Math.max(1, numberEnv("TRADE_DEFAULT_QTY", 1)),
-    onlyNewSignals: boolEnv("TRADE_ONLY_NEW_SIGNALS", true)
+    onlyNewSignals: boolEnv("TRADE_ONLY_NEW_SIGNALS", true),
+    executionWindowStart: process.env.TRADE_EXECUTION_WINDOW_START || "09:15",
+    executionWindowEnd: process.env.TRADE_EXECUTION_WINDOW_END || "09:20",
+    executionPriceSource: "first_5m_candle_open"
   },
   fundamentals: {
     enabled: boolEnv("FUNDAMENTALS_ENABLED", true),
@@ -80,7 +89,7 @@ export const appConfig = {
   },
   schedule: {
     enabled: boolEnv("SCHEDULE_ENABLED", true),
-    cron: process.env.SCAN_CRON || "15 8 * * 1-5",
+    cron: process.env.SCAN_CRON || "30 9 * * 1-5",
     timezone: process.env.SCAN_TIMEZONE || "Asia/Kolkata"
   },
   telegram: {

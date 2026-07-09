@@ -3,21 +3,30 @@ import { pullCloudCustomList, pullCloudTelegramConfig, pushCloudState } from "./
 import { runScreener } from "./screener.js";
 
 try {
-  const pulled = await pullCloudCustomList();
+  const pulled = await attemptCloud(
+    () => pullCloudCustomList(),
+    { ok: false, reason: "cloud custom list unavailable", count: 0 }
+  );
   console.log(
     pulled.ok
       ? `Cloud custom list loaded: ${pulled.count} symbols`
       : `Cloud custom list skipped: ${pulled.reason}`
   );
 
-  const telegram = await pullCloudTelegramConfig();
+  const telegram = await attemptCloud(
+    () => pullCloudTelegramConfig(),
+    { ok: false, reason: "cloud Telegram settings unavailable", telegram: null }
+  );
   if (telegram.ok && telegram.telegram?.enabled !== false) {
     appConfig.telegram.botToken = appConfig.telegram.botToken || telegram.telegram?.botToken || "";
     appConfig.telegram.chatId = appConfig.telegram.chatId || telegram.telegram?.chatId || "";
   }
 
   const result = await runScreener({ sendTelegram: true });
-  const pushed = await pushCloudState(result);
+  const pushed = await attemptCloud(
+    () => pushCloudState(result),
+    { ok: false, reason: "cloud state upload unavailable" }
+  );
   console.log(pushed.ok ? "Cloud state updated" : `Cloud state skipped: ${pushed.reason}`);
   console.log(
     [
@@ -32,4 +41,15 @@ try {
 } catch (error) {
   console.error(error);
   process.exitCode = 1;
+}
+
+async function attemptCloud(operation, fallback) {
+  try {
+    return await operation();
+  } catch (error) {
+    return {
+      ...fallback,
+      reason: error.message || String(error)
+    };
+  }
 }

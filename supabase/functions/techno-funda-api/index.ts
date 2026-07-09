@@ -16,6 +16,9 @@ Deno.serve(async (request: Request) => {
 
   try {
     if (request.method === "GET") {
+      if (new URL(request.url).searchParams.get("view") === "meta") {
+        return json(await getPublicMetadata());
+      }
       return json(await getState());
     }
 
@@ -125,6 +128,21 @@ async function getState() {
   return {
     ok: true,
     state,
+    customList: {
+      count: Array.isArray(customList.symbols) ? customList.symbols.length : 0,
+      updatedAt: customList.updatedAt || null
+    },
+    telegram: publicTelegramStatus(telegramConfig)
+  };
+}
+
+async function getPublicMetadata() {
+  const [customList, telegramConfig] = await Promise.all([
+    readValue("custom_list", { symbols: [] }),
+    readValue("telegram_config", {})
+  ]);
+  return {
+    ok: true,
     customList: {
       count: Array.isArray(customList.symbols) ? customList.symbols.length : 0,
       updatedAt: customList.updatedAt || null

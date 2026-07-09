@@ -9,8 +9,11 @@ on:
       - "data/**"
       - "site/**"
       - "analysis/**"
+      - "config/all-market.csv"
+      - "config/universe.csv"
+      - "config/custom-list.csv"
   schedule:
-    - cron: "45 2 * * 1-5"
+    - cron: "0 4 * * 1-5"
 
 permissions:
   contents: write
@@ -40,16 +43,25 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Refresh Nifty 500 universe
+        run: npm run update:universe
+        continue-on-error: true
+
+      - name: Refresh all NSE equity universe
+        run: npm run update:all-market
+        continue-on-error: true
+
       - name: Run cloud screener and Telegram alerts
         run: npm run scan:cloud
         env:
           DATA_DIR: data
           DEFAULT_WATCHLIST_PATH: config/universe.csv
+          ALL_MARKET_WATCHLIST_PATH: config/all-market.csv
           CUSTOM_WATCHLIST_PATH: config/custom-list.csv
           BENCHMARK_SYMBOL: ^CRSLDX
           FUNDAMENTALS_ENABLED: "true"
           FUNDAMENTALS_CACHE_DAYS: "7"
-          SCAN_CONCURRENCY: "6"
+          SCAN_CONCURRENCY: "12"
           MAX_SYMBOLS: "0"
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -65,7 +77,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add config/custom-list.csv data/results.json data/trades.json data/fundamentals-cache.json data/techno-funda-trade-sheet.xlsx data/techno-funda-trade-sheet.csv
+          git add config/all-market.csv config/universe.csv config/custom-list.csv data/results.json data/trades.json data/fundamentals-cache.json data/techno-funda-trade-sheet.xlsx data/techno-funda-trade-sheet.csv
           git diff --cached --quiet || git commit -m "Update techno funda screener data"
           git push
 

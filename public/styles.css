@@ -315,6 +315,12 @@ button:hover {
   padding: 0 10px;
 }
 
+.resultCount {
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
 .tableShell {
   position: relative;
   background: var(--panel);
@@ -323,6 +329,37 @@ button:hover {
   overflow: auto;
   box-shadow: var(--shadow);
   min-height: 420px;
+}
+
+.positionsSection {
+  margin: 16px 0;
+}
+
+.sectionHeading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.sectionHeading h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.sectionHeading span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.positionsShell {
+  min-height: 132px;
+  max-height: 340px;
+}
+
+.positionsTable {
+  min-width: 1120px;
 }
 
 table {
@@ -393,6 +430,18 @@ tbody tr:hover {
 .pill.WATCH {
   background: var(--blue-soft);
   color: var(--blue);
+}
+
+.pill.OPEN {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.pill.PENDING_ENTRY,
+.pill.PENDING_EXIT {
+  background: var(--amber-soft);
+  color: var(--amber);
+  min-width: 108px;
 }
 
 .symbolCell strong {
@@ -545,6 +594,11 @@ tbody tr:hover {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .sectionHeading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .downloadButton {
     width: 100%;
   }
@@ -565,7 +619,7 @@ tbody tr:hover {
 
   .filters {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto auto;
     overflow-x: visible;
   }
 
@@ -582,6 +636,10 @@ tbody tr:hover {
 
   #exportButton {
     min-width: 58px;
+  }
+
+  .resultCount {
+    align-self: center;
   }
 
   .uploadRow {
