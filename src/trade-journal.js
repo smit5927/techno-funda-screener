@@ -494,6 +494,16 @@ function tradeColumns() {
     { header: "Setup Grade", key: "Setup Grade", width: 13 },
     { header: "Setup Score", key: "Setup Score", width: 14 },
     { header: "Fundamental Score", key: "Fundamental Score", width: 18 },
+    { header: "Institutional Score", key: "Institutional Score", width: 18 },
+    { header: "Index Context", key: "Index Context", width: 34 },
+    { header: "Derivatives Context", key: "Derivatives Context", width: 34 },
+    { header: "Options Context", key: "Options Context", width: 34 },
+    { header: "Commodity Context", key: "Commodity Context", width: 34 },
+    { header: "Concept Score", key: "Concept Score", width: 16 },
+    { header: "Strong Concepts", key: "Strong Concepts", width: 42 },
+    { header: "Weak Concepts", key: "Weak Concepts", width: 42 },
+    { header: "Data Gaps", key: "Data Gaps", width: 30 },
+    { header: "Excluded Playbooks", key: "Excluded Playbooks", width: 36 },
     { header: "Sector Breadth", key: "Sector Breadth", width: 18 },
     { header: "Near 52W High", key: "Near 52W High", width: 14 },
     { header: "55D Breakout", key: "55D Breakout", width: 14 },
@@ -514,6 +524,8 @@ function tradeToRow(trade) {
   const values = setup.values || {};
   const checks = setup.checks || {};
   const sector = trade.entrySnapshot?.sectorStrength || {};
+  const coverage = trade.entrySnapshot?.conceptCoverage || {};
+  const institutional = trade.entrySnapshot?.institutionalContext || {};
   return {
     "Trade Scope": trade.tradeScopeLabel || TRADE_SCOPE_LABELS[inferTradeScope(trade)] || "",
     "Trade Quality": trade.tradeQualityLabel || "",
@@ -541,6 +553,16 @@ function tradeToRow(trade) {
     "Setup Grade": trade.entrySnapshot?.setupGrade || "",
     "Setup Score": trade.entrySnapshot?.setupStrengthScore ?? "",
     "Fundamental Score": trade.entrySnapshot?.fundamentalScore ?? "",
+    "Institutional Score": institutional.maxScore ? `${institutional.score}/${institutional.maxScore}` : "",
+    "Index Context": institutional.index?.reason || "",
+    "Derivatives Context": institutional.derivatives?.reason || "",
+    "Options Context": institutional.options?.reason || "",
+    "Commodity Context": institutional.commodity?.reason || "",
+    "Concept Score": coverage.applicable ? `${coverage.passed}/${coverage.applicable}` : "",
+    "Strong Concepts": (coverage.passLabels || []).join("; "),
+    "Weak Concepts": (coverage.weakLabels || []).join("; "),
+    "Data Gaps": (coverage.dataGapLabels || []).join("; "),
+    "Excluded Playbooks": (coverage.excludedLabels || []).join("; "),
     "Sector Breadth": Number.isFinite(sector.breadthPct)
       ? `${round(sector.breadthPct)}% (${sector.strong}/${sector.total})`
       : "",
@@ -596,6 +618,9 @@ function snapshot(row) {
     setupGrade: row.setupGrade,
     sectorStrength: row.sectorStrength,
     sectorStrengthScore: row.sectorStrengthScore,
+    institutionalContext: row.institutionalContext,
+    institutionalScore: row.institutionalScore,
+    conceptCoverage: row.conceptCoverage,
     fundamentalScore: row.fundamentalScore,
     fundamental: row.fundamental,
     score: row.score

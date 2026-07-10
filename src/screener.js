@@ -12,6 +12,12 @@ import {
 import { createFundamentalsService, emptyFundamentals } from "./fundamentals.js";
 import { loadWatchlist } from "./watchlist.js";
 import { aggregateDailyToCompletedWeeks, fetchCandles } from "./yahoo.js";
+import {
+  buildInstitutionalContext,
+  buildInstitutionalReasons,
+  buildSymbolInstitutionalContext,
+  institutionalContextForPayload
+} from "./institutional-context.js";
 import { readLatestScan, saveLatestScan } from "./storage.js";
 import { sendTelegramSummary } from "./telegram.js";
 import { tradeSettingsSummary, updateTradeJournal } from "./trade-journal.js";
@@ -27,6 +33,7 @@ export async function runScreener(options = {}) {
   const benchmarkDaily = await fetchCandles(config.benchmarkSymbol, "1d", 3);
   const benchmarkWeekly = aggregateDailyToCompletedWeeks(benchmarkDaily);
   const marketContext = buildMarketContext(benchmarkDaily, rules);
+  const institutionalContext = await buildInstitutionalContext(config, benchmarkDaily, marketContext);
 
   const scannedLists = {};
   const scanCache = new Map();
@@ -38,7 +45,15 @@ export async function runScreener(options = {}) {
         if (!scanCache.has(item.yahooSymbol)) {
           scanCache.set(
             item.yahooSymbol,
-            scanSymbol(item, benchmarkDaily, benchmarkWeekly, rules, fundamentals, marketContext)
+            scanSymbol(
+              item,
+              benchmarkDaily,
+              benchmarkWeekly,
+              rules,
+              fundamentals,
+              marketContext,
+              institutionalContext
+            )
           );
         }
         const core = await scanCache.get(item.yahooSymbol);
@@ -93,6 +108,7 @@ export async function runScreener(options = {}) {
     lists: mergedLists,
     scannedListIds: lists.map((list) => list.id),
     marketContext,
+    institutionalContext: institutionalContextForPayload(institutionalContext),
     tradeSettings: tradeSettingsSummary(config),
     rules,
     summary: summarize(allResults)
@@ -182,7 +198,15 @@ function summarizeTrades(trades) {
   };
 }
 
-async function scanSymbol(item, benchmarkDaily, benchmarkWeekly, rules, fundamentals, marketContext) {
+async function scanSymbol(
+  item,
+  benchmarkDaily,
+  benchmarkWeekly,
+  rules,
+  fundamentals,
+  marketContext,
+  institutionalMarketContext
+) {
   const dailyCandles = await fetchCandles(item.yahooSymbol, "1d", 3);
   const weeklyCandles = aggregateDailyToCompletedWeeks(dailyCandles);
 
@@ -278,6 +302,8 @@ async function scanSymbol(item, benchmarkDaily, benchmarkWeekly, rules, fundamen
   });
   const exitReason = buildExitReasons(exitChecks, { weeklyRs });
   const setupReason = buildSetupStrengthReasons(setupStrength);
+  const institutionalContext = buildSymbolInstitutionalContext(item, institutionalMarketContext);
+  const institutionalReason = buildInstitutionalReasons(institutionalContext);
   const weaknessReason = buildWeaknessReasons({
     dailyShortRs,
     dailyLongRs,
@@ -290,6 +316,7 @@ async function scanSymbol(item, benchmarkDaily, benchmarkWeekly, rules, fundamen
       ? [
           ...entryReason,
           ...setupReason,
+          ...institutionalReason,
           `Execution plan: buy on the next trading session using the 09:15 five-minute candle open.`
         ]
       : status === "EXIT"
@@ -306,7 +333,8 @@ async function scanSymbol(item, benchmarkDaily, benchmarkWeekly, rules, fundamen
     technicalScore >= 4
       ? await fundamentals.get(item.yahooSymbol, dailyCandles)
       : emptyFundamentals("Skipped until at least 4/6 compulsory technical checks pass.");
-  const setupStrengthScore = setupStrength.score;
+  const institutionalScore = institutionalContext.score || 0;
+  const setupStrengthScore = setupStrength.score + institutionalScore;
 
   const dailyLongPriceOk = priceAboveSma(
     dailyCandles,
@@ -344,6 +372,8 @@ async function scanSymbol(item, benchmarkDaily, benchmarkWeekly, rules, fundamen
           : "NONE",
     priceConfirmationScore: [weeklyPriceOk, dailyLongPriceOk, dailyShortPriceOk].filter(Boolean).length,
     setupStrength,
+    institutionalContext,
+    institutionalScore,
     fundamental,
     technicalScore,
     setupStrengthScore,
@@ -533,7 +563,7 @@ function applySectorStrength(results, rules) {
         ? `Sector breadth strong: ${key} has ${group.strong}/${group.total} stocks (${fmt(breadthPct)}%) passing daily strength.`
         : null;
 
-    return {
+    const enriched = {
       ...row,
       sectorStrength,
       sectorStrengthScore,
@@ -545,7 +575,162 @@ function applySectorStrength(results, rules) {
           ? [...(row.signalReason || []), sectorReason]
           : row.signalReason
     };
+    const conceptCoverage = buildConceptCoverage(enriched);
+    return {
+      ...enriched,
+      conceptCoverage,
+      signalReason:
+        enriched.status === "ENTRY"
+          ? [
+              ...(enriched.signalReason || []),
+              `Institutional concept coverage: ${conceptCoverage.passed}/${conceptCoverage.applicable} applicable video-derived buckets are strong.`
+            ]
+          : enriched.signalReason
+    };
   });
+}
+
+function buildConceptCoverage(row) {
+  const passLabels = [];
+  const weakLabels = [];
+  const dataGapLabels = [];
+  const excludedLabels = [
+    "Intraday tick scalping",
+    "Broker-only live Greeks/order-book depth"
+  ];
+  const setup = row.setupStrength || {};
+  const checks = setup.checks || {};
+  const values = setup.values || {};
+  const entry = row.entryChecks || {};
+  const sector = row.sectorStrength || {};
+  const fundamentalChecks = row.fundamental?.checks || {};
+  const institutional = row.institutionalContext || {};
+
+  addConcept(
+    "Compulsory multi-timeframe engine",
+    Object.values(entry).every(Boolean),
+    [row.weeklyRsi, row.dailyRsi, row.weeklyRs, row.dailyLongRs, row.dailyShortRs, row.dailySupertrend]
+      .every(Number.isFinite)
+  );
+  addConcept(
+    "Relative strength leadership",
+    entry.weeklyRs && entry.dailyLongRs && entry.dailyShortRs,
+    [row.weeklyRs, row.dailyLongRs, row.dailyShortRs].every(Number.isFinite)
+  );
+  addConcept(
+    "RS trend follow-through",
+    checks.weeklyRsRising && checks.dailyLongRsRising,
+    true
+  );
+  addConcept(
+    "RSI momentum",
+    entry.weeklyRsi && entry.dailyRsi,
+    [row.weeklyRsi, row.dailyRsi].every(Number.isFinite)
+  );
+  addConcept(
+    "Supertrend trend filter",
+    entry.dailyPriceAboveSupertrend,
+    Number.isFinite(row.dailySupertrend)
+  );
+  addConcept(
+    "Breakout or 52-week high zone",
+    checks.recentHighBreakout || checks.yearHighBreakout || checks.nearYearHigh,
+    Number.isFinite(values.priorRecentHigh) || Number.isFinite(values.priorYearHigh)
+  );
+  addConcept(
+    "Volume participation",
+    checks.volumeExpansion,
+    Number.isFinite(values.volumeRatio)
+  );
+  addConcept(
+    "Sector breadth",
+    sector.ok,
+    String(sector.industry || "") !== "NSE Equity" && Number.isFinite(sector.breadthPct)
+  );
+  addConcept(
+    "50/200 DMA trend structure",
+    checks.closeAboveSmaFast && checks.closeAboveSmaSlow && checks.smaFastAboveSlow,
+    Number.isFinite(values.smaFast) && Number.isFinite(values.smaSlow)
+  );
+  addConcept(
+    "Candle IPC confirmation",
+    checks.bullishCandleConfirmation || checks.bullishEngulfing || checks.hammer,
+    true
+  );
+  addConcept(
+    "Volatility and liquidity control",
+    checks.controlledVolatility && checks.liquidEnough,
+    Number.isFinite(values.atrPct) || Number.isFinite(values.averageTurnover)
+  );
+  addConcept(
+    "Risk reference discipline",
+    checks.favorableRiskToSupertrend && Number.isFinite(values.previousLow),
+    Number.isFinite(values.riskToSupertrendPct) || Number.isFinite(values.previousLow)
+  );
+  addConcept("Market regime", checks.marketRegimeStrong, true);
+  addConcept(
+    "Index regime confirmation",
+    institutional.index?.supportsLongs,
+    institutional.index?.dataAvailable
+  );
+  addConcept(
+    "Derivative/F&O eligibility",
+    institutional.derivatives?.fnoEligible,
+    institutional.derivatives?.dataAvailable
+  );
+  addConcept(
+    "Derivative OI participation",
+    institutional.derivatives?.participation,
+    institutional.derivatives?.oiAvailable || institutional.derivatives?.dataAvailable
+  );
+  addConcept(
+    "Index option-chain positioning",
+    institutional.options?.supportsLongs,
+    institutional.options?.dataAvailable
+  );
+  addConcept(
+    "Commodity/currency macro context",
+    institutional.commodity?.supportsSector,
+    institutional.commodity?.dataAvailable
+  );
+
+  const fundamentalValues = Object.values(fundamentalChecks);
+  const fundamentalKnown = fundamentalValues.some((item) => item?.ok === true || item?.ok === false);
+  addConcept(
+    "Fundamental improvement",
+    (row.fundamentalScore || 0) >= 3,
+    fundamentalKnown
+  );
+  addConcept(
+    "Exit rule discipline",
+    row.exitChecks && Object.hasOwn(row.exitChecks, "weeklyRs"),
+    Number.isFinite(row.weeklyRs)
+  );
+  addConcept("09:15 execution discipline", Boolean(row.executionPlan), true);
+
+  const applicable = passLabels.length + weakLabels.length + dataGapLabels.length;
+  return {
+    passed: passLabels.length,
+    applicable,
+    weak: weakLabels.length,
+    dataGaps: dataGapLabels.length,
+    excluded: excludedLabels.length,
+    passLabels,
+    weakLabels,
+    dataGapLabels,
+    excludedLabels,
+    summary: `${passLabels.length}/${applicable} applicable video-derived buckets strong; ${dataGapLabels.length} data gaps; ${excludedLabels.length} non-EOD playbooks excluded.`
+  };
+
+  function addConcept(label, passed, hasData) {
+    if (!hasData) {
+      dataGapLabels.push(label);
+    } else if (passed) {
+      passLabels.push(label);
+    } else {
+      weakLabels.push(label);
+    }
+  }
 }
 
 function buildEntryReasons(checks, values) {

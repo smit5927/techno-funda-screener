@@ -36,7 +36,7 @@ The active trade is closed when weekly RS goes below 0 on a closed weekly candle
 
 Daily RS21, daily RS55, Supertrend, and previous candle low are shown as early weakness/risk context, but they do not close the trade unless the compulsory weekly RS exit is triggered.
 
-## Optional Strength Score
+## Optional Strength And Institutional Score
 
 These checks do not create or block entry by themselves. They increase setup quality and are saved in the website detail view, CSV export, Telegram alert, and trade sheet:
 
@@ -50,8 +50,24 @@ These checks do not create or block entry by themselves. They increase setup qua
 - Daily candle gives previous-high confirmation, bullish engulfing, or hammer context.
 - ATR(14) is controlled relative to price and average traded value supports liquidity.
 - NIFTY 500 market regime is healthy from RSI and 50/200-DMA context.
+- NIFTY 500, NIFTY 50, and BANK NIFTY index regime supports long trades.
+- NSE F&O lot-size master confirms whether the stock is derivatives eligible and records the lot size.
+- NSE OI-spurts underlyings add derivative participation context: change in OI, volume, futures value, and options value.
+- NIFTY/BANKNIFTY option-chain positioning is attempted for PCR and OI support/resistance context.
+- Gold, silver, copper, crude oil, and USD/INR proxy trends are mapped to sector sensitivity.
 
-Candlestick, market regime, volatility, liquidity, and fundamental checks rank a valid entry as A+/A/B/C. They never override a failed compulsory entry check.
+Candlestick, market regime, derivatives, option-chain, commodity/currency, volatility, liquidity, and fundamental checks rank a valid entry as A+/A/B/C. They never override a failed compulsory entry check.
+
+## Institutional Multi-Market Context
+
+The scanner creates a separate institutional context object for every stock:
+
+- `index`: broad/sector proxy trend support from NIFTY 500, NIFTY 50, and BANK NIFTY.
+- `derivatives`: F&O eligibility, lot size, and OI-spurts participation when NSE data is available.
+- `options`: NIFTY/BANKNIFTY PCR, max put OI, and max call OI when the public NSE endpoint is available.
+- `commodity`: commodity/currency proxy support or risk based on the stock's sector.
+
+These modules add confluence, data-gap visibility, and trade-sheet explanation. They do not turn a failed equity RS/RSI/Supertrend setup into a buy.
 
 ## Scan Universes
 
@@ -82,4 +98,4 @@ The default trade quality is `BEST_ONLY`, which opens sheet/Telegram trades only
 
 ## Trade Sheet
 
-Every new post-go-live entry uses Rs. 100000 capital. The workbook contains Summary, Open Positions, Pending Orders, Closed Trades, and All Trades sheets. It stores signal dates separately from 09:15 execution dates/prices, quantity, invested value, realized/unrealized P&L, setup grade, fundamentals, sector breadth, breakout/high-zone flags, volume, ATR, candle context, Supertrend risk, and candle-low references.
+Every new post-go-live entry uses Rs. 100000 capital. The workbook contains Summary, Open Positions, Pending Orders, Closed Trades, and All Trades sheets. It stores signal dates separately from 09:15 execution dates/prices, quantity, invested value, realized/unrealized P&L, setup grade, institutional score, index/derivatives/options/commodity reasons, concept coverage, fundamentals, sector breadth, breakout/high-zone flags, volume, ATR, candle context, Supertrend risk, and candle-low references.

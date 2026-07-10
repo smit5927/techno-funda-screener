@@ -1,12 +1,12 @@
 # Video Strategy Ingestion
 
-The 73 raw Learn2Trade videos contain several trading styles: positional equity, intraday, derivatives, options, commodities, currency, operator/open-interest analysis, psychology, and risk management. The screener applies only rules that are reproducible from free end-of-day equity data. Intraday/options/commodity-specific rules are not forced into positional cash-equity signals.
+The 73 raw Learn2Trade videos contain several trading styles: positional equity, intraday, derivatives, options, commodities, currency, operator/open-interest analysis, psychology, and risk management. The screener keeps the user-defined equity entry/exit rules compulsory, then adds the other video concepts as institutional context and confluence layers wherever free repeatable data is available.
 
 ## Rule Precedence
 
 1. The user's six compulsory entry checks decide whether an entry exists.
 2. The user's closed-week weekly-RS-below-zero rule decides the compulsory exit.
-3. Video-derived price, volume, trend, sector, volatility, candle, market-regime, and fundamental evidence ranks signal quality and explains risk.
+3. Video-derived price, volume, trend, sector, volatility, candle, market-regime, derivative, option-chain, commodity/currency, and fundamental evidence ranks signal quality and explains risk.
 4. Optional evidence never converts a failed compulsory setup into an entry.
 
 ## Ingested Technical Evidence
@@ -22,6 +22,15 @@ The 73 raw Learn2Trade videos contain several trading styles: positional equity,
 - Volatility and liquidity: ATR percentage and average traded value expose unstable or hard-to-execute setups.
 - Risk references: Supertrend distance, previous candle low, two-candle low, and four-candle low are recorded without overriding the compulsory exit.
 - Market regime: NIFTY 500 RSI and 50/200-DMA context show whether the broad market supports long trades.
+
+## Ingested Index, Derivatives, Options, And Commodity Evidence
+
+- Index regime: NIFTY 500, NIFTY 50, and BANK NIFTY are tracked as institutional trend proxies using RSI, 21/55-day returns, 50/200-DMA structure, ATR percentage, and RS where applicable.
+- Sector-index alignment: financial stocks use BANK NIFTY as the closer proxy; other stocks use the broad NIFTY 500/NIFTY 50 context.
+- F&O eligibility and participation: the NSE F&O lot-size master is downloaded automatically. Each stock is tagged as F&O-listed or cash-only, with lot size where available. NSE OI-spurts underlyings are also attempted to capture change-in-OI participation, volume, futures value, and options value.
+- Option-chain positioning: NIFTY and BANK NIFTY option-chain snapshots are attempted automatically. When NSE allows the public endpoint, the scanner records PCR, max put OI strike, max call OI strike, expiry, and bullish/neutral/bearish option bias.
+- Commodity/currency context: Gold, silver, copper, crude oil, and USD/INR Yahoo proxies are tracked. Sector sensitivity maps metals to copper/base metals, energy to crude, exporters to USD/INR, precious-metal businesses to gold/silver, and input-cost sectors to crude risk.
+- Data gaps are explicit. If NSE option-chain, OI-spurts, or another free endpoint is unavailable during a GitHub run, the website and trade sheet show a data gap instead of pretending the confirmation exists.
 
 ## Ingested Fundamental Evidence
 
@@ -39,6 +48,17 @@ The 73 raw Learn2Trade videos contain several trading styles: positional equity,
 - Rs. 100000 capital is converted to whole-share quantity from the actual fill, not from the signal-day close.
 
 ## Audit Evidence
+
+## Institutional Coverage Matrix
+
+Every stock row now stores a compact concept coverage matrix:
+
+- Strong concepts: video-derived buckets that passed for that stock.
+- Weak concepts: buckets with data present but not supportive.
+- Data gaps: buckets that need a public data source that was unavailable in that scan.
+- Excluded playbooks: only broker-only live Greeks/order-book depth and intraday tick scalping remain outside the daily closing system.
+
+The matrix is visible in the website detail panel, CSV export, Telegram trade alert, and Excel trade sheet.
 
 `npm run audit:videos` performs the repeatable audit:
 

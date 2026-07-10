@@ -63,6 +63,25 @@
     "sectorBreadthMinPct": 50,
     "sectorBreadthMinStocks": 5
   },
+  "institutionalContext": {
+    "enabled": true,
+    "indexSymbols": [
+      { "id": "nifty500", "label": "NIFTY 500", "symbol": "^CRSLDX", "primary": true },
+      { "id": "nifty50", "label": "NIFTY 50", "symbol": "^NSEI" },
+      { "id": "banknifty", "label": "BANK NIFTY", "symbol": "^NSEBANK" }
+    ],
+    "commoditySymbols": [
+      { "id": "gold", "label": "Gold", "symbol": "GC=F", "group": "precious_metals" },
+      { "id": "silver", "label": "Silver", "symbol": "SI=F", "group": "precious_metals" },
+      { "id": "copper", "label": "Copper", "symbol": "HG=F", "group": "base_metals" },
+      { "id": "crude", "label": "Crude Oil", "symbol": "CL=F", "group": "energy" },
+      { "id": "usdinr", "label": "USD/INR", "symbol": "INR=X", "group": "currency" }
+    ],
+    "optionChainEnabled": true,
+    "optionChainSymbols": ["NIFTY", "BANKNIFTY"],
+    "fnoLotSizeUrl": "https://nsearchives.nseindia.com/content/fo/fo_mktlots.csv",
+    "oiSpurtsUrl": "https://www.nseindia.com/api/live-analysis-oi-spurts-underlyings"
+  },
   "fundamentals": {
     "compulsory": false,
     "checks": [

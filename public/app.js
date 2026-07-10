@@ -275,9 +275,19 @@ function renderSummary(payload) {
   const listLabel = state.currentList === "all" ? "All Lists" : listPayload?.label || state.currentList;
   const benchmarkLabel = payload.benchmarkLabel || payload.rules?.benchmarkLabel || payload.benchmark;
   const staleText = payload.scannedAt && isStaleScan(payload.scannedAt) ? " | Stale: waiting for next cloud scan" : "";
+  const institutionalText = institutionalMeta(payload.institutionalContext);
   elements.scanMeta.textContent = payload.scannedAt
-    ? `Last scan ${formatDateTime(payload.scannedAt)} | ${listLabel} | Benchmark ${benchmarkLabel}${staleText}`
+    ? `Last scan ${formatDateTime(payload.scannedAt)} | ${listLabel} | Benchmark ${benchmarkLabel}${institutionalText}${staleText}`
     : "Waiting for first scan";
+}
+
+function institutionalMeta(context) {
+  if (!context?.enabled) return "";
+  const indexBias = context.index?.primaryBias || "NA";
+  const fnoCount = context.derivatives?.fnoSymbolCount ?? "NA";
+  const optionStatus = context.options?.dataAvailable ? "OK" : "Gap";
+  const commodityStatus = context.commodity?.dataAvailable ? context.commodity.riskMode || "OK" : "Gap";
+  return ` | Institutional ${indexBias}, F&O ${fnoCount}, Options ${optionStatus}, Commodity ${commodityStatus}`;
 }
 
 function renderPositions(payload) {
@@ -364,6 +374,8 @@ function renderDetail(row) {
   const setupChecks = setup.checks || {};
   const setupValues = setup.values || {};
   const sector = row.sectorStrength || {};
+  const coverage = row.conceptCoverage || {};
+  const institutional = row.institutionalContext || {};
   elements.detailPanel.innerHTML = `
     <div class="detailHeader">
       <div>
@@ -401,6 +413,26 @@ function renderDetail(row) {
       ${setupCheckHtml("Market regime", setupChecks.marketRegimeStrong)}
       ${setupCheckHtml("Sector breadth", sector.ok, sector.breadthPct, "%")}
       ${setupCheckHtml("Prev candle low", Number.isFinite(setupValues.previousLow), setupValues.previousLow)}
+    </div>
+    <div class="reasonBlock">
+      <strong>Institutional Multi-Market Context</strong>
+      <p>${escapeHtml(institutional.maxScore ? `${institutional.score}/${institutional.maxScore} - ${institutional.grade}` : "No institutional context available for this row yet.")}</p>
+    </div>
+    <div class="checkGrid">
+      ${contextCheckHtml("Index", institutional.index?.supportsLongs, institutional.index?.reason)}
+      ${contextCheckHtml("Derivatives/F&O", institutional.derivatives?.fnoEligible, institutional.derivatives?.reason)}
+      ${contextCheckHtml("Options", institutional.options?.supportsLongs, institutional.options?.reason)}
+      ${contextCheckHtml("Commodity/Currency", institutional.commodity?.supportsSector, institutional.commodity?.reason)}
+    </div>
+    <div class="reasonBlock">
+      <strong>Institutional Concept Coverage</strong>
+      <p>${escapeHtml(coverage.summary || "No concept coverage available for this row yet.")}</p>
+    </div>
+    <div class="checkGrid">
+      ${conceptBucketHtml("Strong", coverage.passLabels, "good")}
+      ${conceptBucketHtml("Weak", coverage.weakLabels, "bad")}
+      ${conceptBucketHtml("Data gaps", coverage.dataGapLabels)}
+      ${conceptBucketHtml("Excluded", coverage.excludedLabels)}
     </div>
   `;
   elements.detailPanel.classList.add("visible");
@@ -692,6 +724,29 @@ function setupCheckHtml(label, ok, value, suffix = "") {
   `;
 }
 
+function conceptBucketHtml(label, items = [], css = "neutral") {
+  const list = Array.isArray(items) ? items : [];
+  return `
+    <div class="check">
+      <span>${escapeHtml(label)}</span>
+      <strong class="${css}">${list.length}</strong>
+      <span>${escapeHtml(list.length ? list.join(", ") : "None")}</span>
+    </div>
+  `;
+}
+
+function contextCheckHtml(label, ok, reason) {
+  const css = ok === true ? "good" : ok === false ? "bad" : "neutral";
+  const status = ok === true ? "Support" : ok === false ? "Risk/Gap" : "NA";
+  return `
+    <div class="check">
+      <span>${escapeHtml(label)}</span>
+      <strong class="${css}">${status}</strong>
+      <span>${escapeHtml(reason || "No context")}</span>
+    </div>
+  `;
+}
+
 function exportCsv() {
   const headers = [
     "status",
@@ -714,6 +769,16 @@ function exportCsv() {
     "volumeRatio",
     "riskToSupertrendPct",
     "previousLow",
+    "institutionalScore",
+    "indexContext",
+    "derivativesContext",
+    "optionsContext",
+    "commodityContext",
+    "conceptScore",
+    "strongConcepts",
+    "weakConcepts",
+    "dataGaps",
+    "excludedPlaybooks",
     "score",
     "reason"
   ];
@@ -736,6 +801,20 @@ function exportCsv() {
       previousLow: Number.isFinite(row.setupStrength?.values?.previousLow)
         ? compact(row.setupStrength.values.previousLow)
         : "",
+      institutionalScore: row.institutionalContext?.maxScore
+        ? `${row.institutionalContext.score}/${row.institutionalContext.maxScore}`
+        : "",
+      indexContext: row.institutionalContext?.index?.reason || "",
+      derivativesContext: row.institutionalContext?.derivatives?.reason || "",
+      optionsContext: row.institutionalContext?.options?.reason || "",
+      commodityContext: row.institutionalContext?.commodity?.reason || "",
+      conceptScore: row.conceptCoverage?.applicable
+        ? `${row.conceptCoverage.passed}/${row.conceptCoverage.applicable}`
+        : "",
+      strongConcepts: (row.conceptCoverage?.passLabels || []).join("; "),
+      weakConcepts: (row.conceptCoverage?.weakLabels || []).join("; "),
+      dataGaps: (row.conceptCoverage?.dataGapLabels || []).join("; "),
+      excludedPlaybooks: (row.conceptCoverage?.excludedLabels || []).join("; "),
       reason: (row.signalReason || []).join(" ")
     };
     lines.push(headers.map((header) => csvValue(exportRow[header])).join(","));
