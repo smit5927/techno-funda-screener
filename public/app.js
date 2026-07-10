@@ -5,7 +5,9 @@ const state = {
   filter: "ALL",
   search: "",
   minScore: 0,
-  displayLimit: 250
+  displayLimit: 250,
+  cloudTradeSettings: null,
+  cloudTelegram: null
 };
 
 const staticMode = Boolean(window.TF_STATIC_MODE);
@@ -91,14 +93,18 @@ elements.telegramSettingsButton.addEventListener("click", () => {
   elements.telegramPanel.hidden = !elements.telegramPanel.hidden;
   if (!elements.telegramPanel.hidden) {
     elements.telegramAccessCodeInput.value = getAccessCode();
-    elements.telegramStatus.textContent = elements.telegramStatus.textContent || "Telegram not configured";
+    renderTelegramStatus(state.cloudTelegram || state.payload?.telegram);
+    if (state.cloudTelegram?.configured) {
+      elements.telegramBotTokenInput.placeholder = "Saved bot token - leave blank";
+      elements.telegramChatIdInput.placeholder = "Saved chat ID - leave blank";
+    }
   }
 });
 elements.tradeSettingsButton.addEventListener("click", () => {
   elements.tradeSettingsPanel.hidden = !elements.tradeSettingsPanel.hidden;
   if (!elements.tradeSettingsPanel.hidden) {
     elements.tradeAccessCodeInput.value = getAccessCode();
-    renderTradeSettings(state.payload?.tradeSettings);
+    renderTradeSettings(state.cloudTradeSettings || state.payload?.tradeSettings);
   }
 });
 elements.saveCustomListButton.addEventListener("click", saveCustomList);
@@ -153,7 +159,11 @@ async function loadResults() {
             elements.customListStatus.textContent = `${meta.customList.count} cloud stocks`;
           }
           if (meta.tradeSettings) {
+            state.cloudTradeSettings = meta.tradeSettings;
             renderTradeSettings(meta.tradeSettings, { updateBadges: false });
+          }
+          if (meta.telegram) {
+            state.cloudTelegram = meta.telegram;
           }
           renderTelegramStatus(meta.telegram);
         }
@@ -178,10 +188,12 @@ async function loadResults() {
         elements.customListStatus.textContent = `${payload.customList.count} cloud stocks`;
       }
       if (payload.telegram || payload.state?.telegram) {
+        state.cloudTelegram = payload.telegram || state.cloudTelegram;
         renderTelegramStatus(payload.telegram, payload.state?.telegram);
       }
       if (payload.tradeSettings || payload.state?.tradeSettings) {
-        renderTradeSettings(payload.tradeSettings || payload.state?.tradeSettings, { updateBadges: false });
+        state.cloudTradeSettings = payload.tradeSettings || payload.state?.tradeSettings;
+        renderTradeSettings(state.cloudTradeSettings, { updateBadges: false });
       }
       return;
     } catch (error) {
@@ -555,8 +567,9 @@ async function saveTradeSettings() {
     if (!response.ok || payload.error) throw new Error(payload.error || "Trade settings save failed");
     localStorage.setItem("tfAccessCode", accessCode);
     syncAccessCodeInputs(accessCode);
+    state.cloudTradeSettings = payload.tradeSettings || state.cloudTradeSettings;
     renderTradeSettings(payload.tradeSettings, { updateBadges: false });
-    elements.tradeSettingsStatus.textContent = "Saved. Next scheduled scan will use this selection.";
+    elements.tradeSettingsStatus.textContent = "Saved in cloud. Next scheduled scan will use this selection.";
   } catch (error) {
     elements.tradeSettingsStatus.textContent = `Trade settings save failed: ${error.message}`;
   } finally {
@@ -578,7 +591,7 @@ async function saveTelegramSettings() {
     elements.telegramStatus.textContent = "Enter access code first";
     return;
   }
-  if (!botToken || !chatId) {
+  if ((!botToken || !chatId) && !state.cloudTelegram?.configured) {
     elements.telegramStatus.textContent = "Enter bot token and chat ID";
     return;
   }
@@ -600,7 +613,11 @@ async function saveTelegramSettings() {
     if (!response.ok || payload.error) throw new Error(payload.error || "Telegram save failed");
     localStorage.setItem("tfAccessCode", accessCode);
     syncAccessCodeInputs(accessCode);
+    state.cloudTelegram = payload.telegram || state.cloudTelegram || { configured: true };
     elements.telegramBotTokenInput.value = "";
+    elements.telegramChatIdInput.value = "";
+    elements.telegramBotTokenInput.placeholder = "Saved bot token - leave blank";
+    elements.telegramChatIdInput.placeholder = "Saved chat ID - leave blank";
     renderTelegramStatus(payload.telegram || { configured: true });
   } catch (error) {
     elements.telegramStatus.textContent = `Telegram save failed: ${error.message}`;

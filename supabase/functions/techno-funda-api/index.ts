@@ -66,8 +66,13 @@ Deno.serve(async (request: Request) => {
         return json({ error: "Invalid access code" }, 401);
       }
 
-      const botToken = String(body.botToken || "").trim();
-      const chatId = String(body.chatId || "").trim();
+      const existingConfig = await readValue("telegram_config", {});
+      const botToken =
+        String(body.botToken || "").trim() ||
+        (typeof existingConfig.botToken === "string" ? existingConfig.botToken : "");
+      const chatId =
+        String(body.chatId || "").trim() ||
+        (typeof existingConfig.chatId === "string" ? existingConfig.chatId : "");
       if (!botToken || !chatId) {
         return json({ error: "Bot token and chat ID are required" }, 400);
       }
