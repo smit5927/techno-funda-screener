@@ -4,8 +4,21 @@ import { appConfig } from "./config.js";
 import { readTrades, saveTrades } from "./storage.js";
 import { fetchOpeningWindowPrice } from "./yahoo.js";
 
+const TRADE_SCOPE_LABELS = {
+  "all-market": "All NSE Market",
+  default: "Nifty 500",
+  custom: "My List"
+};
+
+const TRADE_QUALITY_LABELS = {
+  BEST_ONLY: "Best only (A+/A)",
+  STRONG_OR_BETTER: "Strong and best (A+/A/B)",
+  ALL_ENTRIES: "All entry signals"
+};
+
 export async function updateTradeJournal(scan, config = appConfig) {
   const journal = readTrades();
+  const settings = tradeSettingsSummary(config);
   const liveMode = config.trade.onlyNewSignals !== false;
   const firstLiveScan = liveMode && !journal.liveModeStartedAt;
   const trades = firstLiveScan ? [] : Array.isArray(journal.trades) ? journal.trades : [];
@@ -13,18 +26,15 @@ export async function updateTradeJournal(scan, config = appConfig) {
     journal.signalState && typeof journal.signalState === "object" ? journal.signalState : {};
   const nextSignalState = { ...signalState };
   const events = [];
-  const rows = uniqueScannedRows(scan);
+  const rows = uniqueScannedRows(scan, settings.scopeListId);
 
+  migrateTradeMetadata(trades);
   await migrateLegacyOpeningPrices(trades, config);
 
   for (const row of rows) {
-    const key = row.yahooSymbol || row.symbol;
-    const previousStatus = previousSymbolStatus(signalState, key, row.symbol);
-    let activeTrade = trades.find(
-      (trade) =>
-        ["PENDING_ENTRY", "OPEN", "PENDING_EXIT"].includes(trade.status) &&
-        sameInstrument(trade, row)
-    );
+    const key = signalStateKey(settings.scopeListId, row);
+    const previousStatus = previousSymbolStatus(signalState, key, row, settings.scopeListId);
+    let activeTrade = findActiveTrade(trades, row, settings);
 
     if (activeTrade?.status === "PENDING_ENTRY") {
       const filled = await fillEntry(activeTrade, row, config);
@@ -40,11 +50,7 @@ export async function updateTradeJournal(scan, config = appConfig) {
       if (filled) events.push({ type: "EXIT_TRADE_CLOSED", trade: activeTrade });
     }
 
-    activeTrade = trades.find(
-      (trade) =>
-        ["PENDING_ENTRY", "OPEN", "PENDING_EXIT"].includes(trade.status) &&
-        sameInstrument(trade, row)
-    );
+    activeTrade = findActiveTrade(trades, row, settings);
 
     const isEstablishedSignal = previousStatus != null;
     if (
@@ -52,9 +58,10 @@ export async function updateTradeJournal(scan, config = appConfig) {
       isEstablishedSignal &&
       row.status === "ENTRY" &&
       previousStatus !== "ENTRY" &&
-      !activeTrade
+      !activeTrade &&
+      rowPassesTradeQuality(row, settings)
     ) {
-      const trade = createPendingEntry(row, scan, config);
+      const trade = createPendingEntry(row, scan, config, settings);
       trades.push(trade);
       const filled = await fillEntry(trade, row, config);
       events.push({
@@ -76,7 +83,8 @@ export async function updateTradeJournal(scan, config = appConfig) {
     nextSignalState[key] = {
       status: row.status,
       asOf: row.asOf,
-      scannedAt: scan.scannedAt
+      scannedAt: scan.scannedAt,
+      scopeListId: settings.scopeListId
     };
   }
 
@@ -92,26 +100,60 @@ export async function updateTradeJournal(scan, config = appConfig) {
     },
     signalState: nextSignalState,
     tradeCapitalPerStock: config.trade.capitalPerStock,
+    tradeSettings: settings,
     trades: trades.sort(sortTrades)
   };
   saveTrades(nextJournal);
-  await writeTradeSheets(nextJournal, config);
-  return { ...nextJournal, events };
+  const visibleTrades = visibleTradesForSettings(nextJournal.trades, settings);
+  await writeTradeSheets({ ...nextJournal, trades: visibleTrades }, config);
+  return { ...nextJournal, visibleTrades, events };
 }
 
 export async function writeTradeSheets(journal, config = appConfig) {
   fs.mkdirSync(config.dataDir, { recursive: true });
-  await writeXlsx(journal, config.tradeSheetPath);
-  writeCsv(journal, config.tradeCsvPath);
+  const settings = journal.tradeSettings || tradeSettingsSummary(config);
+  const sheetJournal = {
+    ...journal,
+    tradeSettings: settings,
+    trades: visibleTradesForSettings(journal.trades || [], settings)
+  };
+  await writeXlsx(sheetJournal, config.tradeSheetPath);
+  writeCsv(sheetJournal, config.tradeCsvPath);
 }
 
-function createPendingEntry(row, scan, config) {
+export function tradeSettingsSummary(config = appConfig) {
+  const scopeListId = normalizeTradeScope(config.trade?.scopeListId);
+  const qualityMode = normalizeTradeQuality(config.trade?.qualityMode);
+  return {
+    scopeListId,
+    scopeLabel: TRADE_SCOPE_LABELS[scopeListId],
+    qualityMode,
+    qualityLabel: TRADE_QUALITY_LABELS[qualityMode],
+    capitalPerStock: config.trade?.capitalPerStock ?? 100000,
+    executionWindow: `${config.trade?.executionWindowStart || "09:15"}-${config.trade?.executionWindowEnd || "09:20"} IST`
+  };
+}
+
+export function rowPassesTradeQuality(row, settingsOrConfig = appConfig) {
+  const settings = settingsOrConfig.trade ? tradeSettingsSummary(settingsOrConfig) : settingsOrConfig;
+  const mode = normalizeTradeQuality(settings.qualityMode);
+  if (mode === "ALL_ENTRIES") return true;
+  const grade = String(row.setupGrade || "").toUpperCase();
+  if (mode === "STRONG_OR_BETTER") return ["A+", "A", "B"].includes(grade);
+  return ["A+", "A"].includes(grade);
+}
+
+function createPendingEntry(row, scan, config, settings) {
   const sourceLists = row.sourceLists || [row.listLabel].filter(Boolean);
   return {
     id: `${row.symbol}-${row.asOf}-${Date.now()}`,
     listId: row.listId,
     listLabel: sourceLists.join(", "),
     sourceLists,
+    tradeScope: settings.scopeListId,
+    tradeScopeLabel: settings.scopeLabel,
+    tradeQualityMode: settings.qualityMode,
+    tradeQualityLabel: settings.qualityLabel,
     symbol: row.symbol,
     yahooSymbol: row.yahooSymbol,
     name: row.name,
@@ -127,6 +169,7 @@ function createPendingEntry(row, scan, config) {
     investedValue: null,
     entryReason: [
       ...(row.signalReason || row.entryReason || []),
+      `Trade sheet filter: ${settings.scopeLabel}, ${settings.qualityLabel}.`,
       `Closing signal dated ${row.asOf}; buy fill must come from the next session 09:15-09:20 IST window.`
     ],
     entrySnapshot: snapshot(row),
@@ -251,40 +294,107 @@ async function migrateLegacyOpeningPrices(trades, config) {
   }
 }
 
-function uniqueScannedRows(scan) {
+function migrateTradeMetadata(trades) {
+  for (const trade of trades) {
+    trade.tradeScope = inferTradeScope(trade);
+    trade.tradeScopeLabel = TRADE_SCOPE_LABELS[trade.tradeScope];
+    trade.tradeQualityMode = trade.tradeQualityMode || "LEGACY";
+    trade.tradeQualityLabel = trade.tradeQualityLabel || "Legacy trade";
+  }
+}
+
+function uniqueScannedRows(scan, scopeListId) {
   const scannedIds = new Set(scan.scannedListIds || Object.keys(scan.lists || {}));
-  const grouped = new Map();
+  const primary = scan.lists?.[scopeListId];
+  if (!primary || !scannedIds.has(scopeListId)) return [];
+
+  const sourceListsByKey = new Map();
   for (const list of Object.values(scan.lists || {})) {
     if (!scannedIds.has(list.id)) continue;
     for (const row of list.results || []) {
       const key = row.yahooSymbol || row.symbol;
       if (!key) continue;
-      if (!grouped.has(key)) {
-        grouped.set(key, {
-          ...row,
-          sourceLists: [row.listLabel].filter(Boolean)
-        });
-      } else {
-        const current = grouped.get(key);
-        if (row.listLabel && !current.sourceLists.includes(row.listLabel)) {
-          current.sourceLists.push(row.listLabel);
-        }
-        if (current.industry === "NSE Equity" && row.industry !== "NSE Equity") {
-          Object.assign(current, row, { sourceLists: current.sourceLists });
-        }
-      }
+      const labels = sourceListsByKey.get(key) || [];
+      if (row.listLabel && !labels.includes(row.listLabel)) labels.push(row.listLabel);
+      sourceListsByKey.set(key, labels);
     }
+  }
+
+  const grouped = new Map();
+  for (const row of primary.results || []) {
+    const key = row.yahooSymbol || row.symbol;
+    if (!key || grouped.has(key)) continue;
+    grouped.set(key, {
+      ...row,
+      sourceLists: sourceListsByKey.get(key) || [row.listLabel].filter(Boolean)
+    });
   }
   return [...grouped.values()];
 }
 
-function previousSymbolStatus(signalState, yahooSymbol, displaySymbol) {
-  if (signalState[yahooSymbol]?.status) return signalState[yahooSymbol].status;
+function signalStateKey(scopeListId, row) {
+  return `${scopeListId}:${row.yahooSymbol || row.symbol}`;
+}
+
+function previousSymbolStatus(signalState, scopedKey, row, scopeListId) {
+  if (signalState[scopedKey]?.status) return signalState[scopedKey].status;
+  const yahooSymbol = row.yahooSymbol || row.symbol;
+  const displaySymbol = row.symbol;
+  const exactKeys = [`${scopeListId}:${displaySymbol}`, `${scopeListId}:${yahooSymbol}`];
+  if (scopeListId === "all-market") exactKeys.push(yahooSymbol, displaySymbol);
+  for (const key of exactKeys) {
+    if (signalState[key]?.status) return signalState[key].status;
+  }
+
   const suffixes = [`:${displaySymbol}`, `:${yahooSymbol}`];
   for (const [key, value] of Object.entries(signalState)) {
-    if (suffixes.some((suffix) => key.endsWith(suffix)) && value?.status) return value.status;
+    if (
+      key.startsWith(`${scopeListId}:`) &&
+      suffixes.some((suffix) => key.endsWith(suffix)) &&
+      value?.status
+    ) {
+      return value.status;
+    }
   }
   return null;
+}
+
+function findActiveTrade(trades, row, settings) {
+  return trades.find(
+    (trade) =>
+      ["PENDING_ENTRY", "OPEN", "PENDING_EXIT"].includes(trade.status) &&
+      sameInstrument(trade, row) &&
+      tradeMatchesSettings(trade, settings)
+  );
+}
+
+function visibleTradesForSettings(trades, settings) {
+  return trades.filter((trade) => tradeMatchesSettings(trade, settings));
+}
+
+function tradeMatchesSettings(trade, settings) {
+  return (
+    inferTradeScope(trade) === settings.scopeListId &&
+    tradePassesQuality(trade, settings.qualityMode)
+  );
+}
+
+function tradePassesQuality(trade, qualityMode) {
+  const mode = normalizeTradeQuality(qualityMode);
+  if (mode === "ALL_ENTRIES") return true;
+  const grade = String(trade.entrySnapshot?.setupGrade || "").toUpperCase();
+  if (mode === "STRONG_OR_BETTER") return ["A+", "A", "B"].includes(grade);
+  return ["A+", "A"].includes(grade);
+}
+
+function inferTradeScope(trade) {
+  if (TRADE_SCOPE_LABELS[trade.tradeScope]) return trade.tradeScope;
+  if (TRADE_SCOPE_LABELS[trade.listId]) return trade.listId;
+  const source = [trade.listLabel, ...(trade.sourceLists || [])].join(" ").toLowerCase();
+  if (source.includes("my custom") || source.includes("my list")) return "custom";
+  if (source.includes("nifty")) return "default";
+  if (source.includes("all nse")) return "all-market";
+  return "default";
 }
 
 function sameInstrument(trade, row) {
@@ -323,6 +433,8 @@ async function writeXlsx(journal, filePath) {
     { metric: "Realized P&L", value: round(realizedPnl) },
     { metric: "Unrealized P&L", value: round(unrealizedPnl) },
     { metric: "Capital Per Stock", value: journal.tradeCapitalPerStock },
+    { metric: "Trade Scope", value: journal.tradeSettings?.scopeLabel || "" },
+    { metric: "Trade Quality", value: journal.tradeSettings?.qualityLabel || "" },
     { metric: "Signal Basis", value: journal.executionRule?.signalBasis || "" },
     { metric: "Execution Window", value: journal.executionRule?.window || "09:15-09:20 IST" },
     { metric: "Execution Price", value: "First 5-minute candle open (09:15)" }
@@ -356,6 +468,8 @@ function writeCsv(journal, filePath) {
 
 function tradeColumns() {
   return [
+    { header: "Trade Scope", key: "Trade Scope", width: 18 },
+    { header: "Trade Quality", key: "Trade Quality", width: 22 },
     { header: "Source Lists", key: "Source Lists", width: 28 },
     { header: "Symbol", key: "Symbol", width: 14 },
     { header: "Name", key: "Name", width: 28 },
@@ -401,6 +515,8 @@ function tradeToRow(trade) {
   const checks = setup.checks || {};
   const sector = trade.entrySnapshot?.sectorStrength || {};
   return {
+    "Trade Scope": trade.tradeScopeLabel || TRADE_SCOPE_LABELS[inferTradeScope(trade)] || "",
+    "Trade Quality": trade.tradeQualityLabel || "",
     "Source Lists": (trade.sourceLists || [trade.listLabel]).filter(Boolean).join(", "),
     Symbol: trade.symbol,
     Name: trade.name,
@@ -509,4 +625,12 @@ function round(value) {
 function csvValue(value) {
   const text = value == null ? "" : String(value);
   return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+}
+
+function normalizeTradeScope(scopeListId) {
+  return TRADE_SCOPE_LABELS[scopeListId] ? scopeListId : "all-market";
+}
+
+function normalizeTradeQuality(qualityMode) {
+  return TRADE_QUALITY_LABELS[qualityMode] ? qualityMode : "BEST_ONLY";
 }

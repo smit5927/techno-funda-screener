@@ -1,5 +1,10 @@
 import { appConfig } from "./config.js";
-import { pullCloudCustomList, pullCloudTelegramConfig, pushCloudState } from "./cloud-sync.js";
+import {
+  pullCloudCustomList,
+  pullCloudTelegramConfig,
+  pullCloudTradeSettings,
+  pushCloudState
+} from "./cloud-sync.js";
 import { runScreener } from "./screener.js";
 
 try {
@@ -20,6 +25,22 @@ try {
   if (telegram.ok && telegram.telegram?.enabled !== false) {
     appConfig.telegram.botToken = telegram.telegram?.botToken || appConfig.telegram.botToken || "";
     appConfig.telegram.chatId = telegram.telegram?.chatId || appConfig.telegram.chatId || "";
+  }
+
+  const tradeSettings = await attemptCloud(
+    () => pullCloudTradeSettings(),
+    { ok: false, reason: "cloud trade settings unavailable", tradeSettings: null }
+  );
+  if (tradeSettings.ok && tradeSettings.tradeSettings) {
+    appConfig.trade.scopeListId =
+      tradeSettings.tradeSettings.scopeListId || appConfig.trade.scopeListId;
+    appConfig.trade.qualityMode =
+      tradeSettings.tradeSettings.qualityMode || appConfig.trade.qualityMode;
+    console.log(
+      `Trade settings loaded: ${appConfig.trade.scopeListId} / ${appConfig.trade.qualityMode}`
+    );
+  } else {
+    console.log(`Trade settings skipped: ${tradeSettings.reason}`);
   }
 
   const result = await runScreener({ sendTelegram: true });

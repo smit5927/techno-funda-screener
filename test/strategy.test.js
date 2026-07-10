@@ -6,6 +6,7 @@ import {
   calculateSupertrend,
   latestValue
 } from "../src/indicators.js";
+import { rowPassesTradeQuality, tradeSettingsSummary } from "../src/trade-journal.js";
 import { aggregateDailyToCompletedWeeks } from "../src/yahoo.js";
 
 test("daily candles aggregate only into completed weeks", () => {
@@ -66,6 +67,26 @@ test("RSI and Supertrend produce finite values on sufficient history", () => {
 
   assert.ok(Number.isFinite(latestValue(calculateRsi(candles, 14))));
   assert.ok(Number.isFinite(latestValue(calculateSupertrend(candles, 10, 3))));
+});
+
+test("trade settings default to all-market best-only mode", () => {
+  const settings = tradeSettingsSummary({ trade: {} });
+  assert.equal(settings.scopeListId, "all-market");
+  assert.equal(settings.qualityMode, "BEST_ONLY");
+});
+
+test("best-only trade quality accepts only A+ and A entries", () => {
+  const settings = { qualityMode: "BEST_ONLY" };
+  assert.equal(rowPassesTradeQuality({ setupGrade: "A+" }, settings), true);
+  assert.equal(rowPassesTradeQuality({ setupGrade: "A" }, settings), true);
+  assert.equal(rowPassesTradeQuality({ setupGrade: "B" }, settings), false);
+  assert.equal(rowPassesTradeQuality({ setupGrade: "C" }, settings), false);
+});
+
+test("trade quality modes can loosen to strong or all entries", () => {
+  assert.equal(rowPassesTradeQuality({ setupGrade: "B" }, { qualityMode: "STRONG_OR_BETTER" }), true);
+  assert.equal(rowPassesTradeQuality({ setupGrade: "C" }, { qualityMode: "STRONG_OR_BETTER" }), false);
+  assert.equal(rowPassesTradeQuality({ setupGrade: "C" }, { qualityMode: "ALL_ENTRIES" }), true);
 });
 
 function candle(date, open, high, low, close, volume) {

@@ -24,6 +24,8 @@ const elements = {
   closedTradesCount: document.querySelector("#closedTradesCount"),
   realizedPnl: document.querySelector("#realizedPnl"),
   unrealizedPnl: document.querySelector("#unrealizedPnl"),
+  tradeScopeText: document.querySelector("#tradeScopeText"),
+  tradeQualityText: document.querySelector("#tradeQualityText"),
   positionsBody: document.querySelector("#positionsBody"),
   positionsEmpty: document.querySelector("#positionsEmpty"),
   resultsBody: document.querySelector("#resultsBody"),
@@ -36,8 +38,10 @@ const elements = {
   exportButton: document.querySelector("#exportButton"),
   loadMoreButton: document.querySelector("#loadMoreButton"),
   editListButton: document.querySelector("#editListButton"),
+  tradeSettingsButton: document.querySelector("#tradeSettingsButton"),
   telegramSettingsButton: document.querySelector("#telegramSettingsButton"),
   customListPanel: document.querySelector("#customListPanel"),
+  tradeSettingsPanel: document.querySelector("#tradeSettingsPanel"),
   telegramPanel: document.querySelector("#telegramPanel"),
   accessRow: document.querySelector(".accessRow"),
   customFileInput: document.querySelector("#customFileInput"),
@@ -47,6 +51,11 @@ const elements = {
   saveCustomListButton: document.querySelector("#saveCustomListButton"),
   scanCustomListButton: document.querySelector("#scanCustomListButton"),
   customListStatus: document.querySelector("#customListStatus"),
+  tradeAccessCodeInput: document.querySelector("#tradeAccessCodeInput"),
+  tradeScopeSelect: document.querySelector("#tradeScopeSelect"),
+  tradeQualitySelect: document.querySelector("#tradeQualitySelect"),
+  saveTradeSettingsButton: document.querySelector("#saveTradeSettingsButton"),
+  tradeSettingsStatus: document.querySelector("#tradeSettingsStatus"),
   telegramAccessCodeInput: document.querySelector("#telegramAccessCodeInput"),
   telegramBotTokenInput: document.querySelector("#telegramBotTokenInput"),
   telegramChatIdInput: document.querySelector("#telegramChatIdInput"),
@@ -85,9 +94,17 @@ elements.telegramSettingsButton.addEventListener("click", () => {
     elements.telegramStatus.textContent = elements.telegramStatus.textContent || "Telegram not configured";
   }
 });
+elements.tradeSettingsButton.addEventListener("click", () => {
+  elements.tradeSettingsPanel.hidden = !elements.tradeSettingsPanel.hidden;
+  if (!elements.tradeSettingsPanel.hidden) {
+    elements.tradeAccessCodeInput.value = getAccessCode();
+    renderTradeSettings(state.payload?.tradeSettings);
+  }
+});
 elements.saveCustomListButton.addEventListener("click", saveCustomList);
 elements.scanCustomListButton.addEventListener("click", () => runScan("custom"));
 elements.importCustomFileButton.addEventListener("click", importCustomFile);
+elements.saveTradeSettingsButton.addEventListener("click", saveTradeSettings);
 elements.saveTelegramButton.addEventListener("click", saveTelegramSettings);
 
 document.querySelectorAll(".listTab").forEach((button) => {
@@ -115,7 +132,7 @@ configureMode();
 
 async function loadResults() {
   if (staticMode) {
-    const response = await fetch("data/results.json", { cache: "no-store" });
+    const response = await fetch(`data/results.json?v=${Date.now()}`, { cache: "reload" });
     const payload = await response.json();
     if (!response.ok) throw new Error(payload.error || "Static results failed");
     applyPayload(payload);
@@ -134,6 +151,9 @@ async function loadResults() {
         if (metaResponse.ok && !meta.error) {
           if (meta.customList?.count != null) {
             elements.customListStatus.textContent = `${meta.customList.count} cloud stocks`;
+          }
+          if (meta.tradeSettings) {
+            renderTradeSettings(meta.tradeSettings, { updateBadges: false });
           }
           renderTelegramStatus(meta.telegram);
         }
@@ -160,6 +180,9 @@ async function loadResults() {
       if (payload.telegram || payload.state?.telegram) {
         renderTelegramStatus(payload.telegram, payload.state?.telegram);
       }
+      if (payload.tradeSettings || payload.state?.tradeSettings) {
+        renderTradeSettings(payload.tradeSettings || payload.state?.tradeSettings, { updateBadges: false });
+      }
       return;
     } catch (error) {
       throw error;
@@ -174,9 +197,8 @@ async function loadResults() {
 
 async function runScan(listId = state.currentList) {
   if (staticMode) {
-    elements.scanMeta.textContent = cloudMode
-      ? "Cloud mode updates automatically after the daily scan."
-      : "Online free mode updates from GitHub Actions schedule.";
+    elements.scanMeta.textContent = "Checking latest published cloud scan...";
+    await loadResults();
     return;
   }
   setBusy(true);
@@ -200,6 +222,8 @@ function applyPayload(payload) {
   state.payload = payload || {};
   state.rows = rowsForCurrentList(state.payload);
   renderSummary(state.payload);
+  renderTradeSettings(state.payload.tradeSettings);
+  updateDownloadLinks(state.payload);
   renderPositions(state.payload);
   renderRows();
 }
@@ -234,10 +258,13 @@ function renderSummary(payload) {
   elements.closedTradesCount.textContent = payload.tradeSummary?.closed || 0;
   elements.realizedPnl.textContent = compact(payload.tradeSummary?.realizedPnl || 0);
   elements.unrealizedPnl.textContent = compact(payload.tradeSummary?.unrealizedPnl || 0);
+  elements.tradeScopeText.textContent = payload.tradeSettings?.scopeLabel || "All NSE Market";
+  elements.tradeQualityText.textContent = payload.tradeSettings?.qualityLabel || "Best only";
   const listLabel = state.currentList === "all" ? "All Lists" : listPayload?.label || state.currentList;
   const benchmarkLabel = payload.benchmarkLabel || payload.rules?.benchmarkLabel || payload.benchmark;
+  const staleText = payload.scannedAt && isStaleScan(payload.scannedAt) ? " | Stale: waiting for next cloud scan" : "";
   elements.scanMeta.textContent = payload.scannedAt
-    ? `Last scan ${formatDateTime(payload.scannedAt)} | ${listLabel} | Benchmark ${benchmarkLabel}`
+    ? `Last scan ${formatDateTime(payload.scannedAt)} | ${listLabel} | Benchmark ${benchmarkLabel}${staleText}`
     : "Waiting for first scan";
 }
 
@@ -499,6 +526,44 @@ async function saveCloudCustomList(symbols) {
   elements.customListStatus.textContent = `${payload.count} stocks saved in cloud`;
 }
 
+async function saveTradeSettings() {
+  if (!cloudMode) {
+    elements.tradeSettingsStatus.textContent = "Trade settings cloud setup is not active";
+    return;
+  }
+
+  const accessCode = getAccessCode();
+  if (!accessCode) {
+    elements.tradeSettingsStatus.textContent = "Enter access code first";
+    return;
+  }
+
+  elements.saveTradeSettingsButton.disabled = true;
+  elements.tradeSettingsStatus.textContent = "Saving trade settings...";
+  try {
+    const response = await fetch(cloudApiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "save-trade-settings",
+        accessCode,
+        scopeListId: elements.tradeScopeSelect.value,
+        qualityMode: elements.tradeQualitySelect.value
+      })
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || payload.error) throw new Error(payload.error || "Trade settings save failed");
+    localStorage.setItem("tfAccessCode", accessCode);
+    syncAccessCodeInputs(accessCode);
+    renderTradeSettings(payload.tradeSettings, { updateBadges: false });
+    elements.tradeSettingsStatus.textContent = "Saved. Next scheduled scan will use this selection.";
+  } catch (error) {
+    elements.tradeSettingsStatus.textContent = `Trade settings save failed: ${error.message}`;
+  } finally {
+    elements.saveTradeSettingsButton.disabled = false;
+  }
+}
+
 async function saveTelegramSettings() {
   if (!cloudMode) {
     elements.telegramStatus.textContent = "Telegram cloud setup is not active";
@@ -552,6 +617,35 @@ function renderTelegramStatus(status, latestStatus = null) {
     return;
   }
   elements.telegramStatus.textContent = status?.configured ? "Telegram configured" : "Telegram not configured";
+}
+
+function renderTradeSettings(settings, options = {}) {
+  if (!settings) return;
+  const updateBadges = options.updateBadges !== false;
+  if (elements.tradeScopeSelect && settings.scopeListId) {
+    elements.tradeScopeSelect.value = settings.scopeListId;
+  }
+  if (elements.tradeQualitySelect && settings.qualityMode) {
+    elements.tradeQualitySelect.value = settings.qualityMode;
+  }
+  if (updateBadges && elements.tradeScopeText) {
+    elements.tradeScopeText.textContent = settings.scopeLabel || "All NSE Market";
+  }
+  if (updateBadges && elements.tradeQualityText) {
+    elements.tradeQualityText.textContent = settings.qualityLabel || "Best only";
+  }
+  if (elements.tradeSettingsStatus) {
+    const updated = settings.updatedAt ? ` | saved ${formatDateTime(settings.updatedAt)}` : "";
+    elements.tradeSettingsStatus.textContent =
+      `${settings.scopeLabel || "All NSE Market"} | ${settings.qualityLabel || "Best only"}${updated}`;
+  }
+}
+
+function updateDownloadLinks(payload) {
+  if (!staticMode) return;
+  const version = encodeURIComponent(payload?.scannedAt || Date.now());
+  elements.excelDownloadLink.href = `data/techno-funda-trade-sheet.xlsx?v=${version}`;
+  elements.csvDownloadLink.href = `data/techno-funda-trade-sheet.csv?v=${version}`;
 }
 
 function checkHtml(label, check, asPercent = false) {
@@ -652,19 +746,23 @@ function configureMode() {
   if (!cloudMode) {
     elements.telegramSettingsButton.hidden = true;
     elements.telegramPanel.hidden = true;
+    elements.tradeSettingsButton.hidden = true;
+    elements.tradeSettingsPanel.hidden = true;
   }
   if (!staticMode) return;
-  elements.scanButton.disabled = true;
-  elements.scanButton.title = "Scan runs automatically in GitHub Actions";
+  elements.scanButton.textContent = "Refresh Latest";
+  elements.scanButton.title = "Free cloud scan runs automatically at 08:00 and 09:25 IST";
   if (!cloudMode) elements.editListButton.hidden = true;
   if (elements.accessCodeInput) {
     elements.accessCodeInput.value = localStorage.getItem("tfAccessCode") || "";
   }
+  if (elements.tradeAccessCodeInput) {
+    elements.tradeAccessCodeInput.value = localStorage.getItem("tfAccessCode") || "";
+  }
   if (elements.telegramAccessCodeInput) {
     elements.telegramAccessCodeInput.value = localStorage.getItem("tfAccessCode") || "";
   }
-  elements.excelDownloadLink.href = "data/techno-funda-trade-sheet.xlsx";
-  elements.csvDownloadLink.href = "data/techno-funda-trade-sheet.csv";
+  updateDownloadLinks(state.payload);
 }
 
 function classForAbove(value, threshold) {
@@ -709,6 +807,12 @@ function formatDateTime(value) {
     dateStyle: "medium",
     timeStyle: "short"
   }).format(new Date(value));
+}
+
+function isStaleScan(value) {
+  const scanTime = new Date(value).getTime();
+  if (!Number.isFinite(scanTime)) return false;
+  return Date.now() - scanTime > 26 * 60 * 60 * 1000;
 }
 
 function csvValue(value) {
@@ -843,6 +947,7 @@ function normalizeTradingViewSymbol(value) {
 function getAccessCode() {
   return String(
     elements.accessCodeInput?.value ||
+      elements.tradeAccessCodeInput?.value ||
       elements.telegramAccessCodeInput?.value ||
       localStorage.getItem("tfAccessCode") ||
       ""
@@ -851,5 +956,6 @@ function getAccessCode() {
 
 function syncAccessCodeInputs(accessCode) {
   if (elements.accessCodeInput) elements.accessCodeInput.value = accessCode;
+  if (elements.tradeAccessCodeInput) elements.tradeAccessCodeInput.value = accessCode;
   if (elements.telegramAccessCodeInput) elements.telegramAccessCodeInput.value = accessCode;
 }

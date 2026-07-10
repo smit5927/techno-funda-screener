@@ -6,7 +6,7 @@ import { readLatestScan, readTrades } from "./storage.js";
 import { runScreener } from "./screener.js";
 import { startScheduler } from "./scheduler.js";
 import { loadWatchlist, saveCustomWatchlist } from "./watchlist.js";
-import { writeTradeSheets } from "./trade-journal.js";
+import { tradeSettingsSummary, writeTradeSheets } from "./trade-journal.js";
 import { importSymbolsFromUpload } from "./import-symbols.js";
 
 const app = express();
@@ -190,6 +190,7 @@ function emptyResult() {
     summary: { total: 0, entry: 0, exit: 0, watch: 0, error: 0 },
     results: [],
     tradeSummary: { open: 0, closed: 0, realizedPnl: 0 },
+    tradeSettings: tradeSettingsSummary(appConfig),
     rules: appConfig.rules
   };
 }

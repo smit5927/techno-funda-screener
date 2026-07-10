@@ -31,6 +31,16 @@ If the first row has a column named `Symbol`, `Ticker`, `TradingView Symbol`, `T
 
 For free cloud mode, upload the Excel/CSV directly from the website with the Techno Funda access code.
 
+## Trade Settings
+
+The website has a `Trade Settings` panel. Enter the Techno Funda access code once, then choose which universe should drive the trade sheet, Telegram trade alerts, and open positions from the next scheduled scan:
+
+- All NSE Market
+- Nifty 500
+- My List
+
+Default quality is `Best only (A+/A)`, so the trade sheet takes only the highest-grade valid entries. The screener table still displays all candidates for review.
+
 ## Local Setup
 
 ```powershell
@@ -75,7 +85,7 @@ Live mode is baseline based:
 - A trade opens only when a symbol changes into ENTRY after the go-live baseline.
 - A trade closes only for trades opened by this system after go-live.
 - Weekly RS below zero remains the compulsory exit; daily weakness remains an early-warning reference.
-- The cloud workflow runs after 09:20 IST so the requested opening-window price is available.
+- The cloud workflow runs at 08:00 IST for prior-close candidates and again at 09:25 IST so the requested opening-window price is available in the trade sheet.
 
 Position sizing uses:
 
@@ -104,7 +114,8 @@ The workflow file is:
 It runs at:
 
 ```text
-8:15 AM Asia/Kolkata, Monday-Friday. GitHub Actions stores this as `02:45 UTC`.
+8:00 AM Asia/Kolkata, Monday-Friday. GitHub Actions stores this as `02:30 UTC`.
+9:25 AM Asia/Kolkata, Monday-Friday. GitHub Actions stores this as `03:55 UTC`.
 ```
 
 It also has `workflow_dispatch`, so you can run it manually from the GitHub Actions tab.
@@ -151,3 +162,5 @@ After upload, the cloud list is saved immediately. The next scheduled scan uses 
 ### Website Telegram Setup
 
 Open the website, click `Telegram`, enter the same Techno Funda access code, add the bot token and chat ID, then click `Save Telegram`. The public website never shows the saved token.
+
+Telegram settings are stored in Supabase and reused automatically on future scans. If Telegram says `chat not found`, open the bot once in Telegram and confirm the saved chat ID is correct.

@@ -33,6 +33,20 @@ export async function pullCloudTelegramConfig() {
   return { ok: true, telegram: payload.telegram || null };
 }
 
+export async function pullCloudTradeSettings() {
+  const cloud = cloudConfig();
+  if (!cloud.enabled) {
+    return { ok: false, reason: "cloud sync not configured", tradeSettings: null };
+  }
+
+  const payload = await postCloud(cloud, {
+    action: "get-trade-settings",
+    internalKey: cloud.internalKey
+  });
+
+  return { ok: true, tradeSettings: payload.tradeSettings || null };
+}
+
 export async function pushCloudState(state) {
   const cloud = cloudConfig();
   if (!cloud.enabled) {

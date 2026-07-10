@@ -35,11 +35,18 @@ function boolEnv(name, fallback) {
   return ["1", "true", "yes", "on"].includes(value.toLowerCase());
 }
 
+function choiceEnv(name, fallback, allowed) {
+  const value = String(process.env[name] || "").trim();
+  return allowed.includes(value) ? value : fallback;
+}
+
 const rules = readJson("config/rules.json", {});
 const defaultUniverse = fs.existsSync(resolveProjectPath("config/universe.csv"))
   ? "config/universe.csv"
   : "config/watchlist.csv";
 const dataDir = resolveProjectPath(process.env.DATA_DIR || "data");
+const tradeScopeOptions = ["all-market", "default", "custom"];
+const tradeQualityOptions = ["BEST_ONLY", "STRONG_OR_BETTER", "ALL_ENTRIES"];
 
 export const appConfig = {
   rootDir: ROOT_DIR,
@@ -79,6 +86,8 @@ export const appConfig = {
     capitalPerStock: numberEnv("TRADE_CAPITAL_PER_STOCK", 100000),
     defaultQty: Math.max(1, numberEnv("TRADE_DEFAULT_QTY", 1)),
     onlyNewSignals: boolEnv("TRADE_ONLY_NEW_SIGNALS", true),
+    scopeListId: choiceEnv("TRADE_SCOPE_LIST_ID", "all-market", tradeScopeOptions),
+    qualityMode: choiceEnv("TRADE_QUALITY_MODE", "BEST_ONLY", tradeQualityOptions),
     executionWindowStart: process.env.TRADE_EXECUTION_WINDOW_START || "09:15",
     executionWindowEnd: process.env.TRADE_EXECUTION_WINDOW_END || "09:20",
     executionPriceSource: "first_5m_candle_open"
@@ -89,12 +98,13 @@ export const appConfig = {
   },
   schedule: {
     enabled: boolEnv("SCHEDULE_ENABLED", true),
-    cron: process.env.SCAN_CRON || "30 9 * * 1-5",
+    cron: process.env.SCAN_CRON || "0 8 * * 1-5",
     timezone: process.env.SCAN_TIMEZONE || "Asia/Kolkata"
   },
   telegram: {
     botToken: process.env.TELEGRAM_BOT_TOKEN || "",
     chatId: process.env.TELEGRAM_CHAT_ID || "",
-    sendEmpty: boolEnv("TELEGRAM_SEND_EMPTY", true)
+    sendEmpty: boolEnv("TELEGRAM_SEND_EMPTY", true),
+    retryFailedEventsMaxHours: Math.max(0, numberEnv("TELEGRAM_RETRY_FAILED_EVENTS_MAX_HOURS", 12))
   }
 };

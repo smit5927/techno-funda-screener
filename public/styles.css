@@ -166,6 +166,7 @@ button:hover {
 .tradeBand,
 .listBand,
 .customListPanel,
+.tradeSettingsPanel,
 .telegramPanel {
   display: flex;
   align-items: center;
@@ -225,11 +226,13 @@ button:hover {
   color: #ffffff;
 }
 
-.customListPanel {
+.customListPanel,
+.tradeSettingsPanel {
   display: block;
 }
 
 .customListPanel[hidden],
+.tradeSettingsPanel[hidden],
 .telegramPanel[hidden] {
   display: none;
 }
@@ -286,12 +289,21 @@ button:hover {
   gap: 8px;
 }
 
-.telegramInputs input {
+.settingsInputs {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.8fr) minmax(180px, 1fr) minmax(220px, 1.2fr);
+  gap: 8px;
+}
+
+.telegramInputs input,
+.settingsInputs input,
+.settingsInputs select {
   width: 100%;
   padding: 0 12px;
 }
 
-#telegramStatus {
+#telegramStatus,
+#tradeSettingsStatus {
   color: var(--muted);
 }
 
@@ -647,6 +659,10 @@ tbody tr:hover {
   }
 
   .telegramInputs {
+    grid-template-columns: 1fr;
+  }
+
+  .settingsInputs {
     grid-template-columns: 1fr;
   }
 }

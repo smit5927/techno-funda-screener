@@ -13,7 +13,10 @@ on:
       - "config/universe.csv"
       - "config/custom-list.csv"
   schedule:
-    - cron: "0 4 * * 1-5"
+    # 08:00 IST: publish prior close entry/exit candidates before the market opens.
+    - cron: "30 2 * * 1-5"
+    # 09:25 IST: update trade sheet with the 09:15-09:20 execution candle price.
+    - cron: "55 3 * * 1-5"
 
 permissions:
   contents: write
@@ -66,7 +69,10 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_SEND_EMPTY: "false"
+          TELEGRAM_RETRY_FAILED_EVENTS_MAX_HOURS: "12"
           TRADE_CAPITAL_PER_STOCK: "100000"
+          TRADE_SCOPE_LIST_ID: "all-market"
+          TRADE_QUALITY_MODE: "BEST_ONLY"
           TECHNO_FUNDA_CLOUD_API_URL: https://ywvwsumwhmfkqrqrxsvs.supabase.co/functions/v1/techno-funda-api
           TECHNO_FUNDA_INTERNAL_KEY: ${{ secrets.TECHNO_FUNDA_INTERNAL_KEY }}
 

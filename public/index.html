@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Techno Funda Screener</title>
-    <link rel="stylesheet" href="styles.css?v=20260709-market-execution" />
+    <link rel="stylesheet" href="styles.css?v=20260710-trade-settings" />
   </head>
   <body>
     <header class="topbar">
@@ -64,6 +64,14 @@
           <span>Unrealized P&L</span>
           <strong id="unrealizedPnl">0.00</strong>
         </div>
+        <div>
+          <span>Trade Scope</span>
+          <strong id="tradeScopeText">All NSE</strong>
+        </div>
+        <div>
+          <span>Quality</span>
+          <strong id="tradeQualityText">Best</strong>
+        </div>
         <a id="excelDownloadLink" class="downloadButton" href="/api/trades/download">Excel</a>
         <a id="csvDownloadLink" class="downloadButton" href="/api/trades/download.csv">CSV</a>
       </section>
@@ -77,6 +85,7 @@
         </div>
         <div class="listActions">
           <button id="editListButton" type="button">Edit My List</button>
+          <button id="tradeSettingsButton" type="button">Trade Settings</button>
           <button id="telegramSettingsButton" type="button">Telegram</button>
         </div>
       </section>
@@ -94,6 +103,26 @@
           <button id="saveCustomListButton" type="button">Save My List</button>
           <button id="scanCustomListButton" type="button">Scan My List</button>
           <span id="customListStatus"></span>
+        </div>
+      </section>
+
+      <section id="tradeSettingsPanel" class="tradeSettingsPanel" hidden>
+        <div class="settingsInputs">
+          <input id="tradeAccessCodeInput" type="password" inputmode="numeric" placeholder="Access code" autocomplete="one-time-code" />
+          <select id="tradeScopeSelect" aria-label="Trade source">
+            <option value="all-market">All NSE Market</option>
+            <option value="default">Nifty 500</option>
+            <option value="custom">My List</option>
+          </select>
+          <select id="tradeQualitySelect" aria-label="Trade quality">
+            <option value="BEST_ONLY">Best only (A+/A)</option>
+            <option value="STRONG_OR_BETTER">Strong and best (A+/A/B)</option>
+            <option value="ALL_ENTRIES">All entry signals</option>
+          </select>
+        </div>
+        <div class="customActions">
+          <button id="saveTradeSettingsButton" type="button">Save Trade Settings</button>
+          <span id="tradeSettingsStatus"></span>
         </div>
       </section>
 
@@ -184,6 +213,6 @@
 
     <aside id="detailPanel" class="detailPanel" aria-live="polite"></aside>
 
-    <script src="app.js?v=20260709-market-execution" type="module"></script>
+    <script src="app.js?v=20260710-trade-settings" type="module"></script>
   </body>
 </html>

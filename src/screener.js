@@ -14,7 +14,7 @@ import { loadWatchlist } from "./watchlist.js";
 import { aggregateDailyToCompletedWeeks, fetchCandles } from "./yahoo.js";
 import { readLatestScan, saveLatestScan } from "./storage.js";
 import { sendTelegramSummary } from "./telegram.js";
-import { updateTradeJournal } from "./trade-journal.js";
+import { tradeSettingsSummary, updateTradeJournal } from "./trade-journal.js";
 
 export async function runScreener(options = {}) {
   const config = options.config || appConfig;
@@ -93,16 +93,18 @@ export async function runScreener(options = {}) {
     lists: mergedLists,
     scannedListIds: lists.map((list) => list.id),
     marketContext,
+    tradeSettings: tradeSettingsSummary(config),
     rules,
     summary: summarize(allResults)
   };
 
   saveLatestScan(payload);
   const journal = await updateTradeJournal(payload, config);
-  payload.tradeSummary = summarizeTrades(journal.trades);
-  payload.trades = journal.trades;
+  const visibleTrades = journal.visibleTrades || journal.trades;
+  payload.tradeSummary = summarizeTrades(visibleTrades);
+  payload.trades = visibleTrades;
   payload.tradeEvents = mergeTradeEvents(
-    shouldRetryTradeEvents(previousScan, options)
+    shouldRetryTradeEvents(previousScan, options, config, payload.scannedAt)
       ? previousScan.tradeEvents
       : [],
     journal.events
@@ -127,12 +129,19 @@ export async function runScreener(options = {}) {
   return finalPayload;
 }
 
-function shouldRetryTradeEvents(previousScan, options) {
+function shouldRetryTradeEvents(previousScan, options, config, currentScanAt) {
+  const previousTime = new Date(previousScan?.scannedAt || 0).getTime();
+  const currentTime = new Date(currentScanAt || Date.now()).getTime();
+  const ageHours = (currentTime - previousTime) / (60 * 60 * 1000);
+  const retryHours = config.telegram?.retryFailedEventsMaxHours ?? 12;
   return (
     options.sendTelegram === true &&
     Array.isArray(previousScan?.tradeEvents) &&
     previousScan.tradeEvents.length > 0 &&
-    previousScan.telegram?.sent !== true
+    previousScan.telegram?.sent !== true &&
+    Number.isFinite(ageHours) &&
+    ageHours >= 0 &&
+    ageHours <= retryHours
   );
 }
 

@@ -9,6 +9,18 @@ const CORS_HEADERS = {
 
 type JsonRecord = Record<string, unknown>;
 
+const TRADE_SCOPE_OPTIONS = [
+  { id: "all-market", label: "All NSE Market" },
+  { id: "default", label: "Nifty 500" },
+  { id: "custom", label: "My List" }
+];
+
+const TRADE_QUALITY_OPTIONS = [
+  { id: "BEST_ONLY", label: "Best only (A+/A)" },
+  { id: "STRONG_OR_BETTER", label: "Strong and best (A+/A/B)" },
+  { id: "ALL_ENTRIES", label: "All entry signals" }
+];
+
 Deno.serve(async (request: Request) => {
   if (request.method === "OPTIONS") {
     return new Response("ok", { headers: CORS_HEADERS });
@@ -74,6 +86,24 @@ Deno.serve(async (request: Request) => {
       });
     }
 
+    if (action === "save-trade-settings") {
+      const accessCode = String(body.accessCode || "");
+      if (!(await verifyCode("access_hash", accessCode))) {
+        return json({ error: "Invalid access code" }, 401);
+      }
+
+      const settings = {
+        ...normalizeTradeSettings(body),
+        updatedAt: new Date().toISOString(),
+        source: "website"
+      };
+      await upsertValue("trade_settings", settings);
+      return json({
+        ok: true,
+        tradeSettings: publicTradeSettings(settings)
+      });
+    }
+
     if (action === "get-custom-list") {
       const internalKey = String(body.internalKey || "");
       if (!(await verifyCode("internal_hash", internalKey))) {
@@ -99,6 +129,18 @@ Deno.serve(async (request: Request) => {
       });
     }
 
+    if (action === "get-trade-settings") {
+      const internalKey = String(body.internalKey || "");
+      if (!(await verifyCode("internal_hash", internalKey))) {
+        return json({ error: "Invalid internal key" }, 401);
+      }
+      const settings = await readValue("trade_settings", {});
+      return json({
+        ok: true,
+        tradeSettings: publicTradeSettings(settings)
+      });
+    }
+
     if (action === "save-state") {
       const internalKey = String(body.internalKey || "");
       if (!(await verifyCode("internal_hash", internalKey))) {
@@ -120,10 +162,11 @@ Deno.serve(async (request: Request) => {
 });
 
 async function getState() {
-  const [state, customList, telegramConfig] = await Promise.all([
+  const [state, customList, telegramConfig, tradeSettings] = await Promise.all([
     readValue("latest_state", null),
     readValue("custom_list", { symbols: [] }),
-    readValue("telegram_config", {})
+    readValue("telegram_config", {}),
+    readValue("trade_settings", {})
   ]);
   return {
     ok: true,
@@ -132,14 +175,16 @@ async function getState() {
       count: Array.isArray(customList.symbols) ? customList.symbols.length : 0,
       updatedAt: customList.updatedAt || null
     },
-    telegram: publicTelegramStatus(telegramConfig)
+    telegram: publicTelegramStatus(telegramConfig),
+    tradeSettings: publicTradeSettings(tradeSettings)
   };
 }
 
 async function getPublicMetadata() {
-  const [customList, telegramConfig] = await Promise.all([
+  const [customList, telegramConfig, tradeSettings] = await Promise.all([
     readValue("custom_list", { symbols: [] }),
-    readValue("telegram_config", {})
+    readValue("telegram_config", {}),
+    readValue("trade_settings", {})
   ]);
   return {
     ok: true,
@@ -147,7 +192,8 @@ async function getPublicMetadata() {
       count: Array.isArray(customList.symbols) ? customList.symbols.length : 0,
       updatedAt: customList.updatedAt || null
     },
-    telegram: publicTelegramStatus(telegramConfig)
+    telegram: publicTelegramStatus(telegramConfig),
+    tradeSettings: publicTradeSettings(tradeSettings)
   };
 }
 
@@ -157,6 +203,32 @@ function publicTelegramStatus(config: any) {
     configured,
     enabled: config?.enabled !== false,
     updatedAt: config?.updatedAt || null
+  };
+}
+
+function publicTradeSettings(settings: any) {
+  const normalized = normalizeTradeSettings(settings);
+  return {
+    ...normalized,
+    updatedAt: settings?.updatedAt || null,
+    scopeOptions: TRADE_SCOPE_OPTIONS,
+    qualityOptions: TRADE_QUALITY_OPTIONS
+  };
+}
+
+function normalizeTradeSettings(input: any) {
+  const requestedScope = String(input?.scopeListId || input?.tradeScope || "").trim();
+  const scope =
+    TRADE_SCOPE_OPTIONS.find((option) => option.id === requestedScope) || TRADE_SCOPE_OPTIONS[0];
+  const requestedQuality = String(input?.qualityMode || "").trim().toUpperCase();
+  const quality =
+    TRADE_QUALITY_OPTIONS.find((option) => option.id === requestedQuality) ||
+    TRADE_QUALITY_OPTIONS[0];
+  return {
+    scopeListId: scope.id,
+    scopeLabel: scope.label,
+    qualityMode: quality.id,
+    qualityLabel: quality.label
   };
 }
 

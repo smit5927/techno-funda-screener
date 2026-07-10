@@ -68,6 +68,17 @@ The same stock in multiple lists is scanned once and creates only one trade. Its
 - Execution price is the open of the first five-minute candle at 09:15 IST, inside the requested 09:15-09:20 window.
 - Trade states are `PENDING_ENTRY`, `OPEN`, `PENDING_EXIT`, and `CLOSED`.
 - Existing signals are baselined without old alerts or historical trades.
+- The free online workflow runs at 08:00 IST to publish prior-close candidates and again at 09:25 IST to fill the actual 09:15 execution price.
+
+## Trade Selection
+
+The website has a persistent Trade Settings panel. The selected source applies from the next scheduled scan:
+
+- All NSE Market
+- Nifty 500
+- My List
+
+The default trade quality is `BEST_ONLY`, which opens sheet/Telegram trades only for A+ or A setup-grade entries. The screener table still shows every ENTRY/EXIT/WATCH candidate for research, but the trade sheet, Telegram trade alerts, and open positions use the selected trade source and quality filter.
 
 ## Trade Sheet
 
