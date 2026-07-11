@@ -76,8 +76,9 @@ function addTradeEvents(lines, events) {
       const score = trade.entrySnapshot?.score;
       const setupScore = trade.entrySnapshot?.setupStrengthScore;
       const coverage = conceptCoverageText(trade);
+      const entryStyle = trade.entrySnapshot?.entryStyle?.label || "Entry style NA";
       lines.push(
-        `BUY FILLED ${trade.symbol} (${trade.listLabel}) signal ${trade.entrySignalDate} | ${trade.entryDate} ${trade.entryTime} @ ${fmt(trade.entryPrice)} | qty ${trade.quantity} | invested ${fmt(trade.investedValue)} | grade ${trade.entrySnapshot?.setupGrade || "NA"} | score ${fmt(score)} setup ${fmt(setupScore)} | concepts ${coverage}`
+        `BUY FILLED ${trade.symbol} (${trade.listLabel}) signal ${trade.entrySignalDate} | ${trade.entryDate} ${trade.entryTime} @ ${fmt(trade.entryPrice)} | qty ${trade.quantity} | invested ${fmt(trade.investedValue)} | ${entryStyle} | grade ${trade.entrySnapshot?.setupGrade || "NA"} | score ${fmt(score)} setup ${fmt(setupScore)} | concepts ${coverage}`
       );
       lines.push(`   Reason: ${(trade.entryReason || []).join(" ")}`);
     }
@@ -89,7 +90,7 @@ function addTradeEvents(lines, events) {
     }
     if (event.type === "ENTRY_SIGNAL_PENDING") {
       lines.push(
-        `BUY PENDING ${trade.symbol} | closing signal ${trade.entrySignalDate} | waiting for next session 09:15-09:20 price | concepts ${conceptCoverageText(trade)}`
+        `BUY PENDING ${trade.symbol} | closing signal ${trade.entrySignalDate} | ${trade.entrySnapshot?.entryStyle?.label || "Entry style NA"} | waiting for next session 09:15-09:20 price | concepts ${conceptCoverageText(trade)}`
       );
       lines.push(`   Reason: ${(trade.entryReason || []).join(" ")}`);
     }

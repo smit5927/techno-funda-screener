@@ -61,7 +61,15 @@
     "candleConfirmation": true,
     "marketRegime": true,
     "sectorBreadthMinPct": 50,
-    "sectorBreadthMinStocks": 5
+    "sectorBreadthMinStocks": 5,
+    "retracementLookback": 5,
+    "retracementMinPullbackPct": 2,
+    "retracementMaxPullbackPct": 15,
+    "retracementSupportProximityPct": 5,
+    "retracementBreakoutRetestPct": 3,
+    "retracementDryVolumeMaxRatio": 0.9,
+    "retracementReclaimVolumeMinRatio": 1.1,
+    "retracementMaxRiskPct": 8
   },
   "institutionalContext": {
     "enabled": true,

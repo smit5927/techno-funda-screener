@@ -15,12 +15,14 @@ The 73 raw Learn2Trade videos contain several trading styles: positional equity,
 - RS55: roughly a three-month relative return comparison against the benchmark.
 - RS21: shorter relative momentum and early deterioration context.
 - Breakout confirmation: a strong stock is preferred when price confirms through a prior range/high.
+- Retracement entry: a strong RS leader is preferred when it pulls back into Supertrend, 50-DMA, or breakout-retest support, volume contracts on the fall or expands on reclaim, and a bullish candle confirms the turn.
 - Volume shocker: unusual volume supports participation and follow-through.
 - Trend context: Supertrend and 50/200-DMA structure distinguish healthy trends from weak ones.
 - Sector context: strong stocks are preferred when their industry group has broad participation.
 - Candle IPC principle: identification, placement, and confirmation; bullish engulfing, hammer, and previous-high confirmation are recorded.
 - Volatility and liquidity: ATR percentage and average traded value expose unstable or hard-to-execute setups.
 - Risk references: Supertrend distance, previous candle low, two-candle low, and four-candle low are recorded without overriding the compulsory exit.
+- Pullback risk: retracement support distance is recorded so the system can separate healthy buyable pullbacks from deep damage.
 - Market regime: NIFTY 500 RSI and 50/200-DMA context show whether the broad market supports long trades.
 
 ## Ingested Index, Derivatives, Options, And Commodity Evidence

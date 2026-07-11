@@ -42,6 +42,7 @@ These checks do not create or block entry by themselves. They increase setup qua
 
 - Price crosses the previous 55-day high.
 - Price is inside the 52-week high zone or crosses the 52-week high.
+- Retracement buy setup: a leader pulls back 2-15% from the recent high, holds/reclaims Supertrend/50-DMA/breakout retest support within 5%, shows dry pullback volume or reclaim volume, closes with a bullish reclaim candle, and keeps support risk within 8%.
 - Latest volume is at least 1.5x the 50-day average.
 - Weekly RS and daily RS55 are rising.
 - Close is above 50-DMA and 200-DMA, with 50-DMA above 200-DMA.
@@ -57,6 +58,17 @@ These checks do not create or block entry by themselves. They increase setup qua
 - Gold, silver, copper, crude oil, and USD/INR proxy trends are mapped to sector sensitivity.
 
 Candlestick, market regime, derivatives, option-chain, commodity/currency, volatility, liquidity, and fundamental checks rank a valid entry as A+/A/B/C. They never override a failed compulsory entry check.
+
+## Entry Style Classification
+
+Every valid entry is classified so the website, Telegram alert, CSV, and trade sheet show why the buy exists:
+
+- `Retracement buy`: RS leader pulls back to support/retest zone and gives reclaim confirmation.
+- `Breakout buy`: price closes through the recent high or 52-week high.
+- `Momentum continuation buy`: price remains near high with volume confirmation.
+- `Trend continuation buy`: compulsory RS/RSI/Supertrend checks pass, but no breakout/retracement tag is active.
+
+The retracement module is an entry-style and quality module. The stock still must pass the compulsory weekly/daily RSI, weekly RS, daily RS55, daily RS21, and close-above-Supertrend checks.
 
 ## Institutional Multi-Market Context
 
@@ -98,4 +110,4 @@ The default trade quality is `BEST_ONLY`, which opens sheet/Telegram trades only
 
 ## Trade Sheet
 
-Every new post-go-live entry uses Rs. 100000 capital. The workbook contains Summary, Open Positions, Pending Orders, Closed Trades, and All Trades sheets. It stores signal dates separately from 09:15 execution dates/prices, quantity, invested value, realized/unrealized P&L, setup grade, institutional score, index/derivatives/options/commodity reasons, concept coverage, fundamentals, sector breadth, breakout/high-zone flags, volume, ATR, candle context, Supertrend risk, and candle-low references.
+Every new post-go-live entry uses Rs. 100000 capital. The workbook contains Summary, Open Positions, Pending Orders, Closed Trades, and All Trades sheets. It stores signal dates separately from 09:15 execution dates/prices, quantity, invested value, realized/unrealized P&L, entry style, setup grade, institutional score, index/derivatives/options/commodity reasons, concept coverage, retracement depth/support/risk/volume, fundamentals, sector breadth, breakout/high-zone flags, volume, ATR, candle context, Supertrend risk, and candle-low references.

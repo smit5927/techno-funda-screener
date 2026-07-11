@@ -382,6 +382,7 @@ function renderDetail(row) {
         <h2>${escapeHtml(row.symbol)} - ${escapeHtml(row.name || "")}</h2>
         <div class="neutral">${escapeHtml(row.industry || "")} | As of ${escapeHtml(row.asOf || "NA")}</div>
         <div class="neutral">${escapeHtml(row.listLabel || "")}</div>
+        <div class="neutral">${escapeHtml(row.entryStyle?.label || "")}</div>
       </div>
       <span class="pill ${escapeHtml(row.status)}">${escapeHtml(row.status)}</span>
     </div>
@@ -404,6 +405,10 @@ function renderDetail(row) {
       ${setupCheckHtml("55D breakout", setupChecks.recentHighBreakout, setupValues.priorRecentHigh)}
       ${setupCheckHtml("52W high zone", setupChecks.nearYearHigh, setupValues.priorYearHigh)}
       ${setupCheckHtml("Volume shocker", setupChecks.volumeExpansion, setupValues.volumeRatio, "x")}
+      ${setupCheckHtml("Retracement buy", setupChecks.retracementBuyZone, setupValues.retracementPullbackDepthPct, "%")}
+      ${setupCheckHtml("Pullback support", setupValues.retracementSupportProximityOk, setupValues.retracementSupportDistancePct, "%")}
+      ${setupCheckHtml("Pullback volume", setupValues.retracementVolumePatternOk, setupValues.retracementPullbackVolumeRatio, "x")}
+      ${setupCheckHtml("Reclaim candle", setupValues.retracementReclaimCandleOk, setupValues.retracementCloseLocationPct, "%")}
       ${setupCheckHtml("RS55 rising", setupChecks.dailyLongRsRising)}
       ${setupCheckHtml("50/200 DMA", setupChecks.smaFastAboveSlow)}
       ${setupCheckHtml("Risk to ST", setupChecks.favorableRiskToSupertrend, setupValues.riskToSupertrendPct, "%")}
@@ -753,6 +758,7 @@ function exportCsv() {
     "list",
     "symbol",
     "name",
+    "entryStyle",
     "close",
     "dailySupertrend",
     "dailyPriceAboveSupertrend",
@@ -769,6 +775,12 @@ function exportCsv() {
     "volumeRatio",
     "riskToSupertrendPct",
     "previousLow",
+    "retracementBuy",
+    "retracementPullbackDepthPct",
+    "retracementSupport",
+    "retracementSupportDistancePct",
+    "retracementPullbackVolumeRatio",
+    "retracementReclaimVolumeRatio",
     "institutionalScore",
     "indexContext",
     "derivativesContext",
@@ -787,6 +799,7 @@ function exportCsv() {
     const exportRow = {
       ...row,
       list: row.listLabel,
+      entryStyle: row.entryStyle?.label || "",
       sectorBreadth: Number.isFinite(row.sectorStrength?.breadthPct)
         ? `${compact(row.sectorStrength.breadthPct)}%`
         : "",
@@ -800,6 +813,20 @@ function exportCsv() {
         : "",
       previousLow: Number.isFinite(row.setupStrength?.values?.previousLow)
         ? compact(row.setupStrength.values.previousLow)
+        : "",
+      retracementBuy: row.setupStrength?.checks?.retracementBuyZone ? "Yes" : "No",
+      retracementPullbackDepthPct: Number.isFinite(row.setupStrength?.values?.retracementPullbackDepthPct)
+        ? compact(row.setupStrength.values.retracementPullbackDepthPct)
+        : "",
+      retracementSupport: row.setupStrength?.values?.retracementSupportSource || "",
+      retracementSupportDistancePct: Number.isFinite(row.setupStrength?.values?.retracementSupportDistancePct)
+        ? compact(row.setupStrength.values.retracementSupportDistancePct)
+        : "",
+      retracementPullbackVolumeRatio: Number.isFinite(row.setupStrength?.values?.retracementPullbackVolumeRatio)
+        ? compact(row.setupStrength.values.retracementPullbackVolumeRatio)
+        : "",
+      retracementReclaimVolumeRatio: Number.isFinite(row.setupStrength?.values?.retracementCurrentVolumeRatio)
+        ? compact(row.setupStrength.values.retracementCurrentVolumeRatio)
         : "",
       institutionalScore: row.institutionalContext?.maxScore
         ? `${row.institutionalContext.score}/${row.institutionalContext.maxScore}`

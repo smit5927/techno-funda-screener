@@ -304,6 +304,7 @@ async function scanSymbol(
   const setupReason = buildSetupStrengthReasons(setupStrength);
   const institutionalContext = buildSymbolInstitutionalContext(item, institutionalMarketContext);
   const institutionalReason = buildInstitutionalReasons(institutionalContext);
+  const entryStyle = buildEntryStyle(setupStrength);
   const weaknessReason = buildWeaknessReasons({
     dailyShortRs,
     dailyLongRs,
@@ -315,6 +316,7 @@ async function scanSymbol(
     status === "ENTRY"
       ? [
           ...entryReason,
+          `Entry style: ${entryStyle.label}.`,
           ...setupReason,
           ...institutionalReason,
           `Execution plan: buy on the next trading session using the 09:15 five-minute candle open.`
@@ -371,6 +373,7 @@ async function scanSymbol(
           ? "SELL_NEXT_SESSION_0915_IF_OPEN"
           : "NONE",
     priceConfirmationScore: [weeklyPriceOk, dailyLongPriceOk, dailyShortPriceOk].filter(Boolean).length,
+    entryStyle,
     setupStrength,
     institutionalContext,
     institutionalScore,
@@ -458,6 +461,19 @@ function buildSetupStrength({
     Number.isFinite(riskToSupertrendPct) &&
     riskToSupertrendPct >= 0 &&
     riskToSupertrendPct <= riskToSupertrendMaxPct;
+  const retracement = buildRetracementContext({
+    dailyCandles,
+    latestDailyIndex,
+    close,
+    dailySupertrend,
+    priorRecentHigh,
+    smaFast,
+    smaSlow,
+    volumeAverage,
+    volumeRatio,
+    candle,
+    setupRules
+  });
 
   const checks = {
     recentHighBreakout,
@@ -476,6 +492,7 @@ function buildSetupStrength({
     bullishCandleConfirmation: candle.bullishConfirmation,
     bullishEngulfing: candle.bullishEngulfing,
     hammer: candle.hammer,
+    retracementBuyZone: retracement.retracementBuyZone,
     marketRegimeStrong
   };
 
@@ -497,6 +514,28 @@ function buildSetupStrength({
       fourCandleLow,
       riskToSupertrendPct,
       riskToPreviousLowPct,
+      retracementPullbackDepthPct: retracement.pullbackDepthPct,
+      retracementSupportSource: retracement.supportSource,
+      retracementSupportReference: retracement.supportReference,
+      retracementSupportDistancePct: retracement.supportDistancePct,
+      retracementPullbackVolumeRatio: retracement.pullbackVolumeRatio,
+      retracementCurrentVolumeRatio: retracement.currentVolumeRatio,
+      retracementCloseLocationPct: retracement.closeLocationPct,
+      retracementPullbackDepthOk: retracement.pullbackDepthOk,
+      retracementSupportProximityOk: retracement.supportProximityOk,
+      retracementVolumePatternOk: retracement.volumePatternOk,
+      retracementReclaimCandleOk: retracement.reclaimCandleOk,
+      retracementRiskOk: retracement.riskOk,
+      retracementTrendHoldOk: retracement.trendHoldOk,
+      retracementPatternLabel: retracement.patternLabel,
+      retracementLookback: retracement.lookback,
+      retracementMinPullbackPct: retracement.minPullbackPct,
+      retracementMaxPullbackPct: retracement.maxPullbackPct,
+      retracementSupportProximityPct: retracement.supportProximityPct,
+      retracementBreakoutRetestPct: retracement.breakoutRetestPct,
+      retracementDryVolumeMaxRatio: retracement.dryVolumeMaxRatio,
+      retracementReclaimVolumeMinRatio: retracement.reclaimVolumeMinRatio,
+      retracementMaxRiskPct: retracement.maxRiskPct,
       recentHighPeriod,
       yearHighPeriod,
       nearYearHighPct,
@@ -512,6 +551,166 @@ function buildSetupStrength({
       marketRegimeLabel: marketContext?.label || "Unknown"
     }
   };
+}
+
+function buildRetracementContext({
+  dailyCandles,
+  latestDailyIndex,
+  close,
+  dailySupertrend,
+  priorRecentHigh,
+  smaFast,
+  smaSlow,
+  volumeAverage,
+  volumeRatio,
+  candle,
+  setupRules
+}) {
+  const currentCandle = dailyCandles[latestDailyIndex] || null;
+  const previousCandle = dailyCandles[latestDailyIndex - 1] || null;
+  const lookback = setupRules.retracementLookback || 5;
+  const minPullbackPct = setupRules.retracementMinPullbackPct ?? 2;
+  const maxPullbackPct = setupRules.retracementMaxPullbackPct ?? 15;
+  const supportProximityPct = setupRules.retracementSupportProximityPct ?? 5;
+  const breakoutRetestPct = setupRules.retracementBreakoutRetestPct ?? 3;
+  const dryVolumeMaxRatio = setupRules.retracementDryVolumeMaxRatio ?? 0.9;
+  const reclaimVolumeMinRatio = setupRules.retracementReclaimVolumeMinRatio ?? 1.1;
+  const maxRiskPct = setupRules.retracementMaxRiskPct ?? 8;
+
+  const pullbackDepthPct =
+    Number.isFinite(priorRecentHigh) && priorRecentHigh > 0 && close < priorRecentHigh
+      ? ((priorRecentHigh - close) / priorRecentHigh) * 100
+      : 0;
+  const pullbackDepthOk =
+    Number.isFinite(pullbackDepthPct) &&
+    pullbackDepthPct >= minPullbackPct &&
+    pullbackDepthPct <= maxPullbackPct;
+  const supportCandidates = [
+    supportCandidate("Supertrend", dailySupertrend, close),
+    supportCandidate(`${setupRules.smaFastPeriod || 50}-DMA`, smaFast, close),
+    supportCandidate(`${setupRules.smaSlowPeriod || 200}-DMA`, smaSlow, close)
+  ].filter(Boolean);
+  const nearestSupport = supportCandidates.sort((a, b) => a.distancePct - b.distancePct)[0] || null;
+  const breakoutRetestDistancePct =
+    Number.isFinite(priorRecentHigh) && priorRecentHigh > 0 && close > 0
+      ? Math.abs((close - priorRecentHigh) / close) * 100
+      : null;
+  const breakoutRetest =
+    Number.isFinite(breakoutRetestDistancePct) && breakoutRetestDistancePct <= breakoutRetestPct;
+  const supportSource = breakoutRetest
+    ? `${setupRules.dailyRecentHighPeriod || 55}D high retest`
+    : nearestSupport?.source || "";
+  const supportReference = breakoutRetest ? priorRecentHigh : nearestSupport?.value ?? null;
+  const supportDistancePct = breakoutRetest
+    ? breakoutRetestDistancePct
+    : nearestSupport?.distancePct ?? null;
+  const supportProximityOk =
+    Number.isFinite(supportDistancePct) && supportDistancePct <= supportProximityPct;
+  const pullbackVolumeAverage = averageVolume(dailyCandles, lookback, latestDailyIndex - 1);
+  const pullbackVolumeRatio =
+    Number.isFinite(pullbackVolumeAverage) && Number.isFinite(volumeAverage) && volumeAverage > 0
+      ? pullbackVolumeAverage / volumeAverage
+      : null;
+  const dryPullbackVolume =
+    Number.isFinite(pullbackVolumeRatio) && pullbackVolumeRatio <= dryVolumeMaxRatio;
+  const reclaimVolume =
+    Number.isFinite(volumeRatio) && volumeRatio >= reclaimVolumeMinRatio;
+  const volumePatternOk = dryPullbackVolume || reclaimVolume;
+  const closeLocationPct =
+    Number.isFinite(currentCandle?.high) &&
+    Number.isFinite(currentCandle?.low) &&
+    currentCandle.high > currentCandle.low
+      ? ((close - currentCandle.low) / (currentCandle.high - currentCandle.low)) * 100
+      : null;
+  const reclaimCandleOk =
+    candle.bullishConfirmation ||
+    candle.bullishEngulfing ||
+    candle.hammer ||
+    (
+      Number.isFinite(currentCandle?.open) &&
+      Number.isFinite(previousCandle?.close) &&
+      currentCandle.close > currentCandle.open &&
+      currentCandle.close > previousCandle.close &&
+      Number.isFinite(closeLocationPct) &&
+      closeLocationPct >= 55
+    );
+  const riskOk =
+    Number.isFinite(supportDistancePct) &&
+    supportDistancePct >= 0 &&
+    supportDistancePct <= maxRiskPct;
+  const trendHoldOk =
+    Number.isFinite(dailySupertrend) &&
+    close > dailySupertrend &&
+    (Number.isFinite(smaFast) ? close >= smaFast * 0.98 : true);
+  const retracementBuyZone =
+    pullbackDepthOk &&
+    supportProximityOk &&
+    volumePatternOk &&
+    reclaimCandleOk &&
+    riskOk &&
+    trendHoldOk;
+  const patternLabel = retracementBuyZone
+    ? `Pullback ${fmt(pullbackDepthPct)}% to ${supportSource}`
+    : pullbackDepthOk
+      ? `Pullback present, waiting for support/reclaim confirmation`
+      : "No institutional retracement setup";
+
+  return {
+    retracementBuyZone,
+    pullbackDepthPct,
+    supportSource,
+    supportReference,
+    supportDistancePct,
+    pullbackVolumeRatio,
+    currentVolumeRatio: volumeRatio,
+    closeLocationPct,
+    pullbackDepthOk,
+    supportProximityOk,
+    dryPullbackVolume,
+    reclaimVolume,
+    volumePatternOk,
+    reclaimCandleOk,
+    riskOk,
+    trendHoldOk,
+    breakoutRetest,
+    patternLabel,
+    lookback,
+    minPullbackPct,
+    maxPullbackPct,
+    supportProximityPct,
+    breakoutRetestPct,
+    dryVolumeMaxRatio,
+    reclaimVolumeMinRatio,
+    maxRiskPct
+  };
+}
+
+function supportCandidate(source, value, close) {
+  if (!Number.isFinite(value) || !Number.isFinite(close) || close <= 0 || value <= 0) return null;
+  if (value > close) return null;
+  return {
+    source,
+    value,
+    distancePct: ((close - value) / close) * 100
+  };
+}
+
+function buildEntryStyle(setupStrength) {
+  const checks = setupStrength?.checks || {};
+  const values = setupStrength?.values || {};
+  if (checks.retracementBuyZone) {
+    return {
+      type: "RETRACEMENT_BUY",
+      label: `Retracement buy near ${values.retracementSupportSource || "support"}`
+    };
+  }
+  if (checks.yearHighBreakout || checks.recentHighBreakout) {
+    return { type: "BREAKOUT_BUY", label: "Breakout buy" };
+  }
+  if (checks.nearYearHigh && checks.volumeExpansion) {
+    return { type: "MOMENTUM_CONTINUATION", label: "Momentum continuation buy" };
+  }
+  return { type: "TREND_CONTINUATION", label: "Trend continuation buy" };
 }
 
 function applySectorStrength(results, rules) {
@@ -636,6 +835,12 @@ function buildConceptCoverage(row) {
     "Breakout or 52-week high zone",
     checks.recentHighBreakout || checks.yearHighBreakout || checks.nearYearHigh,
     Number.isFinite(values.priorRecentHigh) || Number.isFinite(values.priorYearHigh)
+  );
+  addConcept(
+    "Retracement/pullback buy setup",
+    checks.retracementBuyZone,
+    Number.isFinite(values.retracementPullbackDepthPct) &&
+      (Number.isFinite(values.retracementSupportReference) || values.retracementSupportSource)
   );
   addConcept(
     "Volume participation",
@@ -795,6 +1000,18 @@ function buildSetupStrengthReasons(setupStrength) {
   if (checks.volumeExpansion) {
     reasons.push(
       `Volume shocker: latest volume is ${fmt(values.volumeRatio)}x the ${values.volumeAveragePeriod}-day average.`
+    );
+  }
+  if (checks.retracementBuyZone) {
+    reasons.push(
+      `Retracement buy: price pulled back ${fmt(values.retracementPullbackDepthPct)}% from the ${values.recentHighPeriod}-day high and reclaimed near ${values.retracementSupportSource || "support"} ${fmt(values.retracementSupportReference)}; support distance is ${fmt(values.retracementSupportDistancePct)}%.`
+    );
+    reasons.push(
+      `Retracement confirmation: pullback volume ratio ${fmt(values.retracementPullbackVolumeRatio)} and reclaim volume ratio ${fmt(values.retracementCurrentVolumeRatio)} with candle close location ${fmt(values.retracementCloseLocationPct)}%.`
+    );
+  } else if (values.retracementPullbackDepthOk) {
+    reasons.push(
+      `Retracement watch: pullback depth ${fmt(values.retracementPullbackDepthPct)}% is valid, but support/reclaim/volume/risk confirmation is incomplete.`
     );
   }
   if (checks.weeklyRsRising && checks.dailyLongRsRising) {

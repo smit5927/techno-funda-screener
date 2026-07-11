@@ -491,6 +491,7 @@ function tradeColumns() {
     { header: "Realized P&L %", key: "Realized P&L %", width: 18 },
     { header: "Holding Days", key: "Holding Days", width: 14 },
     { header: "Execution Window", key: "Execution Window", width: 20 },
+    { header: "Entry Style", key: "Entry Style", width: 26 },
     { header: "Setup Grade", key: "Setup Grade", width: 13 },
     { header: "Setup Score", key: "Setup Score", width: 14 },
     { header: "Fundamental Score", key: "Fundamental Score", width: 18 },
@@ -510,6 +511,12 @@ function tradeColumns() {
     { header: "Volume Ratio", key: "Volume Ratio", width: 14 },
     { header: "ATR %", key: "ATR %", width: 12 },
     { header: "Risk To ST %", key: "Risk To ST %", width: 14 },
+    { header: "Retracement Buy", key: "Retracement Buy", width: 18 },
+    { header: "Pullback Depth %", key: "Pullback Depth %", width: 18 },
+    { header: "Pullback Support", key: "Pullback Support", width: 20 },
+    { header: "Pullback Risk %", key: "Pullback Risk %", width: 18 },
+    { header: "Pullback Volume Ratio", key: "Pullback Volume Ratio", width: 22 },
+    { header: "Reclaim Volume Ratio", key: "Reclaim Volume Ratio", width: 22 },
     { header: "Candle Pattern", key: "Candle Pattern", width: 24 },
     { header: "Previous Low", key: "Previous Low", width: 14 },
     { header: "2 Candle Low", key: "2 Candle Low", width: 14 },
@@ -550,6 +557,7 @@ function tradeToRow(trade) {
     "Realized P&L %": trade.pnlPct ?? "",
     "Holding Days": trade.holdingDays ?? "",
     "Execution Window": trade.executionWindow || "",
+    "Entry Style": trade.entrySnapshot?.entryStyle?.label || "",
     "Setup Grade": trade.entrySnapshot?.setupGrade || "",
     "Setup Score": trade.entrySnapshot?.setupStrengthScore ?? "",
     "Fundamental Score": trade.entrySnapshot?.fundamentalScore ?? "",
@@ -572,6 +580,20 @@ function tradeToRow(trade) {
     "ATR %": Number.isFinite(values.atrPct) ? round(values.atrPct) : "",
     "Risk To ST %": Number.isFinite(values.riskToSupertrendPct)
       ? round(values.riskToSupertrendPct)
+      : "",
+    "Retracement Buy": checks.retracementBuyZone ? "Yes" : "No",
+    "Pullback Depth %": Number.isFinite(values.retracementPullbackDepthPct)
+      ? round(values.retracementPullbackDepthPct)
+      : "",
+    "Pullback Support": values.retracementSupportSource || "",
+    "Pullback Risk %": Number.isFinite(values.retracementSupportDistancePct)
+      ? round(values.retracementSupportDistancePct)
+      : "",
+    "Pullback Volume Ratio": Number.isFinite(values.retracementPullbackVolumeRatio)
+      ? round(values.retracementPullbackVolumeRatio)
+      : "",
+    "Reclaim Volume Ratio": Number.isFinite(values.retracementCurrentVolumeRatio)
+      ? round(values.retracementCurrentVolumeRatio)
       : "",
     "Candle Pattern": values.candlePattern || "",
     "Previous Low": Number.isFinite(values.previousLow) ? round(values.previousLow) : "",
@@ -613,6 +635,7 @@ function snapshot(row) {
     dailyShortRs: row.dailyShortRs,
     dailySupertrend: row.dailySupertrend,
     dailyPriceAboveSupertrend: row.dailyPriceAboveSupertrend,
+    entryStyle: row.entryStyle,
     setupStrength: row.setupStrength,
     setupStrengthScore: row.setupStrengthScore,
     setupGrade: row.setupGrade,
