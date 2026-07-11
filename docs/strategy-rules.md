@@ -32,9 +32,16 @@ RS formula:
 
 ## Compulsory Exit
 
-The active trade is closed when weekly RS goes below 0 on a closed weekly candle.
+The upgraded portfolio engine merges the video exit playbooks into a hierarchy:
 
-Daily RS21, daily RS55, Supertrend, and previous candle low are shown as early weakness/risk context, but they do not close the trade unless the compulsory weekly RS exit is triggered.
+- Full exit when completed-week RS versus NIFTY 500 falls below zero.
+- Full exit when daily RS55 is below zero and daily close is below Supertrend.
+- Full exit when price breaches the ratcheting structural stop built from Supertrend, recent candle lows, and valid Fibonacci support.
+- Full exit when price is below 200-DMA with negative daily RS55.
+- Partial 50% exit when multi-factor early weakness is confirmed, fundamentals materially deteriorate, or profit reaches 1.5R.
+- The remaining quantity trails with Supertrend/recent structure. A trailing stop never moves downward.
+
+All exit decisions use completed candles and execute in the next actual market session at 09:15.
 
 ## Optional Strength And Institutional Score
 
@@ -121,6 +128,21 @@ The website has a persistent Trade Settings panel. The selected source applies f
 
 The default trade quality is `BEST_ONLY`, which opens sheet/Telegram trades only for A+ or A setup-grade entries. The screener table still shows every ENTRY/EXIT/WATCH candidate for research, but the trade sheet, Telegram trade alerts, and open positions use the selected trade source and quality filter.
 
+## Portfolio And Risk Engine
+
+- Starting capital is Rs. 10,00,000 and can be changed or increased from persistent website Trade Settings.
+- Maximum 10 open positions and maximum 10% capital allocation per stock.
+- Maximum planned loss is 1% of portfolio capital per new trade.
+- Maximum aggregate open portfolio risk is 6% of capital.
+- Maximum sector exposure is 25% of capital.
+- Quantity is the minimum allowed by available cash, per-stock allocation cap, stop distance, risk budget, sector capacity, and remaining portfolio-risk capacity.
+- Structural stop distance is kept between 1.5% and 8% so a very tight candle does not create oversized quantity and a very wide setup does not consume excessive risk.
+- Every valid new signal receives a comparable portfolio rank from setup grade, RS leadership/trend, entry style, volume, sector, market/index, institutional, fundamental, volatility, liquidity, and concept coverage.
+- If capital is unavailable, the signal is retained in Waiting Candidates with the exact skip reason.
+- A challenger can replace an existing position only when its rank advantage is material, the current position has at least two weakness factors, and the minimum holding rule is satisfied. Sector limits cannot be bypassed by rotation.
+- When capital is manually reduced or the legacy book exceeds limits, weaker-ranked positions are queued for controlled next-session rebalance; no historical fill is fabricated.
+- Capital changes are recorded in the Excel Capital Ledger.
+
 ## Trade Sheet
 
-Every new post-go-live entry uses Rs. 100000 capital. The workbook contains Summary, Open Positions, Pending Orders, Closed Trades, and All Trades sheets. It stores signal dates separately from 09:15 execution dates/prices, quantity, invested value, realized/unrealized P&L, entry style, setup grade, institutional score, index/derivatives/options/commodity reasons, concept coverage, retracement depth/support/risk/volume, fundamentals, sector breadth, breakout/high-zone flags, volume, ATR, candle context, Supertrend risk, and candle-low references.
+The workbook contains Summary, Open Positions, Pending Orders, Closed Trades, All Trades, Waiting Candidates, and Capital Ledger sheets. It stores signal dates separately from 09:15 execution dates/prices, risk-sized quantity, initial/trailing stop, planned and current risk, position rank, partial exits, replacement candidate, invested value, realized/unrealized P&L, entry style, setup grade, institutional score, index/derivatives/options/commodity reasons, concept coverage, retracement depth/support/risk/volume, fundamentals, sector breadth, breakout/high-zone flags, volume, ATR, candle context, and candle-low references.

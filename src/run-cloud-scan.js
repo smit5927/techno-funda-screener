@@ -36,8 +36,11 @@ try {
       tradeSettings.tradeSettings.scopeListId || appConfig.trade.scopeListId;
     appConfig.trade.qualityMode =
       tradeSettings.tradeSettings.qualityMode || appConfig.trade.qualityMode;
+    if (Number.isFinite(Number(tradeSettings.tradeSettings.totalCapital))) {
+      appConfig.trade.totalCapital = Number(tradeSettings.tradeSettings.totalCapital);
+    }
     console.log(
-      `Trade settings loaded: ${appConfig.trade.scopeListId} / ${appConfig.trade.qualityMode}`
+      `Trade settings loaded: ${appConfig.trade.scopeListId} / ${appConfig.trade.qualityMode} / capital Rs ${appConfig.trade.totalCapital}`
     );
   } else {
     console.log(`Trade settings skipped: ${tradeSettings.reason}`);

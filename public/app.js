@@ -28,8 +28,14 @@ const elements = {
   unrealizedPnl: document.querySelector("#unrealizedPnl"),
   tradeScopeText: document.querySelector("#tradeScopeText"),
   tradeQualityText: document.querySelector("#tradeQualityText"),
+  totalCapital: document.querySelector("#totalCapital"),
+  deployedCapital: document.querySelector("#deployedCapital"),
+  availableCash: document.querySelector("#availableCash"),
+  portfolioRisk: document.querySelector("#portfolioRisk"),
   positionsBody: document.querySelector("#positionsBody"),
   positionsEmpty: document.querySelector("#positionsEmpty"),
+  candidatesBody: document.querySelector("#candidatesBody"),
+  candidatesEmpty: document.querySelector("#candidatesEmpty"),
   resultsBody: document.querySelector("#resultsBody"),
   emptyState: document.querySelector("#emptyState"),
   refreshButton: document.querySelector("#refreshButton"),
@@ -56,6 +62,8 @@ const elements = {
   tradeAccessCodeInput: document.querySelector("#tradeAccessCodeInput"),
   tradeScopeSelect: document.querySelector("#tradeScopeSelect"),
   tradeQualitySelect: document.querySelector("#tradeQualitySelect"),
+  totalCapitalInput: document.querySelector("#totalCapitalInput"),
+  addCapitalInput: document.querySelector("#addCapitalInput"),
   saveTradeSettingsButton: document.querySelector("#saveTradeSettingsButton"),
   tradeSettingsStatus: document.querySelector("#tradeSettingsStatus"),
   telegramAccessCodeInput: document.querySelector("#telegramAccessCodeInput"),
@@ -237,6 +245,7 @@ function applyPayload(payload) {
   renderTradeSettings(state.payload.tradeSettings);
   updateDownloadLinks(state.payload);
   renderPositions(state.payload);
+  renderCandidates(state.payload);
   renderRows();
 }
 
@@ -266,12 +275,19 @@ function renderSummary(payload) {
   elements.errorCount.textContent = summary.error || 0;
   elements.openTradesCount.textContent = payload.tradeSummary?.open || 0;
   elements.pendingTradesCount.textContent =
-    (payload.tradeSummary?.pendingEntry || 0) + (payload.tradeSummary?.pendingExit || 0);
+    (payload.tradeSummary?.pendingEntry || 0) +
+    (payload.tradeSummary?.pendingExit || 0) +
+    (payload.tradeSummary?.pendingPartialExit || 0);
   elements.closedTradesCount.textContent = payload.tradeSummary?.closed || 0;
   elements.realizedPnl.textContent = compact(payload.tradeSummary?.realizedPnl || 0);
   elements.unrealizedPnl.textContent = compact(payload.tradeSummary?.unrealizedPnl || 0);
   elements.tradeScopeText.textContent = payload.tradeSettings?.scopeLabel || "All NSE Market";
   elements.tradeQualityText.textContent = payload.tradeSettings?.qualityLabel || "Best only";
+  const portfolio = payload.portfolioSummary || {};
+  elements.totalCapital.textContent = compact(portfolio.totalCapital || payload.tradeSettings?.totalCapital || 1000000);
+  elements.deployedCapital.textContent = compact(portfolio.deployedCapital || 0);
+  elements.availableCash.textContent = compact(portfolio.availableCash || 0);
+  elements.portfolioRisk.textContent = `${compact(portfolio.portfolioRisk || 0)} (${compact(portfolio.portfolioRiskPct || 0)}%)`;
   const listLabel = state.currentList === "all" ? "All Lists" : listPayload?.label || state.currentList;
   const benchmarkLabel = payload.benchmarkLabel || payload.rules?.benchmarkLabel || payload.benchmark;
   const staleText = payload.scannedAt && isStaleScan(payload.scannedAt) ? " | Stale: waiting for next cloud scan" : "";
@@ -292,7 +308,7 @@ function institutionalMeta(context) {
 
 function renderPositions(payload) {
   const trades = (payload?.trades || []).filter((trade) =>
-    ["PENDING_ENTRY", "OPEN", "PENDING_EXIT"].includes(trade.status)
+    ["PENDING_ENTRY", "OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status)
   );
   elements.positionsBody.innerHTML = trades
     .map((trade) => {
@@ -300,7 +316,11 @@ function renderPositions(payload) {
       const pnlClass = Number(pnl) > 0 ? "good" : Number(pnl) < 0 ? "bad" : "neutral";
       const signalDate = trade.exitSignalDate || trade.entrySignalDate || "";
       const reason =
-        trade.status === "PENDING_EXIT" ? trade.exitReason || [] : trade.entryReason || [];
+        trade.status === "PENDING_EXIT"
+          ? trade.exitReason || []
+          : trade.status === "PENDING_PARTIAL_EXIT"
+            ? trade.pendingPartialExitReason || []
+            : trade.entryReason || [];
       return `
         <tr>
           <td><span class="pill ${escapeHtml(trade.status)}">${escapeHtml(trade.status.replace("_", " "))}</span></td>
@@ -311,6 +331,9 @@ function renderPositions(payload) {
           <td>${trade.quantity ?? "NA"}</td>
           <td>${fmt(trade.lastPrice)}</td>
           <td class="${pnlClass}">${compact(pnl)}${Number.isFinite(trade.unrealizedPnlPct) ? ` (${compact(trade.unrealizedPnlPct)}%)` : ""}</td>
+          <td>${fmt(trade.currentRank || trade.positionRank)}</td>
+          <td>${fmt(trade.trailingStopPrice || trade.initialStopPrice)}</td>
+          <td>${fmt(trade.currentRewardR)}</td>
           <td class="reasonCell">${escapeHtml(reason.join(" "))}</td>
         </tr>
       `;
@@ -575,6 +598,25 @@ async function saveCloudCustomList(symbols) {
   elements.customListStatus.textContent = `${payload.count} stocks saved in cloud`;
 }
 
+function renderCandidates(payload) {
+  const candidates = payload?.waitingCandidates || [];
+  elements.candidatesBody.innerHTML = candidates
+    .map((candidate) => `
+      <tr>
+        <td><span class="pill WATCH">${escapeHtml(candidate.status || "WAITING")}</span></td>
+        <td class="symbolCell"><strong>${escapeHtml(candidate.symbol)}</strong><span>${escapeHtml(candidate.industry || "")}</span></td>
+        <td>${escapeHtml(candidate.firstSignalDate || "")}</td>
+        <td>${escapeHtml(candidate.grade || "NA")}</td>
+        <td>${fmt(candidate.rank)}</td>
+        <td>${compact(candidate.plannedAllocation)}</td>
+        <td>${compact(candidate.plannedRisk)}</td>
+        <td class="reasonCell">${escapeHtml(candidate.skipReason || "Waiting for portfolio allocation")}</td>
+      </tr>
+    `)
+    .join("");
+  elements.candidatesEmpty.classList.toggle("visible", candidates.length === 0);
+}
+
 async function saveTradeSettings() {
   if (!cloudMode) {
     elements.tradeSettingsStatus.textContent = "Trade settings cloud setup is not active";
@@ -597,7 +639,9 @@ async function saveTradeSettings() {
         action: "save-trade-settings",
         accessCode,
         scopeListId: elements.tradeScopeSelect.value,
-        qualityMode: elements.tradeQualitySelect.value
+        qualityMode: elements.tradeQualitySelect.value,
+        totalCapital: Number(elements.totalCapitalInput.value),
+        addCapital: Number(elements.addCapitalInput.value || 0)
       })
     });
     const payload = await response.json().catch(() => ({}));
@@ -605,6 +649,7 @@ async function saveTradeSettings() {
     localStorage.setItem("tfAccessCode", accessCode);
     syncAccessCodeInputs(accessCode);
     state.cloudTradeSettings = payload.tradeSettings || state.cloudTradeSettings;
+    elements.addCapitalInput.value = "";
     renderTradeSettings(payload.tradeSettings, { updateBadges: false });
     elements.tradeSettingsStatus.textContent = "Saved in cloud. Next scheduled scan will use this selection.";
   } catch (error) {
@@ -682,6 +727,9 @@ function renderTradeSettings(settings, options = {}) {
   if (elements.tradeQualitySelect && settings.qualityMode) {
     elements.tradeQualitySelect.value = settings.qualityMode;
   }
+  if (elements.totalCapitalInput && Number.isFinite(Number(settings.totalCapital))) {
+    elements.totalCapitalInput.value = String(settings.totalCapital);
+  }
   if (updateBadges && elements.tradeScopeText) {
     elements.tradeScopeText.textContent = settings.scopeLabel || "All NSE Market";
   }
@@ -691,7 +739,7 @@ function renderTradeSettings(settings, options = {}) {
   if (elements.tradeSettingsStatus) {
     const updated = settings.updatedAt ? ` | saved ${formatDateTime(settings.updatedAt)}` : "";
     elements.tradeSettingsStatus.textContent =
-      `${settings.scopeLabel || "All NSE Market"} | ${settings.qualityLabel || "Best only"}${updated}`;
+      `${settings.scopeLabel || "All NSE Market"} | ${settings.qualityLabel || "Best only"} | Capital Rs ${compact(settings.totalCapital || 1000000)}${updated}`;
   }
 }
 

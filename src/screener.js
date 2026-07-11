@@ -118,6 +118,9 @@ export async function runScreener(options = {}) {
   const journal = await updateTradeJournal(payload, config);
   const visibleTrades = journal.visibleTrades || journal.trades;
   payload.tradeSummary = summarizeTrades(visibleTrades);
+  payload.portfolioSummary = journal.portfolioSummary;
+  payload.portfolioRules = journal.portfolioRules;
+  payload.waitingCandidates = journal.visibleCandidates || journal.candidates || [];
   payload.trades = visibleTrades;
   payload.tradeEvents = mergeTradeEvents(
     shouldRetryTradeEvents(previousScan, options, config, payload.scannedAt)
@@ -184,11 +187,13 @@ function summarizeTrades(trades) {
   const closed = trades.filter((trade) => trade.status === "CLOSED");
   const pendingEntry = trades.filter((trade) => trade.status === "PENDING_ENTRY");
   const pendingExit = trades.filter((trade) => trade.status === "PENDING_EXIT");
+  const pendingPartialExit = trades.filter((trade) => trade.status === "PENDING_PARTIAL_EXIT");
   return {
     open: open.length,
     closed: closed.length,
     pendingEntry: pendingEntry.length,
     pendingExit: pendingExit.length,
+    pendingPartialExit: pendingPartialExit.length,
     realizedPnl: Number(
       closed.reduce((sum, trade) => sum + (Number(trade.pnl) || 0), 0).toFixed(2)
     ),

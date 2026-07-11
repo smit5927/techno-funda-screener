@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Techno Funda Screener</title>
-    <link rel="stylesheet" href="styles.css?v=20260710-persist-settings" />
+    <link rel="stylesheet" href="styles.css?v=20260711-portfolio-engine" />
   </head>
   <body>
     <header class="topbar">
@@ -72,6 +72,22 @@
           <span>Quality</span>
           <strong id="tradeQualityText">Best</strong>
         </div>
+        <div>
+          <span>Total Capital</span>
+          <strong id="totalCapital">0</strong>
+        </div>
+        <div>
+          <span>Deployed</span>
+          <strong id="deployedCapital">0</strong>
+        </div>
+        <div>
+          <span>Available Cash</span>
+          <strong id="availableCash">0</strong>
+        </div>
+        <div>
+          <span>Portfolio Risk</span>
+          <strong id="portfolioRisk">0</strong>
+        </div>
         <a id="excelDownloadLink" class="downloadButton" href="/api/trades/download">Excel</a>
         <a id="csvDownloadLink" class="downloadButton" href="/api/trades/download.csv">CSV</a>
       </section>
@@ -119,6 +135,8 @@
             <option value="STRONG_OR_BETTER">Strong and best (A+/A/B)</option>
             <option value="ALL_ENTRIES">All entry signals</option>
           </select>
+          <input id="totalCapitalInput" type="number" min="10000" step="10000" inputmode="decimal" placeholder="Total capital" aria-label="Total portfolio capital" />
+          <input id="addCapitalInput" type="number" min="0" step="10000" inputmode="decimal" placeholder="Add capital" aria-label="Capital amount to add" />
         </div>
         <div class="customActions">
           <button id="saveTradeSettingsButton" type="button">Save Trade Settings</button>
@@ -141,7 +159,7 @@
       <section class="positionsSection" aria-label="Open positions and pending orders">
         <div class="sectionHeading">
           <h2>Open Positions</h2>
-          <span>Rs 1,00,000 per trade | 09:15 fill</span>
+          <span>Risk-sized portfolio | 09:15 fill</span>
         </div>
         <div class="tableShell positionsShell">
           <table class="positionsTable">
@@ -155,12 +173,40 @@
                 <th>Qty</th>
                 <th>Last Close</th>
                 <th>Unrealized P&L</th>
+                <th>Rank</th>
+                <th>Stop</th>
+                <th>R</th>
                 <th>Reason</th>
               </tr>
             </thead>
             <tbody id="positionsBody"></tbody>
           </table>
           <div id="positionsEmpty" class="emptyState">No open or pending positions</div>
+        </div>
+      </section>
+
+      <section class="positionsSection" aria-label="Waiting entry candidates">
+        <div class="sectionHeading">
+          <h2>Waiting Candidates</h2>
+          <span>Ranked entries waiting for cash, risk, sector capacity, or rotation</span>
+        </div>
+        <div class="tableShell positionsShell">
+          <table class="positionsTable">
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Symbol</th>
+                <th>Signal Date</th>
+                <th>Grade</th>
+                <th>Rank</th>
+                <th>Planned Capital</th>
+                <th>Planned Risk</th>
+                <th>Reason</th>
+              </tr>
+            </thead>
+            <tbody id="candidatesBody"></tbody>
+          </table>
+          <div id="candidatesEmpty" class="emptyState">No waiting candidates</div>
         </div>
       </section>
 
@@ -213,6 +259,6 @@
 
     <aside id="detailPanel" class="detailPanel" aria-live="polite"></aside>
 
-    <script src="app.js?v=20260710-persist-settings" type="module"></script>
+    <script src="app.js?v=20260711-portfolio-engine" type="module"></script>
   </body>
 </html>

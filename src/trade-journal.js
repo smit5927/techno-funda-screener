@@ -3,6 +3,16 @@ import ExcelJS from "exceljs";
 import { appConfig } from "./config.js";
 import { readTrades, saveTrades } from "./storage.js";
 import { fetchOpeningWindowPrice } from "./yahoo.js";
+import {
+  buildPositionPlan,
+  candidateRank,
+  nextTrailingStop,
+  portfolioConfig,
+  portfolioSummary,
+  positionExitDecision,
+  positionWeakness,
+  rotationDecision
+} from "./portfolio-engine.js";
 
 const TRADE_SCOPE_LABELS = {
   "all-market": "All NSE Market",
@@ -19,67 +29,142 @@ const TRADE_QUALITY_LABELS = {
 export async function updateTradeJournal(scan, config = appConfig) {
   const journal = readTrades();
   const settings = tradeSettingsSummary(config);
+  const riskRules = portfolioConfig(config);
   const liveMode = config.trade.onlyNewSignals !== false;
+  const portfolioUpgrade = !journal.portfolioEngineStartedAt;
   const firstLiveScan = liveMode && !journal.liveModeStartedAt;
   const trades = firstLiveScan ? [] : Array.isArray(journal.trades) ? journal.trades : [];
+  let candidates = firstLiveScan ? [] : Array.isArray(journal.candidates) ? journal.candidates : [];
   const signalState =
     journal.signalState && typeof journal.signalState === "object" ? journal.signalState : {};
   const nextSignalState = { ...signalState };
   const events = [];
+  const capitalTransactions = Array.isArray(journal.capitalTransactions)
+    ? [...journal.capitalTransactions]
+    : [];
+  const previousCapital = Number(journal.portfolioRules?.totalCapital);
+  if (Number.isFinite(previousCapital) && previousCapital !== riskRules.totalCapital) {
+    const difference = riskRules.totalCapital - previousCapital;
+    capitalTransactions.push({
+      date: scan.scannedAt,
+      type: difference > 0 ? "CAPITAL_ADDED" : "CAPITAL_REDUCED",
+      amount: round(Math.abs(difference)),
+      previousCapital: round(previousCapital),
+      newCapital: round(riskRules.totalCapital),
+      source: "Saved Trade Settings"
+    });
+  } else if (!Number.isFinite(previousCapital)) {
+    capitalTransactions.push({
+      date: scan.scannedAt,
+      type: "OPENING_CAPITAL",
+      amount: round(riskRules.totalCapital),
+      previousCapital: 0,
+      newCapital: round(riskRules.totalCapital),
+      source: "Portfolio Engine Initialization"
+    });
+  }
   const rows = uniqueScannedRows(scan, settings.scopeListId);
+  const rowBySymbol = new Map(
+    allScannedRows(scan).map((row) => [row.yahooSymbol || row.symbol, row])
+  );
 
   migrateTradeMetadata(trades);
+  if (portfolioUpgrade) {
+    for (const trade of trades.filter((item) => item.status === "PENDING_ENTRY")) {
+      trade.status = "SKIPPED_ENTRY";
+      trade.skipReason =
+        "Legacy pending buy cancelled when the Rs 10 lakh portfolio-risk engine was initialized.";
+      trade.executionError = trade.skipReason;
+    }
+  }
   await migrateLegacyOpeningPrices(trades, config);
+
+  for (const trade of trades) {
+    const row = executionRow(
+      trade,
+      rowBySymbol.get(trade.yahooSymbol || trade.symbol),
+      scan.marketContext?.asOf
+    );
+    if (row && ["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status)) {
+      markToMarket(trade, row);
+      trade.currentRank = candidateRank(row);
+      trade.currentGrade = row.setupGrade;
+      trade.trailingStopPrice = nextTrailingStop(trade, row, config);
+      trade.currentWeakness = positionWeakness(row);
+    }
+    if (trade.status === "PENDING_EXIT" && row) {
+      const filled = await fillExit(trade, row);
+      if (filled) events.push({ type: "EXIT_TRADE_CLOSED", trade });
+    }
+    if (trade.status === "PENDING_PARTIAL_EXIT" && row) {
+      const filled = await fillPartialExit(trade, row);
+      if (filled) events.push({ type: "PARTIAL_EXIT_FILLED", trade });
+    }
+  }
+
+  for (const trade of trades.filter((item) => item.status === "OPEN")) {
+    const row = executionRow(
+      trade,
+      rowBySymbol.get(trade.yahooSymbol || trade.symbol),
+      scan.marketContext?.asOf
+    );
+    if (!row) continue;
+    if (inferTradeScope(trade) !== settings.scopeListId) {
+      prepareFullExit(
+        trade,
+        row,
+        scan,
+        [`Trade universe changed to ${settings.scopeLabel}; this position is outside the active portfolio.`],
+        "SCOPE_REBALANCE"
+      );
+      events.push({ type: "PORTFOLIO_EXIT_PENDING", trade });
+      continue;
+    }
+    const decision = positionExitDecision(trade, row, config);
+    trade.trailingStopPrice = decision.trailingStop || trade.trailingStopPrice;
+    trade.currentRewardR = decision.rewardR;
+    if (decision.action === "FULL_EXIT") {
+      prepareFullExit(trade, row, scan, decision.reasons, "MODEL_EXIT");
+      events.push({ type: "EXIT_SIGNAL_PENDING", trade });
+    } else if (decision.action === "PARTIAL_EXIT") {
+      preparePartialExit(trade, row, scan, decision, config);
+      events.push({ type: "PARTIAL_EXIT_PENDING", trade });
+    }
+  }
+
+  enforcePortfolioLimits(trades, rowBySymbol, scan, settings, config, events);
+
+  for (const trade of trades) {
+    const row = executionRow(
+      trade,
+      rowBySymbol.get(trade.yahooSymbol || trade.symbol),
+      scan.marketContext?.asOf
+    );
+    if (trade.status === "PENDING_EXIT" && row) {
+      const filled = await fillExit(trade, row);
+      if (filled) events.push({ type: "EXIT_TRADE_CLOSED", trade });
+    }
+    if (trade.status === "PENDING_PARTIAL_EXIT" && row) {
+      const filled = await fillPartialExit(trade, row);
+      if (filled) events.push({ type: "PARTIAL_EXIT_FILLED", trade });
+    }
+  }
 
   for (const row of rows) {
     const key = signalStateKey(settings.scopeListId, row);
     const previousStatus = previousSymbolStatus(signalState, key, row, settings.scopeListId);
-    let activeTrade = findActiveTrade(trades, row, settings);
-
-    if (activeTrade?.status === "PENDING_ENTRY") {
-      const filled = await fillEntry(activeTrade, row, config);
-      if (filled) events.push({ type: "ENTRY_TRADE_OPENED", trade: activeTrade });
-    }
-
-    if (activeTrade?.status === "OPEN") {
-      markToMarket(activeTrade, row);
-    }
-
-    if (activeTrade?.status === "PENDING_EXIT") {
-      const filled = await fillExit(activeTrade, row);
-      if (filled) events.push({ type: "EXIT_TRADE_CLOSED", trade: activeTrade });
-    }
-
-    activeTrade = findActiveTrade(trades, row, settings);
-
-    const isEstablishedSignal = previousStatus != null;
-    if (
+    const activeTrade = findAnyActiveTrade(trades, row);
+    const existingCandidate = candidates.find((item) => sameInstrument(item, row));
+    const newEligibleSignal =
       !firstLiveScan &&
-      isEstablishedSignal &&
-      row.status === "ENTRY" &&
+      previousStatus != null &&
       previousStatus !== "ENTRY" &&
+      row.status === "ENTRY" &&
       !activeTrade &&
-      rowPassesTradeQuality(row, settings)
-    ) {
-      const trade = createPendingEntry(row, scan, config, settings);
-      trades.push(trade);
-      const filled = await fillEntry(trade, row, config);
-      events.push({
-        type: filled ? "ENTRY_TRADE_OPENED" : "ENTRY_SIGNAL_PENDING",
-        trade
-      });
-      activeTrade = trade;
+      rowPassesTradeQuality(row, settings);
+    if (newEligibleSignal || (existingCandidate && row.status === "ENTRY" && !activeTrade)) {
+      upsertCandidate(candidates, row, scan, settings, existingCandidate);
     }
-
-    if (row.status === "EXIT" && activeTrade?.status === "OPEN") {
-      preparePendingExit(activeTrade, row, scan);
-      const filled = await fillExit(activeTrade, row);
-      events.push({
-        type: filled ? "EXIT_TRADE_CLOSED" : "EXIT_SIGNAL_PENDING",
-        trade: activeTrade
-      });
-    }
-
     nextSignalState[key] = {
       status: row.status,
       asOf: row.asOf,
@@ -88,8 +173,81 @@ export async function updateTradeJournal(scan, config = appConfig) {
     };
   }
 
+  candidates = candidates.filter((candidate) => {
+    const row = rowBySymbol.get(candidate.yahooSymbol || candidate.symbol);
+    return row?.status === "ENTRY" &&
+      rowPassesTradeQuality(row, settings) &&
+      !findAnyActiveTrade(trades, row);
+  });
+
+  let rotationScheduled = false;
+  for (const candidate of [...candidates].sort((a, b) => b.rank - a.rank)) {
+    const row = rowBySymbol.get(candidate.yahooSymbol || candidate.symbol);
+    if (!row) continue;
+    const portfolio = portfolioSummary(trades, candidates, config);
+    const plan = buildPositionPlan(row, row.close, portfolio, config);
+    candidate.rank = plan.rank;
+    candidate.grade = row.setupGrade;
+    candidate.plannedStopPrice = plan.stopPrice;
+    candidate.plannedRisk = plan.plannedRisk;
+    candidate.plannedAllocation = plan.allocation;
+    candidate.lastEvaluatedAt = scan.scannedAt;
+    if (plan.eligible) {
+      const trade = createPendingEntry(row, scan, config, settings, plan);
+      trades.push(trade);
+      candidates = candidates.filter((item) => item !== candidate);
+      events.push({ type: "ENTRY_SIGNAL_PENDING", trade });
+      continue;
+    }
+
+    candidate.status = "WAITING_CAPITAL";
+    candidate.skipReason = plan.reason;
+    if (!candidate.skipAlertedAt) {
+      candidate.skipAlertedAt = scan.scannedAt;
+      events.push({ type: "ENTRY_SKIPPED", candidate });
+    }
+    if (
+      !rotationScheduled &&
+      !String(plan.reason).startsWith("Sector exposure")
+    ) {
+      const rotation = rotationDecision(row, trades, rowBySymbol, config);
+      if (rotation.rotate) {
+        const weakRow = rowBySymbol.get(rotation.trade.yahooSymbol || rotation.trade.symbol);
+        prepareFullExit(
+          rotation.trade,
+          weakRow,
+          scan,
+          [rotation.reason, `Weakness: ${rotation.weakness.reasons.join("; ")}.`],
+          "QUALITY_ROTATION"
+        );
+        rotation.trade.replacementCandidateSymbol = row.symbol;
+        candidate.status = "WAITING_ROTATION";
+        candidate.skipReason = `Waiting for ${rotation.trade.symbol} rotation exit. ${rotation.reason}`;
+        rotationScheduled = true;
+        events.push({ type: "ROTATION_EXIT_PENDING", trade: rotation.trade, candidate });
+      }
+    }
+  }
+
+  for (const trade of trades.filter((item) => item.status === "PENDING_ENTRY")) {
+    const row = rowBySymbol.get(trade.yahooSymbol || trade.symbol);
+    if (!row) continue;
+    const outcome = await fillEntry(trade, row, config, trades, candidates);
+    if (outcome === "FILLED") events.push({ type: "ENTRY_TRADE_OPENED", trade });
+    if (outcome === "SKIPPED") {
+      const candidate = upsertCandidate(candidates, row, scan, settings, null);
+      candidate.status = "WAITING_CAPITAL";
+      candidate.skipReason = trade.skipReason;
+      candidate.skipAlertedAt = scan.scannedAt;
+      events.push({ type: "ENTRY_SKIPPED", trade, candidate });
+    }
+  }
+
+  const finalPortfolio = portfolioSummary(trades, candidates, config);
+
   const nextJournal = {
     updatedAt: new Date().toISOString(),
+    portfolioEngineStartedAt: journal.portfolioEngineStartedAt || scan.scannedAt,
     liveModeStartedAt: journal.liveModeStartedAt || (liveMode ? new Date().toISOString() : null),
     baselineInitialized: true,
     baselineScanAt: journal.baselineScanAt || (firstLiveScan ? scan.scannedAt : null),
@@ -100,14 +258,18 @@ export async function updateTradeJournal(scan, config = appConfig) {
       priceSource: config.trade.executionPriceSource
     },
     signalState: nextSignalState,
-    tradeCapitalPerStock: config.trade.capitalPerStock,
+    tradeCapitalPerStock: riskRules.totalCapital * riskRules.maxPositionPct / 100,
+    portfolioRules: riskRules,
+    portfolioSummary: finalPortfolio,
+    capitalTransactions,
+    candidates: candidates.sort((a, b) => b.rank - a.rank),
     tradeSettings: settings,
     trades: trades.sort(sortTrades)
   };
   saveTrades(nextJournal);
   const visibleTrades = visibleTradesForSettings(nextJournal.trades, settings);
   await writeTradeSheets({ ...nextJournal, trades: visibleTrades }, config);
-  return { ...nextJournal, visibleTrades, events };
+  return { ...nextJournal, visibleTrades, events, visibleCandidates: nextJournal.candidates };
 }
 
 export async function writeTradeSheets(journal, config = appConfig) {
@@ -130,6 +292,7 @@ export function tradeSettingsSummary(config = appConfig) {
     scopeLabel: TRADE_SCOPE_LABELS[scopeListId],
     qualityMode,
     qualityLabel: TRADE_QUALITY_LABELS[qualityMode],
+    totalCapital: config.trade?.totalCapital ?? 1000000,
     capitalPerStock: config.trade?.capitalPerStock ?? 100000,
     executionWindow: `${config.trade?.executionWindowStart || "09:15"}-${config.trade?.executionWindowEnd || "09:20"} IST`
   };
@@ -144,7 +307,7 @@ export function rowPassesTradeQuality(row, settingsOrConfig = appConfig) {
   return ["A+", "A"].includes(grade);
 }
 
-function createPendingEntry(row, scan, config, settings) {
+function createPendingEntry(row, scan, config, settings, plan) {
   const sourceLists = row.sourceLists || [row.listLabel].filter(Boolean);
   return {
     id: `${row.symbol}-${row.asOf}-${Date.now()}`,
@@ -158,6 +321,7 @@ function createPendingEntry(row, scan, config, settings) {
     symbol: row.symbol,
     yahooSymbol: row.yahooSymbol,
     name: row.name,
+    industry: row.industry || "Unknown",
     status: "PENDING_ENTRY",
     entrySignalDate: row.asOf,
     entrySignalScanAt: scan.scannedAt,
@@ -168,9 +332,23 @@ function createPendingEntry(row, scan, config, settings) {
     executionMethod: config.trade.executionPriceSource,
     quantity: null,
     investedValue: null,
+    plannedQuantity: plan.quantity,
+    plannedAllocation: plan.allocation,
+    plannedRisk: plan.plannedRisk,
+    initialStopPrice: plan.stopPrice,
+    trailingStopPrice: plan.stopPrice,
+    riskPerShare: plan.riskPerShare,
+    riskBudget: plan.riskBudget,
+    positionRank: plan.rank,
+    currentRank: plan.rank,
+    allocationMethod: "min(capital cap, 1% risk budget, cash, sector cap)",
+    partialExits: [],
+    partialExitTags: [],
+    realizedPnlToDate: 0,
     entryReason: [
       ...(row.signalReason || row.entryReason || []),
       `Trade sheet filter: ${settings.scopeLabel}, ${settings.qualityLabel}.`,
+      `Portfolio rank ${plan.rank}; planned allocation Rs ${plan.allocation}, quantity ${plan.quantity}, initial stop ${plan.stopPrice}, planned risk Rs ${plan.plannedRisk}.`,
       `Closing signal dated ${row.asOf}; buy fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays.`
     ],
     entrySnapshot: snapshot(row),
@@ -190,19 +368,38 @@ function createPendingEntry(row, scan, config, settings) {
   };
 }
 
-function preparePendingExit(trade, row, scan) {
+function prepareFullExit(trade, row, scan, reasons, exitType = "MODEL_EXIT") {
   trade.status = "PENDING_EXIT";
-  trade.exitSignalDate = row.asOf;
+  trade.exitType = exitType;
+  const portfolioDriven = ["SCOPE_REBALANCE", "CAPITAL_REBALANCE", "QUALITY_ROTATION"].includes(exitType);
+  trade.exitSignalDate = portfolioDriven
+    ? scan.marketContext?.asOf || row.asOf
+    : row.asOf;
   trade.exitSignalScanAt = scan.scannedAt;
   trade.exitReason = [
-    ...(row.signalReason || row.exitReason || []),
-    `Closing exit signal dated ${row.asOf}; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays.`
+    ...(reasons || row.signalReason || row.exitReason || []),
+    `Closing exit signal dated ${trade.exitSignalDate}; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays.`
   ];
   trade.exitSnapshot = snapshot(row);
   markToMarket(trade, row);
 }
 
-async function fillEntry(trade, row, config) {
+function preparePartialExit(trade, row, scan, decision, config) {
+  const rules = portfolioConfig(config);
+  trade.status = "PENDING_PARTIAL_EXIT";
+  trade.partialExitSignalDate = row.asOf;
+  trade.partialExitSignalScanAt = scan.scannedAt;
+  trade.pendingPartialExitPct = decision.partialPct || rules.partialExitPct;
+  trade.pendingPartialExitTag = decision.tag || "RISK_REDUCTION";
+  trade.pendingPartialExitReason = [
+    ...(decision.reasons || []),
+    `Sell ${trade.pendingPartialExitPct}% on the next actual market session at 09:15 and trail the balance.`
+  ];
+  trade.exitSnapshot = snapshot(row);
+  markToMarket(trade, row);
+}
+
+async function fillEntry(trade, row, config, trades, candidates) {
   try {
     const fill = await fetchOpeningWindowPrice(
       trade.yahooSymbol || row.yahooSymbol,
@@ -211,23 +408,59 @@ async function fillEntry(trade, row, config) {
     if (!fill) {
       trade.executionError =
         "Next market-session 09:15 candle is not available yet; pending through weekends and NSE holidays.";
-      return false;
+      return "WAITING";
     }
-    const quantity = calculateQuantity(fill.price, config);
+    const summary = portfolioSummary(trades, candidates, config);
+    const sector = String(trade.industry || row.industry || "Unknown");
+    const adjustedSectorExposure = { ...summary.sectorExposure };
+    adjustedSectorExposure[sector] = Math.max(
+      0,
+      (adjustedSectorExposure[sector] || 0) - (Number(trade.plannedAllocation) || 0)
+    );
+    const plan = buildPositionPlan(
+      row,
+      fill.price,
+      {
+        ...summary,
+        availableCash: summary.availableCash + (Number(trade.plannedAllocation) || 0),
+        availableRisk: summary.availableRisk + (Number(trade.plannedRisk) || 0),
+        openSlots: summary.openSlots + 1,
+        sectorExposure: adjustedSectorExposure
+      },
+      config
+    );
+    if (!plan.eligible) {
+      trade.executionError = `Entry skipped at actual fill: ${plan.reason}`;
+      trade.status = "SKIPPED_ENTRY";
+      trade.skipReason = trade.executionError;
+      return "SKIPPED";
+    }
+    const quantity = plan.quantity;
     trade.status = "OPEN";
     trade.entryDate = fill.date;
     trade.entryTime = "09:15 IST";
     trade.entryPrice = round(fill.price);
     trade.quantity = quantity;
+    trade.originalQuantity = quantity;
     trade.investedValue = round(quantity * fill.price);
+    trade.originalInvestedValue = trade.investedValue;
+    trade.initialStopPrice = plan.stopPrice;
+    trade.trailingStopPrice = plan.stopPrice;
+    trade.riskPerShare = plan.riskPerShare;
+    trade.initialRiskAmount = plan.plannedRisk;
+    trade.positionRank = plan.rank;
+    trade.currentRank = plan.rank;
+    trade.plannedQuantity = null;
+    trade.plannedAllocation = null;
+    trade.plannedRisk = null;
     trade.executionMethod = fill.source;
     trade.executionWindow = fill.window;
     trade.executionError = null;
     markToMarket(trade, row);
-    return true;
+    return "FILLED";
   } catch (error) {
     trade.executionError = error.message || String(error);
-    return false;
+    return "WAITING";
   }
 }
 
@@ -247,8 +480,11 @@ async function fillExit(trade, row) {
     trade.exitTime = "09:15 IST";
     trade.exitPrice = round(fill.price);
     trade.executionError = null;
-    trade.pnl = round((fill.price - trade.entryPrice) * trade.quantity);
-    trade.pnlPct = round(((fill.price / trade.entryPrice) - 1) * 100);
+    const finalLegPnl = (fill.price - trade.entryPrice) * trade.quantity;
+    trade.pnl = round((Number(trade.realizedPnlToDate) || 0) + finalLegPnl);
+    trade.pnlPct = Number(trade.originalInvestedValue) > 0
+      ? round(trade.pnl / trade.originalInvestedValue * 100)
+      : round(((fill.price / trade.entryPrice) - 1) * 100);
     trade.holdingDays = holdingDays(trade.entryDate, fill.date);
     trade.lastPrice = round(fill.price);
     trade.lastPriceDate = fill.date;
@@ -297,13 +533,90 @@ async function migrateLegacyOpeningPrices(trades, config) {
   }
 }
 
+async function fillPartialExit(trade, row) {
+  try {
+    const fill = await fetchOpeningWindowPrice(
+      trade.yahooSymbol || row.yahooSymbol,
+      trade.partialExitSignalDate
+    );
+    if (!fill) {
+      trade.executionError =
+        "Partial exit is pending until the next actual market-session 09:15 candle.";
+      return false;
+    }
+    const percentage = Number(trade.pendingPartialExitPct) || 50;
+    const sellQuantity = Math.max(1, Math.min(
+      trade.quantity - 1,
+      Math.floor(trade.quantity * percentage / 100)
+    ));
+    if (sellQuantity < 1 || trade.quantity < 2) {
+      trade.status = "OPEN";
+      trade.executionError = "Partial exit skipped because remaining quantity is too small.";
+      return false;
+    }
+    const pnl = (fill.price - trade.entryPrice) * sellQuantity;
+    trade.partialExits = Array.isArray(trade.partialExits) ? trade.partialExits : [];
+    trade.partialExits.push({
+      date: fill.date,
+      time: "09:15 IST",
+      price: round(fill.price),
+      quantity: sellQuantity,
+      pnl: round(pnl),
+      tag: trade.pendingPartialExitTag,
+      reason: trade.pendingPartialExitReason || []
+    });
+    trade.partialExitTags = Array.isArray(trade.partialExitTags) ? trade.partialExitTags : [];
+    if (trade.pendingPartialExitTag && !trade.partialExitTags.includes(trade.pendingPartialExitTag)) {
+      trade.partialExitTags.push(trade.pendingPartialExitTag);
+    }
+    trade.realizedPnlToDate = round((Number(trade.realizedPnlToDate) || 0) + pnl);
+    trade.quantity -= sellQuantity;
+    trade.investedValue = round(trade.quantity * trade.entryPrice);
+    trade.status = "OPEN";
+    trade.lastPartialExitDate = fill.date;
+    trade.lastRiskActionSignalDate = row.asOf;
+    trade.lastPartialExitPrice = round(fill.price);
+    trade.executionError = null;
+    trade.pendingPartialExitPct = null;
+    trade.pendingPartialExitTag = null;
+    trade.pendingPartialExitReason = [];
+    markToMarket(trade, row);
+    return true;
+  } catch (error) {
+    trade.executionError = error.message || String(error);
+    return false;
+  }
+}
+
 function migrateTradeMetadata(trades) {
   for (const trade of trades) {
     trade.tradeScope = inferTradeScope(trade);
     trade.tradeScopeLabel = TRADE_SCOPE_LABELS[trade.tradeScope];
     trade.tradeQualityMode = trade.tradeQualityMode || "LEGACY";
     trade.tradeQualityLabel = trade.tradeQualityLabel || "Legacy trade";
+    trade.industry = trade.industry || trade.entrySnapshot?.industry || "Unknown";
+    trade.originalQuantity = trade.originalQuantity || trade.quantity || null;
+    trade.originalInvestedValue = trade.originalInvestedValue || trade.investedValue || null;
+    trade.partialExits = Array.isArray(trade.partialExits) ? trade.partialExits : [];
+    trade.partialExitTags = Array.isArray(trade.partialExitTags) ? trade.partialExitTags : [];
+    trade.realizedPnlToDate = Number(trade.realizedPnlToDate) || 0;
+    if (Number.isFinite(trade.entryPrice) && !Number.isFinite(trade.initialStopPrice)) {
+      trade.initialStopPrice = round(trade.entryPrice * 0.92);
+    }
+    trade.trailingStopPrice = trade.trailingStopPrice || trade.initialStopPrice || null;
   }
+}
+
+function allScannedRows(scan) {
+  const grouped = new Map();
+  for (const list of Object.values(scan.lists || {})) {
+    for (const row of list.results || []) {
+      const key = row.yahooSymbol || row.symbol;
+      if (!key || grouped.has(key)) continue;
+      grouped.set(key, row);
+    }
+  }
+  return [...grouped.values()];
 }
 
 function uniqueScannedRows(scan, scopeListId) {
@@ -312,6 +625,7 @@ function uniqueScannedRows(scan, scopeListId) {
   if (!primary || !scannedIds.has(scopeListId)) return [];
 
   const sourceListsByKey = new Map();
+  const industryByKey = new Map();
   for (const list of Object.values(scan.lists || {})) {
     if (!scannedIds.has(list.id)) continue;
     for (const row of list.results || []) {
@@ -320,6 +634,9 @@ function uniqueScannedRows(scan, scopeListId) {
       const labels = sourceListsByKey.get(key) || [];
       if (row.listLabel && !labels.includes(row.listLabel)) labels.push(row.listLabel);
       sourceListsByKey.set(key, labels);
+      if (isSpecificIndustry(row.industry) && !industryByKey.has(key)) {
+        industryByKey.set(key, row.industry);
+      }
     }
   }
 
@@ -329,10 +646,16 @@ function uniqueScannedRows(scan, scopeListId) {
     if (!key || grouped.has(key)) continue;
     grouped.set(key, {
       ...row,
+      industry: industryByKey.get(key) || row.industry || "Unclassified",
       sourceLists: sourceListsByKey.get(key) || [row.listLabel].filter(Boolean)
     });
   }
   return [...grouped.values()];
+}
+
+function isSpecificIndustry(industry) {
+  const value = String(industry || "").trim().toLowerCase();
+  return Boolean(value) && !["unknown", "unclassified", "nse equity", "my list"].includes(value);
 }
 
 function signalStateKey(scopeListId, row) {
@@ -362,17 +685,114 @@ function previousSymbolStatus(signalState, scopedKey, row, scopeListId) {
   return null;
 }
 
-function findActiveTrade(trades, row, settings) {
+function findAnyActiveTrade(trades, row) {
   return trades.find(
     (trade) =>
-      ["PENDING_ENTRY", "OPEN", "PENDING_EXIT"].includes(trade.status) &&
-      sameInstrument(trade, row) &&
-      tradeMatchesSettings(trade, settings)
+      ["PENDING_ENTRY", "OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status) &&
+      sameInstrument(trade, row)
   );
 }
 
+function upsertCandidate(candidates, row, scan, settings, existing) {
+  const target = existing || {
+    id: `${row.symbol}-${row.asOf}-candidate`,
+    symbol: row.symbol,
+    yahooSymbol: row.yahooSymbol,
+    name: row.name,
+    industry: row.industry || "Unknown",
+    sourceLists: row.sourceLists || [row.listLabel].filter(Boolean),
+    tradeScope: settings.scopeListId,
+    tradeScopeLabel: settings.scopeLabel,
+    firstSignalDate: row.asOf,
+    firstSeenAt: scan.scannedAt
+  };
+  target.lastSignalDate = row.asOf;
+  target.lastSeenAt = scan.scannedAt;
+  target.rank = candidateRank(row);
+  target.grade = row.setupGrade;
+  target.score = row.score;
+  target.entryStyle = row.entryStyle?.label || "";
+  target.status = target.status || "WAITING_ALLOCATION";
+  target.skipReason = target.skipReason || "Waiting for portfolio allocation.";
+  if (!existing) candidates.push(target);
+  return target;
+}
+
+function enforcePortfolioLimits(trades, rowBySymbol, scan, settings, config, events) {
+  const rules = portfolioConfig(config);
+  const open = trades
+    .filter((trade) => ["OPEN", "PENDING_PARTIAL_EXIT"].includes(trade.status))
+    .map((trade) => ({
+      trade,
+      row: executionRow(
+        trade,
+        rowBySymbol.get(trade.yahooSymbol || trade.symbol),
+        scan.marketContext?.asOf
+      ),
+      rank: Number(trade.currentRank) || Number(trade.positionRank) || 0
+    }))
+    .filter((item) => item.row)
+    .sort((a, b) => b.rank - a.rank);
+  let keptCount = 0;
+  let keptCapital = 0;
+  for (const item of open) {
+    if (inferTradeScope(item.trade) !== settings.scopeListId) continue;
+    const capital = Number(item.trade.investedValue) || 0;
+    const keep =
+      keptCount < rules.maxOpenPositions &&
+      keptCapital + capital <= rules.totalCapital;
+    if (keep) {
+      keptCount += 1;
+      keptCapital += capital;
+      continue;
+    }
+    prepareFullExit(
+      item.trade,
+      item.row,
+      scan,
+      [
+        `Portfolio rebalance: only the best ${rules.maxOpenPositions} positions can use total capital Rs ${rules.totalCapital}.`,
+        `Current portfolio rank ${item.rank}; stronger positions receive capital priority.`
+      ],
+      "CAPITAL_REBALANCE"
+    );
+    events.push({ type: "PORTFOLIO_EXIT_PENDING", trade: item.trade });
+  }
+}
+
+function executionRow(trade, row, latestMarketClose) {
+  const asOf =
+    row?.asOf ||
+    trade.exitSignalDate ||
+    trade.partialExitSignalDate ||
+    latestMarketClose ||
+    trade.lastPriceDate ||
+    trade.entrySignalDate;
+  if (!asOf) return null;
+  if (row?.asOf) return row;
+  return {
+    ...(row || {}),
+    symbol: trade.symbol,
+    yahooSymbol: trade.yahooSymbol,
+    asOf,
+    close: Number(trade.lastPrice) || Number(trade.entryPrice) || null,
+    dailySupertrend: trade.trailingStopPrice || trade.initialStopPrice || null,
+    weeklyRs: trade.currentWeeklyRs ?? trade.entrySnapshot?.weeklyRs ?? null,
+    dailyLongRs: trade.entrySnapshot?.dailyLongRs ?? null,
+    dailyShortRs: trade.entrySnapshot?.dailyShortRs ?? null,
+    dailyRsi: trade.entrySnapshot?.dailyRsi ?? null,
+    setupGrade: trade.currentGrade || trade.entrySnapshot?.setupGrade || "WATCH",
+    setupStrength: trade.entrySnapshot?.setupStrength || {},
+    fundamentalScore: trade.entrySnapshot?.fundamentalScore ?? null
+  };
+}
+
 function visibleTradesForSettings(trades, settings) {
-  return trades.filter((trade) => tradeMatchesSettings(trade, settings));
+  return trades.filter(
+    (trade) =>
+      ["PENDING_ENTRY", "OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status) ||
+      tradeMatchesSettings(trade, settings)
+  );
 }
 
 function tradeMatchesSettings(trade, settings) {
@@ -422,6 +842,7 @@ async function writeXlsx(journal, filePath) {
   const closed = journal.trades.filter((trade) => trade.status === "CLOSED");
   const realizedPnl = closed.reduce((sum, trade) => sum + (trade.pnl || 0), 0);
   const unrealizedPnl = open.reduce((sum, trade) => sum + (trade.unrealizedPnl || 0), 0);
+  const portfolio = journal.portfolioSummary || portfolioSummary(journal.trades, journal.candidates, config);
 
   const summary = workbook.addWorksheet("Summary");
   summary.columns = [
@@ -430,6 +851,16 @@ async function writeXlsx(journal, filePath) {
   ];
   summary.addRows([
     { metric: "Updated At", value: journal.updatedAt },
+    { metric: "Total Capital", value: portfolio.totalCapital },
+    { metric: "Total Equity", value: portfolio.totalEquity },
+    { metric: "Invested Capital", value: portfolio.investedCapital },
+    { metric: "Reserved Capital", value: portfolio.reservedCapital },
+    { metric: "Available Cash", value: portfolio.availableCash },
+    { metric: "Capital Utilization %", value: portfolio.capitalUtilizationPct },
+    { metric: "Portfolio Risk", value: portfolio.portfolioRisk },
+    { metric: "Portfolio Risk %", value: portfolio.portfolioRiskPct },
+    { metric: "Portfolio Risk Limit", value: portfolio.riskLimit },
+    { metric: "Waiting Candidates", value: portfolio.waitingCandidates },
     { metric: "Pending Orders", value: pending.length },
     { metric: "Open Positions", value: open.length },
     { metric: "Closed Trades", value: closed.length },
@@ -448,6 +879,8 @@ async function writeXlsx(journal, filePath) {
   addTradeWorksheet(workbook, "Pending Orders", pending);
   addTradeWorksheet(workbook, "Closed Trades", closed);
   addTradeWorksheet(workbook, "All Trades", journal.trades);
+  addCandidateWorksheet(workbook, journal.candidates || []);
+  addCapitalLedgerWorksheet(workbook, journal.capitalTransactions || []);
 
   await workbook.xlsx.writeFile(filePath);
 }
@@ -483,6 +916,7 @@ function tradeColumns() {
     { header: "Entry Time", key: "Entry Time", width: 13 },
     { header: "Entry Price", key: "Entry Price", width: 14 },
     { header: "Quantity", key: "Quantity", width: 10 },
+    { header: "Original Quantity", key: "Original Quantity", width: 16 },
     { header: "Invested Value", key: "Invested Value", width: 16 },
     { header: "Last Close", key: "Last Close", width: 14 },
     { header: "Unrealized P&L", key: "Unrealized P&L", width: 16 },
@@ -495,6 +929,16 @@ function tradeColumns() {
     { header: "Realized P&L %", key: "Realized P&L %", width: 18 },
     { header: "Holding Days", key: "Holding Days", width: 14 },
     { header: "Execution Window", key: "Execution Window", width: 20 },
+    { header: "Position Rank", key: "Position Rank", width: 14 },
+    { header: "Current Rank", key: "Current Rank", width: 14 },
+    { header: "Initial Stop", key: "Initial Stop", width: 14 },
+    { header: "Trailing Stop", key: "Trailing Stop", width: 14 },
+    { header: "Initial Risk", key: "Initial Risk", width: 14 },
+    { header: "Current R", key: "Current R", width: 12 },
+    { header: "Partial Exit Count", key: "Partial Exit Count", width: 18 },
+    { header: "Partial Realized P&L", key: "Partial Realized P&L", width: 20 },
+    { header: "Exit Type", key: "Exit Type", width: 22 },
+    { header: "Replacement Candidate", key: "Replacement Candidate", width: 24 },
     { header: "Entry Style", key: "Entry Style", width: 26 },
     { header: "Setup Grade", key: "Setup Grade", width: 13 },
     { header: "Setup Score", key: "Setup Score", width: 14 },
@@ -549,6 +993,7 @@ function tradeToRow(trade) {
     "Entry Time": trade.entryTime || "",
     "Entry Price": trade.entryPrice ?? "",
     Quantity: trade.quantity ?? "",
+    "Original Quantity": trade.originalQuantity ?? "",
     "Invested Value": trade.investedValue ?? "",
     "Last Close": trade.lastPrice ?? "",
     "Unrealized P&L": trade.unrealizedPnl ?? "",
@@ -561,6 +1006,16 @@ function tradeToRow(trade) {
     "Realized P&L %": trade.pnlPct ?? "",
     "Holding Days": trade.holdingDays ?? "",
     "Execution Window": trade.executionWindow || "",
+    "Position Rank": trade.positionRank ?? "",
+    "Current Rank": trade.currentRank ?? "",
+    "Initial Stop": trade.initialStopPrice ?? "",
+    "Trailing Stop": trade.trailingStopPrice ?? "",
+    "Initial Risk": trade.initialRiskAmount ?? trade.plannedRisk ?? "",
+    "Current R": trade.currentRewardR ?? "",
+    "Partial Exit Count": trade.partialExits?.length || 0,
+    "Partial Realized P&L": trade.realizedPnlToDate ?? 0,
+    "Exit Type": trade.exitType || "",
+    "Replacement Candidate": trade.replacementCandidateSymbol || "",
     "Entry Style": trade.entrySnapshot?.entryStyle?.label || "",
     "Setup Grade": trade.entrySnapshot?.setupGrade || "",
     "Setup Score": trade.entrySnapshot?.setupStrengthScore ?? "",
@@ -619,8 +1074,10 @@ function formatSheet(sheet) {
     from: "A1",
     to: `${sheet.getColumn(sheet.columns.length).letter}1`
   };
+  const availableKeys = new Set(sheet.columns.map((column) => column.key));
   for (const row of sheet.getRows(2, Math.max(0, sheet.rowCount - 1)) || []) {
     for (const key of ["Unrealized P&L", "Realized P&L"]) {
+      if (!availableKeys.has(key)) continue;
       const cell = row.getCell(key);
       if (Number(cell.value) > 0) cell.font = { color: { argb: "FF147A52" } };
       if (Number(cell.value) < 0) cell.font = { color: { argb: "FFB4232A" } };
@@ -630,6 +1087,7 @@ function formatSheet(sheet) {
 
 function snapshot(row) {
   return {
+    industry: row.industry || "Unknown",
     close: row.close,
     asOf: row.asOf,
     dailyRsi: row.dailyRsi,
@@ -677,6 +1135,53 @@ function round(value) {
 function csvValue(value) {
   const text = value == null ? "" : String(value);
   return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+}
+
+function addCapitalLedgerWorksheet(workbook, transactions) {
+  const sheet = workbook.addWorksheet("Capital Ledger");
+  sheet.columns = [
+    { header: "Date", key: "date", width: 24 },
+    { header: "Type", key: "type", width: 20 },
+    { header: "Amount", key: "amount", width: 16 },
+    { header: "Previous Capital", key: "previousCapital", width: 20 },
+    { header: "New Capital", key: "newCapital", width: 20 },
+    { header: "Source", key: "source", width: 34 }
+  ];
+  sheet.addRows(transactions);
+  sheet.views = [{ state: "frozen", ySplit: 1 }];
+  formatSheet(sheet);
+}
+
+function addCandidateWorksheet(workbook, candidates) {
+  const sheet = workbook.addWorksheet("Waiting Candidates");
+  sheet.columns = [
+    { header: "Status", key: "status", width: 20 },
+    { header: "Symbol", key: "symbol", width: 16 },
+    { header: "Industry", key: "industry", width: 24 },
+    { header: "Signal Date", key: "signalDate", width: 16 },
+    { header: "Grade", key: "grade", width: 12 },
+    { header: "Rank", key: "rank", width: 12 },
+    { header: "Entry Style", key: "entryStyle", width: 28 },
+    { header: "Planned Allocation", key: "allocation", width: 20 },
+    { header: "Planned Risk", key: "risk", width: 16 },
+    { header: "Planned Stop", key: "stop", width: 16 },
+    { header: "Decision Reason", key: "reason", width: 70 }
+  ];
+  sheet.addRows(candidates.map((candidate) => ({
+    status: candidate.status,
+    symbol: candidate.symbol,
+    industry: candidate.industry,
+    signalDate: candidate.firstSignalDate,
+    grade: candidate.grade,
+    rank: candidate.rank,
+    entryStyle: candidate.entryStyle,
+    allocation: candidate.plannedAllocation,
+    risk: candidate.plannedRisk,
+    stop: candidate.plannedStopPrice,
+    reason: candidate.skipReason
+  })));
+  sheet.views = [{ state: "frozen", ySplit: 1 }];
+  formatSheet(sheet);
 }
 
 function normalizeTradeScope(scopeListId) {

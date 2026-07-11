@@ -48,6 +48,8 @@ function buildMessage(scan, events) {
     `Trade sheet: ${scan.tradeSettings?.scopeLabel || "All NSE Market"} | ${scan.tradeSettings?.qualityLabel || "Best only (A+/A)"}`,
     `Positions open ${scan.tradeSummary?.open ?? 0} | Pending buy ${scan.tradeSummary?.pendingEntry ?? 0} | Pending sell ${scan.tradeSummary?.pendingExit ?? 0}`,
     `P&L realized ${fmt(scan.tradeSummary?.realizedPnl)} | unrealized ${fmt(scan.tradeSummary?.unrealizedPnl)}`,
+    `Portfolio capital ${fmt(scan.portfolioSummary?.totalCapital)} | deployed ${fmt(scan.portfolioSummary?.deployedCapital)} | cash ${fmt(scan.portfolioSummary?.availableCash)} | risk ${fmt(scan.portfolioSummary?.portfolioRisk)} (${fmt(scan.portfolioSummary?.portfolioRiskPct)}%)`,
+    `Portfolio slots ${scan.portfolioSummary?.openPositions ?? 0}/${scan.portfolioSummary?.maxOpenPositions ?? 10} | waiting ranked entries ${scan.portfolioSummary?.waitingCandidates ?? 0}`,
     ""
   ];
 
@@ -78,7 +80,7 @@ function addTradeEvents(lines, events) {
       const coverage = conceptCoverageText(trade);
       const entryStyle = trade.entrySnapshot?.entryStyle?.label || "Entry style NA";
       lines.push(
-        `BUY FILLED ${trade.symbol} (${trade.listLabel}) signal ${trade.entrySignalDate} | ${trade.entryDate} ${trade.entryTime} @ ${fmt(trade.entryPrice)} | qty ${trade.quantity} | invested ${fmt(trade.investedValue)} | ${entryStyle} | grade ${trade.entrySnapshot?.setupGrade || "NA"} | score ${fmt(score)} setup ${fmt(setupScore)} | concepts ${coverage}`
+        `BUY FILLED ${trade.symbol} (${trade.listLabel}) signal ${trade.entrySignalDate} | ${trade.entryDate} ${trade.entryTime} @ ${fmt(trade.entryPrice)} | qty ${trade.quantity} | invested ${fmt(trade.investedValue)} | stop ${fmt(trade.initialStopPrice)} | risk ${fmt(trade.initialRiskAmount)} | rank ${fmt(trade.positionRank)} | ${entryStyle} | grade ${trade.entrySnapshot?.setupGrade || "NA"} | score ${fmt(score)} setup ${fmt(setupScore)} | concepts ${coverage}`
       );
       lines.push(`   Reason: ${(trade.entryReason || []).join(" ")}`);
     }
@@ -99,6 +101,31 @@ function addTradeEvents(lines, events) {
         `SELL PENDING ${trade.symbol} | closing signal ${trade.exitSignalDate} | waiting for next actual market session 09:15-09:20 price (weekends/holidays skipped)`
       );
       lines.push(`   Reason: ${(trade.exitReason || []).join(" ")}`);
+    }
+    if (["PORTFOLIO_EXIT_PENDING", "ROTATION_EXIT_PENDING"].includes(event.type)) {
+      lines.push(
+        `PORTFOLIO SELL PENDING ${trade.symbol} | type ${trade.exitType || "REBALANCE"} | replacement ${trade.replacementCandidateSymbol || event.candidate?.symbol || "NA"} | next market session 09:15`
+      );
+      lines.push(`   Reason: ${(trade.exitReason || []).join(" ")}`);
+    }
+    if (event.type === "PARTIAL_EXIT_PENDING") {
+      lines.push(
+        `PARTIAL SELL PENDING ${trade.symbol} | ${trade.pendingPartialExitPct || 50}% | next market session 09:15`
+      );
+      lines.push(`   Reason: ${(trade.pendingPartialExitReason || []).join(" ")}`);
+    }
+    if (event.type === "PARTIAL_EXIT_FILLED") {
+      const leg = trade.partialExits?.[trade.partialExits.length - 1];
+      lines.push(
+        `PARTIAL SELL FILLED ${trade.symbol} | ${leg?.date || ""} @ ${fmt(leg?.price)} | qty ${leg?.quantity ?? "NA"} | leg P&L ${fmt(leg?.pnl)} | remaining qty ${trade.quantity}`
+      );
+    }
+    if (event.type === "ENTRY_SKIPPED") {
+      const candidate = event.candidate || {};
+      lines.push(
+        `ENTRY WAITING ${candidate.symbol || trade?.symbol || "NA"} | grade ${candidate.grade || "NA"} | rank ${fmt(candidate.rank)} | no buy executed`
+      );
+      lines.push(`   Reason: ${candidate.skipReason || trade?.skipReason || "Portfolio constraint"}`);
     }
   }
 }

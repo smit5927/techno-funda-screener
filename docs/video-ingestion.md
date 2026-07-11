@@ -51,7 +51,15 @@ The 73 raw Learn2Trade videos contain several trading styles: positional equity,
 - The system therefore records the close date as the signal date and uses the next trading session for execution.
 - "Next trading session" is data-confirmed: weekends and NSE holidays are skipped, and a pending order cannot fill until a real 09:15 exchange candle is available.
 - Entry and exit fills use the 09:15 five-minute candle open, a deterministic price inside the requested 09:15-09:20 window.
-- Rs. 100000 capital is converted to whole-share quantity from the actual fill, not from the signal-day close.
+- Whole-share quantity is recalculated from the actual fill using available cash, the per-position cap, structural-stop distance, and portfolio risk limits, not from the signal-day close.
+
+## Merged Entry, Exit, And Money Management
+
+- The six user-defined weekly/daily RS, RSI, and Supertrend checks remain the compulsory entry gate.
+- Breakout, retracement, momentum, candle, volume, DMA, Fibonacci, Bollinger, sector, market, F&O/OI, option-chain, commodity/currency, liquidity, volatility, and fundamental evidence ranks valid entries instead of overriding the gate.
+- Video exit methods are separated into protective structural stops, partial risk/profit exits, confirmed daily trend exits, and the completed-week RS final exit.
+- Position size is risk-derived from a Rs. 10 lakh editable portfolio, 1% per-trade risk, 6% aggregate risk, 10% per-stock exposure, 25% sector exposure, and actual available cash.
+- Valid signals that cannot receive capital remain in a ranked queue. Quality rotation needs a materially better challenger and measurable deterioration in the weakest open position.
 
 ## Audit Evidence
 

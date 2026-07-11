@@ -231,6 +231,10 @@ button:hover {
   display: block;
 }
 
+.tradeBand {
+  flex-wrap: wrap;
+}
+
 .customListPanel[hidden],
 .tradeSettingsPanel[hidden],
 .telegramPanel[hidden] {
