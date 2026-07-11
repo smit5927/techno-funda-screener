@@ -319,12 +319,12 @@ async function scanSymbol(
           `Entry style: ${entryStyle.label}.`,
           ...setupReason,
           ...institutionalReason,
-          `Execution plan: buy on the next trading session using the 09:15 five-minute candle open.`
+          `Execution plan: buy on the next actual market session using the 09:15 five-minute candle open; weekends and exchange holidays are skipped.`
         ]
       : status === "EXIT"
         ? [
             ...exitReason,
-            `Execution plan for an open position: sell on the next trading session using the 09:15 five-minute candle open.`
+            `Execution plan for an open position: sell on the next actual market session using the 09:15 five-minute candle open; weekends and exchange holidays are skipped.`
           ]
         : technicalReady
           ? ["No entry: one or more compulsory entry checks are not satisfied.", ...weaknessReason]
@@ -461,6 +461,8 @@ function buildSetupStrength({
     Number.isFinite(riskToSupertrendPct) &&
     riskToSupertrendPct >= 0 &&
     riskToSupertrendPct <= riskToSupertrendMaxPct;
+  const fibonacci = buildFibonacciContext(dailyCandles, latestDailyIndex, close, setupRules);
+  const bollinger = buildBollingerContext(dailyCandles, latestDailyIndex, close, setupRules);
   const retracement = buildRetracementContext({
     dailyCandles,
     latestDailyIndex,
@@ -472,6 +474,7 @@ function buildSetupStrength({
     volumeAverage,
     volumeRatio,
     candle,
+    fibonacci,
     setupRules
   });
 
@@ -493,11 +496,17 @@ function buildSetupStrength({
     bullishEngulfing: candle.bullishEngulfing,
     hammer: candle.hammer,
     retracementBuyZone: retracement.retracementBuyZone,
+    fibonacciSupportNearby: fibonacci.supportNearby,
+    bollingerTrendSupport: bollinger.trendSupport,
+    bollingerRangeBound: bollinger.rangeBound,
     marketRegimeStrong
   };
 
   return {
-    score: Object.values(checks).filter(Boolean).length,
+    score: Object.entries(checks)
+      .filter(([key, value]) =>
+        value && !["fibonacciSupportNearby", "bollingerTrendSupport", "bollingerRangeBound"].includes(key)
+      ).length,
     checks,
     values: {
       priorRecentHigh,
@@ -536,6 +545,18 @@ function buildSetupStrength({
       retracementDryVolumeMaxRatio: retracement.dryVolumeMaxRatio,
       retracementReclaimVolumeMinRatio: retracement.reclaimVolumeMinRatio,
       retracementMaxRiskPct: retracement.maxRiskPct,
+      fibonacciSwingHigh: fibonacci.swingHigh,
+      fibonacciSwingLow: fibonacci.swingLow,
+      fibonacciNearestLevel: fibonacci.nearestLevel,
+      fibonacciNearestPrice: fibonacci.nearestPrice,
+      fibonacciDistancePct: fibonacci.distancePct,
+      fibonacciSupportNearby: fibonacci.supportNearby,
+      bollingerMiddle: bollinger.middle,
+      bollingerUpper: bollinger.upper,
+      bollingerLower: bollinger.lower,
+      bollingerPercentB: bollinger.percentB,
+      bollingerBandwidthPct: bollinger.bandwidthPct,
+      bollingerRangeBound: bollinger.rangeBound,
       recentHighPeriod,
       yearHighPeriod,
       nearYearHighPct,
@@ -564,6 +585,7 @@ function buildRetracementContext({
   volumeAverage,
   volumeRatio,
   candle,
+  fibonacci,
   setupRules
 }) {
   const currentCandle = dailyCandles[latestDailyIndex] || null;
@@ -588,7 +610,12 @@ function buildRetracementContext({
   const supportCandidates = [
     supportCandidate("Supertrend", dailySupertrend, close),
     supportCandidate(`${setupRules.smaFastPeriod || 50}-DMA`, smaFast, close),
-    supportCandidate(`${setupRules.smaSlowPeriod || 200}-DMA`, smaSlow, close)
+    supportCandidate(`${setupRules.smaSlowPeriod || 200}-DMA`, smaSlow, close),
+    supportCandidate(
+      `Fibonacci ${fibonacci?.nearestLevel || "retracement"}`,
+      fibonacci?.supportNearby ? fibonacci.nearestPrice : null,
+      close
+    )
   ].filter(Boolean);
   const nearestSupport = supportCandidates.sort((a, b) => a.distancePct - b.distancePct)[0] || null;
   const breakoutRetestDistancePct =
@@ -682,6 +709,71 @@ function buildRetracementContext({
     dryVolumeMaxRatio,
     reclaimVolumeMinRatio,
     maxRiskPct
+  };
+}
+
+function buildFibonacciContext(dailyCandles, latestDailyIndex, close, setupRules) {
+  const lookback = setupRules.fibonacciLookback || 55;
+  const proximityPct = setupRules.fibonacciProximityPct ?? 2;
+  const swingHigh = highestHigh(dailyCandles, lookback, latestDailyIndex - 1);
+  const swingLow = lowestLow(dailyCandles, lookback, latestDailyIndex - 1);
+  if (!Number.isFinite(swingHigh) || !Number.isFinite(swingLow) || swingHigh <= swingLow) {
+    return { swingHigh, swingLow, nearestLevel: null, nearestPrice: null, distancePct: null, supportNearby: false };
+  }
+
+  const range = swingHigh - swingLow;
+  const levels = [
+    { label: "38.2%", price: swingHigh - range * 0.382 },
+    { label: "50.0%", price: swingHigh - range * 0.5 },
+    { label: "61.8%", price: swingHigh - range * 0.618 }
+  ];
+  const nearest = levels
+    .map((level) => ({
+      ...level,
+      distancePct: Number.isFinite(close) && close > 0 ? Math.abs(close - level.price) / close * 100 : null
+    }))
+    .sort((a, b) => (a.distancePct ?? Infinity) - (b.distancePct ?? Infinity))[0];
+  const supportNearby =
+    Number.isFinite(nearest?.distancePct) &&
+    nearest.distancePct <= proximityPct &&
+    close >= nearest.price;
+  return {
+    swingHigh,
+    swingLow,
+    nearestLevel: nearest?.label || null,
+    nearestPrice: nearest?.price ?? null,
+    distancePct: nearest?.distancePct ?? null,
+    supportNearby
+  };
+}
+
+function buildBollingerContext(dailyCandles, latestDailyIndex, close, setupRules) {
+  const period = setupRules.bollingerPeriod || 20;
+  const multiplier = setupRules.bollingerStdDev ?? 2;
+  const rangeBoundMaxBandwidthPct = setupRules.rangeBoundMaxBandwidthPct ?? 10;
+  const closes = dailyCandles
+    .slice(Math.max(0, latestDailyIndex - period + 1), latestDailyIndex + 1)
+    .map((candle) => candle.close)
+    .filter(Number.isFinite);
+  if (closes.length < period) {
+    return { middle: null, upper: null, lower: null, percentB: null, bandwidthPct: null, trendSupport: false, rangeBound: false };
+  }
+  const middle = closes.reduce((sum, value) => sum + value, 0) / closes.length;
+  const variance = closes.reduce((sum, value) => sum + (value - middle) ** 2, 0) / closes.length;
+  const deviation = Math.sqrt(variance);
+  const upper = middle + multiplier * deviation;
+  const lower = middle - multiplier * deviation;
+  const width = upper - lower;
+  const percentB = width > 0 ? (close - lower) / width : null;
+  const bandwidthPct = middle > 0 ? width / middle * 100 : null;
+  return {
+    middle,
+    upper,
+    lower,
+    percentB,
+    bandwidthPct,
+    trendSupport: Number.isFinite(close) && close >= middle,
+    rangeBound: Number.isFinite(bandwidthPct) && bandwidthPct <= rangeBoundMaxBandwidthPct
   };
 }
 
@@ -795,7 +887,11 @@ function buildConceptCoverage(row) {
   const dataGapLabels = [];
   const excludedLabels = [
     "Intraday tick scalping",
-    "Broker-only live Greeks/order-book depth"
+    "Broker-only live Greeks/order-book depth",
+    "Pair-trading spread execution",
+    "Short-selling execution",
+    "Options premium/straddle/strangle execution",
+    "Manual charting/terminal workflow"
   ];
   const setup = row.setupStrength || {};
   const checks = setup.checks || {};
@@ -841,6 +937,16 @@ function buildConceptCoverage(row) {
     checks.retracementBuyZone,
     Number.isFinite(values.retracementPullbackDepthPct) &&
       (Number.isFinite(values.retracementSupportReference) || values.retracementSupportSource)
+  );
+  addConcept(
+    "Fibonacci retracement support",
+    checks.fibonacciSupportNearby,
+    Number.isFinite(values.fibonacciNearestPrice)
+  );
+  addConcept(
+    "Bollinger trend/range context",
+    checks.bollingerTrendSupport && !checks.bollingerRangeBound,
+    Number.isFinite(values.bollingerBandwidthPct)
   );
   addConcept(
     "Volume participation",
@@ -898,6 +1004,7 @@ function buildConceptCoverage(row) {
     institutional.commodity?.supportsSector,
     institutional.commodity?.dataAvailable
   );
+  addConcept("News/event context", false, false);
 
   const fundamentalValues = Object.values(fundamentalChecks);
   const fundamentalKnown = fundamentalValues.some((item) => item?.ok === true || item?.ok === false);
@@ -1012,6 +1119,18 @@ function buildSetupStrengthReasons(setupStrength) {
   } else if (values.retracementPullbackDepthOk) {
     reasons.push(
       `Retracement watch: pullback depth ${fmt(values.retracementPullbackDepthPct)}% is valid, but support/reclaim/volume/risk confirmation is incomplete.`
+    );
+  }
+  if (checks.fibonacciSupportNearby) {
+    reasons.push(
+      `Fibonacci confluence: close is ${fmt(values.fibonacciDistancePct)}% from ${values.fibonacciNearestLevel} retracement support ${fmt(values.fibonacciNearestPrice)}.`
+    );
+  }
+  if (Number.isFinite(values.bollingerBandwidthPct)) {
+    reasons.push(
+      checks.bollingerRangeBound
+        ? `Bollinger context: bandwidth ${fmt(values.bollingerBandwidthPct)}% indicates a range-bound/compressed phase.`
+        : `Bollinger context: close is ${checks.bollingerTrendSupport ? "above" : "below"} the middle band ${fmt(values.bollingerMiddle)} with bandwidth ${fmt(values.bollingerBandwidthPct)}%.`
     );
   }
   if (checks.weeklyRsRising && checks.dailyLongRsRising) {

@@ -23,6 +23,8 @@ The 73 raw Learn2Trade videos contain several trading styles: positional equity,
 - Volatility and liquidity: ATR percentage and average traded value expose unstable or hard-to-execute setups.
 - Risk references: Supertrend distance, previous candle low, two-candle low, and four-candle low are recorded without overriding the compulsory exit.
 - Pullback risk: retracement support distance is recorded so the system can separate healthy buyable pullbacks from deep damage.
+- Fibonacci retracement: 38.2%, 50%, and 61.8% supports from the recent swing are recorded as pullback confluence, never as a standalone buy.
+- Bollinger/range context: 20-session bands and bandwidth distinguish trending participation from compressed/range-bound conditions.
 - Market regime: NIFTY 500 RSI and 50/200-DMA context show whether the broad market supports long trades.
 
 ## Ingested Index, Derivatives, Options, And Commodity Evidence
@@ -33,6 +35,7 @@ The 73 raw Learn2Trade videos contain several trading styles: positional equity,
 - Option-chain positioning: NIFTY and BANK NIFTY option-chain snapshots are attempted automatically. When NSE allows the public endpoint, the scanner records PCR, max put OI strike, max call OI strike, expiry, and bullish/neutral/bearish option bias.
 - Commodity/currency context: Gold, silver, copper, crude oil, and USD/INR Yahoo proxies are tracked. Sector sensitivity maps metals to copper/base metals, energy to crude, exporters to USD/INR, precious-metal businesses to gold/silver, and input-cost sectors to crude risk.
 - Data gaps are explicit. If NSE option-chain, OI-spurts, or another free endpoint is unavailable during a GitHub run, the website and trade sheet show a data gap instead of pretending the confirmation exists.
+- News/event context is explicitly marked as a data gap until a reliable free repeatable feed is available. Pair-trading, short-selling, option-premium execution, intraday scalping, and manual terminal/charting lessons are represented as excluded playbooks because they are different execution systems, not missing equity-long confirmations.
 
 ## Ingested Fundamental Evidence
 
@@ -46,6 +49,7 @@ The 73 raw Learn2Trade videos contain several trading styles: positional equity,
 
 - A candle-based signal is known only after the candle closes.
 - The system therefore records the close date as the signal date and uses the next trading session for execution.
+- "Next trading session" is data-confirmed: weekends and NSE holidays are skipped, and a pending order cannot fill until a real 09:15 exchange candle is available.
 - Entry and exit fills use the 09:15 five-minute candle open, a deterministic price inside the requested 09:15-09:20 window.
 - Rs. 100000 capital is converted to whole-share quantity from the actual fill, not from the signal-day close.
 

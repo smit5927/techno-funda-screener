@@ -90,13 +90,13 @@ function addTradeEvents(lines, events) {
     }
     if (event.type === "ENTRY_SIGNAL_PENDING") {
       lines.push(
-        `BUY PENDING ${trade.symbol} | closing signal ${trade.entrySignalDate} | ${trade.entrySnapshot?.entryStyle?.label || "Entry style NA"} | waiting for next session 09:15-09:20 price | concepts ${conceptCoverageText(trade)}`
+        `BUY PENDING ${trade.symbol} | closing signal ${trade.entrySignalDate} | ${trade.entrySnapshot?.entryStyle?.label || "Entry style NA"} | waiting for next actual market session 09:15-09:20 price (weekends/holidays skipped) | concepts ${conceptCoverageText(trade)}`
       );
       lines.push(`   Reason: ${(trade.entryReason || []).join(" ")}`);
     }
     if (event.type === "EXIT_SIGNAL_PENDING") {
       lines.push(
-        `SELL PENDING ${trade.symbol} | closing signal ${trade.exitSignalDate} | waiting for next session 09:15-09:20 price`
+        `SELL PENDING ${trade.symbol} | closing signal ${trade.exitSignalDate} | waiting for next actual market session 09:15-09:20 price (weekends/holidays skipped)`
       );
       lines.push(`   Reason: ${(trade.exitReason || []).join(" ")}`);
     }

@@ -87,16 +87,9 @@ export async function fetchOpeningWindowPrice(symbol, afterDate) {
         close: numberOrNull(quote.close?.[index])
       };
     })
-    .filter(
-      (candle) =>
-        candle.date > String(afterDate || "") &&
-        candle.minutes >= 9 * 60 + 15 &&
-        candle.minutes < 9 * 60 + 20 &&
-        Number.isFinite(candle.open)
-    )
-    .sort((a, b) => a.time - b.time);
+    .filter((candle) => Number.isFinite(candle.open));
 
-  const candle = candidates[0];
+  const candle = selectNextTradingSessionOpeningCandle(candidates, afterDate);
   if (!candle) return null;
   return {
     date: candle.date,
@@ -106,6 +99,18 @@ export async function fetchOpeningWindowPrice(symbol, afterDate) {
     window: "09:15-09:20 IST",
     candle
   };
+}
+
+export function selectNextTradingSessionOpeningCandle(candles, afterDate) {
+  return [...(candles || [])]
+    .filter(
+      (candle) =>
+        candle.date > String(afterDate || "") &&
+        candle.minutes >= 9 * 60 + 15 &&
+        candle.minutes < 9 * 60 + 20 &&
+        Number.isFinite(candle.open)
+    )
+    .sort((a, b) => a.time - b.time)[0] || null;
 }
 
 export function aggregateDailyToCompletedWeeks(candles, now = new Date()) {

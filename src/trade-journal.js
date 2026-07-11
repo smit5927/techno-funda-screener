@@ -95,6 +95,7 @@ export async function updateTradeJournal(scan, config = appConfig) {
     baselineScanAt: journal.baselineScanAt || (firstLiveScan ? scan.scannedAt : null),
     executionRule: {
       signalBasis: "completed daily/weekly closing candle",
+      sessionRule: "first actual exchange session after the signal date; weekends and market holidays are skipped",
       window: `${config.trade.executionWindowStart}-${config.trade.executionWindowEnd} IST`,
       priceSource: config.trade.executionPriceSource
     },
@@ -170,7 +171,7 @@ function createPendingEntry(row, scan, config, settings) {
     entryReason: [
       ...(row.signalReason || row.entryReason || []),
       `Trade sheet filter: ${settings.scopeLabel}, ${settings.qualityLabel}.`,
-      `Closing signal dated ${row.asOf}; buy fill must come from the next session 09:15-09:20 IST window.`
+      `Closing signal dated ${row.asOf}; buy fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays.`
     ],
     entrySnapshot: snapshot(row),
     exitSignalDate: null,
@@ -195,7 +196,7 @@ function preparePendingExit(trade, row, scan) {
   trade.exitSignalScanAt = scan.scannedAt;
   trade.exitReason = [
     ...(row.signalReason || row.exitReason || []),
-    `Closing exit signal dated ${row.asOf}; sell fill must come from the next session 09:15-09:20 IST window.`
+    `Closing exit signal dated ${row.asOf}; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays.`
   ];
   trade.exitSnapshot = snapshot(row);
   markToMarket(trade, row);
@@ -208,7 +209,8 @@ async function fillEntry(trade, row, config) {
       trade.entrySignalDate
     );
     if (!fill) {
-      trade.executionError = "Next-session 09:15 candle is not available yet.";
+      trade.executionError =
+        "Next market-session 09:15 candle is not available yet; pending through weekends and NSE holidays.";
       return false;
     }
     const quantity = calculateQuantity(fill.price, config);
@@ -236,7 +238,8 @@ async function fillExit(trade, row) {
       trade.exitSignalDate
     );
     if (!fill) {
-      trade.executionError = "Next-session 09:15 candle is not available yet.";
+      trade.executionError =
+        "Next market-session 09:15 candle is not available yet; pending through weekends and NSE holidays.";
       return false;
     }
     trade.status = "CLOSED";
@@ -436,6 +439,7 @@ async function writeXlsx(journal, filePath) {
     { metric: "Trade Scope", value: journal.tradeSettings?.scopeLabel || "" },
     { metric: "Trade Quality", value: journal.tradeSettings?.qualityLabel || "" },
     { metric: "Signal Basis", value: journal.executionRule?.signalBasis || "" },
+    { metric: "Session Rule", value: journal.executionRule?.sessionRule || "Skip weekends and market holidays" },
     { metric: "Execution Window", value: journal.executionRule?.window || "09:15-09:20 IST" },
     { metric: "Execution Price", value: "First 5-minute candle open (09:15)" }
   ]);

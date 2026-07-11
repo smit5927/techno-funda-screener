@@ -43,6 +43,8 @@ These checks do not create or block entry by themselves. They increase setup qua
 - Price crosses the previous 55-day high.
 - Price is inside the 52-week high zone or crosses the 52-week high.
 - Retracement buy setup: a leader pulls back 2-15% from the recent high, holds/reclaims Supertrend/50-DMA/breakout retest support within 5%, shows dry pullback volume or reclaim volume, closes with a bullish reclaim candle, and keeps support risk within 8%.
+- Fibonacci confluence checks whether the pullback is holding near the 38.2%, 50%, or 61.8% level of the recent 55-session swing.
+- Bollinger context identifies trend support versus a compressed/range-bound phase from the 20-session middle band and bandwidth.
 - Latest volume is at least 1.5x the 50-day average.
 - Weekly RS and daily RS55 are rising.
 - Close is above 50-DMA and 200-DMA, with 50-DMA above 200-DMA.
@@ -92,11 +94,22 @@ The same stock in multiple lists is scanned once and creates only one trade. Its
 ## Signal And Execution
 
 - Indicators use only completed daily and weekly closing candles.
-- A new entry or compulsory exit signal is executed in the next trading session.
+- A new entry or compulsory exit signal is executed in the first actual exchange session after the signal date.
+- Saturday, Sunday, and NSE market holidays are never treated as execution days. The order remains pending until a real 09:15 market candle exists.
 - Execution price is the open of the first five-minute candle at 09:15 IST, inside the requested 09:15-09:20 window.
 - Trade states are `PENDING_ENTRY`, `OPEN`, `PENDING_EXIT`, and `CLOSED`.
 - Existing signals are baselined without old alerts or historical trades.
 - The free online workflow runs at 08:00 IST to publish prior-close candidates and again at 09:25 IST to fill the actual 09:15 execution price.
+
+## Final Decision Hierarchy
+
+1. Completed weekly and daily candles are aligned with NIFTY 500 before any decision is made.
+2. All six compulsory RS, RSI, and Supertrend checks must pass to create an entry signal.
+3. The setup is classified as retracement, breakout, momentum continuation, or trend continuation; retracement is not mandatory.
+4. Video-derived sector, volume, trend, candle, volatility, liquidity, market, derivative, option, commodity/currency, and fundamental evidence grades the valid signal.
+5. The selected trade universe and quality mode decide whether that signal enters the automated trade sheet.
+6. A valid new signal remains pending through weekends and exchange holidays, then uses the next real session's 09:15 candle open.
+7. An open position exits only when completed-week RS versus NIFTY 500 falls below zero; the sell then follows the same next-session execution rule.
 
 ## Trade Selection
 

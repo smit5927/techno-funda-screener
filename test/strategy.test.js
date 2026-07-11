@@ -7,7 +7,10 @@ import {
   latestValue
 } from "../src/indicators.js";
 import { rowPassesTradeQuality, tradeSettingsSummary } from "../src/trade-journal.js";
-import { aggregateDailyToCompletedWeeks } from "../src/yahoo.js";
+import {
+  aggregateDailyToCompletedWeeks,
+  selectNextTradingSessionOpeningCandle
+} from "../src/yahoo.js";
 
 test("daily candles aggregate only into completed weeks", () => {
   const candles = [
@@ -89,6 +92,35 @@ test("trade quality modes can loosen to strong or all entries", () => {
   assert.equal(rowPassesTradeQuality({ setupGrade: "C" }, { qualityMode: "ALL_ENTRIES" }), true);
 });
 
+test("Friday closing signal fills on Monday's first 09:15 candle", () => {
+  const candles = [
+    openingCandle("2026-07-10", 9, 15, 100),
+    openingCandle("2026-07-13", 9, 15, 104),
+    openingCandle("2026-07-13", 9, 20, 105)
+  ];
+
+  const fill = selectNextTradingSessionOpeningCandle(candles, "2026-07-10");
+  assert.equal(fill.date, "2026-07-13");
+  assert.equal(fill.open, 104);
+});
+
+test("market holiday is skipped until the first actual 09:15 session candle", () => {
+  const candles = [
+    openingCandle("2026-08-14", 9, 15, 250),
+    // 17 August is intentionally absent to model an exchange holiday.
+    openingCandle("2026-08-18", 9, 15, 257)
+  ];
+
+  const fill = selectNextTradingSessionOpeningCandle(candles, "2026-08-14");
+  assert.equal(fill.date, "2026-08-18");
+  assert.equal(fill.open, 257);
+});
+
+test("pending order remains unfilled when no later market session candle exists", () => {
+  const candles = [openingCandle("2026-07-10", 9, 15, 100)];
+  assert.equal(selectNextTradingSessionOpeningCandle(candles, "2026-07-10"), null);
+});
+
 function candle(date, open, high, low, close, volume) {
   return {
     date,
@@ -98,5 +130,15 @@ function candle(date, open, high, low, close, volume) {
     low,
     close,
     volume
+  };
+}
+
+function openingCandle(date, hour, minute, open) {
+  const time = new Date(`${date}T${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00+05:30`).getTime();
+  return {
+    date,
+    time,
+    minutes: hour * 60 + minute,
+    open
   };
 }
