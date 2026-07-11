@@ -56,9 +56,40 @@ export async function pushCloudState(state) {
   await postCloud(cloud, {
     action: "save-state",
     internalKey: cloud.internalKey,
-    state
+    state: compactCloudState(state)
   });
   return { ok: true };
+}
+
+export function compactCloudState(state = {}) {
+  const lists = Object.fromEntries(
+    Object.entries(state.lists || {}).map(([id, list]) => [
+      id,
+      {
+        id: list.id || id,
+        label: list.label || id,
+        editable: list.editable === true,
+        summary: list.summary || {}
+      }
+    ])
+  );
+  return {
+    scannedAt: state.scannedAt,
+    benchmark: state.benchmark,
+    benchmarkLabel: state.benchmarkLabel,
+    summary: state.summary,
+    lists,
+    marketContext: state.marketContext,
+    institutionalContext: state.institutionalContext,
+    tradeSettings: state.tradeSettings,
+    tradeSummary: state.tradeSummary,
+    portfolioSummary: state.portfolioSummary,
+    portfolioRules: state.portfolioRules,
+    trades: state.trades || [],
+    waitingCandidates: state.waitingCandidates || [],
+    tradeEvents: state.tradeEvents || [],
+    telegram: state.telegram
+  };
 }
 
 function cloudConfig() {
