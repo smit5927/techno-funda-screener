@@ -553,9 +553,13 @@ function renderDetail(row, trade = null) {
       <p>${escapeHtml(strengthReasons(row).join(" "))}</p>
     </div>
     <div class="checkGrid">
+      ${setupCheckHtml("20D base breakout", setupChecks.baseBreakout, setupValues.priorBaseHigh)}
+      ${setupCheckHtml("Higher-low structure", setupChecks.higherLowStructure, setupValues.recentBaseLow)}
       ${setupCheckHtml("55D breakout", setupChecks.recentHighBreakout, setupValues.priorRecentHigh)}
       ${setupCheckHtml("52W high zone", setupChecks.nearYearHigh, setupValues.priorYearHigh)}
       ${setupCheckHtml("Volume shocker", setupChecks.volumeExpansion, setupValues.volumeRatio, "x")}
+      ${setupCheckHtml("MACD > signal + zero", setupChecks.macdBullish, setupValues.macd)}
+      ${setupCheckHtml("OBV rising", setupChecks.obvRising)}
       ${setupCheckHtml("Retracement buy", setupChecks.retracementBuyZone, setupValues.retracementPullbackDepthPct, "%")}
       ${setupCheckHtml("Pullback support", setupValues.retracementSupportProximityOk, setupValues.retracementSupportDistancePct, "%")}
       ${setupCheckHtml("Pullback volume", setupValues.retracementVolumePatternOk, setupValues.retracementPullbackVolumeRatio, "x")}
@@ -591,6 +595,7 @@ function renderDetail(row, trade = null) {
       ${contextCheckHtml("Derivatives/F&O", institutional.derivatives?.fnoEligible, institutional.derivatives?.reason)}
       ${contextCheckHtml("Options", institutional.options?.supportsLongs, institutional.options?.reason)}
       ${contextCheckHtml("Commodity/Currency", institutional.commodity?.supportsSector, institutional.commodity?.reason)}
+      ${contextCheckHtml("NSE Delivery/Operator", institutional.operator?.accumulation, institutional.operator?.reason)}
     </div>
     <div class="reasonBlock">
       <strong>Institutional Concept Coverage</strong>
