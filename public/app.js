@@ -73,7 +73,8 @@ const elements = {
   telegramStatus: document.querySelector("#telegramStatus"),
   excelDownloadLink: document.querySelector("#excelDownloadLink"),
   csvDownloadLink: document.querySelector("#csvDownloadLink"),
-  detailPanel: document.querySelector("#detailPanel")
+  detailPanel: document.querySelector("#detailPanel"),
+  detailBackdrop: document.querySelector("#detailBackdrop")
 };
 
 elements.refreshButton.addEventListener("click", loadResults);
@@ -120,6 +121,7 @@ elements.scanCustomListButton.addEventListener("click", () => runScan("custom"))
 elements.importCustomFileButton.addEventListener("click", importCustomFile);
 elements.saveTradeSettingsButton.addEventListener("click", saveTradeSettings);
 elements.saveTelegramButton.addEventListener("click", saveTelegramSettings);
+elements.detailBackdrop.addEventListener("click", closeDetail);
 
 document.querySelectorAll(".listTab").forEach((button) => {
   button.addEventListener("click", () => {
@@ -338,7 +340,7 @@ function renderPositions(payload) {
           <td>${fmt(trade.currentRank || trade.positionRank)}</td>
           <td>${fmt(trade.trailingStopPrice || trade.initialStopPrice)}</td>
           <td>${fmt(trade.currentRewardR)}</td>
-          <td class="reasonCell" title="${escapeHtml(reason.join(" "))}">${escapeHtml(reasonSummary(reason))}</td>
+          <td class="reasonCell" title="${escapeHtml(reason.join(" "))}"><span class="signalPreview">${escapeHtml(reasonSummary(reason))}</span></td>
         </tr>
       `;
     })
@@ -399,7 +401,7 @@ function rowHtml(row, index) {
       <td>${row.fundamentalScore || 0}/${row.fundamental?.maxScore || 5}</td>
       <td class="${row.gtfContext?.supplyBlocked ? "bad" : row.gtfContext?.score >= 5 ? "good" : ""}">${row.gtfContext?.dataAvailable ? `${fmt(row.gtfContext.score)}/${fmt(row.gtfContext.maxScore)}` : "NA"}</td>
       <td><strong>${escapeHtml(row.setupGrade || "")} ${row.score || 0}</strong></td>
-      <td class="reasonCell" title="${escapeHtml(fullReason)}">${escapeHtml(reasonSummary(row.signalReason))}</td>
+      <td class="reasonCell" title="${escapeHtml(fullReason)}"><span class="signalPreview">${escapeHtml(reasonSummary(row.signalReason))}</span></td>
     </tr>
   `;
 }
@@ -426,9 +428,19 @@ function renderDetail(row, trade = null) {
         <button class="detailClose" type="button" title="Close details" aria-label="Close details">&times;</button>
       </div>
     </div>
+    <div class="decisionSnapshot" aria-label="Decision snapshot">
+      ${snapshotHtml("Close", fmt(row.close))}
+      ${snapshotHtml("Weekly RSI", fmt(row.weeklyRsi), classForAbove(row.weeklyRsi, 50))}
+      ${snapshotHtml("Weekly RS", pct(row.weeklyRs), classForAbove(row.weeklyRs, 0))}
+      ${snapshotHtml("Daily RSI", fmt(row.dailyRsi), classForAbove(row.dailyRsi, 50))}
+      ${snapshotHtml("Daily RS55", pct(row.dailyLongRs), classForAbove(row.dailyLongRs, 0))}
+      ${snapshotHtml("Daily RS21", pct(row.dailyShortRs), classForAbove(row.dailyShortRs, 0))}
+      ${snapshotHtml("Setup", `${row.setupGrade || "NA"} ${row.score || 0}`)}
+      ${snapshotHtml("GTF", gtf.dataAvailable ? `${fmt(gtf.score)}/${fmt(gtf.maxScore)}` : "NA", gtf.supplyBlocked ? "bad" : gtf.score >= 5 ? "good" : "neutral")}
+    </div>
     <div class="reasonBlock">
       <strong>Signal Reason</strong>
-      <p>${escapeHtml((row.signalReason || []).join(" "))}</p>
+      ${reasonListHtml(row.signalReason)}
     </div>
     <div class="checkGrid">
       ${checkHtml("Net income YoY", checks.netIncomeYoYUp)}
@@ -493,12 +505,16 @@ function renderDetail(row, trade = null) {
     </div>
   `;
   elements.detailPanel.classList.add("visible");
+  elements.detailBackdrop.classList.add("visible");
+  document.body.classList.add("detailOpen");
   elements.detailPanel.scrollTop = 0;
   elements.detailPanel.querySelector(".detailClose")?.addEventListener("click", closeDetail);
 }
 
 function closeDetail() {
   elements.detailPanel.classList.remove("visible");
+  elements.detailBackdrop.classList.remove("visible");
+  document.body.classList.remove("detailOpen");
 }
 
 function setStatusFilter(filter) {
@@ -669,7 +685,7 @@ function renderCandidates(payload) {
         <td>${fmt(candidate.rank)}</td>
         <td>${compact(candidate.plannedAllocation)}</td>
         <td>${compact(candidate.plannedRisk)}</td>
-        <td class="reasonCell" title="${escapeHtml(candidate.skipReason || "Waiting for portfolio allocation")}">${escapeHtml(reasonSummary([candidate.skipReason || "Waiting for portfolio allocation"]))}</td>
+        <td class="reasonCell" title="${escapeHtml(candidate.skipReason || "Waiting for portfolio allocation")}"><span class="signalPreview">${escapeHtml(reasonSummary([candidate.skipReason || "Waiting for portfolio allocation"]))}</span></td>
       </tr>
     `)
     .join("");
@@ -807,6 +823,19 @@ function updateDownloadLinks(payload) {
   const version = encodeURIComponent(payload?.scannedAt || Date.now());
   elements.excelDownloadLink.href = `data/techno-funda-trade-sheet.xlsx?v=${version}`;
   elements.csvDownloadLink.href = `data/techno-funda-trade-sheet.csv?v=${version}`;
+}
+
+function reasonListHtml(reasons = []) {
+  const values = (Array.isArray(reasons) ? reasons : [reasons])
+    .map((reason) => String(reason || "").trim())
+    .filter(Boolean);
+  if (!values.length) return '<p class="neutral">No signal reason available.</p>';
+  return `<ul class="reasonList">${values.map((reason) => `<li>${escapeHtml(reason)}</li>`).join("")}</ul>`;
+}
+
+function snapshotHtml(label, value, tone = "") {
+  const safeTone = ["good", "bad", "neutral"].includes(tone) ? tone : "";
+  return `<div><span>${escapeHtml(label)}</span><strong class="${safeTone}">${escapeHtml(value)}</strong></div>`;
 }
 
 function checkHtml(label, check, asPercent = false) {
