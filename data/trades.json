@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-13T05:37:42.524Z",
+  "updatedAt": "2026-07-13T05:41:37.101Z",
   "portfolioEngineStartedAt": "2026-07-11T05:24:12.577Z",
   "liveModeStartedAt": "2026-07-07T04:17:45.096Z",
   "baselineInitialized": true,
@@ -28453,841 +28453,841 @@
     "custom:GRANULES.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SKYGOLD.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:THANGAMAYL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:TBZ.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:CGCL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:RML.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:NEULANDLAB.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:INOXINDIA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:UNIHEALTH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:RADICO.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:TIPSMUSIC.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:ALIVUS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:IKS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:TORNTPHARM.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:BHARATSE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:POCL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:PPAP.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:APOLLOHOSP.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:LUPIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:MARKSANS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:MMP.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SANGAMIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:ANANDRATHI.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:HAPPYFORGE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:VADILALIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:PGIL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SANSERA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:BUTTERFLY.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:CREDITACC.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:GHCLTEXTIL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:VIJIFIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:CEMPRO.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:HESTERBIO.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:OFSS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:RANEHOLDIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SFL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SHILPAMED.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SJS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:MANKIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:RAINBOW.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:AEGISVOPAK.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:INDIGRID.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:JAYBARMARU.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:MINDACORP.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:ADOR.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:GINNIFILA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:GODREJIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:GSMFOILS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:PANACHE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SANGHVIMOV.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:BLISSGVS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:HARSHA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:INDNIPPON.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:MAYURUNIQ.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:NAM-INDIA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:PRIVISCL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:RPEL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:VIYASH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:LALPATHLAB.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SHRIPISTON.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:INDHOTEL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:KRISHNADEF.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:THELEELA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:NUVAMA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:IMPAL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:PARAS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:RAMCOIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SGFIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:STOVEKRAFT.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:UNIVASTU.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:GRWRHITECH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:PIDILITIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:CAPLIPOINT.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:KMEW.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:NINSYS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:WABAG.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:FUSION.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:BETA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:KIMS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:NRL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:KOVAI.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SCHNEIDER.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:RUBICON.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:MARC.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:APTUS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:MINDSPACE.NS": {
       "status": "EXIT",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:KARURVYSYA.NS": {
       "status": "EXIT",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:FIEMIND.NS": {
       "status": "EXIT",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:GRINDWELL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:LMW.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:PREMIERENE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:PGHL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:NH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:CRAFTSMAN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:FORTIS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:MAHLOG.NS": {
       "status": "EXIT",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:RAIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SIS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SKIPPER.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:NRBBEARING.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:ASTERDM.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:KPIL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SANDHAR.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:THYROCARE.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:PRUDENT.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:VIJAYA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:ENDURANCE.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:PRICOLLTD.NS": {
       "status": "EXIT",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:MOTHERSON.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:APCOTEXIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:ASIANPAINT.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:ORIENTBELL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:PRECOT.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SAKAR.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:FINEORG.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:BAJAJ-AUTO.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:KRN.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:NIVABUPA.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:INGERRAND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:TATACOMM.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:YATHARTH.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:MGEL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SBCL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:RRKABEL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:EMMVEE.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:CAMS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:CUMMINSIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SOLARINDS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:V2RETAIL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:HAL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:NMDC.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:LLOYDSME.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:ANTHEM.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:JSWSTEEL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:ADANIPOWER.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:VBL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:BHEL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:POLYCAB.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:COALINDIA.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:TENNIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:BRPL.NS": {
@@ -29367,7 +29367,7 @@
     },
     "custom:HEXAGON.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:INVPRECQ.NS": {
@@ -29382,17 +29382,17 @@
     },
     "custom:OBSCP.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SEDEMAC.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:VIGOR.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:CLIOINFO.NS": {
@@ -29488,211 +29488,211 @@
     "custom:SW1.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:YASHHV.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:COVANCE.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:VIKRAMTH.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:CLIOINFO.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:CIL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:UNIABEXAL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:KMCSHIL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:RAJSEC.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SUDARSHAN.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:INVPRECQ.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:KELENRG.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:NEXUSSURGL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:BIMETAL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:KPL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:KVFORGE.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:UCIL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:RASRESOR.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:INDUSFINL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:TAALTECH.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:FREDUN.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:DHABRIYA.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:RRMETAL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SEKURITIND.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:MKTCREAT.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:TERAI.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:GOLKUNDIA.BO": {
       "status": "EXIT",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:EMERALD.BO": {
       "status": "EXIT",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:GSAUTO.BO": {
       "status": "EXIT",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SANCTRN.BO": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:TANFACIND.BO": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:SIMMOND.BO": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:CJGEL.BO": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:BENARAS.BO": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     },
     "custom:BRPL.BO": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-13T05:37:41.495Z",
+      "scannedAt": "2026-07-13T05:41:36.891Z",
       "scopeListId": "custom"
     }
   },
@@ -29762,7 +29762,7 @@
       "firstSignalDate": "2026-07-10",
       "firstSeenAt": "2026-07-13T03:42:02.727Z",
       "lastSignalDate": "2026-07-10",
-      "lastSeenAt": "2026-07-13T05:37:41.495Z",
+      "lastSeenAt": "2026-07-13T05:41:36.891Z",
       "rank": 130.04,
       "grade": "A",
       "score": 19,
@@ -29772,7 +29772,7 @@
       "plannedStopPrice": 8955.5,
       "plannedRisk": 3455,
       "plannedAllocation": 93010,
-      "lastEvaluatedAt": "2026-07-13T05:37:41.495Z",
+      "lastEvaluatedAt": "2026-07-13T05:41:36.891Z",
       "skipAlertedAt": "2026-07-13T03:42:02.727Z"
     }
   ],
@@ -30071,7 +30071,7 @@
             "Commodity/currency macro context",
             "Fundamental improvement",
             "Exit rule discipline",
-            "09:15 execution discipline"
+            "09:17 execution discipline"
           ],
           "weakLabels": [
             "RS trend follow-through",
@@ -30505,7 +30505,7 @@
             "Commodity/currency macro context",
             "Fundamental improvement",
             "Exit rule discipline",
-            "09:15 execution discipline"
+            "09:17 execution discipline"
           ],
           "weakLabels": [
             "RS trend follow-through",
@@ -31216,7 +31216,7 @@
             "Index regime confirmation",
             "Commodity/currency macro context",
             "Exit rule discipline",
-            "09:15 execution discipline"
+            "09:17 execution discipline"
           ],
           "weakLabels": [
             "RS trend follow-through",
@@ -31507,7 +31507,7 @@
             "Commodity/currency macro context",
             "Fundamental improvement",
             "Exit rule discipline",
-            "09:15 execution discipline"
+            "09:17 execution discipline"
           ],
           "weakLabels": [
             "Risk reference discipline",
@@ -31794,7 +31794,7 @@
             "Commodity/currency macro context",
             "Fundamental improvement",
             "Exit rule discipline",
-            "09:15 execution discipline"
+            "09:17 execution discipline"
           ],
           "weakLabels": [
             "Volume participation",
@@ -32080,7 +32080,7 @@
             "Commodity/currency macro context",
             "Fundamental improvement",
             "Exit rule discipline",
-            "09:15 execution discipline"
+            "09:17 execution discipline"
           ],
           "weakLabels": [
             "RS trend follow-through",
@@ -32365,7 +32365,7 @@
             "Commodity/currency macro context",
             "Fundamental improvement",
             "Exit rule discipline",
-            "09:15 execution discipline"
+            "09:17 execution discipline"
           ],
           "weakLabels": [
             "RS trend follow-through",
@@ -32655,7 +32655,7 @@
             "Commodity/currency macro context",
             "Fundamental improvement",
             "Exit rule discipline",
-            "09:15 execution discipline"
+            "09:17 execution discipline"
           ],
           "weakLabels": [
             "RS trend follow-through",
@@ -33278,7 +33278,7 @@
             "Commodity/currency macro context",
             "Fundamental improvement",
             "Exit rule discipline",
-            "09:15 execution discipline"
+            "09:17 execution discipline"
           ],
           "weakLabels": [
             "RS trend follow-through",
@@ -33874,7 +33874,7 @@
             "Commodity/currency macro context",
             "Fundamental improvement",
             "Exit rule discipline",
-            "09:15 execution discipline"
+            "09:17 execution discipline"
           ],
           "weakLabels": [
             "RS trend follow-through",
@@ -34349,9 +34349,9 @@
         "Volatility is controlled: ATR(14) is 4.12% of price.",
         "Liquidity strength: 20-day average turnover is Rs 1445241605.40.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-09; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-09; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 2476.10009765625,
@@ -34472,7 +34472,7 @@
       "exitPrice": 2451.3,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 2451.3,
       "lastPriceDate": "2026-07-13",
@@ -34785,9 +34785,9 @@
         "Volatility is controlled: ATR(14) is 5.32% of price.",
         "Liquidity strength: 20-day average turnover is Rs 726710452.63.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-09; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-09; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 2364,
@@ -34908,7 +34908,7 @@
       "exitPrice": 2380,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 2380,
       "lastPriceDate": "2026-07-13",
@@ -35224,9 +35224,9 @@
         "Price confirmation: previous-high confirmation is present.",
         "Volatility is controlled: ATR(14) is 3.93% of price.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-09; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-09; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 261.44000244140625,
@@ -35347,7 +35347,7 @@
       "exitPrice": 263.33,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 263.33,
       "lastPriceDate": "2026-07-13",
@@ -35663,9 +35663,9 @@
         "Volatility is controlled: ATR(14) is 1.77% of price.",
         "Liquidity strength: 20-day average turnover is Rs 1875807595.14.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-09; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-09; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 3191.89990234375,
@@ -35786,7 +35786,7 @@
       "exitPrice": 3191.1,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 3191.1,
       "lastPriceDate": "2026-07-13",
@@ -36102,9 +36102,9 @@
         "Volatility is controlled: ATR(14) is 4.13% of price.",
         "Liquidity strength: 20-day average turnover is Rs 329311299.09.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-09; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-09; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 476.1000061035156,
@@ -36225,7 +36225,7 @@
       "exitPrice": 478.65,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 478.65,
       "lastPriceDate": "2026-07-13",
@@ -36540,9 +36540,9 @@
         "Volatility is controlled: ATR(14) is 3.08% of price.",
         "Liquidity strength: 20-day average turnover is Rs 264044234.81.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-09; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-09; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 502.20001220703125,
@@ -36663,7 +36663,7 @@
       "exitPrice": 509.5,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 509.5,
       "lastPriceDate": "2026-07-13",
@@ -36976,9 +36976,9 @@
         "Volatility is controlled: ATR(14) is 3.33% of price.",
         "Liquidity strength: 20-day average turnover is Rs 145364037.14.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-09; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-09; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 711.1500244140625,
@@ -37099,7 +37099,7 @@
       "exitPrice": 709,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 709,
       "lastPriceDate": "2026-07-13",
@@ -37412,9 +37412,9 @@
         "Volatility is controlled: ATR(14) is 4.30% of price.",
         "Liquidity strength: 20-day average turnover is Rs 466304688.16.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-09; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-09; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 163.14999389648438,
@@ -37535,7 +37535,7 @@
       "exitPrice": 159.3,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 159.3,
       "lastPriceDate": "2026-07-13",
@@ -37849,10 +37849,10 @@
         "Volatility is controlled: ATR(14) is 3.51% of price.",
         "Liquidity strength: 20-day average turnover is Rs 1118634540.95.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Sector breadth strong: Realty has 8/11 stocks (72.73%) passing daily strength.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-09; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-09; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 569.4500122070312,
@@ -37973,7 +37973,7 @@
       "exitPrice": 579.75,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 579.75,
       "lastPriceDate": "2026-07-13",
@@ -38286,9 +38286,9 @@
         "Volatility is controlled: ATR(14) is 3.88% of price.",
         "Liquidity strength: 20-day average turnover is Rs 1021331586.65.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-09; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-09; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 481.1499938964844,
@@ -38409,7 +38409,7 @@
       "exitPrice": 512.95,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 512.95,
       "lastPriceDate": "2026-07-13",
@@ -38722,9 +38722,9 @@
         "Price confirmation: previous-high confirmation is present.",
         "Volatility is controlled: ATR(14) is 4.85% of price.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-09; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-09; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 204.61000061035156,
@@ -38845,7 +38845,7 @@
       "exitPrice": 206.95,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 206.95,
       "lastPriceDate": "2026-07-13",
@@ -39158,9 +39158,9 @@
         "Volatility is controlled: ATR(14) is 2.98% of price.",
         "Liquidity strength: 20-day average turnover is Rs 3448981486.62.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-09; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-09; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 545.9500122070312,
@@ -39281,7 +39281,7 @@
       "exitPrice": 540.85,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 540.85,
       "lastPriceDate": "2026-07-13",
@@ -39594,9 +39594,9 @@
         "Volatility is controlled: ATR(14) is 4.58% of price.",
         "Liquidity strength: 20-day average turnover is Rs 104194634.88.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-09; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-09; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 364.5,
@@ -39717,7 +39717,7 @@
       "exitPrice": 378.2,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 378.2,
       "lastPriceDate": "2026-07-13",
@@ -40029,9 +40029,9 @@
         "Volatility is controlled: ATR(14) is 3.44% of price.",
         "Liquidity strength: 20-day average turnover is Rs 45295088.42.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-09; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-09; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 268,
@@ -40152,7 +40152,7 @@
       "exitPrice": 274.5,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 274.5,
       "lastPriceDate": "2026-07-13",
@@ -40463,9 +40463,9 @@
         "Volatility is controlled: ATR(14) is 4.96% of price.",
         "Liquidity strength: 20-day average turnover is Rs 84512764.56.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-09; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-09; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 33.88999938964844,
@@ -40586,7 +40586,7 @@
       "exitPrice": 34.01,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 34.01,
       "lastPriceDate": "2026-07-13",
@@ -40898,9 +40898,9 @@
         "Volatility is controlled: ATR(14) is 2.64% of price.",
         "Liquidity strength: 20-day average turnover is Rs 5845868404.69.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-09; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-09; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 1031.699951171875,
@@ -41021,7 +41021,7 @@
       "exitPrice": 1020.4,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 1020.4,
       "lastPriceDate": "2026-07-13",
@@ -41334,9 +41334,9 @@
         "Volatility is controlled: ATR(14) is 3.57% of price.",
         "Liquidity strength: 20-day average turnover is Rs 43478213.02.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-09; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-09; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 635,
@@ -41457,7 +41457,7 @@
       "exitPrice": 637.25,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 637.25,
       "lastPriceDate": "2026-07-13",
@@ -41765,8 +41765,8 @@
         "Trend strength: close is above 50-DMA and 200-DMA, with fast DMA above slow DMA.",
         "Volatility is controlled: ATR(14) is 3.36% of price.",
         "Liquidity strength: 20-day average turnover is Rs 3837273781.32.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 1655.5,
@@ -41887,7 +41887,7 @@
       "exitPrice": 1650.7,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 1650.7,
       "lastPriceDate": "2026-07-13",
@@ -42198,8 +42198,8 @@
         "Risk reference: close is 2.13% above daily Supertrend.",
         "Volatility is controlled: ATR(14) is 1.82% of price.",
         "Liquidity strength: 20-day average turnover is Rs 18771368339.26.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 1380.5999755859375,
@@ -42320,7 +42320,7 @@
       "exitPrice": 1387.1,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 1387.1,
       "lastPriceDate": "2026-07-13",
@@ -42640,9 +42640,9 @@
         "Volatility is controlled: ATR(14) is 3.79% of price.",
         "Liquidity strength: 20-day average turnover is Rs 339897086.16.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 669,
@@ -42763,7 +42763,7 @@
       "exitPrice": 645,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 645,
       "lastPriceDate": "2026-07-13",
@@ -43076,10 +43076,10 @@
         "Volatility is controlled: ATR(14) is 2.83% of price.",
         "Liquidity strength: 20-day average turnover is Rs 3801318997.06.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Sector breadth strong: Healthcare has 27/49 stocks (55.10%) passing daily strength.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 1469.199951171875,
@@ -43200,7 +43200,7 @@
       "exitPrice": 1533,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 1533,
       "lastPriceDate": "2026-07-13",
@@ -43511,9 +43511,9 @@
         "Volatility is controlled: ATR(14) is 3.08% of price.",
         "Liquidity strength: 20-day average turnover is Rs 59172778.82.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 923.4500122070312,
@@ -43634,7 +43634,7 @@
       "exitPrice": 960,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 960,
       "lastPriceDate": "2026-07-13",
@@ -43947,9 +43947,9 @@
         "Volatility is controlled: ATR(14) is 2.74% of price.",
         "Liquidity strength: 20-day average turnover is Rs 34745292.46.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 477.8500061035156,
@@ -44070,7 +44070,7 @@
       "exitPrice": 476,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 476,
       "lastPriceDate": "2026-07-13",
@@ -44386,9 +44386,9 @@
         "Volatility is controlled: ATR(14) is 4.94% of price.",
         "Liquidity strength: 20-day average turnover is Rs 11660678.43.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 280.95001220703125,
@@ -44509,7 +44509,7 @@
       "exitPrice": 289.95,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 289.95,
       "lastPriceDate": "2026-07-13",
@@ -44822,9 +44822,9 @@
         "Volatility is controlled: ATR(14) is 6.09% of price.",
         "Liquidity strength: 20-day average turnover is Rs 145006941.70.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 1697.699951171875,
@@ -44945,7 +44945,7 @@
       "exitPrice": 1725,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 1725,
       "lastPriceDate": "2026-07-13",
@@ -45261,9 +45261,9 @@
         "Volatility is controlled: ATR(14) is 4.09% of price.",
         "Liquidity strength: 20-day average turnover is Rs 666432165.71.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 365.25,
@@ -45384,7 +45384,7 @@
       "exitPrice": 374.4,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 374.4,
       "lastPriceDate": "2026-07-13",
@@ -45697,9 +45697,9 @@
         "Risk reference: close is 6.24% above daily Supertrend.",
         "Volatility is controlled: ATR(14) is 3.79% of price.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 314.6499938964844,
@@ -45820,7 +45820,7 @@
       "exitPrice": 322.1,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 322.1,
       "lastPriceDate": "2026-07-13",
@@ -46132,9 +46132,9 @@
         "Volatility is controlled: ATR(14) is 4.78% of price.",
         "Liquidity strength: 20-day average turnover is Rs 131622405.39.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 118.05000305175781,
@@ -46255,7 +46255,7 @@
       "exitPrice": 130.2,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 130.2,
       "lastPriceDate": "2026-07-13",
@@ -46567,10 +46567,10 @@
         "Volatility is controlled: ATR(14) is 4.15% of price.",
         "Liquidity strength: 20-day average turnover is Rs 1464272618.01.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Sector breadth strong: Healthcare has 27/49 stocks (55.10%) passing daily strength.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 3454.5,
@@ -46691,7 +46691,7 @@
       "exitPrice": 3375.3,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 3375.3,
       "lastPriceDate": "2026-07-13",
@@ -47005,9 +47005,9 @@
         "Volatility is controlled: ATR(14) is 3.39% of price.",
         "Liquidity strength: 20-day average turnover is Rs 515311191.93.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 4667,
@@ -47128,7 +47128,7 @@
       "exitPrice": 4688,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 4688,
       "lastPriceDate": "2026-07-13",
@@ -47438,9 +47438,9 @@
         "Volatility is controlled: ATR(14) is 4.71% of price.",
         "Liquidity strength: 20-day average turnover is Rs 291967324.11.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 285.25,
@@ -47561,7 +47561,7 @@
       "exitPrice": 305.35,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 305.35,
       "lastPriceDate": "2026-07-13",
@@ -47871,9 +47871,9 @@
         "Volatility is controlled: ATR(14) is 1.81% of price.",
         "Liquidity strength: 20-day average turnover is Rs 16208933.22.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 600.5499877929688,
@@ -47994,7 +47994,7 @@
       "exitPrice": 601.8,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 601.8,
       "lastPriceDate": "2026-07-13",
@@ -48306,9 +48306,9 @@
         "Volatility is controlled: ATR(14) is 3.35% of price.",
         "Liquidity strength: 20-day average turnover is Rs 21241168.74.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 5138.5,
@@ -48429,7 +48429,7 @@
       "exitPrice": 5200,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 5200,
       "lastPriceDate": "2026-07-13",
@@ -48742,10 +48742,10 @@
         "Volatility is controlled: ATR(14) is 3.05% of price.",
         "Liquidity strength: 20-day average turnover is Rs 471051930.53.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Sector breadth strong: Healthcare has 27/49 stocks (55.10%) passing daily strength.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 805.9500122070312,
@@ -48866,7 +48866,7 @@
       "exitPrice": 807.5,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 807.5,
       "lastPriceDate": "2026-07-13",
@@ -49178,9 +49178,9 @@
         "Volatility is controlled: ATR(14) is 1.97% of price.",
         "Liquidity strength: 20-day average turnover is Rs 1928926890.76.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 840.0999755859375,
@@ -49301,7 +49301,7 @@
       "exitPrice": 849.6,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 849.6,
       "lastPriceDate": "2026-07-13",
@@ -49615,9 +49615,9 @@
         "Volatility is controlled: ATR(14) is 3.43% of price.",
         "Liquidity strength: 20-day average turnover is Rs 50185924.28.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 345.5,
@@ -49738,7 +49738,7 @@
       "exitPrice": 360.65,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 360.65,
       "lastPriceDate": "2026-07-13",
@@ -50102,7 +50102,7 @@
       "exitPrice": 1013.9,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "pnl": -1047.6,
       "pnlPct": -1.05,
@@ -50481,7 +50481,7 @@
       "exitPrice": 419.55,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "pnl": 1241.15,
       "pnlPct": 1.24,
@@ -50807,8 +50807,8 @@
         "Price confirmation: previous-high confirmation is present.",
         "Volatility is controlled: ATR(14) is 2.07% of price.",
         "Liquidity strength: 20-day average turnover is Rs 3764631254.98.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
-        "Closing signal dated 2026-07-07; buy fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
+        "Closing signal dated 2026-07-07; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 4604.2001953125,
@@ -50929,7 +50929,7 @@
       "exitPrice": 4571.7,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 4571.7,
       "lastPriceDate": "2026-07-13",
@@ -51241,8 +51241,8 @@
         "Price confirmation: previous-high confirmation is present.",
         "Volatility is controlled: ATR(14) is 3.09% of price.",
         "Liquidity strength: 20-day average turnover is Rs 78388182.34.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
-        "Closing signal dated 2026-07-07; buy fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
+        "Closing signal dated 2026-07-07; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 1339.300048828125,
@@ -51363,7 +51363,7 @@
       "exitPrice": 1318.9,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 1318.9,
       "lastPriceDate": "2026-07-13",
@@ -51677,8 +51677,8 @@
         "Price confirmation: previous-high confirmation is present.",
         "Volatility is controlled: ATR(14) is 2.58% of price.",
         "Liquidity strength: 20-day average turnover is Rs 1094073967.76.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
-        "Closing signal dated 2026-07-07; buy fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
+        "Closing signal dated 2026-07-07; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 1150.0999755859375,
@@ -51799,7 +51799,7 @@
       "exitPrice": 1118.5,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 1118.5,
       "lastPriceDate": "2026-07-13",
@@ -52113,8 +52113,8 @@
         "Price confirmation: hammer is present.",
         "Volatility is controlled: ATR(14) is 2.34% of price.",
         "Liquidity strength: 20-day average turnover is Rs 304926421.66.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
-        "Closing signal dated 2026-07-07; buy fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
+        "Closing signal dated 2026-07-07; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 1211.199951171875,
@@ -52235,7 +52235,7 @@
       "exitPrice": 1210.1,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 1210.1,
       "lastPriceDate": "2026-07-13",
@@ -52548,8 +52548,8 @@
         "RS trend strength: weekly RS and daily RS55 are rising.",
         "Volatility is controlled: ATR(14) is 2.66% of price.",
         "Liquidity strength: 20-day average turnover is Rs 219375712.18.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
-        "Closing signal dated 2026-07-07; buy fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
+        "Closing signal dated 2026-07-07; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 1699.300048828125,
@@ -52670,7 +52670,7 @@
       "exitPrice": 1645.2,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 1645.2,
       "lastPriceDate": "2026-07-13",
@@ -52982,8 +52982,8 @@
         "Price action strength: close is within 15% of 52-week high 1764.80.",
         "Volatility is controlled: ATR(14) is 3.54% of price.",
         "Liquidity strength: 20-day average turnover is Rs 490171939.51.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
-        "Closing signal dated 2026-07-07; buy fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
+        "Closing signal dated 2026-07-07; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 1504.9000244140625,
@@ -53104,7 +53104,7 @@
       "exitPrice": 1480.6,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 1480.6,
       "lastPriceDate": "2026-07-13",
@@ -53418,8 +53418,8 @@
         "Price confirmation: bullish engulfing is present.",
         "Volatility is controlled: ATR(14) is 2.40% of price.",
         "Liquidity strength: 20-day average turnover is Rs 166087688.60.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
-        "Closing signal dated 2026-07-07; buy fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
+        "Closing signal dated 2026-07-07; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 86.5,
@@ -53540,7 +53540,7 @@
       "exitPrice": 86,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 86,
       "lastPriceDate": "2026-07-13",
@@ -53853,8 +53853,8 @@
         "Risk reference: close is 6.64% above daily Supertrend.",
         "Volatility is controlled: ATR(14) is 3.09% of price.",
         "Liquidity strength: 20-day average turnover is Rs 1924577078.36.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
-        "Closing signal dated 2026-07-07; buy fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
+        "Closing signal dated 2026-07-07; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 352.6000061035156,
@@ -53975,7 +53975,7 @@
       "exitPrice": 357.5,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 357.5,
       "lastPriceDate": "2026-07-13",
@@ -54284,8 +54284,8 @@
         "Risk reference: close is 4.28% above daily Supertrend.",
         "Volatility is controlled: ATR(14) is 2.46% of price.",
         "Liquidity strength: 20-day average turnover is Rs 541372455.65.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
-        "Closing signal dated 2026-07-07; buy fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
+        "Closing signal dated 2026-07-07; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 10759,
@@ -54406,7 +54406,7 @@
       "exitPrice": 10291,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 10291,
       "lastPriceDate": "2026-07-13",
@@ -54719,8 +54719,8 @@
         "Trend strength: close is above 50-DMA and 200-DMA, with fast DMA above slow DMA.",
         "Volatility is controlled: ATR(14) is 3.29% of price.",
         "Liquidity strength: 20-day average turnover is Rs 441395630.13.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
-        "Closing signal dated 2026-07-07; buy fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
+        "Closing signal dated 2026-07-07; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 261.54998779296875,
@@ -54841,7 +54841,7 @@
       "exitPrice": 270.9,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "lastPrice": 270.9,
       "lastPriceDate": "2026-07-13",
@@ -55210,8 +55210,8 @@
       "exitPrice": 1168.4,
       "exitReason": [
         "Weekly RS -7.9% is below 0 on closed weekly candle.",
-        "Execution plan for an open position: sell on the next trading session using the 09:15 five-minute candle open.",
-        "Closing exit signal dated 2026-07-08; sell fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan for an open position: sell on the next trading session using the 09:17 one-minute candle open.",
+        "Closing exit signal dated 2026-07-08; sell fill must come from the next session at exactly 09:17 IST."
       ],
       "pnl": -522.75,
       "pnlPct": -0.52,
@@ -55444,8 +55444,8 @@
       "exitPrice": 288,
       "exitReason": [
         "Weekly RS -0.1% is below 0 on closed weekly candle.",
-        "Execution plan for an open position: sell on the next trading session using the 09:15 five-minute candle open.",
-        "Closing exit signal dated 2026-07-08; sell fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan for an open position: sell on the next trading session using the 09:17 one-minute candle open.",
+        "Closing exit signal dated 2026-07-08; sell fill must come from the next session at exactly 09:17 IST."
       ],
       "pnl": 0,
       "pnlPct": 0,
@@ -55678,8 +55678,8 @@
       "exitPrice": 222.61,
       "exitReason": [
         "Weekly RS -2.0% is below 0 on closed weekly candle.",
-        "Execution plan for an open position: sell on the next trading session using the 09:15 five-minute candle open.",
-        "Closing exit signal dated 2026-07-08; sell fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan for an open position: sell on the next trading session using the 09:17 one-minute candle open.",
+        "Closing exit signal dated 2026-07-08; sell fill must come from the next session at exactly 09:17 IST."
       ],
       "pnl": -3105.9,
       "pnlPct": -3.11,
@@ -55913,8 +55913,8 @@
       "exitPrice": 428.95,
       "exitReason": [
         "Weekly RS -4.0% is below 0 on closed weekly candle.",
-        "Execution plan for an open position: sell on the next trading session using the 09:15 five-minute candle open.",
-        "Closing exit signal dated 2026-07-08; sell fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan for an open position: sell on the next trading session using the 09:17 one-minute candle open.",
+        "Closing exit signal dated 2026-07-08; sell fill must come from the next session at exactly 09:17 IST."
       ],
       "pnl": -1161.5,
       "pnlPct": -1.16,
@@ -56147,7 +56147,7 @@
       "exitPrice": 35300,
       "exitReason": [
         "Trade universe changed to My List; this position is outside the active portfolio.",
-        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays."
+        "Closing exit signal dated 2026-07-10; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "pnl": 200,
       "pnlPct": 0.28,
@@ -56524,8 +56524,8 @@
       "exitPrice": 226,
       "exitReason": [
         "Weekly RS -0.6% is below 0 on closed weekly candle.",
-        "Execution plan for an open position: sell on the next trading session using the 09:15 five-minute candle open.",
-        "Closing exit signal dated 2026-07-07; sell fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan for an open position: sell on the next trading session using the 09:17 one-minute candle open.",
+        "Closing exit signal dated 2026-07-07; sell fill must come from the next session at exactly 09:17 IST."
       ],
       "pnl": 600.75,
       "pnlPct": 0.6,
@@ -56758,8 +56758,8 @@
       "exitPrice": 26630,
       "exitReason": [
         "Weekly RS -1.5% is below 0 on closed weekly candle.",
-        "Execution plan for an open position: sell on the next trading session using the 09:15 five-minute candle open.",
-        "Closing exit signal dated 2026-07-07; sell fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan for an open position: sell on the next trading session using the 09:17 one-minute candle open.",
+        "Closing exit signal dated 2026-07-07; sell fill must come from the next session at exactly 09:17 IST."
       ],
       "pnl": -90,
       "pnlPct": -0.11,
@@ -56992,8 +56992,8 @@
       "exitPrice": 896,
       "exitReason": [
         "Weekly RS -2.5% is below 0 on closed weekly candle.",
-        "Execution plan for an open position: sell on the next trading session using the 09:15 five-minute candle open.",
-        "Closing exit signal dated 2026-07-08; sell fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan for an open position: sell on the next trading session using the 09:17 one-minute candle open.",
+        "Closing exit signal dated 2026-07-08; sell fill must come from the next session at exactly 09:17 IST."
       ],
       "pnl": -2694.6,
       "pnlPct": -2.71,
@@ -57227,8 +57227,8 @@
       "exitPrice": 1272.6,
       "exitReason": [
         "Weekly RS -3.4% is below 0 on closed weekly candle.",
-        "Execution plan for an open position: sell on the next trading session using the 09:15 five-minute candle open.",
-        "Closing exit signal dated 2026-07-07; sell fill must come from the next session 09:15-09:20 IST window."
+        "Execution plan for an open position: sell on the next trading session using the 09:17 one-minute candle open.",
+        "Closing exit signal dated 2026-07-07; sell fill must come from the next session at exactly 09:17 IST."
       ],
       "pnl": -1617,
       "pnlPct": -1.62,
@@ -57422,11 +57422,11 @@
         "Options context: NSE option-chain snapshot unavailable; mark this as data gap, not as bearish.",
         "Commodity/currency context: 2/5 commodity/currency proxies are bullish; 3 bearish.",
         "Institutional confluence score 3/4 (Institutional B).",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Sector breadth strong: My List has 93/140 stocks (66.43%) passing daily strength.",
         "Institutional concept coverage: 20/22 applicable video-derived buckets are strong.",
         "Trade sheet filter: My List, Strong and best (A+/A/B).",
-        "Closing signal dated 2026-07-10; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-10; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 4506.7998046875,
@@ -57601,7 +57601,7 @@
             "Commodity/currency macro context",
             "Fundamental improvement",
             "Exit rule discipline",
-            "09:15 execution discipline"
+            "09:17 execution discipline"
           ],
           "weakLabels": [
             "Volume participation"
@@ -57723,11 +57723,11 @@
         "Options context: NSE option-chain snapshot unavailable; mark this as data gap, not as bearish.",
         "Commodity/currency context: 2/5 commodity/currency proxies are bullish; 3 bearish.",
         "Institutional confluence score 3/4 (Institutional B).",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Sector breadth strong: My List has 93/140 stocks (66.43%) passing daily strength.",
         "Institutional concept coverage: 18/22 applicable video-derived buckets are strong.",
         "Trade sheet filter: My List, Strong and best (A+/A/B).",
-        "Closing signal dated 2026-07-10; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-10; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 1117.199951171875,
@@ -57900,7 +57900,7 @@
             "Commodity/currency macro context",
             "Fundamental improvement",
             "Exit rule discipline",
-            "09:15 execution discipline"
+            "09:17 execution discipline"
           ],
           "weakLabels": [
             "RS trend follow-through",
@@ -58022,11 +58022,11 @@
         "Options context: NSE option-chain snapshot unavailable; mark this as data gap, not as bearish.",
         "Commodity/currency context: 2/5 commodity/currency proxies are bullish; 3 bearish.",
         "Institutional confluence score 2/4 (Institutional C).",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Sector breadth strong: My List has 93/140 stocks (66.43%) passing daily strength.",
         "Institutional concept coverage: 14/22 applicable video-derived buckets are strong.",
         "Trade sheet filter: My List, Strong and best (A+/A/B).",
-        "Closing signal dated 2026-07-10; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-10; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 747.0499877929688,
@@ -58195,7 +58195,7 @@
             "Index regime confirmation",
             "Commodity/currency macro context",
             "Exit rule discipline",
-            "09:15 execution discipline"
+            "09:17 execution discipline"
           ],
           "weakLabels": [
             "RS trend follow-through",
@@ -58313,9 +58313,9 @@
         "Risk reference: close is 4.75% above daily Supertrend.",
         "Volatility is controlled: ATR(14) is 4.00% of price.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "Execution plan: buy on the next trading session using the 09:15 five-minute candle open.",
+        "Execution plan: buy on the next trading session using the 09:17 one-minute candle open.",
         "Trade sheet filter: All NSE Market, Best only (A+/A).",
-        "Closing signal dated 2026-07-08; buy fill must come from the next session 09:15-09:20 IST window."
+        "Closing signal dated 2026-07-08; buy fill must come from the next session at exactly 09:17 IST."
       ],
       "entrySnapshot": {
         "close": 91.3499984741211,
