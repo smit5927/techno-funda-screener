@@ -7,11 +7,13 @@ import {
   nextTrailingStop,
   portfolioConfig,
   portfolioSummary,
+  postEntryPyramidState,
   positionExitDecision,
   pyramidAddDecision,
   rotationDecision,
   structuralStop
 } from "../src/portfolio-engine.js";
+import { buildPyramidStructure } from "../src/screener.js";
 
 test("portfolio defaults use ten lakh capital with institutional limits", () => {
   const rules = portfolioConfig({ trade: {} });
@@ -33,6 +35,7 @@ test("only a protected A-grade winner on a fresh breakout can be scaled up", () 
   row.setupStrength.checks.marketRegimeStrong = true;
   row.setupStrength.values.priorRecentHigh = 110;
   row.setupStrength.values.riskToSupertrendPct = 5;
+  attachPyramidStructure(row);
   const trade = openTrade({ trailingStopPrice: 101, investedValue: 100_000 });
   const decision = pyramidAddDecision(
     trade,
@@ -46,7 +49,84 @@ test("only a protected A-grade winner on a fresh breakout can be scaled up", () 
   );
   assert.equal(decision.eligible, true);
   assert.equal(decision.quantity, 223);
-  assert.equal(decision.breakout.type, "55_DAY_BREAKOUT");
+  assert.equal(decision.breakout.type, "POST_ENTRY_PULLBACK_SWING_HIGH_CLOSE_BREAK");
+  assert.equal(decision.breakout.swingHighDate, "2026-06-27");
+  assert.equal(decision.breakout.pullbackLowDate, "2026-07-03");
+});
+
+test("generic 55-day breakout alone cannot pyramid without a post-entry pullback swing", () => {
+  const row = strongRow({ close: 112 });
+  row.setupStrength.checks.recentHighBreakout = true;
+  row.setupStrength.values.priorRecentHigh = 110;
+  const decision = pyramidAddDecision(
+    openTrade({ trailingStopPrice: 101 }),
+    row,
+    { availableCash: 900_000, availableRisk: 60_000, sectorExposure: {} },
+    { trade: {} }
+  );
+  assert.equal(decision.eligible, false);
+  assert.match(decision.reasons.join(" "), /post-entry advance/i);
+});
+
+test("pyramid signal requires a fresh daily close cross above the confirmed swing high", () => {
+  const row = strongRow({ close: 112 });
+  attachPyramidStructure(row, { previousClose: 111 });
+  const state = postEntryPyramidState(openTrade({ trailingStopPrice: 101 }), row, { trade: {} });
+  assert.equal(state.setupReady, true);
+  assert.equal(state.breakout, false);
+  assert.equal(state.level, 110);
+});
+
+test("a prior swing cannot be reused after the latest pyramid fill", () => {
+  const row = strongRow({ close: 112 });
+  attachPyramidStructure(row);
+  const state = postEntryPyramidState(
+    openTrade({
+      trailingStopPrice: 101,
+      lastAddDate: "2026-07-05",
+      lastAddPrice: 108,
+      addOns: [{ number: 1 }]
+    }),
+    row,
+    { trade: {} }
+  );
+  assert.equal(state.setupReady, false);
+  assert.equal(state.breakout, false);
+});
+
+test("a deep pullback is damage, not a pyramid continuation setup", () => {
+  const row = strongRow({ close: 112 });
+  attachPyramidStructure(row, {
+    points: [
+      { date: "2026-06-27", type: "HIGH", price: 110 },
+      { date: "2026-07-03", type: "LOW", price: 90 }
+    ]
+  });
+  const state = postEntryPyramidState(openTrade({ trailingStopPrice: 101 }), row, { trade: {} });
+  assert.equal(state.setupReady, false);
+  assert.equal(state.breakout, false);
+});
+
+test("scanner stores only confirmed two-sided daily swing pivots", () => {
+  const candles = [
+    candle("2026-07-01", 10, 8, 9),
+    candle("2026-07-02", 11, 9, 10),
+    candle("2026-07-03", 15, 12, 14),
+    candle("2026-07-04", 12, 10, 11),
+    candle("2026-07-05", 11, 9, 10),
+    candle("2026-07-06", 14, 11, 13),
+    candle("2026-07-07", 16, 13, 15)
+  ];
+  const structure = buildPyramidStructure(candles, {
+    pyramidPivotBars: 2,
+    pyramidSwingLookback: 20,
+    pyramidMaximumPoints: 6
+  });
+  assert.deepEqual(structure.points, [
+    { date: "2026-07-03", type: "HIGH", price: 15 },
+    { date: "2026-07-05", type: "LOW", price: 9 }
+  ]);
+  assert.equal(structure.previousClose, 13);
 });
 
 test("pyramiding never averages down or adds before stop protects cost", () => {
@@ -337,4 +417,24 @@ function openTrade(overrides = {}) {
     entrySnapshot: { fundamentalScore: 4 },
     ...overrides
   };
+}
+
+function attachPyramidStructure(row, overrides = {}) {
+  row.setupStrength.pyramidStructure = {
+    pivotBars: 2,
+    latestDate: row.asOf,
+    latestClose: row.close,
+    previousDate: "2026-07-09",
+    previousClose: 109,
+    points: [
+      { date: "2026-06-27", type: "HIGH", price: 110 },
+      { date: "2026-07-03", type: "LOW", price: 104 }
+    ],
+    ...overrides
+  };
+  return row;
+}
+
+function candle(date, high, low, close) {
+  return { date, open: close, high, low, close, volume: 1000 };
 }

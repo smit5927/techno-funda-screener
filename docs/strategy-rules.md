@@ -173,12 +173,13 @@ The default trade quality is `BEST_ONLY`, which opens sheet/Telegram trades only
 ### Winner Pyramiding And Trailing Risk
 
 - The video-derived scale-up rule is applied only to an already profitable open position; the system never averages down.
-- A new add-on requires a fresh completed-daily higher-low 20-day base, 55-day, or 52-week breakout, current A+/A grade, all compulsory entry checks, rising weekly RS and daily RS55, supportive market regime, no delivery-distribution/GTF supply warning, at least 1R open profit, and a trailing stop at or above the current blended entry.
+- Each initial entry or filled add-on starts a new independent structure cycle. Price must first advance at least 2%, then make a confirmed two-sided daily swing high, pull back 2%-15% without invalidating the original structure, and finally make a fresh daily close above that swing high while the previous close was at or below it.
+- A generic 20-day, 55-day, or 52-week breakout by itself cannot trigger pyramiding. The exact post-entry advance -> controlled pullback -> swing-high closing-break sequence is compulsory, along with current A+/A grade, all compulsory entry checks, rising weekly RS and daily RS55, supportive market regime, no delivery-distribution/GTF supply warning, at least 1R open profit, and a trailing stop at or above the blended entry.
 - The initial position remains capped at 10%. Each add-on is capped at 2.5%, with no more than two add-ons and no more than 15% total capital in one winning stock.
 - Incremental add-on risk is capped at 0.5% of capital. Total remaining risk in that position cannot exceed 1%, aggregate portfolio risk cannot exceed 6%, and sector exposure cannot exceed 25%.
-- A signal is reserved on the closing breakout and re-sized using actual cash, risk, sector room and the exact next-session 09:17 price. Weekends and exchange holidays are skipped.
+- A signal is reserved on the swing-high closing breakout and re-sized using actual cash, risk, sector room and the exact next-session 09:17 price. Weekends and exchange holidays are skipped.
 - The weighted average price, total quantity, P&L, trailing stop and each add-on lot are recalculated automatically. The stop never moves downward, and any pending sell/risk-reduction action cancels a pending add.
-- Existing positions are baselined when this module goes live; no historical breakout or add-on is fabricated.
+- After an add fills, all pivots before that fill are ineligible and a completely new advance/pullback/swing cycle is required. Existing positions are baselined when this upgraded module goes live; no historical breakout or add-on is fabricated.
 
 ## Trade Sheet
 

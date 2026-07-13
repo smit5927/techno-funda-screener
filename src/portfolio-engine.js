@@ -3,6 +3,7 @@ const ACTIVE_STATUSES = new Set(["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"]
 export function portfolioConfig(config = {}) {
   const trade = config.trade || config;
   const totalCapital = positive(trade.totalCapital, 1_000_000);
+  const pyramidPullbackMinPct = positive(trade.pyramidPullbackMinPct, 2);
   return {
     totalCapital,
     maxOpenPositions: trade.autoPositionBreadth === false
@@ -24,6 +25,12 @@ export function portfolioConfig(config = {}) {
     pyramidAddMaxPct: positive(trade.pyramidAddMaxPct, 2.5),
     pyramidAddRiskPct: positive(trade.pyramidAddRiskPct, 0.5),
     pyramidMinimumRewardR: positive(trade.pyramidMinimumRewardR, 1),
+    pyramidMinimumAdvancePct: positive(trade.pyramidMinimumAdvancePct, 2),
+    pyramidPullbackMinPct,
+    pyramidPullbackMaxPct: Math.max(
+      pyramidPullbackMinPct,
+      positive(trade.pyramidPullbackMaxPct, 15)
+    ),
     marketRiskMode: config.marketContext?.riskMode || "UNRESTRICTED",
     marketExposureCapPct: positive(config.marketContext?.exposureCapPct, 100)
   };
@@ -237,11 +244,81 @@ export function breakoutContinuationState(row = {}) {
   };
 }
 
+export function postEntryPyramidState(trade = {}, row = {}, config = {}) {
+  const rules = portfolioConfig(config);
+  const structure = row.pyramidStructure || row.setupStrength?.pyramidStructure || {};
+  const points = Array.isArray(structure.points)
+    ? structure.points
+        .filter((point) => point?.date && ["HIGH", "LOW"].includes(point.type) && Number.isFinite(Number(point.price)))
+        .map((point) => ({ ...point, date: dateOnly(point.date), price: Number(point.price) }))
+        .sort((a, b) => a.date.localeCompare(b.date))
+    : [];
+  const anchorDate = dateOnly(trade.lastAddDate || trade.entryDate || trade.entrySignalDate);
+  const anchorPrice = Number(trade.lastAddPrice || trade.initialEntryPrice || trade.entryPrice);
+  const latestDate = dateOnly(row.asOf || structure.latestDate);
+  const close = Number(row.close ?? structure.latestClose);
+  const previousClose = Number(structure.previousClose);
+  const initialStructureStop = Number(trade.initialStopPrice);
+  const baseState = {
+    breakout: false,
+    setupReady: false,
+    type: "POST_ENTRY_PULLBACK_SWING_HIGH_CLOSE_BREAK",
+    level: null,
+    anchorDate: anchorDate || null,
+    anchorPrice: Number.isFinite(anchorPrice) ? round(anchorPrice) : null,
+    swingHighDate: null,
+    pullbackLowDate: null,
+    pullbackLow: null,
+    pullbackDepthPct: null,
+    advancePct: null,
+    previousClose: Number.isFinite(previousClose) ? round(previousClose) : null
+  };
+
+  if (!anchorDate || !Number.isFinite(anchorPrice) || !Number.isFinite(close)) return baseState;
+  const postAnchor = points.filter((point) => point.date > anchorDate && (!latestDate || point.date < latestDate));
+  const highs = postAnchor.filter((point) => point.type === "HIGH").reverse();
+
+  for (const high of highs) {
+    const advancePct = (high.price - anchorPrice) / anchorPrice * 100;
+    if (advancePct < rules.pyramidMinimumAdvancePct) continue;
+    const lows = postAnchor
+      .filter((point) => point.type === "LOW" && point.date > high.date)
+      .reverse();
+    for (const low of lows) {
+      const pullbackDepthPct = (high.price - low.price) / high.price * 100;
+      const pullbackValid =
+        pullbackDepthPct >= rules.pyramidPullbackMinPct &&
+        pullbackDepthPct <= rules.pyramidPullbackMaxPct;
+      const initialStructureIntact =
+        !Number.isFinite(initialStructureStop) || low.price > initialStructureStop;
+      if (!pullbackValid || !initialStructureIntact) continue;
+
+      return {
+        ...baseState,
+        breakout:
+          Boolean(latestDate && latestDate > low.date) &&
+          Number.isFinite(previousClose) &&
+          previousClose <= high.price &&
+          close > high.price,
+        setupReady: true,
+        level: round(high.price),
+        swingHighDate: high.date,
+        pullbackLowDate: low.date,
+        pullbackLow: round(low.price),
+        pullbackDepthPct: round(pullbackDepthPct),
+        advancePct: round(advancePct)
+      };
+    }
+  }
+
+  return baseState;
+}
+
 export function pyramidAddDecision(trade, row, portfolio = {}, config = {}) {
   const rules = portfolioConfig(config);
   const checks = row?.setupStrength?.checks || {};
   const values = row?.setupStrength?.values || {};
-  const breakout = breakoutContinuationState(row);
+  const breakout = postEntryPyramidState(trade, row, config);
   const close = Number(row?.close);
   const entry = Number(trade?.entryPrice);
   const stop = Number(trade?.trailingStopPrice || trade?.initialStopPrice);
@@ -262,7 +339,13 @@ export function pyramidAddDecision(trade, row, portfolio = {}, config = {}) {
   if (!["A+", "A"].includes(String(row?.setupGrade || "").toUpperCase())) {
     reasons.push("Current setup is below A grade.");
   }
-  if (!breakout.breakout) reasons.push("No fresh higher-low base, 55-day or 52-week closing breakout.");
+  if (!breakout.breakout) {
+    reasons.push(
+      breakout.setupReady
+        ? `Post-entry pullback is ready, but price has not freshly closed above swing high ${round(breakout.level)}.`
+        : "No confirmed post-entry advance, controlled pullback and swing-high closing-break sequence."
+    );
+  }
   if (!(close > entry)) reasons.push("Position is not trading above its average cost; averaging down is prohibited.");
   if (!Number.isFinite(rewardR) || rewardR < rules.pyramidMinimumRewardR) {
     reasons.push(`Winner has not reached the required ${rules.pyramidMinimumRewardR}R profit buffer.`);
@@ -294,13 +377,17 @@ export function pyramidAddDecision(trade, row, portfolio = {}, config = {}) {
     ...plan,
     eligible: plan.eligible,
     reasons: plan.eligible ? [
-      `${breakout.type === "52_WEEK_BREAKOUT" ? "52-week" : breakout.type === "55_DAY_BREAKOUT" ? "55-day" : "20-day higher-low base"} closing breakout at ${round(close)} above ${round(breakout.level)}.`,
+      `After the ${breakout.anchorDate} fill, price advanced ${round(breakout.advancePct)}%, pulled back ${round(breakout.pullbackDepthPct)}% to ${round(breakout.pullbackLow)} on ${breakout.pullbackLowDate}, then closed at ${round(close)} above the confirmed ${breakout.swingHighDate} swing high ${round(breakout.level)}.`,
       `Winning position is ${round(rewardR)}R above average cost with a protected trailing stop.`,
       "Weekly RS and daily RS55 are rising; compulsory entry, A-grade quality, market and supply checks remain favorable."
     ] : [plan.reason],
     breakout,
     rewardR: round(rewardR)
   };
+}
+
+function dateOnly(value) {
+  return value ? String(value).slice(0, 10) : "";
 }
 
 export function buildPyramidAddPlan(trade, row, price, portfolio = {}, config = {}) {

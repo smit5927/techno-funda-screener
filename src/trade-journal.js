@@ -4,7 +4,6 @@ import { appConfig } from "./config.js";
 import { readTrades, saveTrades } from "./storage.js";
 import { fetchExecutionPrice } from "./yahoo.js";
 import {
-  breakoutContinuationState,
   buildPositionPlan,
   buildPyramidAddPlan,
   candidateRank,
@@ -13,6 +12,7 @@ import {
   portfolioSummary,
   positionExitDecision,
   positionWeakness,
+  postEntryPyramidState,
   pyramidAddDecision,
   rotationDecision
 } from "./portfolio-engine.js";
@@ -42,6 +42,7 @@ export async function updateTradeJournal(scan, config = appConfig) {
   const liveMode = config.trade.onlyNewSignals !== false;
   const portfolioUpgrade = !journal.portfolioEngineStartedAt;
   const pyramidingUpgrade = !journal.pyramidingStartedAt;
+  const swingPyramidingUpgrade = !journal.pyramidSwingEngineStartedAt;
   const firstLiveScan = liveMode && !journal.liveModeStartedAt;
   const trades = firstLiveScan ? [] : Array.isArray(journal.trades) ? journal.trades : [];
   let candidates = firstLiveScan ? [] : Array.isArray(journal.candidates) ? journal.candidates : [];
@@ -161,10 +162,11 @@ export async function updateTradeJournal(scan, config = appConfig) {
       scan.marketContext?.asOf
     );
     if (!row?.asOf || trade.pyramidState?.asOf === row.asOf) continue;
-    const currentState = { ...breakoutContinuationState(row), asOf: row.asOf };
+    const currentState = { ...postEntryPyramidState(trade, row, config), asOf: row.asOf };
     const previousState = trade.pyramidState;
     const freshBreakout =
       !pyramidingUpgrade &&
+      !swingPyramidingUpgrade &&
       previousState?.breakout === false &&
       currentState.breakout === true;
     if (freshBreakout && !trade.pendingAdd) {
@@ -346,6 +348,7 @@ export async function updateTradeJournal(scan, config = appConfig) {
     updatedAt: new Date().toISOString(),
     portfolioEngineStartedAt: journal.portfolioEngineStartedAt || scan.scannedAt,
     pyramidingStartedAt: journal.pyramidingStartedAt || scan.scannedAt,
+    pyramidSwingEngineStartedAt: journal.pyramidSwingEngineStartedAt || scan.scannedAt,
     liveModeStartedAt: journal.liveModeStartedAt || (liveMode ? new Date().toISOString() : null),
     baselineInitialized: true,
     baselineScanAt: journal.baselineScanAt || (firstLiveScan ? scan.scannedAt : null),
@@ -544,6 +547,12 @@ function preparePyramidAdd(trade, row, scan, decision) {
     plannedStop: decision.trailingStop,
     breakoutType: decision.breakout?.type,
     breakoutLevel: decision.breakout?.level,
+    swingHighDate: decision.breakout?.swingHighDate,
+    pullbackLowDate: decision.breakout?.pullbackLowDate,
+    pullbackLow: decision.breakout?.pullbackLow,
+    pullbackDepthPct: decision.breakout?.pullbackDepthPct,
+    advancePct: decision.breakout?.advancePct,
+    structureAnchorDate: decision.breakout?.anchorDate,
     rewardR: decision.rewardR,
     rank: decision.rank,
     reason: [
@@ -696,6 +705,12 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
       trailingStop: plan.trailingStop,
       breakoutType: pending.breakoutType,
       breakoutLevel: pending.breakoutLevel,
+      swingHighDate: pending.swingHighDate,
+      pullbackLowDate: pending.pullbackLowDate,
+      pullbackLow: pending.pullbackLow,
+      pullbackDepthPct: pending.pullbackDepthPct,
+      advancePct: pending.advancePct,
+      structureAnchorDate: pending.structureAnchorDate,
       rewardRAtSignal: pending.rewardR,
       rankAtSignal: pending.rank,
       executionMethod: fill.source,
@@ -1503,7 +1518,7 @@ function tradeToRow(trade) {
     "Last Add Price": trade.lastAddPrice ?? "",
     "Last Add Quantity": trade.addOns?.at(-1)?.quantity ?? "",
     "Add-On History": (trade.addOns || []).map((add) =>
-      `#${add.number} signal ${add.signalDate}; fill ${add.date} ${add.time} @ ${add.price}; qty ${add.quantity}; stop ${add.trailingStop}; ${add.breakoutType || "breakout"}`
+      `#${add.number} signal ${add.signalDate}; fill ${add.date} ${add.time} @ ${add.price}; qty ${add.quantity}; stop ${add.trailingStop}; swing high ${add.swingHighDate || "NA"} @ ${add.breakoutLevel ?? "NA"}; pullback low ${add.pullbackLowDate || "NA"} @ ${add.pullbackLow ?? "NA"} (${add.pullbackDepthPct ?? "NA"}%); ${add.breakoutType || "breakout"}`
     ).join(" | "),
     "Add-On Decision": trade.pendingAdd
       ? (trade.pendingAdd.reason || []).join(" ")

@@ -140,14 +140,14 @@ function addTradeEvents(lines, events) {
     if (event.type === "PYRAMID_ADD_PENDING") {
       const add = trade.pendingAdd || {};
       lines.push(
-        `WINNER ADD PENDING ${trade.symbol} | breakout signal ${add.signalDate || "NA"} | ${add.breakoutType || "BREAKOUT"} above ${fmt(add.breakoutLevel)} | planned qty ${add.plannedQuantity ?? "NA"} allocation ${fmt(add.plannedAllocation)} risk ${fmt(add.plannedRisk)} | next actual session exact 09:17`
+        `WINNER ADD PENDING ${trade.symbol} | signal ${add.signalDate || "NA"} | post-entry swing high ${add.swingHighDate || "NA"} @ ${fmt(add.breakoutLevel)} closed above after ${fmt(add.pullbackDepthPct)}% pullback to ${fmt(add.pullbackLow)} on ${add.pullbackLowDate || "NA"} | planned qty ${add.plannedQuantity ?? "NA"} allocation ${fmt(add.plannedAllocation)} risk ${fmt(add.plannedRisk)} | next actual session exact 09:17`
       );
       lines.push(`   Reason: ${(add.reason || []).join(" ")}`);
     }
     if (event.type === "PYRAMID_ADD_FILLED") {
       const add = trade.addOns?.[trade.addOns.length - 1];
       lines.push(
-        `WINNER ADD FILLED ${trade.symbol} | add #${add?.number ?? "NA"} | ${add?.date || ""} ${add?.time || ""} @ ${fmt(add?.price)} | qty ${add?.quantity ?? "NA"} | blended average ${fmt(trade.entryPrice)} | total qty ${trade.quantity} | trailing stop ${fmt(trade.trailingStopPrice)}`
+        `WINNER ADD FILLED ${trade.symbol} | add #${add?.number ?? "NA"} | ${add?.date || ""} ${add?.time || ""} @ ${fmt(add?.price)} | qty ${add?.quantity ?? "NA"} | swing high ${add?.swingHighDate || "NA"} @ ${fmt(add?.breakoutLevel)} after ${fmt(add?.pullbackDepthPct)}% pullback | blended average ${fmt(trade.entryPrice)} | total qty ${trade.quantity} | trailing stop ${fmt(trade.trailingStopPrice)}`
       );
     }
     if (event.type === "PYRAMID_ADD_SKIPPED") {

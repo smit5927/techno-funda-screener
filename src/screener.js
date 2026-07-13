@@ -642,6 +642,7 @@ function buildSetupStrength({
     fibonacci,
     setupRules
   });
+  const pyramidStructure = buildPyramidStructure(dailyCandles, setupRules);
 
   const checks = {
     recentHighBreakout,
@@ -677,6 +678,7 @@ function buildSetupStrength({
         value && !["fibonacciSupportNearby", "bollingerTrendSupport", "bollingerRangeBound"].includes(key)
       ).length,
     checks,
+    pyramidStructure,
     values: {
       priorRecentHigh,
       priorBaseHigh,
@@ -747,6 +749,47 @@ function buildSetupStrength({
       candlePattern: candle.label,
       marketRegimeLabel: marketContext?.label || "Unknown"
     }
+  };
+}
+
+export function buildPyramidStructure(dailyCandles = [], setupRules = {}) {
+  const pivotBars = Math.max(1, Math.floor(Number(setupRules.pyramidPivotBars) || 2));
+  const lookback = Math.max(
+    pivotBars * 2 + 1,
+    Math.floor(Number(setupRules.pyramidSwingLookback) || 160)
+  );
+  const maximumPoints = Math.max(
+    6,
+    Math.floor(Number(setupRules.pyramidMaximumPoints) || 24)
+  );
+  const latestIndex = dailyCandles.length - 1;
+  const startIndex = Math.max(pivotBars, latestIndex - lookback + 1);
+  const lastConfirmedIndex = latestIndex - pivotBars;
+  const points = [];
+
+  for (let index = startIndex; index <= lastConfirmedIndex; index += 1) {
+    const candle = dailyCandles[index];
+    if (!candle?.date || !Number.isFinite(candle.high) || !Number.isFinite(candle.low)) continue;
+    const left = dailyCandles.slice(index - pivotBars, index);
+    const right = dailyCandles.slice(index + 1, index + pivotBars + 1);
+    const pivotHigh =
+      left.every((item) => Number.isFinite(item?.high) && candle.high > item.high) &&
+      right.every((item) => Number.isFinite(item?.high) && candle.high >= item.high);
+    const pivotLow =
+      left.every((item) => Number.isFinite(item?.low) && candle.low < item.low) &&
+      right.every((item) => Number.isFinite(item?.low) && candle.low <= item.low);
+    if (pivotHigh) points.push({ date: candle.date, type: "HIGH", price: candle.high });
+    if (pivotLow) points.push({ date: candle.date, type: "LOW", price: candle.low });
+  }
+
+  return {
+    pivotBars,
+    lookback,
+    latestDate: dailyCandles[latestIndex]?.date || null,
+    latestClose: dailyCandles[latestIndex]?.close ?? null,
+    previousDate: dailyCandles[latestIndex - 1]?.date || null,
+    previousClose: dailyCandles[latestIndex - 1]?.close ?? null,
+    points: points.slice(-maximumPoints)
   };
 }
 
