@@ -100,9 +100,10 @@ export const appConfig = {
     onlyNewSignals: boolEnv("TRADE_ONLY_NEW_SIGNALS", true),
     scopeListId: choiceEnv("TRADE_SCOPE_LIST_ID", "all-market", tradeScopeOptions),
     qualityMode: choiceEnv("TRADE_QUALITY_MODE", "BEST_ONLY", tradeQualityOptions),
-    executionWindowStart: process.env.TRADE_EXECUTION_WINDOW_START || "09:15",
-    executionWindowEnd: process.env.TRADE_EXECUTION_WINDOW_END || "09:20",
-    executionPriceSource: "first_5m_candle_open"
+    executionTime: "09:17",
+    executionWindowStart: "09:17",
+    executionWindowEnd: "09:17",
+    executionPriceSource: "09:17_one_minute_candle_open"
   },
   fundamentals: {
     enabled: boolEnv("FUNDAMENTALS_ENABLED", true),

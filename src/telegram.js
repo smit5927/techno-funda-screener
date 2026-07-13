@@ -93,7 +93,7 @@ function addTradeEvents(lines, events) {
     }
     if (event.type === "ENTRY_SIGNAL_PENDING") {
       lines.push(
-        `BUY PENDING ${trade.symbol} | closing signal ${trade.entrySignalDate} | ${trade.entrySnapshot?.entryStyle?.label || "Entry style NA"} | waiting for next actual market session 09:15-09:20 price (weekends/holidays skipped) | concepts ${conceptCoverageText(trade)}`
+        `BUY PENDING ${trade.symbol} | closing signal ${trade.entrySignalDate} | ${trade.entrySnapshot?.entryStyle?.label || "Entry style NA"} | waiting for next actual market session exact 09:17 one-minute candle open (weekends/holidays skipped) | concepts ${conceptCoverageText(trade)}`
       );
       const gtf = trade.entrySnapshot?.gtfContext || {};
       if (gtf.dataAvailable) lines.push(`   GTF: ${fmt(gtf.score)}/${fmt(gtf.maxScore)} ${gtf.grade || ""}. ${(gtf.reasons || []).join(" ")}`);
@@ -101,19 +101,19 @@ function addTradeEvents(lines, events) {
     }
     if (event.type === "EXIT_SIGNAL_PENDING") {
       lines.push(
-        `SELL PENDING ${trade.symbol} | closing signal ${trade.exitSignalDate} | waiting for next actual market session 09:15-09:20 price (weekends/holidays skipped)`
+        `SELL PENDING ${trade.symbol} | closing signal ${trade.exitSignalDate} | waiting for next actual market session exact 09:17 one-minute candle open (weekends/holidays skipped)`
       );
       lines.push(`   Reason: ${(trade.exitReason || []).join(" ")}`);
     }
     if (["PORTFOLIO_EXIT_PENDING", "ROTATION_EXIT_PENDING"].includes(event.type)) {
       lines.push(
-        `PORTFOLIO SELL PENDING ${trade.symbol} | type ${trade.exitType || "REBALANCE"} | replacement ${trade.replacementCandidateSymbol || event.candidate?.symbol || "NA"} | next market session 09:15`
+        `PORTFOLIO SELL PENDING ${trade.symbol} | type ${trade.exitType || "REBALANCE"} | replacement ${trade.replacementCandidateSymbol || event.candidate?.symbol || "NA"} | next market session 09:17 IST`
       );
       lines.push(`   Reason: ${(trade.exitReason || []).join(" ")}`);
     }
     if (event.type === "PARTIAL_EXIT_PENDING") {
       lines.push(
-        `PARTIAL SELL PENDING ${trade.symbol} | ${trade.pendingPartialExitPct || 50}% | next market session 09:15`
+        `PARTIAL SELL PENDING ${trade.symbol} | ${trade.pendingPartialExitPct || 50}% | next market session 09:17 IST`
       );
       lines.push(`   Reason: ${(trade.pendingPartialExitReason || []).join(" ")}`);
     }

@@ -2,7 +2,7 @@ import fs from "node:fs";
 import ExcelJS from "exceljs";
 import { appConfig } from "./config.js";
 import { readTrades, saveTrades } from "./storage.js";
-import { fetchOpeningWindowPrice } from "./yahoo.js";
+import { fetchExecutionPrice } from "./yahoo.js";
 import {
   buildPositionPlan,
   candidateRank,
@@ -25,6 +25,12 @@ const TRADE_QUALITY_LABELS = {
   STRONG_OR_BETTER: "Strong and best (A+/A/B)",
   ALL_ENTRIES: "All entry signals"
 };
+
+const EXECUTION_TIME = "09:17 IST";
+const LEGACY_EXECUTION_METHODS = new Set([
+  "09:15 five-minute candle open",
+  "first_5m_candle_open"
+]);
 
 export async function updateTradeJournal(scan, config = appConfig) {
   const journal = readTrades();
@@ -78,6 +84,7 @@ export async function updateTradeJournal(scan, config = appConfig) {
     }
   }
   await migrateLegacyOpeningPrices(trades, config);
+  await correctActiveExecutionPrices(trades);
 
   for (const trade of trades) {
     const row = executionRow(
@@ -255,7 +262,7 @@ export async function updateTradeJournal(scan, config = appConfig) {
     executionRule: {
       signalBasis: "completed daily/weekly closing candle",
       sessionRule: "first actual exchange session after the signal date; weekends and market holidays are skipped",
-      window: `${config.trade.executionWindowStart}-${config.trade.executionWindowEnd} IST`,
+      window: EXECUTION_TIME,
       priceSource: config.trade.executionPriceSource
     },
     signalState: nextSignalState,
@@ -321,7 +328,7 @@ export function tradeSettingsSummary(config = appConfig) {
     qualityLabel: TRADE_QUALITY_LABELS[qualityMode],
     totalCapital: config.trade?.totalCapital ?? 1000000,
     capitalPerStock: config.trade?.capitalPerStock ?? 100000,
-    executionWindow: `${config.trade?.executionWindowStart || "09:15"}-${config.trade?.executionWindowEnd || "09:20"} IST`
+    executionWindow: EXECUTION_TIME
   };
 }
 
@@ -355,7 +362,7 @@ function createPendingEntry(row, scan, config, settings, plan) {
     entryDate: null,
     entryTime: null,
     entryPrice: null,
-    executionWindow: `${config.trade.executionWindowStart}-${config.trade.executionWindowEnd} IST`,
+    executionWindow: EXECUTION_TIME,
     executionMethod: config.trade.executionPriceSource,
     quantity: null,
     investedValue: null,
@@ -376,7 +383,7 @@ function createPendingEntry(row, scan, config, settings, plan) {
       ...(row.signalReason || row.entryReason || []),
       `Trade sheet filter: ${settings.scopeLabel}, ${settings.qualityLabel}.`,
       `Portfolio rank ${plan.rank}; planned allocation Rs ${plan.allocation}, quantity ${plan.quantity}, initial stop ${plan.stopPrice}, planned risk Rs ${plan.plannedRisk}.`,
-      `Closing signal dated ${row.asOf}; buy fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays.`
+      `Closing signal dated ${row.asOf}; buy fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays.`
     ],
     entrySnapshot: snapshot(row),
     exitSignalDate: null,
@@ -405,7 +412,7 @@ function prepareFullExit(trade, row, scan, reasons, exitType = "MODEL_EXIT") {
   trade.exitSignalScanAt = scan.scannedAt;
   trade.exitReason = [
     ...(reasons || row.signalReason || row.exitReason || []),
-    `Closing exit signal dated ${trade.exitSignalDate}; sell fill must come from the next actual market session 09:15-09:20 IST window, after skipping weekends and exchange holidays.`
+    `Closing exit signal dated ${trade.exitSignalDate}; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays.`
   ];
   trade.exitSnapshot = snapshot(row);
   markToMarket(trade, row);
@@ -420,7 +427,7 @@ function preparePartialExit(trade, row, scan, decision, config) {
   trade.pendingPartialExitTag = decision.tag || "RISK_REDUCTION";
   trade.pendingPartialExitReason = [
     ...(decision.reasons || []),
-    `Sell ${trade.pendingPartialExitPct}% on the next actual market session at 09:15 and trail the balance.`
+    `Sell ${trade.pendingPartialExitPct}% on the next actual market session at 09:17 IST and trail the balance.`
   ];
   trade.exitSnapshot = snapshot(row);
   markToMarket(trade, row);
@@ -428,13 +435,13 @@ function preparePartialExit(trade, row, scan, decision, config) {
 
 async function fillEntry(trade, row, config, trades, candidates) {
   try {
-    const fill = await fetchOpeningWindowPrice(
+    const fill = await fetchExecutionPrice(
       trade.yahooSymbol || row.yahooSymbol,
       trade.entrySignalDate
     );
     if (!fill) {
       trade.executionError =
-        "Next market-session 09:15 candle is not available yet; pending through weekends and NSE holidays.";
+        "Next market-session exact 09:17 one-minute candle is not available yet; pending through weekends and NSE holidays.";
       return "WAITING";
     }
     const summary = portfolioSummary(trades, candidates, config);
@@ -465,7 +472,7 @@ async function fillEntry(trade, row, config, trades, candidates) {
     const quantity = plan.quantity;
     trade.status = "OPEN";
     trade.entryDate = fill.date;
-    trade.entryTime = "09:15 IST";
+    trade.entryTime = fill.timeLabel || EXECUTION_TIME;
     trade.entryPrice = round(fill.price);
     trade.quantity = quantity;
     trade.originalQuantity = quantity;
@@ -493,19 +500,21 @@ async function fillEntry(trade, row, config, trades, candidates) {
 
 async function fillExit(trade, row) {
   try {
-    const fill = await fetchOpeningWindowPrice(
+    const fill = await fetchExecutionPrice(
       trade.yahooSymbol || row.yahooSymbol,
       trade.exitSignalDate
     );
     if (!fill) {
       trade.executionError =
-        "Next market-session 09:15 candle is not available yet; pending through weekends and NSE holidays.";
+        "Next market-session exact 09:17 one-minute candle is not available yet; pending through weekends and NSE holidays.";
       return false;
     }
     trade.status = "CLOSED";
     trade.exitDate = fill.date;
-    trade.exitTime = "09:15 IST";
+    trade.exitTime = fill.timeLabel || EXECUTION_TIME;
     trade.exitPrice = round(fill.price);
+    trade.exitExecutionMethod = fill.source;
+    trade.exitExecutionWindow = fill.window;
     trade.executionError = null;
     const finalLegPnl = (fill.price - trade.entryPrice) * trade.quantity;
     trade.pnl = round((Number(trade.realizedPnlToDate) || 0) + finalLegPnl);
@@ -541,34 +550,101 @@ async function migrateLegacyOpeningPrices(trades, config) {
     trade.entrySignalScanAt = trade.entryScanAt || null;
     trade.yahooSymbol = trade.yahooSymbol || `${trade.symbol}.NS`;
     try {
-      const fill = await fetchOpeningWindowPrice(trade.yahooSymbol, oldSignalDate);
+      const fill = await fetchExecutionPrice(trade.yahooSymbol, oldSignalDate);
       if (!fill) {
         trade.executionMethod = "legacy_closing_price";
         continue;
       }
       trade.entryDate = fill.date;
-      trade.entryTime = "09:15 IST";
+      trade.entryTime = fill.timeLabel || EXECUTION_TIME;
       trade.entryPrice = round(fill.price);
       trade.quantity = calculateQuantity(fill.price, config);
       trade.investedValue = round(trade.quantity * fill.price);
       trade.executionMethod = fill.source;
       trade.executionWindow = fill.window;
-      trade.migratedToOpeningWindow = true;
+      trade.migratedToExecutionTime = true;
     } catch {
       trade.executionMethod = "legacy_closing_price";
     }
   }
 }
 
+async function correctActiveExecutionPrices(trades) {
+  const activeStatuses = new Set(["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"]);
+  for (const trade of trades) {
+    if (!activeStatuses.has(trade.status)) continue;
+    if (!LEGACY_EXECUTION_METHODS.has(String(trade.executionMethod || ""))) continue;
+    if (!trade.entrySignalDate || !trade.entryDate || !trade.yahooSymbol) continue;
+
+    try {
+      const fill = await fetchExecutionPrice(trade.yahooSymbol, trade.entrySignalDate);
+      if (!fill || fill.date !== trade.entryDate) continue;
+      applyExecutionPriceCorrection(trade, fill);
+    } catch (error) {
+      trade.executionCorrectionError = error?.message || String(error);
+    }
+  }
+}
+
+export function applyExecutionPriceCorrection(trade, fill, correctedAt = new Date()) {
+  const previousPrice = trade.entryPrice;
+  const previousTime = trade.entryTime;
+  const previousMethod = trade.executionMethod;
+  trade.entryExecutionCorrection = {
+    correctedAt: correctedAt.toISOString(),
+    previousPrice,
+    previousTime,
+    previousMethod,
+    reason: "Execution rule changed from the 09:15 market open to the exact 09:17 one-minute candle open."
+  };
+  trade.entryTime = fill.timeLabel || EXECUTION_TIME;
+  trade.entryPrice = round(fill.price);
+  trade.executionMethod = fill.source;
+  trade.executionWindow = fill.window;
+  trade.migratedToExecutionTime = true;
+
+  const currentQuantity = Number(trade.quantity) || 0;
+  const originalQuantity = Number(trade.originalQuantity) || currentQuantity;
+  trade.investedValue = round(currentQuantity * fill.price);
+  trade.originalInvestedValue = round(originalQuantity * fill.price);
+  if (Number.isFinite(trade.initialStopPrice)) {
+    trade.riskPerShare = round(Math.max(0, fill.price - trade.initialStopPrice));
+    trade.initialRiskAmount = round(trade.riskPerShare * originalQuantity);
+  }
+  if (Array.isArray(trade.partialExits)) {
+    for (const leg of trade.partialExits) {
+      if (Number.isFinite(leg.price) && Number.isFinite(leg.quantity)) {
+        leg.pnl = round((leg.price - fill.price) * leg.quantity);
+      }
+    }
+    trade.realizedPnlToDate = round(
+      trade.partialExits.reduce((sum, leg) => sum + (Number(leg.pnl) || 0), 0)
+    );
+  }
+  trade.entryReason = rewriteExecutionReasons(trade.entryReason);
+  if (trade.entrySnapshot) {
+    trade.entrySnapshot.signalReason = rewriteExecutionReasons(trade.entrySnapshot.signalReason);
+  }
+  return trade;
+}
+
+function rewriteExecutionReasons(reasons) {
+  if (!Array.isArray(reasons)) return reasons;
+  return reasons.map((reason) => String(reason)
+    .replaceAll("09:15 five-minute candle open", "09:17 one-minute candle open")
+    .replaceAll("09:15-09:20 IST window", "exactly 09:17 IST")
+    .replaceAll("next session 09:15-09:20 IST window", "next session at exactly 09:17 IST"));
+}
+
 async function fillPartialExit(trade, row) {
   try {
-    const fill = await fetchOpeningWindowPrice(
+    const fill = await fetchExecutionPrice(
       trade.yahooSymbol || row.yahooSymbol,
       trade.partialExitSignalDate
     );
     if (!fill) {
       trade.executionError =
-        "Partial exit is pending until the next actual market-session 09:15 candle.";
+        "Partial exit is pending until the next actual market-session exact 09:17 candle.";
       return false;
     }
     const percentage = Number(trade.pendingPartialExitPct) || 50;
@@ -585,8 +661,10 @@ async function fillPartialExit(trade, row) {
     trade.partialExits = Array.isArray(trade.partialExits) ? trade.partialExits : [];
     trade.partialExits.push({
       date: fill.date,
-      time: "09:15 IST",
+      time: fill.timeLabel || EXECUTION_TIME,
       price: round(fill.price),
+      executionMethod: fill.source,
+      executionWindow: fill.window,
       quantity: sellQuantity,
       pnl: round(pnl),
       tag: trade.pendingPartialExitTag,
@@ -898,8 +976,8 @@ async function writeXlsx(journal, filePath) {
     { metric: "Trade Quality", value: journal.tradeSettings?.qualityLabel || "" },
     { metric: "Signal Basis", value: journal.executionRule?.signalBasis || "" },
     { metric: "Session Rule", value: journal.executionRule?.sessionRule || "Skip weekends and market holidays" },
-    { metric: "Execution Window", value: journal.executionRule?.window || "09:15-09:20 IST" },
-    { metric: "Execution Price", value: "First 5-minute candle open (09:15)" }
+    { metric: "Execution Time", value: journal.executionRule?.window || EXECUTION_TIME },
+    { metric: "Execution Price", value: "Exact 09:17 one-minute candle open" }
   ]);
 
   addTradeWorksheet(workbook, "Open Positions", open);
@@ -942,6 +1020,7 @@ function tradeColumns() {
     { header: "Entry Date", key: "Entry Date", width: 14 },
     { header: "Entry Time", key: "Entry Time", width: 13 },
     { header: "Entry Price", key: "Entry Price", width: 14 },
+    { header: "Entry Execution Method", key: "Entry Execution Method", width: 30 },
     { header: "Quantity", key: "Quantity", width: 10 },
     { header: "Original Quantity", key: "Original Quantity", width: 16 },
     { header: "Invested Value", key: "Invested Value", width: 16 },
@@ -952,6 +1031,7 @@ function tradeColumns() {
     { header: "Exit Date", key: "Exit Date", width: 14 },
     { header: "Exit Time", key: "Exit Time", width: 13 },
     { header: "Exit Price", key: "Exit Price", width: 14 },
+    { header: "Exit Execution Method", key: "Exit Execution Method", width: 30 },
     { header: "Realized P&L", key: "Realized P&L", width: 16 },
     { header: "Realized P&L %", key: "Realized P&L %", width: 18 },
     { header: "Holding Days", key: "Holding Days", width: 14 },
@@ -1025,6 +1105,7 @@ function tradeToRow(trade) {
     "Entry Date": trade.entryDate || "",
     "Entry Time": trade.entryTime || "",
     "Entry Price": trade.entryPrice ?? "",
+    "Entry Execution Method": trade.executionMethod || "",
     Quantity: trade.quantity ?? "",
     "Original Quantity": trade.originalQuantity ?? "",
     "Invested Value": trade.investedValue ?? "",
@@ -1035,6 +1116,7 @@ function tradeToRow(trade) {
     "Exit Date": trade.exitDate || "",
     "Exit Time": trade.exitTime || "",
     "Exit Price": trade.exitPrice ?? "",
+    "Exit Execution Method": trade.exitExecutionMethod || "",
     "Realized P&L": trade.pnl ?? "",
     "Realized P&L %": trade.pnlPct ?? "",
     "Holding Days": trade.holdingDays ?? "",

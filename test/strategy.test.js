@@ -6,10 +6,14 @@ import {
   calculateSupertrend,
   latestValue
 } from "../src/indicators.js";
-import { rowPassesTradeQuality, tradeSettingsSummary } from "../src/trade-journal.js";
+import {
+  applyExecutionPriceCorrection,
+  rowPassesTradeQuality,
+  tradeSettingsSummary
+} from "../src/trade-journal.js";
 import {
   aggregateDailyToCompletedWeeks,
-  selectNextTradingSessionOpeningCandle
+  selectNextTradingSessionExecutionCandle
 } from "../src/yahoo.js";
 
 test("daily candles aggregate only into completed weeks", () => {
@@ -92,33 +96,74 @@ test("trade quality modes can loosen to strong or all entries", () => {
   assert.equal(rowPassesTradeQuality({ setupGrade: "C" }, { qualityMode: "ALL_ENTRIES" }), true);
 });
 
-test("Friday closing signal fills on Monday's first 09:15 candle", () => {
+test("Friday closing signal fills at Monday 09:17 instead of the market open", () => {
   const candles = [
     openingCandle("2026-07-10", 9, 15, 100),
     openingCandle("2026-07-13", 9, 15, 104),
-    openingCandle("2026-07-13", 9, 20, 105)
+    openingCandle("2026-07-13", 9, 17, 104.75),
+    openingCandle("2026-07-13", 9, 18, 105)
   ];
 
-  const fill = selectNextTradingSessionOpeningCandle(candles, "2026-07-10");
+  const fill = selectNextTradingSessionExecutionCandle(candles, "2026-07-10");
   assert.equal(fill.date, "2026-07-13");
-  assert.equal(fill.open, 104);
+  assert.equal(fill.minutes, 9 * 60 + 17);
+  assert.equal(fill.open, 104.75);
 });
 
-test("market holiday is skipped until the first actual 09:15 session candle", () => {
+test("market holiday is skipped until the next actual 09:17 session candle", () => {
   const candles = [
-    openingCandle("2026-08-14", 9, 15, 250),
+    openingCandle("2026-08-14", 9, 17, 250),
     // 17 August is intentionally absent to model an exchange holiday.
-    openingCandle("2026-08-18", 9, 15, 257)
+    openingCandle("2026-08-18", 9, 17, 257)
   ];
 
-  const fill = selectNextTradingSessionOpeningCandle(candles, "2026-08-14");
+  const fill = selectNextTradingSessionExecutionCandle(candles, "2026-08-14");
   assert.equal(fill.date, "2026-08-18");
   assert.equal(fill.open, 257);
 });
 
 test("pending order remains unfilled when no later market session candle exists", () => {
-  const candles = [openingCandle("2026-07-10", 9, 15, 100)];
-  assert.equal(selectNextTradingSessionOpeningCandle(candles, "2026-07-10"), null);
+  const candles = [openingCandle("2026-07-10", 9, 17, 100)];
+  assert.equal(selectNextTradingSessionExecutionCandle(candles, "2026-07-10"), null);
+});
+
+test("09:15 and 09:18 prices cannot substitute for a missing exact 09:17 fill", () => {
+  const candles = [
+    openingCandle("2026-07-13", 9, 15, 100),
+    openingCandle("2026-07-13", 9, 18, 102)
+  ];
+  assert.equal(selectNextTradingSessionExecutionCandle(candles, "2026-07-10"), null);
+});
+
+test("active legacy trade correction preserves an audit trail and recalculates capital risk", () => {
+  const trade = {
+    entryTime: "09:15 IST",
+    entryPrice: 100,
+    executionMethod: "09:15 five-minute candle open",
+    quantity: 50,
+    originalQuantity: 50,
+    initialStopPrice: 95,
+    entryReason: ["Execution plan uses the 09:15 five-minute candle open."],
+    entrySnapshot: { signalReason: ["Fill in the 09:15-09:20 IST window."] },
+    partialExits: []
+  };
+  applyExecutionPriceCorrection(
+    trade,
+    {
+      price: 102.25,
+      timeLabel: "09:17 IST",
+      source: "09:17 one-minute candle open",
+      window: "09:17 IST"
+    },
+    new Date("2026-07-13T04:00:00.000Z")
+  );
+
+  assert.equal(trade.entryPrice, 102.25);
+  assert.equal(trade.entryTime, "09:17 IST");
+  assert.equal(trade.investedValue, 5112.5);
+  assert.equal(trade.initialRiskAmount, 362.5);
+  assert.equal(trade.entryExecutionCorrection.previousPrice, 100);
+  assert.match(trade.entryReason[0], /09:17 one-minute/);
 });
 
 function candle(date, open, high, low, close, volume) {

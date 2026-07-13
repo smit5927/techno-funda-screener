@@ -15,7 +15,7 @@ on:
   schedule:
     # 08:00 IST: publish prior close entry/exit candidates before the market opens.
     - cron: "30 2 * * 1-5"
-    # 09:25 IST: update trade sheet with the 09:15-09:20 execution candle price.
+    # 09:25 IST: update the trade sheet with the exact 09:17 one-minute execution price.
     - cron: "55 3 * * 1-5"
 
 permissions:

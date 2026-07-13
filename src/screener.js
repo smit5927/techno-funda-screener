@@ -454,12 +454,12 @@ async function scanSymbol(
           ...setupReason,
           ...gtfContext.reasons,
           ...institutionalReason,
-          `Execution plan: buy on the next actual market session using the 09:15 five-minute candle open; weekends and exchange holidays are skipped.`
+          `Execution plan: buy on the next actual market session using the exact 09:17 one-minute candle open; weekends and exchange holidays are skipped.`
         ]
       : status === "EXIT"
         ? [
             ...exitReason,
-            `Execution plan for an open position: sell on the next actual market session using the 09:15 five-minute candle open; weekends and exchange holidays are skipped.`
+            `Execution plan for an open position: sell on the next actual market session using the exact 09:17 one-minute candle open; weekends and exchange holidays are skipped.`
           ]
         : technicalReady
           ? ["No entry: one or more compulsory entry checks are not satisfied.", ...weaknessReason]
@@ -1176,7 +1176,7 @@ function buildConceptCoverage(row) {
     row.exitChecks && Object.hasOwn(row.exitChecks, "weeklyRs"),
     Number.isFinite(row.weeklyRs)
   );
-  addConcept("09:15 execution discipline", Boolean(row.executionPlan), true);
+  addConcept("09:17 execution discipline", Boolean(row.executionPlan), true);
 
   const applicable = passLabels.length + weakLabels.length + dataGapLabels.length;
   return {

@@ -41,7 +41,7 @@ The upgraded portfolio engine merges the video exit playbooks into a hierarchy:
 - Partial 50% exit when multi-factor early weakness is confirmed, fundamentals materially deteriorate, or profit reaches 1.5R.
 - The remaining quantity trails with Supertrend/recent structure. A trailing stop never moves downward.
 
-All exit decisions use completed candles and execute in the next actual market session at 09:15.
+All exit decisions use completed candles and execute in the next actual market session at exactly 09:17 IST.
 
 ## Optional Strength And Institutional Score
 
@@ -117,11 +117,11 @@ The same stock in multiple lists is scanned once and creates only one trade. Its
 
 - Indicators use only completed daily and weekly closing candles.
 - A new entry or compulsory exit signal is executed in the first actual exchange session after the signal date.
-- Saturday, Sunday, and NSE market holidays are never treated as execution days. The order remains pending until a real 09:15 market candle exists.
-- Execution price is the open of the first five-minute candle at 09:15 IST, inside the requested 09:15-09:20 window.
+- Saturday, Sunday, and NSE market holidays are never treated as execution days. The order remains pending until a real 09:17 one-minute market candle exists.
+- Execution price is the open of the exact one-minute candle stamped 09:17 IST; the 09:15 daily/market open is not used.
 - Trade states are `PENDING_ENTRY`, `OPEN`, `PENDING_EXIT`, and `CLOSED`.
 - Existing signals are baselined without old alerts or historical trades.
-- The free online workflow runs at 08:00 IST to publish prior-close candidates and again at 09:25 IST to fill the actual 09:15 execution price.
+- The free online workflow runs at 08:00 IST to publish prior-close candidates and again at 09:25 IST to fill the actual 09:17 execution price.
 
 ## Final Decision Hierarchy
 
@@ -130,7 +130,7 @@ The same stock in multiple lists is scanned once and creates only one trade. Its
 3. The setup is classified as retracement, breakout, momentum continuation, or trend continuation; retracement is not mandatory.
 4. Video-derived evidence and optional GTF demand/supply confluence grade and rank the valid signal.
 5. The selected trade universe and quality mode decide whether that signal enters the automated trade sheet.
-6. A valid new signal remains pending through weekends and exchange holidays, then uses the next real session's 09:15 candle open.
+6. A valid new signal remains pending through weekends and exchange holidays, then uses the next real session's exact 09:17 one-minute candle open.
 7. Open-position management applies the documented full/partial exit hierarchy, including the ratcheting structural stop and GTF supply weakness; every sell follows the same next-session execution rule.
 
 ## Trade Selection
@@ -160,4 +160,4 @@ The default trade quality is `BEST_ONLY`, which opens sheet/Telegram trades only
 
 ## Trade Sheet
 
-The workbook contains Summary, Open Positions, Pending Orders, Closed Trades, All Trades, Waiting Candidates, and Capital Ledger sheets. It stores signal dates separately from 09:15 execution dates/prices, risk-sized quantity, initial/trailing stop, planned and current risk, position rank, partial exits, replacement candidate, invested value, realized/unrealized P&L, entry style, setup grade, GTF score/demand/supply/2R evidence, institutional score, index/derivatives/options/commodity reasons, concept coverage, retracement depth/support/risk/volume, fundamentals, sector breadth, breakout/high-zone flags, volume, ATR, candle context, and candle-low references.
+The workbook contains Summary, Open Positions, Pending Orders, Closed Trades, All Trades, Waiting Candidates, and Capital Ledger sheets. It stores signal dates separately from exact 09:17 execution dates/prices, entry and exit execution methods, risk-sized quantity, initial/trailing stop, planned and current risk, position rank, partial exits, replacement candidate, invested value, realized/unrealized P&L, entry style, setup grade, GTF score/demand/supply/2R evidence, institutional score, index/derivatives/options/commodity reasons, concept coverage, retracement depth/support/risk/volume, fundamentals, sector breadth, breakout/high-zone flags, volume, ATR, candle context, and candle-low references.

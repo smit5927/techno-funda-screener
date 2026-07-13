@@ -75,7 +75,7 @@ Every scan updates:
 - `data/techno-funda-trade-sheet.xlsx`
 - `data/techno-funda-trade-sheet.csv`
 
-A new closing signal is executed on the next trading session using the 09:15 five-minute candle open. The journal separates signal dates from execution dates, prevents duplicate positions across lists, and calculates quantity from Rs. 100000, invested value, realized/unrealized P&L, holding days, and full reasons.
+A new closing signal is executed on the next trading session using the exact 09:17 one-minute candle open. The journal separates signal dates from execution dates, prevents duplicate positions across lists, and calculates quantity from Rs. 100000, invested value, realized/unrealized P&L, holding days, and full reasons.
 
 Live mode is baseline based:
 

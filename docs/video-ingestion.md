@@ -50,8 +50,8 @@ The 73 raw Learn2Trade videos contain several trading styles: positional equity,
 
 - A candle-based signal is known only after the candle closes.
 - The system therefore records the close date as the signal date and uses the next trading session for execution.
-- "Next trading session" is data-confirmed: weekends and NSE holidays are skipped, and a pending order cannot fill until a real 09:15 exchange candle is available.
-- Entry and exit fills use the 09:15 five-minute candle open, a deterministic price inside the requested 09:15-09:20 window.
+- "Next trading session" is data-confirmed: weekends and NSE holidays are skipped, and a pending order cannot fill until the exact 09:17 one-minute exchange candle is available.
+- Entry, full-exit, and partial-exit fills use the exact 09:17 one-minute candle open.
 - Whole-share quantity is recalculated from the actual fill using available cash, the per-position cap, structural-stop distance, and portfolio risk limits, not from the signal-day close.
 
 ## Merged Entry, Exit, And Money Management

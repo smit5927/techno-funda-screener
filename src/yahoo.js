@@ -53,15 +53,15 @@ export async function fetchCandles(symbol, interval, yearsBack) {
   return dropIncompleteCandles(candles, interval);
 }
 
-export async function fetchOpeningWindowPrice(symbol, afterDate) {
+export async function fetchExecutionPrice(symbol, afterDate) {
   const period2 = Math.floor(Date.now() / 1000) + DAY_MS / 1000;
-  const period1 = Math.floor((Date.now() - 30 * DAY_MS) / 1000);
+  const period1 = Math.floor((Date.now() - 7 * DAY_MS) / 1000);
   const url = new URL(
     `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}`
   );
   url.searchParams.set("period1", String(period1));
   url.searchParams.set("period2", String(period2));
-  url.searchParams.set("interval", "5m");
+  url.searchParams.set("interval", "1m");
   url.searchParams.set("events", "history");
   url.searchParams.set("includePrePost", "false");
 
@@ -89,29 +89,33 @@ export async function fetchOpeningWindowPrice(symbol, afterDate) {
     })
     .filter((candle) => Number.isFinite(candle.open));
 
-  const candle = selectNextTradingSessionOpeningCandle(candidates, afterDate);
+  const candle = selectNextTradingSessionExecutionCandle(candidates, afterDate);
   if (!candle) return null;
   return {
     date: candle.date,
     time: candle.time,
     price: candle.open,
-    source: "09:15 five-minute candle open",
-    window: "09:15-09:20 IST",
+    timeLabel: "09:17 IST",
+    source: "09:17 one-minute candle open",
+    window: "09:17 IST",
     candle
   };
 }
 
-export function selectNextTradingSessionOpeningCandle(candles, afterDate) {
+export function selectNextTradingSessionExecutionCandle(candles, afterDate) {
   return [...(candles || [])]
     .filter(
       (candle) =>
         candle.date > String(afterDate || "") &&
-        candle.minutes >= 9 * 60 + 15 &&
-        candle.minutes < 9 * 60 + 20 &&
+        candle.minutes === 9 * 60 + 17 &&
         Number.isFinite(candle.open)
     )
     .sort((a, b) => a.time - b.time)[0] || null;
 }
+
+// Compatibility aliases for callers that have not yet adopted the clearer execution naming.
+export const fetchOpeningWindowPrice = fetchExecutionPrice;
+export const selectNextTradingSessionOpeningCandle = selectNextTradingSessionExecutionCandle;
 
 export function aggregateDailyToCompletedWeeks(candles, now = new Date()) {
   const nowParts = istParts(now);
