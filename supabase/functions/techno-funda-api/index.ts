@@ -1,13 +1,18 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { calculatePositionMtm, summarizeLivePositions } from "./live-mtm.js";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Content-Type": "application/json"
+  "Content-Type": "application/json",
+  "Cache-Control": "no-store"
 };
 
 type JsonRecord = Record<string, unknown>;
+
+const LIVE_MTM_CACHE_MS = 45_000;
+let liveMtmCache: { expiresAt: number; payload: unknown } = { expiresAt: 0, payload: null };
 
 const TRADE_SCOPE_OPTIONS = [
   { id: "all-market", label: "All NSE Market" },
@@ -28,8 +33,12 @@ Deno.serve(async (request: Request) => {
 
   try {
     if (request.method === "GET") {
-      if (new URL(request.url).searchParams.get("view") === "meta") {
+      const view = new URL(request.url).searchParams.get("view");
+      if (view === "meta") {
         return json(await getPublicMetadata());
+      }
+      if (view === "live-mtm") {
+        return json(await getLiveMtm());
       }
       return json(await getState());
     }
@@ -97,8 +106,29 @@ Deno.serve(async (request: Request) => {
         return json({ error: "Invalid access code" }, 401);
       }
 
+      const existingSettings = await readValue("trade_settings", {});
+      const requestedCapital = Number(body.totalCapital);
+      const baseCapital =
+        Number.isFinite(requestedCapital) && requestedCapital >= 10000
+          ? requestedCapital
+          : Number(existingSettings.totalCapital) || 1000000;
+      const addCapital = Math.max(0, Number(body.addCapital) || 0);
+      const totalCapital = normalizeCapital(baseCapital + addCapital);
+      const capitalHistory = Array.isArray(existingSettings.capitalHistory)
+        ? existingSettings.capitalHistory.slice(-49)
+        : [];
+      if (addCapital > 0 || totalCapital !== Number(existingSettings.totalCapital || 1000000)) {
+        capitalHistory.push({
+          date: new Date().toISOString(),
+          type: addCapital > 0 ? "CAPITAL_ADDED" : "CAPITAL_SET",
+          amount: addCapital > 0 ? addCapital : Math.abs(totalCapital - Number(existingSettings.totalCapital || 1000000)),
+          previousCapital: Number(existingSettings.totalCapital) || 1000000,
+          newCapital: totalCapital
+        });
+      }
       const settings = {
-        ...normalizeTradeSettings(body),
+        ...normalizeTradeSettings({ ...existingSettings, ...body, totalCapital }),
+        capitalHistory,
         updatedAt: new Date().toISOString(),
         source: "website"
       };
@@ -202,6 +232,144 @@ async function getPublicMetadata() {
   };
 }
 
+async function getLiveMtm() {
+  const now = Date.now();
+  if (liveMtmCache.payload && liveMtmCache.expiresAt > now) {
+    return liveMtmCache.payload;
+  }
+
+  const state = await readValue("latest_state", {});
+  const trades = (Array.isArray(state?.trades) ? state.trades : []).filter((trade: any) =>
+    ["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(String(trade?.status || ""))
+  );
+  const totalCapital =
+    Number(state?.portfolioSummary?.totalCapital) ||
+    Number(state?.tradeSettings?.totalCapital) ||
+    1000000;
+
+  const symbols = [...new Set(
+    trades
+      .map((trade: any) => String(trade?.yahooSymbol || `${trade?.symbol || ""}.NS`).trim())
+      .filter(Boolean)
+  )];
+  const rawQuotes = new Map(
+    await Promise.all(symbols.map(async (symbol) => [symbol, await fetchNearLiveQuote(symbol)] as const))
+  );
+  const marketStatus = marketStatusIst([...rawQuotes.values()]);
+  const quotes = new Map(
+    [...rawQuotes.entries()].map(([symbol, quote]) => [
+      symbol,
+      {
+        ...quote,
+        isLive: marketStatus === "OPEN" && isFreshQuote(quote?.asOf)
+      }
+    ])
+  );
+  const positions = trades.map((trade: any) => {
+    const yahooSymbol = String(trade?.yahooSymbol || `${trade?.symbol || ""}.NS`).trim();
+    return calculatePositionMtm(
+      { ...trade, yahooSymbol },
+      quotes.get(yahooSymbol) || fallbackQuote(trade)
+    );
+  });
+  const payload = {
+    ok: true,
+    mode: "POSITIONAL_MTM_ONLY",
+    entryExitMode: "COMPLETED_CANDLE_EOD",
+    generatedAt: new Date().toISOString(),
+    source: "Yahoo Finance intraday chart",
+    feedType: "FREE_NEAR_LIVE",
+    quoteInterval: "1m",
+    marketStatus,
+    positions,
+    summary: summarizeLivePositions(positions, totalCapital)
+  };
+
+  liveMtmCache = { expiresAt: now + LIVE_MTM_CACHE_MS, payload };
+  return payload;
+}
+
+async function fetchNearLiveQuote(symbol: string) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  try {
+    const url = new URL(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}`);
+    url.searchParams.set("range", "1d");
+    url.searchParams.set("interval", "1m");
+    url.searchParams.set("includePrePost", "false");
+    url.searchParams.set("events", "history");
+    const response = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "Mozilla/5.0 Techno-Funda-Positional-MTM/1.0"
+      }
+    });
+    if (!response.ok) throw new Error(`Quote ${symbol} returned ${response.status}`);
+    const body = await response.json();
+    const result = body?.chart?.result?.[0];
+    const timestamps = Array.isArray(result?.timestamp) ? result.timestamp : [];
+    const closes = Array.isArray(result?.indicators?.quote?.[0]?.close)
+      ? result.indicators.quote[0].close
+      : [];
+    for (let index = closes.length - 1; index >= 0; index -= 1) {
+      const ltp = Number(closes[index]);
+      const timestamp = Number(timestamps[index]);
+      if (!Number.isFinite(ltp) || ltp <= 0) continue;
+      return {
+        ltp,
+        asOf: Number.isFinite(timestamp) ? new Date(timestamp * 1000).toISOString() : null,
+        isLive: false,
+        marketState: String(result?.meta?.marketState || ""),
+        source: "Yahoo 1m"
+      };
+    }
+    throw new Error(`Quote ${symbol} has no valid minute close`);
+  } catch (error) {
+    console.warn(`Near-live quote unavailable for ${symbol}:`, error?.message || String(error));
+    return { ltp: null, asOf: null, isLive: false, source: "EOD fallback" };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function fallbackQuote(trade: any) {
+  return {
+    ltp: Number(trade?.lastPrice) || null,
+    asOf: null,
+    isLive: false,
+    source: "EOD fallback"
+  };
+}
+
+function marketStatusIst(quotes: any[]) {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Asia/Kolkata",
+      weekday: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23"
+    })
+      .formatToParts(new Date())
+      .filter((part) => part.type !== "literal")
+      .map((part) => [part.type, part.value])
+  );
+  const minuteOfDay = Number(parts.hour) * 60 + Number(parts.minute);
+  const tradingDay = !["Sat", "Sun"].includes(parts.weekday);
+  const scheduledOpen = tradingDay && minuteOfDay >= 555 && minuteOfDay <= 930;
+  if (!scheduledOpen) return "CLOSED";
+  const hasFreshRegularQuote = quotes.some((quote) =>
+    isFreshQuote(quote?.asOf) && ["", "REGULAR"].includes(String(quote?.marketState || "").toUpperCase())
+  );
+  return hasFreshRegularQuote ? "OPEN" : "CLOSED";
+}
+
+function isFreshQuote(asOf: unknown) {
+  const timestamp = Date.parse(String(asOf || ""));
+  return Number.isFinite(timestamp) && Date.now() - timestamp <= 10 * 60 * 1000;
+}
+
 function publicTelegramStatus(config: any) {
   const configured = Boolean(config?.botToken && config?.chatId && config?.enabled !== false);
   return {
@@ -233,8 +401,15 @@ function normalizeTradeSettings(input: any) {
     scopeListId: scope.id,
     scopeLabel: scope.label,
     qualityMode: quality.id,
-    qualityLabel: quality.label
+    qualityLabel: quality.label,
+    totalCapital: normalizeCapital(input?.totalCapital)
   };
+}
+
+function normalizeCapital(value: unknown) {
+  const amount = Number(value);
+  if (!Number.isFinite(amount)) return 1000000;
+  return Math.round(Math.min(1000000000, Math.max(10000, amount)));
 }
 
 async function verifyCode(keyName: string, value: string) {

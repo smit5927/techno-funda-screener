@@ -137,7 +137,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 
 .tradeBand {
   display: grid;
-  grid-template-columns: repeat(11, minmax(86px, 1fr)) auto auto;
+  grid-template-columns: repeat(12, minmax(86px, 1fr)) auto auto;
   gap: 0;
   margin: 8px 0;
   background: var(--panel);
@@ -216,6 +216,18 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 }
 .sectionHeading h2 { margin: 0; font-size: 16px; }
 .sectionHeading span { color: var(--muted); font-size: 12px; }
+.liveMtmStatus { display: inline-flex; align-items: center; gap: 6px; }
+.liveMtmStatus i {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.liveMtmStatus.live i { background: var(--green); box-shadow: 0 0 0 3px var(--green-soft); }
+.liveMtmStatus.closed i { background: var(--blue); }
+.liveMtmStatus.warning i { background: var(--amber); }
+.liveMtmStatus.danger i, .liveMtmStatus.stale i { background: var(--red); }
 
 .controlBand {
   position: sticky;
@@ -266,6 +278,18 @@ th {
 th:nth-child(1), th:nth-child(2), th:nth-child(3), td:nth-child(1), td:nth-child(2), td:nth-child(3) { text-align: left; }
 tbody tr { cursor: pointer; }
 tbody tr:hover, tbody tr:focus-within { background: #192126; }
+.quoteSource, .riskState {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 750;
+}
+.riskState.NORMAL { color: var(--green); }
+.riskState.NEAR_STOP { color: var(--amber); }
+.riskState.BREACHED { color: var(--red); }
+.riskBreached { box-shadow: inset 3px 0 var(--red); }
+.riskNear { box-shadow: inset 3px 0 var(--amber); }
 
 .pill {
   display: inline-flex;

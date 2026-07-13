@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Techno Funda Screener</title>
-    <link rel="stylesheet" href="styles.css?v=20260713-data-quality" />
+    <link rel="stylesheet" href="styles.css?v=20260713-live-mtm" />
   </head>
   <body>
     <header class="topbar">
@@ -92,6 +92,10 @@
           <span>Portfolio Risk</span>
           <strong id="portfolioRisk">0</strong>
         </div>
+        <div>
+          <span>Live Stop Risk</span>
+          <strong id="liveStopRisk">Waiting</strong>
+        </div>
         <a id="excelDownloadLink" class="downloadButton" href="/api/trades/download">Excel</a>
         <a id="csvDownloadLink" class="downloadButton" href="/api/trades/download.csv">CSV</a>
       </section>
@@ -163,7 +167,7 @@
       <section class="positionsSection" aria-label="Open positions and pending orders">
         <div class="sectionHeading">
           <h2>Open Positions</h2>
-          <span>Risk-sized portfolio</span>
+          <span id="liveMtmStatus" class="liveMtmStatus"><i></i> Near-live MTM connecting</span>
         </div>
         <div class="tableShell positionsShell">
           <table class="positionsTable">
@@ -175,10 +179,10 @@
                 <th>Entry Date</th>
                 <th>Entry</th>
                 <th>Qty</th>
-                <th>Last Close</th>
+                <th>LTP / Close</th>
                 <th>Unrealized P&L</th>
                 <th>Rank</th>
-                <th>Stop</th>
+                <th>Stop / Risk</th>
                 <th>R</th>
                 <th>Signal</th>
               </tr>
@@ -266,6 +270,6 @@
     <div id="detailBackdrop" class="detailBackdrop" aria-hidden="true"></div>
     <aside id="detailPanel" class="detailPanel" aria-live="polite" aria-label="Stock details"></aside>
 
-    <script src="app.js?v=20260713-data-quality" type="module"></script>
+    <script src="app.js?v=20260713-live-mtm" type="module"></script>
   </body>
 </html>

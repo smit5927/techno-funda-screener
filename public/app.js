@@ -7,7 +7,9 @@ const state = {
   minScore: 0,
   displayLimit: 250,
   cloudTradeSettings: null,
-  cloudTelegram: null
+  cloudTelegram: null,
+  liveMtm: null,
+  liveMtmTimer: null
 };
 
 const staticMode = Boolean(window.TF_STATIC_MODE);
@@ -33,6 +35,8 @@ const elements = {
   deployedCapital: document.querySelector("#deployedCapital"),
   availableCash: document.querySelector("#availableCash"),
   portfolioRisk: document.querySelector("#portfolioRisk"),
+  liveStopRisk: document.querySelector("#liveStopRisk"),
+  liveMtmStatus: document.querySelector("#liveMtmStatus"),
   positionsBody: document.querySelector("#positionsBody"),
   positionsEmpty: document.querySelector("#positionsEmpty"),
   candidatesBody: document.querySelector("#candidatesBody"),
@@ -147,6 +151,9 @@ document.querySelectorAll(".metric[data-summary-filter]").forEach((button) => {
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") closeDetail();
 });
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && cloudMode) fetchLiveMtm();
+});
 
 await loadResults();
 configureMode();
@@ -254,6 +261,7 @@ function applyPayload(payload) {
   renderPositions(state.payload);
   renderCandidates(state.payload);
   renderRows();
+  startLiveMtm();
 }
 
 function rowsForCurrentList(payload) {
@@ -320,8 +328,21 @@ function renderPositions(payload) {
   );
   elements.positionsBody.innerHTML = trades
     .map((trade, index) => {
-      const pnl = trade.unrealizedPnl;
+      const livePosition = findLivePosition(trade);
+      const displayPrice = Number.isFinite(livePosition?.ltp) ? livePosition.ltp : trade.lastPrice;
+      const pnl = Number.isFinite(livePosition?.unrealizedPnl)
+        ? livePosition.unrealizedPnl
+        : trade.unrealizedPnl;
+      const pnlPct = Number.isFinite(livePosition?.unrealizedPnlPct)
+        ? livePosition.unrealizedPnlPct
+        : trade.unrealizedPnlPct;
       const pnlClass = Number(pnl) > 0 ? "good" : Number(pnl) < 0 ? "bad" : "neutral";
+      const riskState = livePosition?.riskState || "STALE";
+      const rowRiskClass = riskState === "BREACHED" ? "riskBreached" : riskState === "NEAR_STOP" ? "riskNear" : "";
+      const quoteLabel = livePosition?.isLive ? "NEAR-LIVE 1M" : "EOD";
+      const stopRiskText = livePosition
+        ? `${riskState.replace("_", " ")}${Number.isFinite(livePosition.distanceToStopPct) ? ` ${compact(livePosition.distanceToStopPct)}%` : ""}`
+        : "EOD RISK";
       const signalDate = trade.exitSignalDate || trade.entrySignalDate || "";
       const reason =
         trade.status === "PENDING_EXIT"
@@ -330,17 +351,17 @@ function renderPositions(payload) {
             ? trade.pendingPartialExitReason || []
             : trade.entryReason || [];
       return `
-        <tr data-position-index="${index}" title="Open details">
+        <tr class="${rowRiskClass}" data-position-index="${index}" title="Open details">
           <td><span class="pill ${escapeHtml(trade.status)}">${escapeHtml(trade.status.replace("_", " "))}</span></td>
           <td class="symbolCell"><strong>${escapeHtml(trade.symbol)}</strong><span>${escapeHtml(trade.listLabel || "")}</span></td>
           <td>${escapeHtml(signalDate)}</td>
           <td>${escapeHtml(trade.entryDate || "Waiting")}</td>
           <td>${fmt(trade.entryPrice)}</td>
           <td>${trade.quantity ?? "NA"}</td>
-          <td>${fmt(trade.lastPrice)}</td>
-          <td class="${pnlClass}">${compact(pnl)}${Number.isFinite(trade.unrealizedPnlPct) ? ` (${compact(trade.unrealizedPnlPct)}%)` : ""}</td>
+          <td><strong>${fmt(displayPrice)}</strong><small class="quoteSource">${quoteLabel}</small></td>
+          <td class="${pnlClass}">${compact(pnl)}${Number.isFinite(pnlPct) ? ` (${compact(pnlPct)}%)` : ""}</td>
           <td>${fmt(trade.currentRank || trade.positionRank)}</td>
-          <td>${fmt(trade.trailingStopPrice || trade.initialStopPrice)}</td>
+          <td>${fmt(trade.trailingStopPrice || trade.initialStopPrice)}<small class="riskState ${escapeHtml(riskState)}">${escapeHtml(stopRiskText)}</small></td>
           <td>${fmt(trade.currentRewardR)}</td>
           <td class="reasonCell" title="${escapeHtml(reason.join(" "))}"><span class="signalPreview">${escapeHtml(reasonSummary(reason))}</span></td>
         </tr>
@@ -355,6 +376,69 @@ function renderPositions(payload) {
       if (row) renderDetail(row, trade);
     });
   });
+}
+
+function findLivePosition(trade) {
+  const positions = state.liveMtm?.positions || [];
+  const yahooSymbol = String(trade?.yahooSymbol || "");
+  const symbol = String(trade?.symbol || "");
+  return positions.find((position) =>
+    (yahooSymbol && position.yahooSymbol === yahooSymbol) || (symbol && position.symbol === symbol)
+  );
+}
+
+function startLiveMtm() {
+  if (!cloudMode) return;
+  const hasActivePosition = (state.payload?.trades || []).some((trade) =>
+    ["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status)
+  );
+  if (!hasActivePosition) {
+    elements.liveMtmStatus.innerHTML = "<i></i> No open positional trades";
+    elements.liveStopRisk.textContent = "0 (0%)";
+    if (state.liveMtmTimer) clearInterval(state.liveMtmTimer);
+    state.liveMtmTimer = null;
+    return;
+  }
+  if (!state.liveMtmTimer) {
+    state.liveMtmTimer = setInterval(fetchLiveMtm, 60_000);
+  }
+  fetchLiveMtm();
+}
+
+async function fetchLiveMtm() {
+  if (!cloudMode || document.hidden) return;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 12_000);
+  try {
+    const url = new URL(cloudApiUrl);
+    url.searchParams.set("view", "live-mtm");
+    url.searchParams.set("t", Date.now());
+    const response = await fetch(url, { cache: "no-store", signal: controller.signal });
+    const payload = await response.json();
+    if (!response.ok || payload.error) throw new Error(payload.error || "Live MTM unavailable");
+    state.liveMtm = payload;
+    renderPositions(state.payload);
+    renderLiveMtmSummary();
+  } catch {
+    elements.liveMtmStatus.className = "liveMtmStatus stale";
+    elements.liveMtmStatus.innerHTML = "<i></i> MTM unavailable, EOD values shown";
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function renderLiveMtmSummary() {
+  const mtm = state.liveMtm;
+  if (!mtm) return;
+  const summary = mtm.summary || {};
+  elements.unrealizedPnl.textContent = compact(summary.unrealizedPnl || 0);
+  elements.liveStopRisk.textContent = `${compact(summary.downsideToStops || 0)} (${compact(summary.stopRiskPct || 0)}%)`;
+  const warningCount = (summary.breachCount || 0) + (summary.nearStopCount || 0);
+  const statusClass = summary.breachCount ? "danger" : warningCount ? "warning" : mtm.marketStatus === "OPEN" ? "live" : "closed";
+  const updateText = mtm.generatedAt ? formatTime(mtm.generatedAt) : "now";
+  const quoteText = summary.staleCount ? `${summary.liveCount || 0} live, ${summary.staleCount} EOD` : `${summary.liveCount || 0} quotes`;
+  elements.liveMtmStatus.className = `liveMtmStatus ${statusClass}`;
+  elements.liveMtmStatus.innerHTML = `<i></i> ${escapeHtml(mtm.marketStatus || "CLOSED")} | ${escapeHtml(quoteText)} | ${escapeHtml(updateText)}`;
 }
 
 function renderRows() {
@@ -1087,6 +1171,15 @@ function formatDateTime(value) {
   return new Intl.DateTimeFormat("en-IN", {
     dateStyle: "medium",
     timeStyle: "short"
+  }).format(new Date(value));
+}
+
+function formatTime(value) {
+  return new Intl.DateTimeFormat("en-IN", {
+    timeZone: "Asia/Kolkata",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
   }).format(new Date(value));
 }
 
