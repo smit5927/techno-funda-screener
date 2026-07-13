@@ -624,6 +624,13 @@ export function applyExecutionPriceCorrection(trade, fill, correctedAt = new Dat
   trade.entryReason = rewriteExecutionReasons(trade.entryReason);
   if (trade.entrySnapshot) {
     trade.entrySnapshot.signalReason = rewriteExecutionReasons(trade.entrySnapshot.signalReason);
+    const coverage = trade.entrySnapshot.conceptCoverage;
+    if (coverage) {
+      coverage.passLabels = rewriteExecutionReasons(coverage.passLabels);
+      coverage.weakLabels = rewriteExecutionReasons(coverage.weakLabels);
+      coverage.dataGapLabels = rewriteExecutionReasons(coverage.dataGapLabels);
+      coverage.excludedLabels = rewriteExecutionReasons(coverage.excludedLabels);
+    }
   }
   return trade;
 }
@@ -632,8 +639,10 @@ function rewriteExecutionReasons(reasons) {
   if (!Array.isArray(reasons)) return reasons;
   return reasons.map((reason) => String(reason)
     .replaceAll("09:15 five-minute candle open", "09:17 one-minute candle open")
-    .replaceAll("09:15-09:20 IST window", "exactly 09:17 IST")
-    .replaceAll("next session 09:15-09:20 IST window", "next session at exactly 09:17 IST"));
+    .replaceAll("09:15 execution discipline", "09:17 execution discipline")
+    .replaceAll("next actual market session 09:15-09:20 IST window", "next actual market session at exactly 09:17 IST")
+    .replaceAll("next session 09:15-09:20 IST window", "next session at exactly 09:17 IST")
+    .replaceAll("09:15-09:20 IST window", "exact 09:17 IST execution time"));
 }
 
 async function fillPartialExit(trade, row) {
@@ -705,6 +714,18 @@ function migrateTradeMetadata(trades) {
     trade.partialExits = Array.isArray(trade.partialExits) ? trade.partialExits : [];
     trade.partialExitTags = Array.isArray(trade.partialExitTags) ? trade.partialExitTags : [];
     trade.realizedPnlToDate = Number(trade.realizedPnlToDate) || 0;
+    trade.entryReason = rewriteExecutionReasons(trade.entryReason);
+    trade.exitReason = rewriteExecutionReasons(trade.exitReason);
+    if (trade.entrySnapshot) {
+      trade.entrySnapshot.signalReason = rewriteExecutionReasons(trade.entrySnapshot.signalReason);
+      const coverage = trade.entrySnapshot.conceptCoverage;
+      if (coverage) {
+        coverage.passLabels = rewriteExecutionReasons(coverage.passLabels);
+        coverage.weakLabels = rewriteExecutionReasons(coverage.weakLabels);
+        coverage.dataGapLabels = rewriteExecutionReasons(coverage.dataGapLabels);
+        coverage.excludedLabels = rewriteExecutionReasons(coverage.excludedLabels);
+      }
+    }
     if (Number.isFinite(trade.entryPrice) && !Number.isFinite(trade.initialStopPrice)) {
       trade.initialStopPrice = round(trade.entryPrice * 0.92);
     }

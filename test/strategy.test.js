@@ -144,7 +144,10 @@ test("active legacy trade correction preserves an audit trail and recalculates c
     originalQuantity: 50,
     initialStopPrice: 95,
     entryReason: ["Execution plan uses the 09:15 five-minute candle open."],
-    entrySnapshot: { signalReason: ["Fill in the 09:15-09:20 IST window."] },
+    entrySnapshot: {
+      signalReason: ["Fill in the 09:15-09:20 IST window."],
+      conceptCoverage: { passLabels: ["09:15 execution discipline"] }
+    },
     partialExits: []
   };
   applyExecutionPriceCorrection(
@@ -164,6 +167,8 @@ test("active legacy trade correction preserves an audit trail and recalculates c
   assert.equal(trade.initialRiskAmount, 362.5);
   assert.equal(trade.entryExecutionCorrection.previousPrice, 100);
   assert.match(trade.entryReason[0], /09:17 one-minute/);
+  assert.equal(trade.entrySnapshot.signalReason[0], "Fill in the exact 09:17 IST execution time.");
+  assert.equal(trade.entrySnapshot.conceptCoverage.passLabels[0], "09:17 execution discipline");
 });
 
 function candle(date, open, high, low, close, volume) {
