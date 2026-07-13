@@ -110,8 +110,11 @@ export async function updateTradeJournal(scan, config = appConfig) {
     }
     cancelInvalidGtfPartialExit(trade, row);
     if (trade.status === "PENDING_EXIT" && row) {
-      const filled = await fillExit(trade, row);
-      if (filled) events.push({ type: "EXIT_TRADE_CLOSED", trade });
+      const filled = await fillExit(trade, row, config);
+      if (filled) {
+        markRotationExitReady(candidates, trade);
+        events.push({ type: "EXIT_TRADE_CLOSED", trade });
+      }
     }
     if (trade.status === "PENDING_PARTIAL_EXIT" && row) {
       const filled = await fillPartialExit(trade, row);
@@ -189,8 +192,11 @@ export async function updateTradeJournal(scan, config = appConfig) {
       scan.marketContext?.asOf
     );
     if (trade.status === "PENDING_EXIT" && row) {
-      const filled = await fillExit(trade, row);
-      if (filled) events.push({ type: "EXIT_TRADE_CLOSED", trade });
+      const filled = await fillExit(trade, row, config);
+      if (filled) {
+        markRotationExitReady(candidates, trade);
+        events.push({ type: "EXIT_TRADE_CLOSED", trade });
+      }
     }
     if (trade.status === "PENDING_PARTIAL_EXIT" && row) {
       const filled = await fillPartialExit(trade, row);
@@ -232,6 +238,14 @@ export async function updateTradeJournal(scan, config = appConfig) {
   for (const candidate of [...candidates].sort((a, b) => b.rank - a.rank)) {
     const row = rowBySymbol.get(candidate.yahooSymbol || candidate.symbol);
     if (!row) continue;
+    const linkedRotation = rotationExecutionForCandidate(candidate, trades);
+    if (candidate.rotation?.sourceTradeId && !linkedRotation) {
+      const source = trades.find((trade) => trade.id === candidate.rotation.sourceTradeId);
+      candidate.status = "WAITING_ROTATION";
+      candidate.skipReason = `Waiting for ${source?.symbol || candidate.rotation.sourceSymbol} exact 09:17 rotation sell to release cash.`;
+      candidate.lastEvaluatedAt = scan.scannedAt;
+      continue;
+    }
     const portfolio = portfolioSummary(trades, candidates, config);
     const plan = buildPositionPlan(row, row.close, portfolio, config);
     candidate.rank = plan.rank;
@@ -241,7 +255,7 @@ export async function updateTradeJournal(scan, config = appConfig) {
     candidate.plannedAllocation = plan.allocation;
     candidate.lastEvaluatedAt = scan.scannedAt;
     if (plan.eligible) {
-      const trade = createPendingEntry(row, scan, config, settings, plan);
+      const trade = createPendingEntry(row, scan, config, settings, plan, linkedRotation);
       trades.push(trade);
       candidates = candidates.filter((item) => item !== candidate);
       events.push({ type: "ENTRY_SIGNAL_PENDING", trade });
@@ -269,10 +283,45 @@ export async function updateTradeJournal(scan, config = appConfig) {
           "QUALITY_ROTATION"
         );
         rotation.trade.replacementCandidateSymbol = row.symbol;
+        candidate.rotation = {
+          sourceTradeId: rotation.trade.id,
+          sourceSymbol: rotation.trade.symbol,
+          requestedAt: scan.scannedAt,
+          rankAdvantage: round(rotation.advantage)
+        };
         candidate.status = "WAITING_ROTATION";
         candidate.skipReason = `Waiting for ${rotation.trade.symbol} rotation exit. ${rotation.reason}`;
         rotationScheduled = true;
         events.push({ type: "ROTATION_EXIT_PENDING", trade: rotation.trade, candidate });
+        const filled = await fillExit(rotation.trade, weakRow, config);
+        if (filled) {
+          markRotationExitReady(candidates, rotation.trade);
+          events.push({ type: "EXIT_TRADE_CLOSED", trade: rotation.trade });
+          const fundedPlan = buildPositionPlan(
+            row,
+            row.close,
+            portfolioSummary(trades, candidates, config),
+            config
+          );
+          if (fundedPlan.eligible) {
+            const rotationExecution = rotationExecutionForCandidate(candidate, trades);
+            const replacement = createPendingEntry(
+              row,
+              scan,
+              config,
+              settings,
+              fundedPlan,
+              rotationExecution
+            );
+            trades.push(replacement);
+            candidates = candidates.filter((item) => item !== candidate);
+            events.push({ type: "ENTRY_SIGNAL_PENDING", trade: replacement });
+          } else {
+            candidate.status = "ROTATION_CASH_READY";
+            candidate.skipReason =
+              `${rotation.trade.symbol} sold at 09:17, but replacement risk recheck did not pass: ${fundedPlan.reason}`;
+          }
+        }
       }
     }
   }
@@ -382,7 +431,7 @@ export function rowPassesTradeQuality(row, settingsOrConfig = appConfig) {
   return ["A+", "A"].includes(grade);
 }
 
-function createPendingEntry(row, scan, config, settings, plan) {
+function createPendingEntry(row, scan, config, settings, plan, rotationExecution = null) {
   const sourceLists = row.sourceLists || [row.listLabel].filter(Boolean);
   return {
     id: `${row.symbol}-${row.asOf}-${Date.now()}`,
@@ -417,6 +466,9 @@ function createPendingEntry(row, scan, config, settings, plan) {
     positionRank: plan.rank,
     currentRank: plan.rank,
     allocationMethod: "min(capital cap, 1% risk budget, cash, sector cap)",
+    rotationExecution,
+    rotationSourceTradeId: rotationExecution?.sourceTradeId || null,
+    rotationSourceSymbol: rotationExecution?.sourceSymbol || null,
     addOns: [],
     addOnSkips: [],
     pendingAdd: null,
@@ -427,6 +479,9 @@ function createPendingEntry(row, scan, config, settings, plan) {
       ...(row.signalReason || row.entryReason || []),
       `Trade sheet filter: ${settings.scopeLabel}, ${settings.qualityLabel}.`,
       `Portfolio rank ${plan.rank}; planned allocation Rs ${plan.allocation}, quantity ${plan.quantity}, initial stop ${plan.stopPrice}, planned risk Rs ${plan.plannedRisk}.`,
+      ...(rotationExecution ? [
+        `Immediate quality rotation: ${rotationExecution.sourceSymbol} sold ${rotationExecution.exitDate} ${rotationExecution.exitTime}; released cash is reusable immediately and this replacement must fill in the same execution slot.`
+      ] : []),
       `Closing signal dated ${row.asOf}; buy fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays.`
     ],
     entrySnapshot: snapshot(row),
@@ -509,6 +564,61 @@ function cancelPendingAdd(trade, reason) {
     reason
   });
   trade.pendingAdd = null;
+}
+
+function markRotationExitReady(candidates, sourceTrade) {
+  if (
+    sourceTrade.exitType !== "QUALITY_ROTATION" ||
+    sourceTrade.status !== "CLOSED" ||
+    !sourceTrade.exitDate
+  ) return;
+  const candidate = candidates.find((item) =>
+    item.rotation?.sourceTradeId === sourceTrade.id ||
+    item.symbol === sourceTrade.replacementCandidateSymbol
+  );
+  if (!candidate) return;
+  candidate.rotation = {
+    ...(candidate.rotation || {}),
+    sourceTradeId: sourceTrade.id,
+    sourceSymbol: sourceTrade.symbol,
+    exitDate: sourceTrade.exitDate,
+    exitTime: sourceTrade.exitTime || EXECUTION_TIME,
+    exitPrice: sourceTrade.exitPrice,
+    releasedCash: round(Number(sourceTrade.exitPrice) * Number(sourceTrade.quantity)),
+    readyAt: new Date().toISOString()
+  };
+  candidate.status = "ROTATION_CASH_READY";
+  candidate.skipReason =
+    `${sourceTrade.symbol} sold ${sourceTrade.exitDate} ${sourceTrade.exitTime || EXECUTION_TIME}; replacement must buy in that same execution slot.`;
+}
+
+function rotationExecutionForCandidate(candidate, trades) {
+  const link = candidate.rotation;
+  if (!link?.sourceTradeId) return null;
+  const source = trades.find((trade) => trade.id === link.sourceTradeId);
+  if (source?.status !== "CLOSED" || !source.exitDate) return null;
+  return {
+    sourceTradeId: source.id,
+    sourceSymbol: source.symbol,
+    exitDate: source.exitDate,
+    exitTime: source.exitTime || EXECUTION_TIME,
+    exitPrice: source.exitPrice,
+    releasedCash: round(Number(source.exitPrice) * Number(source.quantity)),
+    rankAdvantage: link.rankAdvantage ?? null,
+    rule: "SELL_THEN_BUY_SAME_0917_SLOT"
+  };
+}
+
+function executionPriceFetcher(config) {
+  const injected = config?.trade?.executionPriceFetcher || config?.executionPriceFetcher;
+  return typeof injected === "function" ? injected : fetchExecutionPrice;
+}
+
+export function sameExecutionSlot(rotationExecution, fill) {
+  if (!rotationExecution?.exitDate || !fill?.date) return false;
+  const sellTime = String(rotationExecution.exitTime || EXECUTION_TIME).replace(/\s+/g, " ").trim();
+  const buyTime = String(fill.timeLabel || fill.window || EXECUTION_TIME).replace(/\s+/g, " ").trim();
+  return rotationExecution.exitDate === fill.date && sellTime === buyTime;
 }
 
 async function fillPyramidAdd(trade, row, config, trades, candidates) {
@@ -634,13 +744,21 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
 
 async function fillEntry(trade, row, config, trades, candidates) {
   try {
-    const fill = await fetchExecutionPrice(
+    const fill = await executionPriceFetcher(config)(
       trade.yahooSymbol || row.yahooSymbol,
       trade.entrySignalDate
     );
     if (!fill) {
       trade.executionError =
         "Next market-session exact 09:17 one-minute candle is not available yet; pending through weekends and NSE holidays.";
+      return "WAITING";
+    }
+    if (
+      trade.rotationExecution?.exitDate &&
+      !sameExecutionSlot(trade.rotationExecution, fill)
+    ) {
+      trade.executionError =
+        `Rotation replacement requires ${trade.rotationExecution.exitDate} ${trade.rotationExecution.exitTime}; no fictional later-session switch is allowed.`;
       return "WAITING";
     }
     const summary = portfolioSummary(trades, candidates, config);
@@ -699,9 +817,9 @@ async function fillEntry(trade, row, config, trades, candidates) {
   }
 }
 
-async function fillExit(trade, row) {
+async function fillExit(trade, row, config = appConfig) {
   try {
-    const fill = await fetchExecutionPrice(
+    const fill = await executionPriceFetcher(config)(
       trade.yahooSymbol || row.yahooSymbol,
       trade.exitSignalDate
     );
@@ -1290,6 +1408,9 @@ function tradeColumns() {
     { header: "Partial Realized P&L", key: "Partial Realized P&L", width: 20 },
     { header: "Exit Type", key: "Exit Type", width: 22 },
     { header: "Replacement Candidate", key: "Replacement Candidate", width: 24 },
+    { header: "Rotation Source", key: "Rotation Source", width: 20 },
+    { header: "Rotation Rule", key: "Rotation Rule", width: 32 },
+    { header: "Rotation Same Slot", key: "Rotation Same Slot", width: 20 },
     { header: "Entry Style", key: "Entry Style", width: 26 },
     { header: "Setup Grade", key: "Setup Grade", width: 13 },
     { header: "Setup Score", key: "Setup Score", width: 14 },
@@ -1298,6 +1419,8 @@ function tradeColumns() {
     { header: "GTF Score", key: "GTF Score", width: 14 },
     { header: "GTF Daily Demand", key: "GTF Daily Demand", width: 28 },
     { header: "GTF Weekly Demand", key: "GTF Weekly Demand", width: 28 },
+    { header: "GTF Reacting From HTF", key: "GTF Reacting From HTF", width: 36 },
+    { header: "GTF RHTF Source Status", key: "GTF RHTF Source Status", width: 24 },
     { header: "GTF Opposing Supply", key: "GTF Opposing Supply", width: 30 },
     { header: "GTF 2R Room", key: "GTF 2R Room", width: 14 },
     { header: "Index Context", key: "Index Context", width: 34 },
@@ -1389,6 +1512,11 @@ function tradeToRow(trade) {
     "Partial Realized P&L": trade.realizedPnlToDate ?? 0,
     "Exit Type": trade.exitType || "",
     "Replacement Candidate": trade.replacementCandidateSymbol || "",
+    "Rotation Source": trade.rotationSourceSymbol || "",
+    "Rotation Rule": trade.rotationExecution?.rule || "",
+    "Rotation Same Slot": trade.rotationExecution
+      ? (trade.entryDate === trade.rotationExecution.exitDate && trade.entryTime === trade.rotationExecution.exitTime ? "Yes" : "Pending")
+      : "",
     "Entry Style": trade.entrySnapshot?.entryStyle?.label || "",
     "Setup Grade": trade.entrySnapshot?.setupGrade || "",
     "Setup Score": trade.entrySnapshot?.setupStrengthScore ?? "",
@@ -1397,6 +1525,10 @@ function tradeToRow(trade) {
     "GTF Score": gtf.maxScore ? `${gtf.score}/${gtf.maxScore} (${gtf.grade || ""})` : "",
     "GTF Daily Demand": formatGtfZone(gtf.dailyDemand),
     "GTF Weekly Demand": formatGtfZone(gtf.weeklyDemand),
+    "GTF Reacting From HTF": gtf.reactingFromHtf?.active
+      ? `${formatGtfZone(gtf.reactingFromHtf.zone)}; ${gtf.reactingFromHtf.managementClass}`
+      : "No",
+    "GTF RHTF Source Status": gtf.reactingFromHtf?.sourceStatus || "",
     "GTF Opposing Supply": formatGtfZone(gtf.opposingSupply),
     "GTF 2R Room": gtf.unlimitedRewardRoom ? "Clear" : Number.isFinite(gtf.rewardRisk) ? `${round(gtf.rewardRisk)}R` : "",
     "Index Context": institutional.index?.reason || "",

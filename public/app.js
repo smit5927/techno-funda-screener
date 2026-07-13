@@ -581,6 +581,7 @@ function renderDetail(row, trade = null) {
     <div class="checkGrid">
       ${contextCheckHtml("Daily demand", gtf.checks?.dailyDemandQualified, formatGtfZone(gtf.dailyDemand))}
       ${contextCheckHtml("Weekly demand", gtf.checks?.weeklyDemandQualified, formatGtfZone(gtf.weeklyDemand))}
+      ${contextCheckHtml("Reacting from HTF", gtf.reactingFromHtf?.active, gtf.reactingFromHtf?.active ? `${formatGtfZone(gtf.reactingFromHtf.zone)} | Secondary GTF proxy | ${gtf.reactingFromHtf.managementClass}` : gtf.reactingFromHtf?.reason || "No reaction")}
       ${contextCheckHtml("Demand retest", gtf.demandRetest, gtf.preferredEntryStyle)}
       ${contextCheckHtml("2R runway", gtf.checks?.roomForTwoR, gtf.unlimitedRewardRoom ? "No active supply blocker" : Number.isFinite(gtf.rewardRisk) ? `${compact(gtf.rewardRisk)}R room` : "Not available")}
       ${contextCheckHtml("Opposing supply clear", !gtf.supplyBlocked, formatGtfZone(gtf.opposingSupply))}
@@ -1031,6 +1032,7 @@ function exportCsv() {
     "gtfScore",
     "gtfDailyDemand",
     "gtfWeeklyDemand",
+    "gtfReactingFromHtf",
     "gtfOpposingSupply",
     "gtfRewardRisk",
     "indexContext",
@@ -1087,6 +1089,9 @@ function exportCsv() {
         : "",
       gtfDailyDemand: formatGtfZone(row.gtfContext?.dailyDemand),
       gtfWeeklyDemand: formatGtfZone(row.gtfContext?.weeklyDemand),
+      gtfReactingFromHtf: row.gtfContext?.reactingFromHtf?.active
+        ? `${formatGtfZone(row.gtfContext.reactingFromHtf.zone)} | ${row.gtfContext.reactingFromHtf.managementClass} | ${row.gtfContext.reactingFromHtf.sourceStatus}`
+        : "No",
       gtfOpposingSupply: formatGtfZone(row.gtfContext?.opposingSupply),
       gtfRewardRisk: row.gtfContext?.unlimitedRewardRoom
         ? "Clear"

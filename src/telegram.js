@@ -81,14 +81,19 @@ function addTradeEvents(lines, events) {
       const coverage = conceptCoverageText(trade);
       const entryStyle = trade.entrySnapshot?.entryStyle?.label || "Entry style NA";
       const gtf = trade.entrySnapshot?.gtfContext || {};
+      const buyLabel = trade.rotationSourceSymbol ? "ROTATION BUY FILLED" : "BUY FILLED";
       lines.push(
-        `BUY FILLED ${trade.symbol} (${trade.listLabel}) signal ${trade.entrySignalDate} | ${trade.entryDate} ${trade.entryTime} @ ${fmt(trade.entryPrice)} | qty ${trade.quantity} | invested ${fmt(trade.investedValue)} | stop ${fmt(trade.initialStopPrice)} | risk ${fmt(trade.initialRiskAmount)} | rank ${fmt(trade.positionRank)} | ${entryStyle} | grade ${trade.entrySnapshot?.setupGrade || "NA"} | score ${fmt(score)} setup ${fmt(setupScore)} | GTF ${gtf.dataAvailable ? `${fmt(gtf.score)}/${fmt(gtf.maxScore)} ${gtf.grade || ""}` : "NA"} | concepts ${coverage}`
+        `${buyLabel} ${trade.symbol} (${trade.listLabel}) signal ${trade.entrySignalDate} | ${trade.entryDate} ${trade.entryTime} @ ${fmt(trade.entryPrice)} | qty ${trade.quantity} | invested ${fmt(trade.investedValue)} | stop ${fmt(trade.initialStopPrice)} | risk ${fmt(trade.initialRiskAmount)} | rank ${fmt(trade.positionRank)} | ${entryStyle} | grade ${trade.entrySnapshot?.setupGrade || "NA"} | score ${fmt(score)} setup ${fmt(setupScore)} | GTF ${gtf.dataAvailable ? `${fmt(gtf.score)}/${fmt(gtf.maxScore)} ${gtf.grade || ""}` : "NA"} | RHTF ${gtf.reactingFromHtf?.active ? gtf.reactingFromHtf.zone?.timeframe || "YES" : "NO"} | concepts ${coverage}`
       );
+      if (trade.rotationSourceSymbol) {
+        lines.push(`   Atomic rotation: sold ${trade.rotationSourceSymbol} and bought ${trade.symbol} in the same ${trade.entryDate} ${trade.entryTime} execution slot; released cash was reused immediately.`);
+      }
       lines.push(`   Reason: ${(trade.entryReason || []).join(" ")}`);
     }
     if (event.type === "EXIT_TRADE_CLOSED") {
+      const sellLabel = trade.exitType === "QUALITY_ROTATION" ? "ROTATION SELL FILLED" : "SELL FILLED";
       lines.push(
-        `SELL FILLED ${trade.symbol} (${trade.listLabel}) signal ${trade.exitSignalDate} | ${trade.exitDate} ${trade.exitTime} @ ${fmt(trade.exitPrice)} | P&L ${fmt(trade.pnl)} (${fmt(trade.pnlPct)}%)`
+        `${sellLabel} ${trade.symbol} (${trade.listLabel}) signal ${trade.exitSignalDate} | ${trade.exitDate} ${trade.exitTime} @ ${fmt(trade.exitPrice)} | P&L ${fmt(trade.pnl)} (${fmt(trade.pnlPct)}%) | replacement ${trade.replacementCandidateSymbol || "NA"}`
       );
       lines.push(`   Reason: ${(trade.exitReason || []).join(" ")}`);
     }
@@ -98,6 +103,7 @@ function addTradeEvents(lines, events) {
       );
       const gtf = trade.entrySnapshot?.gtfContext || {};
       if (gtf.dataAvailable) lines.push(`   GTF: ${fmt(gtf.score)}/${fmt(gtf.maxScore)} ${gtf.grade || ""}. ${(gtf.reasons || []).join(" ")}`);
+      if (trade.rotationSourceSymbol) lines.push(`   Same-slot rotation from ${trade.rotationSourceSymbol}; buy cannot move to a fictional later session.`);
       lines.push(`   Reason: ${(trade.entryReason || []).join(" ")}`);
     }
     if (event.type === "EXIT_SIGNAL_PENDING") {

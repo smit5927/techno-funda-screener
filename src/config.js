@@ -54,6 +54,7 @@ export const appConfig = {
   rules,
   benchmarkSymbol: process.env.BENCHMARK_SYMBOL || rules.benchmark || "^CRSLDX",
   benchmarkLabel: process.env.BENCHMARK_LABEL || rules.benchmarkLabel || "NIFTY 500",
+  priceHistoryYears: Math.max(3, numberEnv("PRICE_HISTORY_YEARS", 5)),
   lists: [
     {
       id: "all-market",

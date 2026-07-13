@@ -8,7 +8,8 @@ const DEFAULTS = {
   stopBufferPct: 0.4,
   maxSupportDistancePct: 8,
   supplyBlockDistancePct: 3,
-  dirtyBaseWickRatio: 1.2
+  dirtyBaseWickRatio: 1.2,
+  htfReactionLookbackDays: 5
 };
 
 export function buildGtfContext(dailyCandles = [], weeklyCandles = [], close, config = {}) {
@@ -17,14 +18,38 @@ export function buildGtfContext(dailyCandles = [], weeklyCandles = [], close, co
 
   const dailyZones = detectGtfZones(dailyCandles, { ...rules, timeframe: "daily" });
   const weeklyZones = detectGtfZones(weeklyCandles, { ...rules, timeframe: "weekly" });
+  const htfFrames = Object.fromEntries(
+    ["monthly", "quarterly", "half_yearly", "yearly"].map((timeframe) => [
+      timeframe,
+      aggregateCompletedCalendarCandles(dailyCandles, timeframe)
+    ])
+  );
+  const htfZones = Object.fromEntries(
+    Object.entries(htfFrames).map(([timeframe, candles]) => [
+      timeframe,
+      detectGtfZones(candles, { ...rules, timeframe })
+    ])
+  );
   const dailyTrend = smaTrend(dailyCandles);
   const weeklyTrend = smaTrend(weeklyCandles);
   const dailyDemand = selectDemand(dailyZones, close, rules.maxSupportDistancePct);
   const weeklyDemand = selectDemand(weeklyZones, close, rules.maxSupportDistancePct * 1.5);
   const dailySupply = selectSupply(dailyZones, close);
   const weeklySupply = selectSupply(weeklyZones, close);
-  const opposingSupply = nearestSupply([dailySupply, weeklySupply], close);
+  const htfSupply = Object.values(htfZones)
+    .map((zones) => selectSupply(zones, close));
+  const opposingSupply = nearestSupply([dailySupply, weeklySupply, ...htfSupply], close);
   const demandReference = bestDemand([dailyDemand, weeklyDemand], close);
+  const reactingFromHtf = detectHtfDemandReaction({
+    dailyCandles,
+    dailyDemand,
+    weeklyDemand,
+    htfZones,
+    close,
+    dailyTrend,
+    weeklyTrend,
+    lookbackDays: rules.htfReactionLookbackDays
+  });
   const demandRisk = demandReference ? close - demandReference.stopLoss : null;
   const rewardRoom = opposingSupply ? opposingSupply.proximal - close : null;
   const rewardRisk = Number.isFinite(demandRisk) && demandRisk > 0 && Number.isFinite(rewardRoom)
@@ -51,6 +76,7 @@ export function buildGtfContext(dailyCandles = [], weeklyCandles = [], close, co
     dailyDemandFresh,
     weeklyDemandFresh,
     demandRetest,
+    reactingFromHtf: reactingFromHtf.active,
     dailyTrendUp: dailyTrend === "up",
     weeklyTrendNotDown: !["down", "unknown"].includes(weeklyTrend),
     roomForTwoR,
@@ -61,21 +87,23 @@ export function buildGtfContext(dailyCandles = [], weeklyCandles = [], close, co
   if (dailyDemandQualified) score += dailyDemandFresh ? 2 : 1;
   if (weeklyDemandQualified) score += weeklyDemandFresh ? 2 : 1;
   if (demandRetest) score += 2;
+  if (reactingFromHtf.active) score += 1;
   if (checks.dailyTrendUp) score += 1;
   if (checks.weeklyTrendNotDown) score += 1;
   if (roomForTwoR) score += 1;
   if (supplyBlocked) score -= 3;
   if (dailyTrend === "down") score -= 1;
-  score = clamp(score, 0, 9);
+  score = clamp(score, 0, 10);
 
   const rankAdjustment = clamp(
     score * 1.5 +
       (dailyDemandFresh ? 2 : 0) +
       (weeklyDemandFresh ? 2 : 0) -
       (supplyBlocked ? 8 : 0) -
-      (!roomForTwoR ? 4 : 0),
+      (!roomForTwoR ? 4 : 0) +
+      (reactingFromHtf.active ? 3 : 0),
     -12,
-    16
+    19
   );
   const preferredEntryStyle = demandRetest
     ? "GTF_DEMAND_RETEST"
@@ -93,13 +121,14 @@ export function buildGtfContext(dailyCandles = [], weeklyCandles = [], close, co
     weeklyTrend,
     rewardRisk,
     supplyBlocked,
-    demandRetest
+    demandRetest,
+    reactingFromHtf
   });
 
   return {
     dataAvailable: true,
     score,
-    maxScore: 9,
+    maxScore: 10,
     grade: score >= 7 ? "GTF A" : score >= 5 ? "GTF B" : score >= 3 ? "GTF C" : "GTF neutral",
     rankAdjustment: round(rankAdjustment),
     preferredEntryStyle,
@@ -108,6 +137,8 @@ export function buildGtfContext(dailyCandles = [], weeklyCandles = [], close, co
     weeklyTrend,
     dailyDemand: zonePayload(dailyDemand),
     weeklyDemand: zonePayload(weeklyDemand),
+    higherTimeframeDemand: reactingFromHtf.zone,
+    reactingFromHtf,
     opposingSupply: zonePayload(opposingSupply),
     rewardRisk: rewardRisk === Infinity ? null : roundOrNull(rewardRisk),
     unlimitedRewardRoom: rewardRisk === Infinity,
@@ -117,6 +148,122 @@ export function buildGtfContext(dailyCandles = [], weeklyCandles = [], close, co
     checks,
     reasons
   };
+}
+
+export function aggregateCompletedCalendarCandles(candles = [], timeframe = "monthly") {
+  const groups = new Map();
+  for (const candle of candles || []) {
+    if (!candle?.date || !Number.isFinite(Number(candle.close))) continue;
+    const key = calendarPeriodKey(candle.date, timeframe);
+    if (!key) continue;
+    if (!groups.has(key)) {
+      groups.set(key, {
+        date: candle.date,
+        time: candle.time || new Date(`${candle.date}T00:00:00Z`).getTime(),
+        open: candle.open,
+        high: candle.high,
+        low: candle.low,
+        close: candle.close,
+        volume: Number(candle.volume) || 0
+      });
+      continue;
+    }
+    const row = groups.get(key);
+    row.date = candle.date;
+    row.time = candle.time || new Date(`${candle.date}T00:00:00Z`).getTime();
+    if (Number.isFinite(candle.high)) row.high = Math.max(Number(row.high), Number(candle.high));
+    if (Number.isFinite(candle.low)) row.low = Math.min(Number(row.low), Number(candle.low));
+    if (Number.isFinite(candle.close)) row.close = Number(candle.close);
+    if (Number.isFinite(candle.volume)) row.volume += Number(candle.volume);
+  }
+  const completed = [...groups.values()].sort((a, b) => a.time - b.time);
+  completed.pop();
+  return completed;
+}
+
+function calendarPeriodKey(date, timeframe) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(date || ""));
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  if (timeframe === "monthly") return `${year}-M${month}`;
+  if (timeframe === "quarterly") return `${year}-Q${Math.ceil(month / 3)}`;
+  if (timeframe === "half_yearly") return `${year}-H${month <= 6 ? 1 : 2}`;
+  if (timeframe === "yearly") return `${year}`;
+  return null;
+}
+
+function detectHtfDemandReaction({
+  dailyCandles,
+  dailyDemand,
+  weeklyDemand,
+  htfZones,
+  close,
+  dailyTrend,
+  weeklyTrend,
+  lookbackDays
+}) {
+  const sourceStatus = "PROXY_UNVALIDATED";
+  const alignment = dailyTrend === "up" && !["down", "unknown"].includes(weeklyTrend);
+  const executionZones = [dailyDemand, weeklyDemand].filter(zoneUsable);
+  const recent = dailyCandles.slice(-Math.max(1, Number(lookbackDays) || 5));
+  const timeframePriority = { yearly: 4, half_yearly: 3, quarterly: 2, monthly: 1 };
+  const candidates = Object.values(htfZones)
+    .flat()
+    .filter((zone) => zone.side === "demand" && zoneBest(zone))
+    .map((zone) => {
+      const overlap = executionZones.some((executionZone) => zonesOverlap(executionZone, zone));
+      const recentTouch = recent.some((candle) =>
+        Number(candle.low) <= Math.max(zone.proximal, zone.distal) &&
+        Number(candle.high) >= Math.min(zone.proximal, zone.distal)
+      );
+      const reclaimed = Number(close) >= Number(zone.proximal);
+      return {
+        zone,
+        overlap,
+        recentTouch,
+        reclaimed,
+        active: alignment && (overlap || (recentTouch && reclaimed))
+      };
+    })
+    .filter((item) => item.active)
+    .sort((a, b) =>
+      (timeframePriority[b.zone.timeframe] || 0) - (timeframePriority[a.zone.timeframe] || 0) ||
+      Math.abs(a.zone.proximal - close) - Math.abs(b.zone.proximal - close)
+    );
+  const selected = candidates[0];
+  if (!selected) {
+    return {
+      active: false,
+      sourceStatus,
+      role: "SECONDARY_CONFLUENCE_ONLY",
+      managementClass: null,
+      managementPlan: null,
+      zone: null,
+      overlapWithExecutionDemand: false,
+      recentTouchAndReclaim: false,
+      reason: alignment
+        ? "No fresh score-7 M/Q/HY/Y demand overlap or recent reclaim was detected."
+        : "Higher-timeframe demand reaction is not confirmed because daily/weekly trend alignment is absent."
+    };
+  }
+  return {
+    active: true,
+    sourceStatus,
+    role: "SECONDARY_CONFLUENCE_ONLY",
+    managementClass: "HTF_REACTION_2R_FOLLOWUPS",
+    managementPlan: "Primary video setup may be managed toward 2R; each later fresh follow-up zone requires a separate primary entry signal.",
+    zone: zonePayload(selected.zone),
+    overlapWithExecutionDemand: selected.overlap,
+    recentTouchAndReclaim: selected.recentTouch && selected.reclaimed,
+    reason: `GTF secondary proxy: price is reacting from fresh ${selected.zone.timeframe} demand ${selected.zone.distal}-${selected.zone.proximal} with aligned daily/weekly trend.`
+  };
+}
+
+function zonesOverlap(a, b) {
+  if (!a || !b) return false;
+  return Math.max(Math.min(a.proximal, a.distal), Math.min(b.proximal, b.distal)) <=
+    Math.min(Math.max(a.proximal, a.distal), Math.max(b.proximal, b.distal));
 }
 
 export function detectGtfZones(candles = [], config = {}) {
@@ -363,12 +510,13 @@ function buildReasons(context) {
   if (zoneUsable(context.dailyDemand)) reasons.push(zoneReason("Daily demand", context.dailyDemand));
   if (zoneUsable(context.weeklyDemand)) reasons.push(zoneReason("Weekly demand", context.weeklyDemand));
   if (context.demandRetest) reasons.push("GTF retracement confirmation: close is retesting a usable daily demand zone.");
+  if (context.reactingFromHtf.active) reasons.push(context.reactingFromHtf.reason);
   reasons.push(`GTF 50-SMA slope: daily ${context.dailyTrend}, weekly ${context.weeklyTrend}.`);
   if (context.opposingSupply) {
     const rr = Number.isFinite(context.rewardRisk) ? `; estimated room ${round(context.rewardRisk)}R` : "";
     reasons.push(`Opposing ${context.opposingSupply.timeframe} supply ${context.opposingSupply.proximal}-${context.opposingSupply.distal}${rr}${context.supplyBlocked ? "; blocker/early-risk flag" : ""}.`);
   } else {
-    reasons.push("No active daily/weekly GTF supply blocker was detected above price.");
+    reasons.push("No active daily/weekly/higher-timeframe GTF supply blocker was detected above price.");
   }
   return reasons;
 }
@@ -407,13 +555,23 @@ function emptyContext() {
   return {
     dataAvailable: false,
     score: 0,
-    maxScore: 9,
+    maxScore: 10,
     grade: "GTF unavailable",
     rankAdjustment: 0,
     preferredEntryStyle: "GTF_NEUTRAL",
     structuralStop: null,
     supplyBlocked: false,
     demandRetest: false,
+    higherTimeframeDemand: null,
+    reactingFromHtf: {
+      active: false,
+      sourceStatus: "PROXY_UNVALIDATED",
+      role: "SECONDARY_CONFLUENCE_ONLY",
+      managementClass: null,
+      managementPlan: null,
+      zone: null,
+      reason: "GTF higher-timeframe reaction is unavailable because price history is insufficient."
+    },
     checks: {},
     reasons: ["GTF confluence unavailable because price history is insufficient."]
   };

@@ -1,8 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { buildGtfContext, detectGtfZones } from "../src/gtf-context.js";
+import {
+  aggregateCompletedCalendarCandles,
+  buildGtfContext,
+  detectGtfZones
+} from "../src/gtf-context.js";
 import { candidateRank, structuralStop } from "../src/portfolio-engine.js";
+import { sameExecutionSlot } from "../src/trade-journal.js";
 
 test("detects a fresh score-7 GTF demand zone with achievement", () => {
   const candles = demandFixture();
@@ -46,6 +51,40 @@ test("nearby active GTF supply creates a blocker and rank penalty", () => {
   assert.ok(candidateRank(blocked) < candidateRank(neutral));
 });
 
+test("calendar aggregation excludes the still-forming higher-timeframe candle", () => {
+  const daily = [
+    candle(Date.UTC(2026, 0, 2), 100, 102, 99, 101),
+    candle(Date.UTC(2026, 0, 30), 101, 104, 100, 103),
+    candle(Date.UTC(2026, 1, 2), 103, 105, 102, 104)
+  ];
+  const monthly = aggregateCompletedCalendarCandles(daily, "monthly");
+
+  assert.equal(monthly.length, 1);
+  assert.equal(monthly[0].date, "2026-01-30");
+  assert.equal(monthly[0].open, 100);
+  assert.equal(monthly[0].close, 103);
+});
+
+test("GTF RHTF is a labelled secondary confirmation and cannot become a primary trigger", () => {
+  const daily = htfReactionFixture();
+  const weekly = Array.from({ length: 70 }, (_, index) =>
+    candle(Date.UTC(2024, 0, 5 + index * 7), 90 + index, 92 + index, 89 + index, 91 + index)
+  );
+  const context = buildGtfContext(daily, weekly, daily.at(-1).close);
+
+  assert.equal(context.reactingFromHtf.active, true);
+  assert.equal(context.reactingFromHtf.role, "SECONDARY_CONFLUENCE_ONLY");
+  assert.equal(context.reactingFromHtf.sourceStatus, "PROXY_UNVALIDATED");
+  assert.equal(context.reactingFromHtf.managementClass, "HTF_REACTION_2R_FOLLOWUPS");
+});
+
+test("quality rotation buy must share the sell execution date and 09:17 slot", () => {
+  const sell = { exitDate: "2026-07-13", exitTime: "09:17 IST" };
+  assert.equal(sameExecutionSlot(sell, { date: "2026-07-13", timeLabel: "09:17 IST" }), true);
+  assert.equal(sameExecutionSlot(sell, { date: "2026-07-14", timeLabel: "09:17 IST" }), false);
+  assert.equal(sameExecutionSlot(sell, { date: "2026-07-13", timeLabel: "09:18 IST" }), false);
+});
+
 function demandFixture() {
   const candles = [];
   const start = Date.UTC(2026, 0, 1);
@@ -60,6 +99,38 @@ function demandFixture() {
   candles.push(candle(Date.UTC(2026, 2, 3), 115, 117, 113, 116));
   candles.push(candle(Date.UTC(2026, 2, 4), 116, 117, 109, 110));
   return candles;
+}
+
+function htfReactionFixture() {
+  const rows = [];
+  addMonth(rows, 2025, 1, 120, 121, 99, 100);
+  addMonth(rows, 2025, 2, 100.5, 103, 100, 101.5);
+  addMonth(rows, 2025, 3, 102, 125, 101, 124);
+  for (let month = 4; month <= 12; month += 1) {
+    const base = 123 + month;
+    addMonth(rows, 2025, month, base, base + 3, base - 1, base + 2);
+  }
+  for (let month = 1; month <= 6; month += 1) {
+    const base = 135 + month;
+    addMonth(rows, 2026, month, base, base + 3, base - 1, base + 2);
+  }
+  addMonth(rows, 2026, 7, 145, 150, 100.5, 149);
+  return rows.sort((a, b) => a.time - b.time);
+}
+
+function addMonth(rows, year, month, open, high, low, close) {
+  const days = [2, 5, 8, 11];
+  for (let index = 0; index < days.length; index += 1) {
+    const progress = index / (days.length - 1);
+    const value = open + (close - open) * progress;
+    rows.push(candle(
+      Date.UTC(year, month - 1, days[index]),
+      index === 0 ? open : value,
+      index === 1 ? high : Math.max(value, open, close) + 0.2,
+      index === 1 ? low : Math.min(value, open, close) - 0.2,
+      index === days.length - 1 ? close : value
+    ));
+  }
 }
 
 function candle(time, open, high, low, close) {

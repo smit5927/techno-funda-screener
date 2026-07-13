@@ -33,7 +33,11 @@ export async function runScreener(options = {}) {
   const listFilter = options.listId || "all";
   const lists = config.lists.filter((list) => listFilter === "all" || list.id === listFilter);
 
-  const benchmarkDaily = await fetchCandles(config.benchmarkSymbol, "1d", 3);
+  const benchmarkDaily = await fetchCandles(
+    config.benchmarkSymbol,
+    "1d",
+    config.priceHistoryYears || 5
+  );
   const benchmarkWeekly = aggregateDailyToCompletedWeeks(benchmarkDaily);
   const marketContext = buildMarketContext(benchmarkDaily, rules);
   const institutionalContext = await buildInstitutionalContext(config, benchmarkDaily, marketContext);
@@ -58,7 +62,7 @@ export async function runScreener(options = {}) {
               fundamentals,
               marketContext,
               institutionalContext,
-              { allowBseFallback }
+              { allowBseFallback, historyYears: config.priceHistoryYears || 5 }
             )
           );
         }
@@ -221,14 +225,14 @@ class DataGapError extends Error {
 
 export async function resolvePriceHistory(
   yahooSymbol,
-  { allowBseFallback = false, fetcher = fetchCandles } = {}
+  { allowBseFallback = false, fetcher = fetchCandles, historyYears = 5 } = {}
 ) {
   let primary = null;
   let primaryError = null;
   try {
     primary = {
       yahooSymbol,
-      candles: await fetcher(yahooSymbol, "1d", 3)
+      candles: await fetcher(yahooSymbol, "1d", historyYears)
     };
   } catch (error) {
     primaryError = error;
@@ -246,7 +250,7 @@ export async function resolvePriceHistory(
   try {
     fallback = {
       yahooSymbol: bseSymbol,
-      candles: await fetcher(bseSymbol, "1d", 3)
+      candles: await fetcher(bseSymbol, "1d", historyYears)
     };
   } catch (error) {
     fallbackError = error;
@@ -323,7 +327,8 @@ async function scanSymbol(
   options = {}
 ) {
   const priceHistory = await resolvePriceHistory(item.yahooSymbol, {
-    allowBseFallback: options.allowBseFallback
+    allowBseFallback: options.allowBseFallback,
+    historyYears: options.historyYears || 5
   });
   const dailyCandles = priceHistory.candles;
   const weeklyCandles = aggregateDailyToCompletedWeeks(dailyCandles);
@@ -1124,6 +1129,11 @@ function buildConceptCoverage(row) {
   addConcept(
     "GTF demand/supply confluence",
     row.gtfContext?.score >= 5 && !row.gtfContext?.supplyBlocked,
+    row.gtfContext?.dataAvailable
+  );
+  addConcept(
+    "GTF reacting from higher timeframe (secondary proxy)",
+    row.gtfContext?.reactingFromHtf?.active === true,
     row.gtfContext?.dataAvailable
   );
   addConcept(

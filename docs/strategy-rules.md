@@ -84,6 +84,8 @@ The separate Obsidian GTF strategy is ingested as an optional institutional-orde
 - Record qualified demand retests and supply runway as additional context only; video-derived price action selects the entry style.
 - Add GTF confluence to candidate rank, but do not use a GTF zone to set the structural stop or as a standalone entry/exit trigger.
 - Fresh opposing supply can confirm a video-derived weakness or block an optional winner add-on. GTF-only weakness cannot trigger risk reduction or rotation.
+- Build completed monthly, quarterly, half-yearly and yearly candles and detect a conservative `Reacting from HTF` demand proxy. A fresh score-7 higher-timeframe demand overlap or recent touch-and-reclaim counts only when daily trend is up and weekly trend is not down.
+- `Reacting from HTF` is explicitly labelled `PROXY_UNVALIDATED` and `SECONDARY_CONFLUENCE_ONLY`. It may improve rank and support a 2R-plus-separate-follow-up management note after a valid primary entry; it cannot create a buy, sell, stop, add-on or rotation by itself.
 - LOTL is not fabricated from daily closing data. The source has no deterministic numerical distance rule, so connected-zone merging remains excluded until separately validated.
 
 The website detail panel, Telegram trade alert, CSV and Excel workbook expose the selected demand/supply zones, freshness, achievement, GTF score and 2R room.
@@ -164,6 +166,7 @@ The default trade quality is `BEST_ONLY`, which opens sheet/Telegram trades only
 - Every valid new signal receives a comparable portfolio rank from setup grade, RS leadership/trend, entry style, GTF demand/supply confluence, volume, sector, market/index, institutional, fundamental, volatility, liquidity, and concept coverage.
 - If capital is unavailable, the signal is retained in Waiting Candidates with the exact skip reason.
 - A challenger can replace an existing position only when its rank advantage is material, the current position has at least two weakness factors, and the minimum holding rule is satisfied. Sector limits cannot be bypassed by rotation.
+- Quality rotation is atomic at execution: the weak position sells at the next actual session exact 09:17 candle, released cash becomes available immediately, and the linked stronger candidate may buy in that same date/time slot. The engine never delays a valid replacement merely for settlement accounting and never invents a later-session fill when the exact replacement quote is unavailable.
 - When capital is manually reduced or the legacy book exceeds limits, weaker-ranked positions are queued for controlled next-session rebalance; no historical fill is fabricated.
 - Capital changes are recorded in the Excel Capital Ledger.
 
