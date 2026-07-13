@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Techno Funda Screener</title>
-    <link rel="stylesheet" href="styles.css?v=20260713-dark-desk" />
+    <link rel="stylesheet" href="styles.css?v=20260713-data-quality" />
   </head>
   <body>
     <header class="topbar">
@@ -37,8 +37,12 @@
           <span>Watch</span>
           <strong id="watchCount">0</strong>
         </button>
+        <button class="metric dataGap" data-summary-filter="DATA_GAP" type="button">
+          <span>Data Gap</span>
+          <strong id="dataGapCount">0</strong>
+        </button>
         <button class="metric error" data-summary-filter="ERROR" type="button">
-          <span>Error</span>
+          <span>System Error</span>
           <strong id="errorCount">0</strong>
         </button>
       </section>
@@ -216,7 +220,8 @@
           <button class="tab" data-filter="ENTRY" type="button">Entry</button>
           <button class="tab" data-filter="EXIT" type="button">Exit</button>
           <button class="tab" data-filter="WATCH" type="button">Watch</button>
-          <button class="tab" data-filter="ERROR" type="button">Error</button>
+          <button class="tab" data-filter="DATA_GAP" type="button">Data Gap</button>
+          <button class="tab" data-filter="ERROR" type="button">System Error</button>
         </div>
         <div class="filters">
           <span id="resultCount" class="resultCount">0 / 0</span>
@@ -261,6 +266,6 @@
     <div id="detailBackdrop" class="detailBackdrop" aria-hidden="true"></div>
     <aside id="detailPanel" class="detailPanel" aria-live="polite" aria-label="Stock details"></aside>
 
-    <script src="app.js?v=20260713-dark-desk" type="module"></script>
+    <script src="app.js?v=20260713-data-quality" type="module"></script>
   </body>
 </html>

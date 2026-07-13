@@ -43,9 +43,11 @@ export async function runScreener(options = {}) {
     const watchlist = loadWatchlist(list.path, config.maxSymbols);
     const results = await mapLimit(watchlist, config.scanConcurrency, async (item) => {
       try {
-        if (!scanCache.has(item.yahooSymbol)) {
+        const allowBseFallback = list.id === "custom" && item.yahooSymbol.endsWith(".NS");
+        const cacheKey = `${item.yahooSymbol}|${allowBseFallback ? "cross-exchange" : "primary"}`;
+        if (!scanCache.has(cacheKey)) {
           scanCache.set(
-            item.yahooSymbol,
+            cacheKey,
             scanSymbol(
               item,
               benchmarkDaily,
@@ -53,21 +55,23 @@ export async function runScreener(options = {}) {
               rules,
               fundamentals,
               marketContext,
-              institutionalContext
+              institutionalContext,
+              { allowBseFallback }
             )
           );
         }
-        const core = await scanCache.get(item.yahooSymbol);
+        const core = await scanCache.get(cacheKey);
         return {
           ...core,
           listId: list.id,
           listLabel: list.label,
           symbol: item.symbol,
-          yahooSymbol: item.yahooSymbol,
+          yahooSymbol: core.resolvedYahooSymbol || item.yahooSymbol,
           name: item.name,
           industry: item.industry
         };
       } catch (error) {
+        const failure = classifyScanFailure(error);
         return {
           listId: list.id,
           listLabel: list.label,
@@ -75,9 +79,10 @@ export async function runScreener(options = {}) {
           yahooSymbol: item.yahooSymbol,
           name: item.name,
           industry: item.industry,
-          status: "ERROR",
-          error: error.message || String(error),
-          signalReason: [`Data error: ${error.message || String(error)}`],
+          status: failure.status,
+          error: failure.status === "ERROR" ? failure.message : undefined,
+          dataGapCode: failure.code,
+          signalReason: [failure.reason],
           score: 0,
           fundamentalScore: 0
         };
@@ -204,6 +209,107 @@ function summarizeTrades(trades) {
   };
 }
 
+class DataGapError extends Error {
+  constructor(message, code = "DATA_UNAVAILABLE") {
+    super(message);
+    this.name = "DataGapError";
+    this.code = code;
+  }
+}
+
+export async function resolvePriceHistory(
+  yahooSymbol,
+  { allowBseFallback = false, fetcher = fetchCandles } = {}
+) {
+  let primary = null;
+  let primaryError = null;
+  try {
+    primary = {
+      yahooSymbol,
+      candles: await fetcher(yahooSymbol, "1d", 3)
+    };
+  } catch (error) {
+    primaryError = error;
+  }
+
+  const canTryBse = allowBseFallback && String(yahooSymbol).endsWith(".NS");
+  if (!canTryBse || historyReady(primary?.candles)) {
+    if (primary) return primary;
+    throw primaryError;
+  }
+
+  const bseSymbol = String(yahooSymbol).replace(/\.NS$/i, ".BO");
+  let fallback = null;
+  let fallbackError = null;
+  try {
+    fallback = {
+      yahooSymbol: bseSymbol,
+      candles: await fetcher(bseSymbol, "1d", 3)
+    };
+  } catch (error) {
+    fallbackError = error;
+  }
+
+  if (historyReady(fallback?.candles)) return fallback;
+  if (primary && fallback) return historyQuality(fallback.candles) > historyQuality(primary.candles) ? fallback : primary;
+  if (primary) return primary;
+  if (fallback) return fallback;
+
+  if (isUnavailablePriceError(primaryError) && isUnavailablePriceError(fallbackError)) {
+    throw new DataGapError(
+      "Price history unavailable on both NSE and BSE. Verify the TradingView exchange prefix.",
+      "SYMBOL_UNAVAILABLE"
+    );
+  }
+  throw primaryError || fallbackError || new Error("Price history request failed");
+}
+
+export function classifyScanFailure(error) {
+  const message = String(error?.message || error || "Unknown scan failure");
+  if (error instanceof DataGapError) {
+    return {
+      status: "DATA_GAP",
+      code: error.code,
+      message,
+      reason: message
+    };
+  }
+  if (/not enough (daily|completed weekly) price history/i.test(message)) {
+    return {
+      status: "DATA_GAP",
+      code: "INSUFFICIENT_HISTORY",
+      message,
+      reason: `History building: ${message.replace(/^not enough\s*/i, "")}.`
+    };
+  }
+  if (isUnavailablePriceError(error)) {
+    return {
+      status: "DATA_GAP",
+      code: "SYMBOL_UNAVAILABLE",
+      message,
+      reason: "Price history unavailable. Verify the TradingView exchange prefix or listing status."
+    };
+  }
+  return {
+    status: "ERROR",
+    code: "SYSTEM_ERROR",
+    message,
+    reason: `System error after automatic retries: ${message}`
+  };
+}
+
+function historyReady(candles = []) {
+  return candles.length >= 65 && aggregateDailyToCompletedWeeks(candles).length >= 25;
+}
+
+function historyQuality(candles = []) {
+  return candles.length + aggregateDailyToCompletedWeeks(candles).length * 3;
+}
+
+function isUnavailablePriceError(error) {
+  return /404|not found|no data|delisted|invalid symbol/i.test(String(error?.message || error || ""));
+}
+
 async function scanSymbol(
   item,
   benchmarkDaily,
@@ -211,13 +317,29 @@ async function scanSymbol(
   rules,
   fundamentals,
   marketContext,
-  institutionalMarketContext
+  institutionalMarketContext,
+  options = {}
 ) {
-  const dailyCandles = await fetchCandles(item.yahooSymbol, "1d", 3);
+  const priceHistory = await resolvePriceHistory(item.yahooSymbol, {
+    allowBseFallback: options.allowBseFallback
+  });
+  const dailyCandles = priceHistory.candles;
   const weeklyCandles = aggregateDailyToCompletedWeeks(dailyCandles);
 
-  if (dailyCandles.length < 65) throw new Error("not enough daily price history (minimum 65)");
-  if (weeklyCandles.length < 25) throw new Error("not enough completed weekly price history (minimum 25)");
+  if (dailyCandles.length < 65) {
+    throw new DataGapError(
+      `History building: ${dailyCandles.length}/65 completed daily candles available.`,
+      "INSUFFICIENT_DAILY_HISTORY"
+    );
+  }
+  if (weeklyCandles.length < 25) {
+    throw new DataGapError(
+      `History building: ${weeklyCandles.length}/25 completed weekly candles available.`,
+      "INSUFFICIENT_WEEKLY_HISTORY"
+    );
+  }
+
+  const resolvedItem = { ...item, yahooSymbol: priceHistory.yahooSymbol };
 
   const rsiLength = rules.rsi?.length || 14;
   const weeklyRsPeriod = rules.relativeStrength?.weekly?.period || 21;
@@ -300,7 +422,7 @@ async function scanSymbol(
 
   const entry = technicalReady && Object.values(entryChecks).every(Boolean);
   const exit = technicalReady && Object.values(exitChecks).some(Boolean);
-  const status = !technicalReady ? "ERROR" : exit ? "EXIT" : entry ? "ENTRY" : "WATCH";
+  const status = !technicalReady ? "DATA_GAP" : exit ? "EXIT" : entry ? "ENTRY" : "WATCH";
   const entryReason = buildEntryReasons(entryChecks, {
     weeklyRsi,
     dailyRsi,
@@ -314,7 +436,7 @@ async function scanSymbol(
   });
   const exitReason = buildExitReasons(exitChecks, { weeklyRs });
   const setupReason = buildSetupStrengthReasons(setupStrength);
-  const institutionalContext = buildSymbolInstitutionalContext(item, institutionalMarketContext);
+  const institutionalContext = buildSymbolInstitutionalContext(resolvedItem, institutionalMarketContext);
   const institutionalReason = buildInstitutionalReasons(institutionalContext);
   const entryStyle = buildEntryStyle(setupStrength, gtfContext);
   const weaknessReason = buildWeaknessReasons({
@@ -341,12 +463,12 @@ async function scanSymbol(
           ]
         : technicalReady
           ? ["No entry: one or more compulsory entry checks are not satisfied.", ...weaknessReason]
-          : ["Indicator data incomplete."];
+          : ["Indicator data gap: one or more required calculations are not yet finite."];
 
   const technicalScore = Object.values(entryChecks).filter(Boolean).length;
   const fundamental =
     technicalScore >= 4
-      ? await fundamentals.get(item.yahooSymbol, dailyCandles)
+      ? await fundamentals.get(priceHistory.yahooSymbol, dailyCandles)
       : emptyFundamentals("Skipped until at least 4/6 compulsory technical checks pass.");
   const institutionalScore = institutionalContext.score || 0;
   const gtfScore = gtfScoreContribution(gtfContext);
@@ -368,6 +490,7 @@ async function scanSymbol(
   return {
     status,
     asOf: dailyCandles[latestDailyIndex].date,
+    resolvedYahooSymbol: priceHistory.yahooSymbol,
     weeklyAsOf: weeklyCandles[latestWeeklyIndex].date,
     close,
     dailyRsi,
@@ -845,7 +968,7 @@ function applySectorStrength(results, rules) {
     const key = String(row.industry || "").trim() || "Unknown";
     if (!groups.has(key)) groups.set(key, { total: 0, strong: 0, entry: 0 });
     const group = groups.get(key);
-    if (row.status === "ERROR") continue;
+    if (["DATA_GAP", "ERROR"].includes(row.status)) continue;
     group.total += 1;
     if (
       row.dailyRsi > (rules.entry?.dailyRsiAbove ?? 50) &&
@@ -1224,12 +1347,13 @@ function summarize(results) {
     entry: results.filter((row) => row.status === "ENTRY").length,
     exit: results.filter((row) => row.status === "EXIT").length,
     watch: results.filter((row) => row.status === "WATCH").length,
+    dataGap: results.filter((row) => row.status === "DATA_GAP").length,
     error: results.filter((row) => row.status === "ERROR").length
   };
 }
 
 function sortResults(a, b) {
-  const rank = { ENTRY: 0, EXIT: 1, WATCH: 2, ERROR: 3 };
+  const rank = { ENTRY: 0, EXIT: 1, WATCH: 2, DATA_GAP: 3, ERROR: 4 };
   const rankDiff = (rank[a.status] ?? 9) - (rank[b.status] ?? 9);
   if (rankDiff !== 0) return rankDiff;
   return (b.score ?? 0) - (a.score ?? 0);

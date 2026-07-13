@@ -103,7 +103,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 
 .summaryGrid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   overflow: hidden;
   background: var(--panel);
   border: 1px solid var(--line);
@@ -133,6 +133,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .metric.entry strong { color: var(--green); }
 .metric.exit strong, .metric.error strong { color: var(--red); }
 .metric.watch strong { color: var(--blue); }
+.metric.dataGap strong { color: var(--amber); }
 
 .tradeBand {
   display: grid;
@@ -280,6 +281,7 @@ tbody tr:hover, tbody tr:focus-within { background: #192126; }
 .pill.ENTRY, .pill.OPEN { background: var(--green-soft); color: var(--green); }
 .pill.EXIT, .pill.ERROR { background: var(--red-soft); color: var(--red); }
 .pill.WATCH { background: var(--blue-soft); color: var(--blue); }
+.pill.DATA_GAP { min-width: 76px; background: var(--amber-soft); color: var(--amber); }
 .pill.PENDING_ENTRY, .pill.PENDING_EXIT, .pill.PENDING_PARTIAL_EXIT {
   min-width: 88px;
   background: var(--amber-soft);
@@ -413,7 +415,7 @@ body.detailOpen { overflow: hidden; }
   .titleBlock h1 { font-size: 17px; }
   .titleBlock p { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
   .layout { width: calc(100% - 12px); margin-top: 6px; }
-  .summaryGrid { grid-template-columns: repeat(5, minmax(62px, 1fr)); overflow-x: auto; }
+  .summaryGrid { grid-template-columns: repeat(6, minmax(62px, 1fr)); overflow-x: auto; }
   .metric { min-height: 58px; padding: 8px; }
   .metric strong { font-size: 20px; }
   .tradeBand { grid-template-columns: repeat(2, 1fr); }

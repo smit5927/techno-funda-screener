@@ -20,6 +20,7 @@ const elements = {
   entryCount: document.querySelector("#entryCount"),
   exitCount: document.querySelector("#exitCount"),
   watchCount: document.querySelector("#watchCount"),
+  dataGapCount: document.querySelector("#dataGapCount"),
   errorCount: document.querySelector("#errorCount"),
   openTradesCount: document.querySelector("#openTradesCount"),
   pendingTradesCount: document.querySelector("#pendingTradesCount"),
@@ -278,6 +279,7 @@ function renderSummary(payload) {
   elements.entryCount.textContent = summary.entry || 0;
   elements.exitCount.textContent = summary.exit || 0;
   elements.watchCount.textContent = summary.watch || 0;
+  elements.dataGapCount.textContent = summary.dataGap || 0;
   elements.errorCount.textContent = summary.error || 0;
   elements.openTradesCount.textContent = payload.tradeSummary?.open || 0;
   elements.pendingTradesCount.textContent =
@@ -1244,7 +1246,7 @@ function reasonSummary(reasons = []) {
     .map((reason) => String(reason || "").trim())
     .filter(Boolean);
   const priority = values.find((reason) =>
-    /GTF|retracement|breakout|exit|weakness|deterioration|risk|portfolio|waiting|capital|scope/i.test(reason)
+    /data gap|history building|unavailable|GTF|retracement|breakout|exit|weakness|deterioration|risk|portfolio|waiting|capital|scope/i.test(reason)
   );
   return priority || values[0] || "Open details";
 }
