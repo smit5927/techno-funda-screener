@@ -2,10 +2,13 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   buildPositionPlan,
+  buildPyramidAddPlan,
   candidateRank,
+  nextTrailingStop,
   portfolioConfig,
   portfolioSummary,
   positionExitDecision,
+  pyramidAddDecision,
   rotationDecision,
   structuralStop
 } from "../src/portfolio-engine.js";
@@ -17,6 +20,110 @@ test("portfolio defaults use ten lakh capital with institutional limits", () => 
   assert.equal(rules.maxPositionPct, 10);
   assert.equal(rules.riskPerTradePct, 1);
   assert.equal(rules.maxPortfolioRiskPct, 6);
+  assert.equal(rules.pyramidMaxAddOns, 2);
+  assert.equal(rules.pyramidMaxPositionPct, 15);
+});
+
+test("only a protected A-grade winner on a fresh breakout can be scaled up", () => {
+  const row = strongRow({ close: 112 });
+  row.setupStrength.checks.recentHighBreakout = true;
+  row.setupStrength.checks.yearHighBreakout = false;
+  row.setupStrength.checks.weeklyRsRising = true;
+  row.setupStrength.checks.dailyLongRsRising = true;
+  row.setupStrength.checks.marketRegimeStrong = true;
+  row.setupStrength.values.priorRecentHigh = 110;
+  row.setupStrength.values.riskToSupertrendPct = 5;
+  const trade = openTrade({ trailingStopPrice: 101, investedValue: 100_000 });
+  const decision = pyramidAddDecision(
+    trade,
+    row,
+    {
+      availableCash: 900_000,
+      availableRisk: 60_000,
+      sectorExposure: { Industrials: 100_000 }
+    },
+    { trade: {} }
+  );
+  assert.equal(decision.eligible, true);
+  assert.equal(decision.quantity, 223);
+  assert.equal(decision.breakout.type, "55_DAY_BREAKOUT");
+});
+
+test("pyramiding never averages down or adds before stop protects cost", () => {
+  const row = strongRow({ close: 99 });
+  row.setupStrength.checks.recentHighBreakout = true;
+  const decision = pyramidAddDecision(
+    openTrade({ trailingStopPrice: 94 }),
+    row,
+    { availableCash: 900_000, availableRisk: 60_000, sectorExposure: {} },
+    { trade: {} }
+  );
+  assert.equal(decision.eligible, false);
+  assert.match(decision.reasons.join(" "), /averaging down/i);
+  assert.match(decision.reasons.join(" "), /protected/i);
+});
+
+test("pyramid add plan respects total stock, incremental risk and sector caps", () => {
+  const row = strongRow({ close: 112, dailySupertrend: 101 });
+  const trade = openTrade({
+    entryPrice: 100,
+    trailingStopPrice: 101,
+    investedValue: 140_000,
+    quantity: 1400
+  });
+  const plan = buildPyramidAddPlan(
+    trade,
+    row,
+    112,
+    {
+      availableCash: 500_000,
+      availableRisk: 30_000,
+      sectorExposure: { Industrials: 140_000 }
+    },
+    { trade: {} }
+  );
+  assert.equal(plan.eligible, true);
+  assert.ok(plan.allocation <= 10_000);
+  assert.ok(plan.plannedRisk <= 5_000);
+  assert.ok(140_000 + plan.allocation <= 150_000);
+});
+
+test("maximum add-on count blocks further pyramiding", () => {
+  const row = strongRow({ close: 112 });
+  row.setupStrength.checks.recentHighBreakout = true;
+  row.setupStrength.values.priorRecentHigh = 110;
+  const trade = openTrade({
+    trailingStopPrice: 101,
+    addOns: [{ number: 1 }, { number: 2 }]
+  });
+  const decision = pyramidAddDecision(
+    trade,
+    row,
+    { availableCash: 900_000, availableRisk: 60_000, sectorExposure: {} },
+    { trade: {} }
+  );
+  assert.equal(decision.eligible, false);
+  assert.match(decision.reasons.join(" "), /maximum 2/i);
+});
+
+test("pending winner add reserves cash, risk and sector capacity", () => {
+  const trade = openTrade({
+    pendingAdd: { plannedAllocation: 25_000, plannedRisk: 2_000 },
+    industry: "Industrials"
+  });
+  const summary = portfolioSummary([trade], [], { trade: {} });
+  assert.equal(summary.reservedCapital, 25_000);
+  assert.equal(summary.deployedCapital, 125_000);
+  assert.equal(summary.availableCash, 875_000);
+  assert.equal(summary.portfolioRisk, 8_000);
+  assert.equal(summary.pendingAdds, 1);
+  assert.equal(summary.sectorExposure.Industrials, 125_000);
+});
+
+test("structural trailing stop never moves downward", () => {
+  const trade = openTrade({ trailingStopPrice: 105 });
+  const row = strongRow({ close: 120, dailySupertrend: 100 });
+  assert.equal(nextTrailingStop(trade, row, { trade: {} }), 105);
 });
 
 test("position sizing respects capital cap and one-percent risk budget", () => {
@@ -174,7 +281,9 @@ function strongRow(overrides = {}) {
         smaFastAboveSlow: true,
         volumeExpansion: true,
         bullishCandleConfirmation: true,
-        marketRegimeStrong: true
+        marketRegimeStrong: true,
+        recentHighBreakout: false,
+        yearHighBreakout: false
       },
       values: {
         fourCandleLow: 92,

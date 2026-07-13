@@ -343,17 +343,18 @@ function renderPositions(payload) {
       const stopRiskText = livePosition
         ? `${riskState.replace("_", " ")}${Number.isFinite(livePosition.distanceToStopPct) ? ` ${compact(livePosition.distanceToStopPct)}%` : ""}`
         : "EOD RISK";
-      const signalDate = trade.exitSignalDate || trade.entrySignalDate || "";
+      const displayStatus = trade.pendingAdd ? "PENDING_ADD" : trade.status;
+      const signalDate = trade.exitSignalDate || trade.pendingAdd?.signalDate || trade.entrySignalDate || "";
       const reason =
         trade.status === "PENDING_EXIT"
           ? trade.exitReason || []
           : trade.status === "PENDING_PARTIAL_EXIT"
             ? trade.pendingPartialExitReason || []
-            : trade.entryReason || [];
+            : trade.pendingAdd?.reason || trade.entryReason || [];
       return `
         <tr class="${rowRiskClass}" data-position-index="${index}" title="Open details">
-          <td><span class="pill ${escapeHtml(trade.status)}">${escapeHtml(trade.status.replace("_", " "))}</span></td>
-          <td class="symbolCell"><strong>${escapeHtml(trade.symbol)}</strong><span>${escapeHtml(trade.listLabel || "")}</span></td>
+          <td><span class="pill ${escapeHtml(displayStatus)}">${escapeHtml(displayStatus.replaceAll("_", " "))}</span></td>
+          <td class="symbolCell"><strong>${escapeHtml(trade.symbol)}</strong><span>${escapeHtml(trade.listLabel || "")}</span>${trade.addOns?.length ? `<span>${trade.addOns.length} winner add${trade.addOns.length === 1 ? "" : "s"}</span>` : ""}</td>
           <td>${escapeHtml(signalDate)}</td>
           <td>${escapeHtml(trade.entryDate || "Waiting")}</td>
           <td>${fmt(trade.entryPrice)}</td>
@@ -510,7 +511,7 @@ function renderDetail(row, trade = null) {
         <div class="neutral">${escapeHtml(row.entryStyle?.label || "")}</div>
       </div>
       <div class="detailHeaderActions">
-        <span class="pill ${escapeHtml(trade?.status || row.status)}">${escapeHtml((trade?.status || row.status).replaceAll("_", " "))}</span>
+        <span class="pill ${escapeHtml(trade?.pendingAdd ? "PENDING_ADD" : trade?.status || row.status)}">${escapeHtml((trade?.pendingAdd ? "PENDING_ADD" : trade?.status || row.status).replaceAll("_", " "))}</span>
         <button class="detailClose" type="button" title="Close details" aria-label="Close details">&times;</button>
       </div>
     </div>
@@ -528,6 +529,13 @@ function renderDetail(row, trade = null) {
       <strong>Signal Reason</strong>
       ${reasonListHtml(row.signalReason)}
     </div>
+    ${trade ? `
+      <div class="reasonBlock">
+        <strong>Position Management</strong>
+        <p>Average ${fmt(trade.entryPrice)} | Initial ${fmt(trade.initialEntryPrice || trade.entryPrice)} | Quantity ${trade.quantity ?? "NA"} | Winner adds ${trade.addOns?.length || 0}/2 | Trailing stop ${fmt(trade.trailingStopPrice || trade.initialStopPrice)}</p>
+        ${trade.pendingAdd ? reasonListHtml(trade.pendingAdd.reason) : reasonListHtml(trade.lastPyramidDecision?.reasons)}
+      </div>
+    ` : ""}
     <div class="checkGrid">
       ${checkHtml("Net income YoY", checks.netIncomeYoYUp)}
       ${checkHtml("Operating income YoY", checks.operatingIncomeYoYUp)}

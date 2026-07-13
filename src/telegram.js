@@ -46,7 +46,7 @@ function buildMessage(scan, events) {
     `New trade alerts: ${events.length}`,
     `Market snapshot: Total ${scan.summary.total} | Entry candidates ${scan.summary.entry} | Exit candidates ${scan.summary.exit} | Watch ${scan.summary.watch}`,
     `Trade sheet: ${scan.tradeSettings?.scopeLabel || "All NSE Market"} | ${scan.tradeSettings?.qualityLabel || "Best only (A+/A)"}`,
-    `Positions open ${scan.tradeSummary?.open ?? 0} | Pending buy ${scan.tradeSummary?.pendingEntry ?? 0} | Pending sell ${scan.tradeSummary?.pendingExit ?? 0}`,
+    `Positions open ${scan.tradeSummary?.open ?? 0} | Pending buy ${scan.tradeSummary?.pendingEntry ?? 0} | Pending winner add ${scan.portfolioSummary?.pendingAdds ?? 0} | Pending sell ${scan.tradeSummary?.pendingExit ?? 0}`,
     `P&L realized ${fmt(scan.tradeSummary?.realizedPnl)} | unrealized ${fmt(scan.tradeSummary?.unrealizedPnl)}`,
     `Portfolio capital ${fmt(scan.portfolioSummary?.totalCapital)} | deployed ${fmt(scan.portfolioSummary?.deployedCapital)} | cash ${fmt(scan.portfolioSummary?.availableCash)} | risk ${fmt(scan.portfolioSummary?.portfolioRisk)} (${fmt(scan.portfolioSummary?.portfolioRiskPct)}%)`,
     `Portfolio slots ${scan.portfolioSummary?.openPositions ?? 0}/${scan.portfolioSummary?.maxOpenPositions ?? 10} | waiting ranked entries ${scan.portfolioSummary?.waitingCandidates ?? 0}`,
@@ -129,6 +129,24 @@ function addTradeEvents(lines, events) {
         `ENTRY WAITING ${candidate.symbol || trade?.symbol || "NA"} | grade ${candidate.grade || "NA"} | rank ${fmt(candidate.rank)} | no buy executed`
       );
       lines.push(`   Reason: ${candidate.skipReason || trade?.skipReason || "Portfolio constraint"}`);
+    }
+    if (event.type === "PYRAMID_ADD_PENDING") {
+      const add = trade.pendingAdd || {};
+      lines.push(
+        `WINNER ADD PENDING ${trade.symbol} | breakout signal ${add.signalDate || "NA"} | ${add.breakoutType || "BREAKOUT"} above ${fmt(add.breakoutLevel)} | planned qty ${add.plannedQuantity ?? "NA"} allocation ${fmt(add.plannedAllocation)} risk ${fmt(add.plannedRisk)} | next actual session exact 09:17`
+      );
+      lines.push(`   Reason: ${(add.reason || []).join(" ")}`);
+    }
+    if (event.type === "PYRAMID_ADD_FILLED") {
+      const add = trade.addOns?.[trade.addOns.length - 1];
+      lines.push(
+        `WINNER ADD FILLED ${trade.symbol} | add #${add?.number ?? "NA"} | ${add?.date || ""} ${add?.time || ""} @ ${fmt(add?.price)} | qty ${add?.quantity ?? "NA"} | blended average ${fmt(trade.entryPrice)} | total qty ${trade.quantity} | trailing stop ${fmt(trade.trailingStopPrice)}`
+      );
+    }
+    if (event.type === "PYRAMID_ADD_SKIPPED") {
+      lines.push(
+        `WINNER ADD SKIPPED ${trade.symbol} | no buy executed | ${trade.executionError || trade.lastPyramidDecision?.reasons?.join(" ") || "Risk constraint"}`
+      );
     }
   }
 }

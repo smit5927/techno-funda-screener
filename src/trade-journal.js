@@ -4,13 +4,16 @@ import { appConfig } from "./config.js";
 import { readTrades, saveTrades } from "./storage.js";
 import { fetchExecutionPrice } from "./yahoo.js";
 import {
+  breakoutContinuationState,
   buildPositionPlan,
+  buildPyramidAddPlan,
   candidateRank,
   nextTrailingStop,
   portfolioConfig,
   portfolioSummary,
   positionExitDecision,
   positionWeakness,
+  pyramidAddDecision,
   rotationDecision
 } from "./portfolio-engine.js";
 
@@ -38,6 +41,7 @@ export async function updateTradeJournal(scan, config = appConfig) {
   const riskRules = portfolioConfig(config);
   const liveMode = config.trade.onlyNewSignals !== false;
   const portfolioUpgrade = !journal.portfolioEngineStartedAt;
+  const pyramidingUpgrade = !journal.pyramidingStartedAt;
   const firstLiveScan = liveMode && !journal.liveModeStartedAt;
   const trades = firstLiveScan ? [] : Array.isArray(journal.trades) ? journal.trades : [];
   let candidates = firstLiveScan ? [] : Array.isArray(journal.candidates) ? journal.candidates : [];
@@ -99,6 +103,11 @@ export async function updateTradeJournal(scan, config = appConfig) {
       trade.trailingStopPrice = nextTrailingStop(trade, row, config);
       trade.currentWeakness = positionWeakness(row);
     }
+    if (trade.status === "OPEN" && trade.pendingAdd && row) {
+      const outcome = await fillPyramidAdd(trade, row, config, trades, candidates);
+      if (outcome === "FILLED") events.push({ type: "PYRAMID_ADD_FILLED", trade });
+      if (outcome === "SKIPPED") events.push({ type: "PYRAMID_ADD_SKIPPED", trade });
+    }
     cancelInvalidGtfPartialExit(trade, row);
     if (trade.status === "PENDING_EXIT" && row) {
       const filled = await fillExit(trade, row);
@@ -141,6 +150,37 @@ export async function updateTradeJournal(scan, config = appConfig) {
   }
 
   enforcePortfolioLimits(trades, rowBySymbol, scan, settings, config, events);
+
+  for (const trade of trades.filter((item) => item.status === "OPEN")) {
+    const row = executionRow(
+      trade,
+      rowBySymbol.get(trade.yahooSymbol || trade.symbol),
+      scan.marketContext?.asOf
+    );
+    if (!row?.asOf || trade.pyramidState?.asOf === row.asOf) continue;
+    const currentState = { ...breakoutContinuationState(row), asOf: row.asOf };
+    const previousState = trade.pyramidState;
+    const freshBreakout =
+      !pyramidingUpgrade &&
+      previousState?.breakout === false &&
+      currentState.breakout === true;
+    if (freshBreakout && !trade.pendingAdd) {
+      const portfolio = portfolioSummary(trades, candidates, config);
+      const decision = pyramidAddDecision(trade, row, portfolio, config);
+      trade.lastPyramidDecision = {
+        asOf: row.asOf,
+        eligible: decision.eligible,
+        reasons: decision.reasons,
+        breakout: decision.breakout,
+        rewardR: decision.rewardR
+      };
+      if (decision.eligible) {
+        preparePyramidAdd(trade, row, scan, decision);
+        events.push({ type: "PYRAMID_ADD_PENDING", trade });
+      }
+    }
+    trade.pyramidState = currentState;
+  }
 
   for (const trade of trades) {
     const row = executionRow(
@@ -256,6 +296,7 @@ export async function updateTradeJournal(scan, config = appConfig) {
   const nextJournal = {
     updatedAt: new Date().toISOString(),
     portfolioEngineStartedAt: journal.portfolioEngineStartedAt || scan.scannedAt,
+    pyramidingStartedAt: journal.pyramidingStartedAt || scan.scannedAt,
     liveModeStartedAt: journal.liveModeStartedAt || (liveMode ? new Date().toISOString() : null),
     baselineInitialized: true,
     baselineScanAt: journal.baselineScanAt || (firstLiveScan ? scan.scannedAt : null),
@@ -376,6 +417,9 @@ function createPendingEntry(row, scan, config, settings, plan) {
     positionRank: plan.rank,
     currentRank: plan.rank,
     allocationMethod: "min(capital cap, 1% risk budget, cash, sector cap)",
+    addOns: [],
+    addOnSkips: [],
+    pendingAdd: null,
     partialExits: [],
     partialExitTags: [],
     realizedPnlToDate: 0,
@@ -403,6 +447,7 @@ function createPendingEntry(row, scan, config, settings, plan) {
 }
 
 function prepareFullExit(trade, row, scan, reasons, exitType = "MODEL_EXIT") {
+  cancelPendingAdd(trade, `Cancelled because ${exitType} sell takes priority.`);
   trade.status = "PENDING_EXIT";
   trade.exitType = exitType;
   const portfolioDriven = ["SCOPE_REBALANCE", "CAPITAL_REBALANCE", "QUALITY_ROTATION"].includes(exitType);
@@ -420,6 +465,7 @@ function prepareFullExit(trade, row, scan, reasons, exitType = "MODEL_EXIT") {
 
 function preparePartialExit(trade, row, scan, decision, config) {
   const rules = portfolioConfig(config);
+  cancelPendingAdd(trade, "Cancelled because risk reduction takes priority.");
   trade.status = "PENDING_PARTIAL_EXIT";
   trade.partialExitSignalDate = row.asOf;
   trade.partialExitSignalScanAt = scan.scannedAt;
@@ -431,6 +477,159 @@ function preparePartialExit(trade, row, scan, decision, config) {
   ];
   trade.exitSnapshot = snapshot(row);
   markToMarket(trade, row);
+}
+
+function preparePyramidAdd(trade, row, scan, decision) {
+  trade.pendingAdd = {
+    signalDate: row.asOf,
+    signalScanAt: scan.scannedAt,
+    plannedQuantity: decision.quantity,
+    plannedAllocation: decision.allocation,
+    plannedRisk: decision.plannedRisk,
+    plannedStop: decision.trailingStop,
+    breakoutType: decision.breakout?.type,
+    breakoutLevel: decision.breakout?.level,
+    rewardR: decision.rewardR,
+    rank: decision.rank,
+    reason: [
+      ...(decision.reasons || []),
+      `Add only on the next actual market session at exactly 09:17 IST; weekends and exchange holidays are skipped. Maximum total stock allocation remains 15% of portfolio capital.`
+    ],
+    snapshot: snapshot(row)
+  };
+  trade.executionError = null;
+}
+
+function cancelPendingAdd(trade, reason) {
+  if (!trade.pendingAdd) return;
+  trade.addOnSkips = Array.isArray(trade.addOnSkips) ? trade.addOnSkips : [];
+  trade.addOnSkips.push({
+    signalDate: trade.pendingAdd.signalDate,
+    cancelledAt: new Date().toISOString(),
+    reason
+  });
+  trade.pendingAdd = null;
+}
+
+async function fillPyramidAdd(trade, row, config, trades, candidates) {
+  const pending = trade.pendingAdd;
+  if (!pending) return "WAITING";
+  try {
+    const fill = await fetchExecutionPrice(
+      trade.yahooSymbol || row.yahooSymbol,
+      pending.signalDate
+    );
+    if (!fill) {
+      trade.executionError =
+        "Winner add-on is pending until the next actual market-session exact 09:17 candle.";
+      return "WAITING";
+    }
+    const summary = portfolioSummary(trades, candidates, config);
+    const sector = String(trade.industry || row.industry || "Unknown");
+    const adjustedSectorExposure = { ...summary.sectorExposure };
+    adjustedSectorExposure[sector] = Math.max(
+      0,
+      (adjustedSectorExposure[sector] || 0) - (Number(pending.plannedAllocation) || 0)
+    );
+    const plan = buildPyramidAddPlan(
+      trade,
+      row,
+      fill.price,
+      {
+        ...summary,
+        availableCash: summary.availableCash + (Number(pending.plannedAllocation) || 0),
+        availableRisk: summary.availableRisk + (Number(pending.plannedRisk) || 0),
+        sectorExposure: adjustedSectorExposure
+      },
+      config
+    );
+    if (!plan.eligible) {
+      const reason = `Winner add-on skipped at actual 09:17 fill: ${plan.reason}`;
+      trade.addOnSkips = Array.isArray(trade.addOnSkips) ? trade.addOnSkips : [];
+      trade.addOnSkips.push({
+        signalDate: pending.signalDate,
+        evaluatedDate: fill.date,
+        evaluatedPrice: round(fill.price),
+        reason
+      });
+      trade.lastPyramidDecision = {
+        ...trade.lastPyramidDecision,
+        eligible: false,
+        fillDate: fill.date,
+        fillPrice: round(fill.price),
+        reasons: [reason]
+      };
+      trade.pendingAdd = null;
+      trade.executionError = reason;
+      return "SKIPPED";
+    }
+
+    const previousQuantity = Number(trade.quantity) || 0;
+    const previousAverage = Number(trade.entryPrice) || 0;
+    const addQuantity = plan.quantity;
+    const nextQuantity = previousQuantity + addQuantity;
+    const nextAverage = (
+      previousAverage * previousQuantity + fill.price * addQuantity
+    ) / nextQuantity;
+    trade.initialEntryPrice = trade.initialEntryPrice || previousAverage;
+    trade.initialQuantity = trade.initialQuantity || trade.originalQuantity || previousQuantity;
+    trade.addOns = Array.isArray(trade.addOns) ? trade.addOns : [];
+    const addOn = {
+      number: trade.addOns.length + 1,
+      signalDate: pending.signalDate,
+      date: fill.date,
+      time: fill.timeLabel || EXECUTION_TIME,
+      price: round(fill.price),
+      quantity: addQuantity,
+      allocation: round(addQuantity * fill.price),
+      plannedRisk: plan.plannedRisk,
+      trailingStop: plan.trailingStop,
+      breakoutType: pending.breakoutType,
+      breakoutLevel: pending.breakoutLevel,
+      rewardRAtSignal: pending.rewardR,
+      rankAtSignal: pending.rank,
+      executionMethod: fill.source,
+      executionWindow: fill.window,
+      reason: pending.reason,
+      snapshot: pending.snapshot
+    };
+    trade.addOns.push(addOn);
+    trade.entryPrice = round(nextAverage);
+    trade.quantity = nextQuantity;
+    trade.originalQuantity = (Number(trade.originalQuantity) || previousQuantity) + addQuantity;
+    trade.investedValue = round(nextQuantity * nextAverage);
+    trade.originalInvestedValue = round(
+      (Number(trade.originalInvestedValue) || previousAverage * previousQuantity) +
+      addQuantity * fill.price
+    );
+    trade.trailingStopPrice = Math.max(
+      Number(trade.trailingStopPrice) || 0,
+      Number(plan.trailingStop) || 0
+    );
+    trade.riskPerShare = round(Math.max(0, nextAverage - trade.trailingStopPrice));
+    trade.lastAddDate = fill.date;
+    trade.lastAddTime = addOn.time;
+    trade.lastAddPrice = addOn.price;
+    trade.lastPyramidDecision = {
+      ...trade.lastPyramidDecision,
+      eligible: true,
+      filled: true,
+      fillDate: fill.date,
+      fillPrice: addOn.price,
+      quantity: addQuantity
+    };
+    trade.entryReason = [
+      ...(trade.entryReason || []),
+      `Winner add-on ${addOn.number} filled ${fill.date} ${addOn.time} at Rs ${addOn.price}, quantity ${addQuantity}; blended average Rs ${trade.entryPrice}. Trailing stop remains ratcheted at Rs ${trade.trailingStopPrice}.`
+    ];
+    trade.pendingAdd = null;
+    trade.executionError = null;
+    markToMarket(trade, row);
+    return "FILLED";
+  } catch (error) {
+    trade.executionError = error.message || String(error);
+    return "WAITING";
+  }
 }
 
 async function fillEntry(trade, row, config, trades, candidates) {
@@ -474,8 +673,10 @@ async function fillEntry(trade, row, config, trades, candidates) {
     trade.entryDate = fill.date;
     trade.entryTime = fill.timeLabel || EXECUTION_TIME;
     trade.entryPrice = round(fill.price);
+    trade.initialEntryPrice = trade.entryPrice;
     trade.quantity = quantity;
     trade.originalQuantity = quantity;
+    trade.initialQuantity = quantity;
     trade.investedValue = round(quantity * fill.price);
     trade.originalInvestedValue = trade.investedValue;
     trade.initialStopPrice = plan.stopPrice;
@@ -713,6 +914,10 @@ function migrateTradeMetadata(trades) {
     trade.originalInvestedValue = trade.originalInvestedValue || trade.investedValue || null;
     trade.partialExits = Array.isArray(trade.partialExits) ? trade.partialExits : [];
     trade.partialExitTags = Array.isArray(trade.partialExitTags) ? trade.partialExitTags : [];
+    trade.addOns = Array.isArray(trade.addOns) ? trade.addOns : [];
+    trade.addOnSkips = Array.isArray(trade.addOnSkips) ? trade.addOnSkips : [];
+    trade.initialEntryPrice = trade.initialEntryPrice || trade.entryPrice || null;
+    trade.initialQuantity = trade.initialQuantity || trade.originalQuantity || trade.quantity || null;
     trade.realizedPnlToDate = Number(trade.realizedPnlToDate) || 0;
     trade.entryReason = rewriteExecutionReasons(trade.entryReason);
     trade.exitReason = rewriteExecutionReasons(trade.exitReason);
@@ -963,7 +1168,9 @@ async function writeXlsx(journal, filePath) {
   workbook.creator = "Techno Funda Screener";
   workbook.created = new Date();
 
-  const pending = journal.trades.filter((trade) => trade.status.startsWith("PENDING_"));
+  const pending = journal.trades.filter(
+    (trade) => trade.status.startsWith("PENDING_") || Boolean(trade.pendingAdd)
+  );
   const open = journal.trades.filter((trade) => trade.status === "OPEN");
   const closed = journal.trades.filter((trade) => trade.status === "CLOSED");
   const realizedPnl = closed.reduce((sum, trade) => sum + (trade.pnl || 0), 0);
@@ -1041,9 +1248,11 @@ function tradeColumns() {
     { header: "Entry Date", key: "Entry Date", width: 14 },
     { header: "Entry Time", key: "Entry Time", width: 13 },
     { header: "Entry Price", key: "Entry Price", width: 14 },
+    { header: "Initial Entry Price", key: "Initial Entry Price", width: 18 },
     { header: "Entry Execution Method", key: "Entry Execution Method", width: 30 },
     { header: "Quantity", key: "Quantity", width: 10 },
     { header: "Original Quantity", key: "Original Quantity", width: 16 },
+    { header: "Initial Quantity", key: "Initial Quantity", width: 15 },
     { header: "Invested Value", key: "Invested Value", width: 16 },
     { header: "Last Close", key: "Last Close", width: 14 },
     { header: "Unrealized P&L", key: "Unrealized P&L", width: 16 },
@@ -1063,6 +1272,14 @@ function tradeColumns() {
     { header: "Trailing Stop", key: "Trailing Stop", width: 14 },
     { header: "Initial Risk", key: "Initial Risk", width: 14 },
     { header: "Current R", key: "Current R", width: 12 },
+    { header: "Add-On Count", key: "Add-On Count", width: 14 },
+    { header: "Pending Add", key: "Pending Add", width: 14 },
+    { header: "Last Add Date", key: "Last Add Date", width: 14 },
+    { header: "Last Add Time", key: "Last Add Time", width: 14 },
+    { header: "Last Add Price", key: "Last Add Price", width: 14 },
+    { header: "Last Add Quantity", key: "Last Add Quantity", width: 18 },
+    { header: "Add-On History", key: "Add-On History", width: 60 },
+    { header: "Add-On Decision", key: "Add-On Decision", width: 60 },
     { header: "Partial Exit Count", key: "Partial Exit Count", width: 18 },
     { header: "Partial Realized P&L", key: "Partial Realized P&L", width: 20 },
     { header: "Exit Type", key: "Exit Type", width: 22 },
@@ -1126,9 +1343,11 @@ function tradeToRow(trade) {
     "Entry Date": trade.entryDate || "",
     "Entry Time": trade.entryTime || "",
     "Entry Price": trade.entryPrice ?? "",
+    "Initial Entry Price": trade.initialEntryPrice ?? trade.entryPrice ?? "",
     "Entry Execution Method": trade.executionMethod || "",
     Quantity: trade.quantity ?? "",
     "Original Quantity": trade.originalQuantity ?? "",
+    "Initial Quantity": trade.initialQuantity ?? "",
     "Invested Value": trade.investedValue ?? "",
     "Last Close": trade.lastPrice ?? "",
     "Unrealized P&L": trade.unrealizedPnl ?? "",
@@ -1148,6 +1367,18 @@ function tradeToRow(trade) {
     "Trailing Stop": trade.trailingStopPrice ?? "",
     "Initial Risk": trade.initialRiskAmount ?? trade.plannedRisk ?? "",
     "Current R": trade.currentRewardR ?? "",
+    "Add-On Count": trade.addOns?.length || 0,
+    "Pending Add": trade.pendingAdd ? "Yes" : "No",
+    "Last Add Date": trade.lastAddDate || "",
+    "Last Add Time": trade.lastAddTime || "",
+    "Last Add Price": trade.lastAddPrice ?? "",
+    "Last Add Quantity": trade.addOns?.at(-1)?.quantity ?? "",
+    "Add-On History": (trade.addOns || []).map((add) =>
+      `#${add.number} signal ${add.signalDate}; fill ${add.date} ${add.time} @ ${add.price}; qty ${add.quantity}; stop ${add.trailingStop}; ${add.breakoutType || "breakout"}`
+    ).join(" | "),
+    "Add-On Decision": trade.pendingAdd
+      ? (trade.pendingAdd.reason || []).join(" ")
+      : (trade.lastPyramidDecision?.reasons || []).join(" "),
     "Partial Exit Count": trade.partialExits?.length || 0,
     "Partial Realized P&L": trade.realizedPnlToDate ?? 0,
     "Exit Type": trade.exitType || "",

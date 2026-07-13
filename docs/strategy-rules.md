@@ -158,6 +158,16 @@ The default trade quality is `BEST_ONLY`, which opens sheet/Telegram trades only
 - When capital is manually reduced or the legacy book exceeds limits, weaker-ranked positions are queued for controlled next-session rebalance; no historical fill is fabricated.
 - Capital changes are recorded in the Excel Capital Ledger.
 
+### Winner Pyramiding And Trailing Risk
+
+- The video-derived scale-up rule is applied only to an already profitable open position; the system never averages down.
+- A new add-on requires a fresh completed-daily 55-day or 52-week breakout, current A+/A grade, all compulsory entry checks, rising weekly RS and daily RS55, supportive market regime, no fresh GTF supply block, at least 1R open profit, and a trailing stop at or above the current blended entry.
+- The initial position remains capped at 10%. Each add-on is capped at 2.5%, with no more than two add-ons and no more than 15% total capital in one winning stock.
+- Incremental add-on risk is capped at 0.5% of capital. Total remaining risk in that position cannot exceed 1%, aggregate portfolio risk cannot exceed 6%, and sector exposure cannot exceed 25%.
+- A signal is reserved on the closing breakout and re-sized using actual cash, risk, sector room and the exact next-session 09:17 price. Weekends and exchange holidays are skipped.
+- The weighted average price, total quantity, P&L, trailing stop and each add-on lot are recalculated automatically. The stop never moves downward, and any pending sell/risk-reduction action cancels a pending add.
+- Existing positions are baselined when this module goes live; no historical breakout or add-on is fabricated.
+
 ## Trade Sheet
 
-The workbook contains Summary, Open Positions, Pending Orders, Closed Trades, All Trades, Waiting Candidates, and Capital Ledger sheets. It stores signal dates separately from exact 09:17 execution dates/prices, entry and exit execution methods, risk-sized quantity, initial/trailing stop, planned and current risk, position rank, partial exits, replacement candidate, invested value, realized/unrealized P&L, entry style, setup grade, GTF score/demand/supply/2R evidence, institutional score, index/derivatives/options/commodity reasons, concept coverage, retracement depth/support/risk/volume, fundamentals, sector breadth, breakout/high-zone flags, volume, ATR, candle context, and candle-low references.
+The workbook contains Summary, Open Positions, Pending Orders, Closed Trades, All Trades, Waiting Candidates, and Capital Ledger sheets. It stores signal dates separately from exact 09:17 execution dates/prices, entry and exit execution methods, risk-sized quantity, initial/blended entry, add-on count and lot history, initial/trailing stop, planned and current risk, position rank, partial exits, replacement candidate, invested value, realized/unrealized P&L, entry style, setup grade, GTF score/demand/supply/2R evidence, institutional score, index/derivatives/options/commodity reasons, concept coverage, retracement depth/support/risk/volume, fundamentals, sector breadth, breakout/high-zone flags, volume, ATR, candle context, and candle-low references.

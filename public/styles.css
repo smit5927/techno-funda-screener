@@ -306,7 +306,7 @@ tbody tr:hover, tbody tr:focus-within { background: #192126; }
 .pill.EXIT, .pill.ERROR { background: var(--red-soft); color: var(--red); }
 .pill.WATCH { background: var(--blue-soft); color: var(--blue); }
 .pill.DATA_GAP { min-width: 76px; background: var(--amber-soft); color: var(--amber); }
-.pill.PENDING_ENTRY, .pill.PENDING_EXIT, .pill.PENDING_PARTIAL_EXIT {
+.pill.PENDING_ENTRY, .pill.PENDING_EXIT, .pill.PENDING_PARTIAL_EXIT, .pill.PENDING_ADD {
   min-width: 88px;
   background: var(--amber-soft);
   color: var(--amber);

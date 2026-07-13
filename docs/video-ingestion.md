@@ -23,6 +23,8 @@ The 73 raw Learn2Trade videos contain several trading styles: positional equity,
 - Candle IPC principle: identification, placement, and confirmation; bullish engulfing, hammer, and previous-high confirmation are recorded.
 - Volatility and liquidity: ATR percentage and average traded value expose unstable or hard-to-execute setups.
 - Risk references: Supertrend distance, previous candle low, two-candle low, and four-candle low are recorded without overriding the compulsory exit.
+- Winner scaling: the RS Setup Session 1 discussion at 29:01-32:17 explicitly says to scale up the right rally, participate on each new breakout while RS and the rest of the setup remain favorable, and avoid adding after price damage/RS deterioration.
+- Stop intent: the same session at 24:15-26:21 explains that a trail should preserve room for the trend, not force an early booking, and recommends booking 50% after the reward objective while trailing the balance.
 - Pullback risk: retracement support distance is recorded so the system can separate healthy buyable pullbacks from deep damage.
 - Fibonacci retracement: 38.2%, 50%, and 61.8% supports from the recent swing are recorded as pullback confluence, never as a standalone buy.
 - Bollinger/range context: 20-session bands and bandwidth distinguish trending participation from compressed/range-bound conditions.
@@ -51,7 +53,7 @@ The 73 raw Learn2Trade videos contain several trading styles: positional equity,
 - A candle-based signal is known only after the candle closes.
 - The system therefore records the close date as the signal date and uses the next trading session for execution.
 - "Next trading session" is data-confirmed: weekends and NSE holidays are skipped, and a pending order cannot fill until the exact 09:17 one-minute exchange candle is available.
-- Entry, full-exit, and partial-exit fills use the exact 09:17 one-minute candle open.
+- Entry, winner add-on, full-exit, and partial-exit fills use the exact 09:17 one-minute candle open.
 - Whole-share quantity is recalculated from the actual fill using available cash, the per-position cap, structural-stop distance, and portfolio risk limits, not from the signal-day close.
 
 ## Merged Entry, Exit, And Money Management
@@ -60,6 +62,9 @@ The 73 raw Learn2Trade videos contain several trading styles: positional equity,
 - Breakout, retracement, momentum, candle, volume, DMA, Fibonacci, Bollinger, sector, market, F&O/OI, option-chain, commodity/currency, liquidity, volatility, and fundamental evidence ranks valid entries instead of overriding the gate.
 - Video exit methods are separated into protective structural stops, partial risk/profit exits, confirmed daily trend exits, and the completed-week RS final exit.
 - Position size is risk-derived from a Rs. 10 lakh editable portfolio, 1% per-trade risk, 6% aggregate risk, 10% per-stock exposure, 25% sector exposure, and actual available cash.
+- A fresh closing 55-day/52-week breakout can scale an existing winner only when the current setup remains A+/A, every compulsory entry rule still passes, weekly RS and daily RS55 are rising, profit is at least 1R, and the ratcheted stop already protects average cost. Averaging down is prohibited.
+- Each add-on is capped at 2.5% of portfolio capital and 0.5% incremental risk. At most two add-ons are allowed, with a 15% total winner exposure cap; the 1% total position-risk, 6% portfolio-risk and 25% sector caps still apply at the actual 09:17 fill.
+- Add-on signals are based only on a new false-to-true breakout transition after feature go-live, so old breakouts are not backfilled and consecutive scans cannot duplicate an order.
 - Valid signals that cannot receive capital remain in a ranked queue. Quality rotation needs a materially better challenger and measurable deterioration in the weakest open position.
 
 ## GTF Vault Ingestion

@@ -14,7 +14,13 @@ export function portfolioConfig(config = {}) {
     partialExitPct: positive(trade.partialExitPct, 50),
     partialProfitR: positive(trade.partialProfitR, 1.5),
     rotationMinRankAdvantage: positive(trade.rotationMinRankAdvantage, 15),
-    rotationMinimumHoldingDays: integer(trade.rotationMinimumHoldingDays, 5)
+    rotationMinimumHoldingDays: integer(trade.rotationMinimumHoldingDays, 5),
+    pyramidingEnabled: trade.pyramidingEnabled !== false,
+    pyramidMaxAddOns: integer(trade.pyramidMaxAddOns, 2),
+    pyramidMaxPositionPct: positive(trade.pyramidMaxPositionPct, 15),
+    pyramidAddMaxPct: positive(trade.pyramidAddMaxPct, 2.5),
+    pyramidAddRiskPct: positive(trade.pyramidAddRiskPct, 0.5),
+    pyramidMinimumRewardR: positive(trade.pyramidMinimumRewardR, 1)
   };
 }
 
@@ -138,10 +144,14 @@ export function portfolioSummary(trades = [], candidates = [], config = {}) {
     (sum, trade) => sum + (Number(trade.investedValue) || 0),
     0
   );
+  const pendingAddCapital = active.reduce(
+    (sum, trade) => sum + (Number(trade.pendingAdd?.plannedAllocation) || 0),
+    0
+  );
   const reservedCapital = pendingEntries.reduce(
     (sum, trade) => sum + (Number(trade.plannedAllocation) || Number(trade.investedValue) || 0),
     0
-  );
+  ) + pendingAddCapital;
   const realizedPnl =
     closed.reduce((sum, trade) => sum + (Number(trade.pnl) || 0), 0) +
     active.reduce((sum, trade) => sum + (Number(trade.realizedPnlToDate) || 0), 0);
@@ -151,7 +161,8 @@ export function portfolioSummary(trades = [], candidates = [], config = {}) {
   );
   const portfolioRisk =
     active.reduce((sum, trade) => sum + remainingTradeRisk(trade), 0) +
-    pendingEntries.reduce((sum, trade) => sum + (Number(trade.plannedRisk) || 0), 0);
+    pendingEntries.reduce((sum, trade) => sum + (Number(trade.plannedRisk) || 0), 0) +
+    active.reduce((sum, trade) => sum + (Number(trade.pendingAdd?.plannedRisk) || 0), 0);
   const riskLimit = rules.totalCapital * rules.maxPortfolioRiskPct / 100;
   const availableCash = Math.max(
     0,
@@ -162,7 +173,8 @@ export function portfolioSummary(trades = [], candidates = [], config = {}) {
     const sector = normalizedSector(trade.industry || trade.entrySnapshot?.industry);
     sectorExposure[sector] =
       (sectorExposure[sector] || 0) +
-      (Number(trade.investedValue) || Number(trade.plannedAllocation) || 0);
+      (Number(trade.investedValue) || Number(trade.plannedAllocation) || 0) +
+      (Number(trade.pendingAdd?.plannedAllocation) || 0);
   }
 
   return {
@@ -180,12 +192,156 @@ export function portfolioSummary(trades = [], candidates = [], config = {}) {
     availableRisk: round(Math.max(0, riskLimit - portfolioRisk)),
     openPositions: active.length,
     pendingEntries: pendingEntries.length,
+    pendingAdds: active.filter((trade) => trade.pendingAdd).length,
     openSlots: Math.max(0, rules.maxOpenPositions - active.length - pendingEntries.length),
     maxOpenPositions: rules.maxOpenPositions,
     capitalUtilizationPct: round((investedCapital + reservedCapital) / rules.totalCapital * 100),
     overallocatedCapital: round(Math.max(0, investedCapital + reservedCapital - rules.totalCapital)),
     waitingCandidates: candidates.length,
     sectorExposure
+  };
+}
+
+export function breakoutContinuationState(row = {}) {
+  const checks = row.setupStrength?.checks || {};
+  const values = row.setupStrength?.values || {};
+  const recent = checks.recentHighBreakout === true;
+  const yearly = checks.yearHighBreakout === true;
+  return {
+    breakout: recent || yearly,
+    type: yearly ? "52_WEEK_BREAKOUT" : recent ? "55_DAY_BREAKOUT" : null,
+    level: yearly ? values.priorYearHigh : recent ? values.priorRecentHigh : null
+  };
+}
+
+export function pyramidAddDecision(trade, row, portfolio = {}, config = {}) {
+  const rules = portfolioConfig(config);
+  const checks = row?.setupStrength?.checks || {};
+  const values = row?.setupStrength?.values || {};
+  const breakout = breakoutContinuationState(row);
+  const close = Number(row?.close);
+  const entry = Number(trade?.entryPrice);
+  const stop = Number(trade?.trailingStopPrice || trade?.initialStopPrice);
+  const initialRiskPerShare = Math.max(
+    0,
+    Number(trade?.initialEntryPrice || entry) - Number(trade?.initialStopPrice)
+  );
+  const rewardR = initialRiskPerShare > 0 ? (close - entry) / initialRiskPerShare : null;
+  const reasons = [];
+
+  if (!rules.pyramidingEnabled) reasons.push("Winner pyramiding is disabled.");
+  if (trade?.status !== "OPEN") reasons.push("Only an open position can be scaled up.");
+  if (trade?.pendingAdd) reasons.push("An add-on order is already pending.");
+  if ((trade?.addOns?.length || 0) >= rules.pyramidMaxAddOns) {
+    reasons.push(`Maximum ${rules.pyramidMaxAddOns} add-ons already used.`);
+  }
+  if (row?.status !== "ENTRY") reasons.push("All compulsory entry conditions are no longer valid.");
+  if (!["A+", "A"].includes(String(row?.setupGrade || "").toUpperCase())) {
+    reasons.push("Current setup is below A grade.");
+  }
+  if (!breakout.breakout) reasons.push("No fresh 55-day or 52-week closing breakout.");
+  if (!(close > entry)) reasons.push("Position is not trading above its average cost; averaging down is prohibited.");
+  if (!Number.isFinite(rewardR) || rewardR < rules.pyramidMinimumRewardR) {
+    reasons.push(`Winner has not reached the required ${rules.pyramidMinimumRewardR}R profit buffer.`);
+  }
+  if (!Number.isFinite(stop) || stop < entry) {
+    reasons.push("Trailing stop has not protected the average entry price yet.");
+  }
+  if (!(checks.weeklyRsRising && checks.dailyLongRsRising)) {
+    reasons.push("Weekly RS and daily RS55 are not both rising.");
+  }
+  if (checks.marketRegimeStrong !== true) reasons.push("Broad-market regime is not supportive.");
+  if (row?.sectorStrength?.ok === false) reasons.push("Sector breadth is weak.");
+  if (row?.gtfContext?.supplyBlocked) reasons.push("Fresh GTF opposing supply blocks the add-on.");
+  if (
+    Number.isFinite(values.riskToSupertrendPct) &&
+    values.riskToSupertrendPct > rules.maximumStopPct
+  ) {
+    reasons.push("Breakout is too extended from Supertrend for favorable risk-reward.");
+  }
+
+  if (reasons.length) {
+    return { eligible: false, reasons, breakout, rewardR: round(rewardR) };
+  }
+  const plan = buildPyramidAddPlan(trade, row, close, portfolio, rules);
+  return {
+    ...plan,
+    eligible: plan.eligible,
+    reasons: plan.eligible ? [
+      `${breakout.type === "52_WEEK_BREAKOUT" ? "52-week" : "55-day"} closing breakout at ${round(close)} above ${round(breakout.level)}.`,
+      `Winning position is ${round(rewardR)}R above average cost with a protected trailing stop.`,
+      "Weekly RS and daily RS55 are rising; compulsory entry, A-grade quality, market and supply checks remain favorable."
+    ] : [plan.reason],
+    breakout,
+    rewardR: round(rewardR)
+  };
+}
+
+export function buildPyramidAddPlan(trade, row, price, portfolio = {}, config = {}) {
+  const rules = portfolioConfig(config);
+  const trailingStop = nextTrailingStop(trade, row, rules);
+  const riskPerShare = Number(price) - Number(trailingStop);
+  const currentAllocation = Number(trade?.investedValue) || 0;
+  const maximumPositionAllocation = rules.totalCapital * rules.pyramidMaxPositionPct / 100;
+  const addAllocationCap = rules.totalCapital * rules.pyramidAddMaxPct / 100;
+  const positionCapacity = Math.max(0, maximumPositionAllocation - currentAllocation);
+  const availableCash = Math.max(0, Number(portfolio.availableCash) || 0);
+  const sector = normalizedSector(row?.industry || trade?.industry);
+  const sectorClassified = sector !== "Unclassified";
+  const sectorUsed = Number(portfolio.sectorExposure?.[sector]) || 0;
+  const sectorLimit = sectorClassified
+    ? rules.totalCapital * rules.maxSectorExposurePct / 100
+    : rules.totalCapital;
+  const sectorCapacity = Math.max(0, sectorLimit - sectorUsed);
+  const allocationBudget = Math.min(
+    addAllocationCap,
+    positionCapacity,
+    availableCash,
+    sectorCapacity
+  );
+  const existingTradeRisk = remainingTradeRisk(trade);
+  const totalTradeRiskCapacity = Math.max(
+    0,
+    rules.totalCapital * rules.riskPerTradePct / 100 - existingTradeRisk
+  );
+  const incrementalRiskCapacity = rules.totalCapital * rules.pyramidAddRiskPct / 100;
+  const availablePortfolioRisk = Math.max(0, Number(portfolio.availableRisk) || 0);
+  const riskCapacity = Math.min(
+    incrementalRiskCapacity,
+    totalTradeRiskCapacity,
+    availablePortfolioRisk
+  );
+  const quantityByCapital = Number.isFinite(price) && price > 0
+    ? Math.floor(allocationBudget / price)
+    : 0;
+  const quantityByRisk = Number.isFinite(riskPerShare) && riskPerShare > 0
+    ? Math.floor(riskCapacity / riskPerShare)
+    : 0;
+  const quantity = Math.max(0, Math.min(quantityByCapital, quantityByRisk));
+  const allocation = quantity * price;
+  const plannedRisk = quantity * riskPerShare;
+  let reason = "Capital, position, sector and risk limits allow a winner add-on.";
+  if (!Number.isFinite(riskPerShare) || riskPerShare <= 0) {
+    reason = "Actual price is not above the protected trailing stop; add-on skipped.";
+  } else if (positionCapacity < price) reason = "Winner has reached its 15% total position cap.";
+  else if (availableCash < price) reason = "Available portfolio cash is insufficient for an add-on.";
+  else if (sectorCapacity < price) reason = `Sector exposure limit reached for ${sector}.`;
+  else if (availablePortfolioRisk < riskPerShare) reason = "Aggregate portfolio-risk room is insufficient.";
+  else if (totalTradeRiskCapacity < riskPerShare) reason = "Total position risk would exceed the 1% trade-risk cap.";
+  else if (quantity < 1) reason = "Risk-sized add-on quantity is below one share.";
+
+  return {
+    eligible: quantity > 0,
+    quantity,
+    allocation: round(allocation),
+    plannedRisk: round(plannedRisk),
+    riskPerShare: round(riskPerShare),
+    trailingStop: round(trailingStop),
+    maximumPositionAllocation: round(maximumPositionAllocation),
+    addAllocationCap: round(addAllocationCap),
+    sector,
+    rank: candidateRank(row),
+    reason
   };
 }
 
