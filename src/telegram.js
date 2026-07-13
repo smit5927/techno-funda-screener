@@ -79,8 +79,9 @@ function addTradeEvents(lines, events) {
       const setupScore = trade.entrySnapshot?.setupStrengthScore;
       const coverage = conceptCoverageText(trade);
       const entryStyle = trade.entrySnapshot?.entryStyle?.label || "Entry style NA";
+      const gtf = trade.entrySnapshot?.gtfContext || {};
       lines.push(
-        `BUY FILLED ${trade.symbol} (${trade.listLabel}) signal ${trade.entrySignalDate} | ${trade.entryDate} ${trade.entryTime} @ ${fmt(trade.entryPrice)} | qty ${trade.quantity} | invested ${fmt(trade.investedValue)} | stop ${fmt(trade.initialStopPrice)} | risk ${fmt(trade.initialRiskAmount)} | rank ${fmt(trade.positionRank)} | ${entryStyle} | grade ${trade.entrySnapshot?.setupGrade || "NA"} | score ${fmt(score)} setup ${fmt(setupScore)} | concepts ${coverage}`
+        `BUY FILLED ${trade.symbol} (${trade.listLabel}) signal ${trade.entrySignalDate} | ${trade.entryDate} ${trade.entryTime} @ ${fmt(trade.entryPrice)} | qty ${trade.quantity} | invested ${fmt(trade.investedValue)} | stop ${fmt(trade.initialStopPrice)} | risk ${fmt(trade.initialRiskAmount)} | rank ${fmt(trade.positionRank)} | ${entryStyle} | grade ${trade.entrySnapshot?.setupGrade || "NA"} | score ${fmt(score)} setup ${fmt(setupScore)} | GTF ${gtf.dataAvailable ? `${fmt(gtf.score)}/${fmt(gtf.maxScore)} ${gtf.grade || ""}` : "NA"} | concepts ${coverage}`
       );
       lines.push(`   Reason: ${(trade.entryReason || []).join(" ")}`);
     }
@@ -94,6 +95,8 @@ function addTradeEvents(lines, events) {
       lines.push(
         `BUY PENDING ${trade.symbol} | closing signal ${trade.entrySignalDate} | ${trade.entrySnapshot?.entryStyle?.label || "Entry style NA"} | waiting for next actual market session 09:15-09:20 price (weekends/holidays skipped) | concepts ${conceptCoverageText(trade)}`
       );
+      const gtf = trade.entrySnapshot?.gtfContext || {};
+      if (gtf.dataAvailable) lines.push(`   GTF: ${fmt(gtf.score)}/${fmt(gtf.maxScore)} ${gtf.grade || ""}. ${(gtf.reasons || []).join(" ")}`);
       lines.push(`   Reason: ${(trade.entryReason || []).join(" ")}`);
     }
     if (event.type === "EXIT_SIGNAL_PENDING") {

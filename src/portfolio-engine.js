@@ -25,6 +25,7 @@ export function candidateRank(row = {}) {
   const values = setup.values || {};
   const coverage = row.conceptCoverage || {};
   const institutional = row.institutionalContext || {};
+  const gtf = row.gtfContext || {};
   const coverageRatio = coverage.applicable > 0 ? coverage.passed / coverage.applicable : 0;
   const styleBonus = ["RETRACEMENT_BUY", "BREAKOUT_BUY"].includes(row.entryStyle?.type) ? 8 : 3;
   const rsPoints =
@@ -52,6 +53,7 @@ export function candidateRank(row = {}) {
       (Number(row.setupStrengthScore) || 0) * 1.5 +
       (Number(row.fundamentalScore) || 0) * 2 +
       (Number(institutional.score) || 0) * 3 +
+      (Number(gtf.rankAdjustment) || 0) +
       coverageRatio * 20 +
       rsPoints +
       trendPoints +
@@ -67,7 +69,8 @@ export function structuralStop(row = {}, price, config = {}) {
     row.dailySupertrend,
     values.fourCandleLow,
     values.twoCandleLow,
-    values.fibonacciSupportNearby ? values.fibonacciNearestPrice : null
+    values.fibonacciSupportNearby ? values.fibonacciNearestPrice : null,
+    row.gtfContext?.structuralStop
   ].filter((value) => Number.isFinite(value) && value > 0 && value < price);
   const raw = candidates.length ? Math.max(...candidates) : price * (1 - rules.maximumStopPct / 100);
   const closestAllowed = price * (1 - rules.minimumStopPct / 100);
@@ -196,7 +199,8 @@ export function nextTrailingStop(trade, row, config = {}) {
     trade.trailingStopPrice,
     row.dailySupertrend,
     values.fourCandleLow,
-    values.fibonacciSupportNearby ? values.fibonacciNearestPrice : null
+    values.fibonacciSupportNearby ? values.fibonacciNearestPrice : null,
+    row.gtfContext?.structuralStop
   ].filter((value) => Number.isFinite(value) && value > 0 && value < close);
   if (!candidates.length) return structuralStop(row, close, rules);
   const raw = Math.max(...candidates);
@@ -291,6 +295,8 @@ export function positionWeakness(row = {}) {
     reasons.push("close below 50-DMA");
   }
   if (!checks.marketRegimeStrong) reasons.push("broad-market regime not strong");
+  if (row.gtfContext?.supplyBlocked) reasons.push("GTF opposing supply is blocking price");
+  if (row.gtfContext?.checks?.roomForTwoR === false) reasons.push("GTF opposing supply leaves less than 2R room");
   if (["B", "C", "WATCH"].includes(String(row.setupGrade || "").toUpperCase())) {
     reasons.push(`setup grade ${row.setupGrade}`);
   }

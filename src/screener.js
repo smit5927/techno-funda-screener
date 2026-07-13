@@ -21,6 +21,7 @@ import {
 import { readLatestScan, saveLatestScan } from "./storage.js";
 import { sendTelegramSummary } from "./telegram.js";
 import { tradeSettingsSummary, updateTradeJournal } from "./trade-journal.js";
+import { buildGtfContext } from "./gtf-context.js";
 
 export async function runScreener(options = {}) {
   const config = options.config || appConfig;
@@ -268,6 +269,12 @@ async function scanSymbol(
     marketContext,
     rules
   });
+  const gtfContext = buildGtfContext(
+    dailyCandles,
+    weeklyCandles,
+    close,
+    rules.gtfConfluence
+  );
 
   const technicalReady = [
     dailyRsi,
@@ -309,7 +316,7 @@ async function scanSymbol(
   const setupReason = buildSetupStrengthReasons(setupStrength);
   const institutionalContext = buildSymbolInstitutionalContext(item, institutionalMarketContext);
   const institutionalReason = buildInstitutionalReasons(institutionalContext);
-  const entryStyle = buildEntryStyle(setupStrength);
+  const entryStyle = buildEntryStyle(setupStrength, gtfContext);
   const weaknessReason = buildWeaknessReasons({
     dailyShortRs,
     dailyLongRs,
@@ -323,6 +330,7 @@ async function scanSymbol(
           ...entryReason,
           `Entry style: ${entryStyle.label}.`,
           ...setupReason,
+          ...gtfContext.reasons,
           ...institutionalReason,
           `Execution plan: buy on the next actual market session using the 09:15 five-minute candle open; weekends and exchange holidays are skipped.`
         ]
@@ -341,7 +349,8 @@ async function scanSymbol(
       ? await fundamentals.get(item.yahooSymbol, dailyCandles)
       : emptyFundamentals("Skipped until at least 4/6 compulsory technical checks pass.");
   const institutionalScore = institutionalContext.score || 0;
-  const setupStrengthScore = setupStrength.score + institutionalScore;
+  const gtfScore = gtfScoreContribution(gtfContext);
+  const setupStrengthScore = setupStrength.score + institutionalScore + gtfScore;
 
   const dailyLongPriceOk = priceAboveSma(
     dailyCandles,
@@ -380,6 +389,8 @@ async function scanSymbol(
     priceConfirmationScore: [weeklyPriceOk, dailyLongPriceOk, dailyShortPriceOk].filter(Boolean).length,
     entryStyle,
     setupStrength,
+    gtfContext,
+    gtfScore,
     institutionalContext,
     institutionalScore,
     fundamental,
@@ -792,9 +803,16 @@ function supportCandidate(source, value, close) {
   };
 }
 
-function buildEntryStyle(setupStrength) {
+function buildEntryStyle(setupStrength, gtfContext) {
   const checks = setupStrength?.checks || {};
   const values = setupStrength?.values || {};
+  if (gtfContext?.preferredEntryStyle === "GTF_DEMAND_RETEST") {
+    const zone = gtfContext.dailyDemand;
+    return {
+      type: "RETRACEMENT_BUY",
+      label: `GTF demand-zone retracement ${fmt(zone?.distal)}-${fmt(zone?.proximal)}`
+    };
+  }
   if (checks.retracementBuyZone) {
     return {
       type: "RETRACEMENT_BUY",
@@ -808,6 +826,13 @@ function buildEntryStyle(setupStrength) {
     return { type: "MOMENTUM_CONTINUATION", label: "Momentum continuation buy" };
   }
   return { type: "TREND_CONTINUATION", label: "Trend continuation buy" };
+}
+
+function gtfScoreContribution(context = {}) {
+  let score = context.score >= 7 ? 3 : context.score >= 5 ? 2 : context.score >= 3 ? 1 : 0;
+  if (context.supplyBlocked) score -= 2;
+  if (context.checks?.roomForTwoR === false) score -= 1;
+  return Math.max(-3, Math.min(3, score));
 }
 
 function applySectorStrength(results, rules) {
@@ -942,6 +967,11 @@ function buildConceptCoverage(row) {
     checks.retracementBuyZone,
     Number.isFinite(values.retracementPullbackDepthPct) &&
       (Number.isFinite(values.retracementSupportReference) || values.retracementSupportSource)
+  );
+  addConcept(
+    "GTF demand/supply confluence",
+    row.gtfContext?.score >= 5 && !row.gtfContext?.supplyBlocked,
+    row.gtfContext?.dataAvailable
   );
   addConcept(
     "Fibonacci retracement support",

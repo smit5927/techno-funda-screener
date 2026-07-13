@@ -8,6 +8,7 @@ The 73 raw Learn2Trade videos contain several trading styles: positional equity,
 2. The user's closed-week weekly-RS-below-zero rule decides the compulsory exit.
 3. Video-derived price, volume, trend, sector, volatility, candle, market-regime, derivative, option-chain, commodity/currency, and fundamental evidence ranks signal quality and explains risk.
 4. Optional evidence never converts a failed compulsory setup into an entry.
+5. The separate GTF strategy is an additional location/zone factor; it does not replace the Techno Funda entry gate.
 
 ## Ingested Technical Evidence
 
@@ -60,6 +61,18 @@ The 73 raw Learn2Trade videos contain several trading styles: positional equity,
 - Video exit methods are separated into protective structural stops, partial risk/profit exits, confirmed daily trend exits, and the completed-week RS final exit.
 - Position size is risk-derived from a Rs. 10 lakh editable portfolio, 1% per-trade risk, 6% aggregate risk, 10% per-stock exposure, 25% sector exposure, and actual available cash.
 - Valid signals that cannot receive capital remain in a ranked queue. Quality rotation needs a materially better challenger and measurable deterioration in the weakest open position.
+
+## GTF Vault Ingestion
+
+The implementation was cross-checked against the GTF vault's strategy notes, corrections, scenario matrix and production scanner/decision-service rules. The integrated EOD subset includes:
+
+- DBR/RBR demand and RBD/DBD supply structure.
+- Body-to-wick proximal/distal marking, 49.5% base guard, maximum three base candles and dirty-wick rejection.
+- Freshness tests, 7-point zone score, significant-gap/two-exciting/achievement-close departure quality and at least 1R achievement evidence.
+- Daily and completed-week demand support, 50-SMA slope, opposing supply, demand retest and 2R feasibility.
+- Demand distal as an optional structural stop, plus supply blockage as partial-exit/rotation weakness.
+
+Intraday HIT/DIT execution, live quote zone activation, short-side supply trades and unvalidated LOTL distance rules are not silently approximated inside this closing-basis long-equity system. Their useful higher-level evidence is retained without changing the main strategy.
 
 ## Audit Evidence
 

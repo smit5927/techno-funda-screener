@@ -944,6 +944,11 @@ function tradeColumns() {
     { header: "Setup Score", key: "Setup Score", width: 14 },
     { header: "Fundamental Score", key: "Fundamental Score", width: 18 },
     { header: "Institutional Score", key: "Institutional Score", width: 18 },
+    { header: "GTF Score", key: "GTF Score", width: 14 },
+    { header: "GTF Daily Demand", key: "GTF Daily Demand", width: 28 },
+    { header: "GTF Weekly Demand", key: "GTF Weekly Demand", width: 28 },
+    { header: "GTF Opposing Supply", key: "GTF Opposing Supply", width: 30 },
+    { header: "GTF 2R Room", key: "GTF 2R Room", width: 14 },
     { header: "Index Context", key: "Index Context", width: 34 },
     { header: "Derivatives Context", key: "Derivatives Context", width: 34 },
     { header: "Options Context", key: "Options Context", width: 34 },
@@ -981,6 +986,7 @@ function tradeToRow(trade) {
   const sector = trade.entrySnapshot?.sectorStrength || {};
   const coverage = trade.entrySnapshot?.conceptCoverage || {};
   const institutional = trade.entrySnapshot?.institutionalContext || {};
+  const gtf = trade.entrySnapshot?.gtfContext || {};
   return {
     "Trade Scope": trade.tradeScopeLabel || TRADE_SCOPE_LABELS[inferTradeScope(trade)] || "",
     "Trade Quality": trade.tradeQualityLabel || "",
@@ -1021,6 +1027,11 @@ function tradeToRow(trade) {
     "Setup Score": trade.entrySnapshot?.setupStrengthScore ?? "",
     "Fundamental Score": trade.entrySnapshot?.fundamentalScore ?? "",
     "Institutional Score": institutional.maxScore ? `${institutional.score}/${institutional.maxScore}` : "",
+    "GTF Score": gtf.maxScore ? `${gtf.score}/${gtf.maxScore} (${gtf.grade || ""})` : "",
+    "GTF Daily Demand": formatGtfZone(gtf.dailyDemand),
+    "GTF Weekly Demand": formatGtfZone(gtf.weeklyDemand),
+    "GTF Opposing Supply": formatGtfZone(gtf.opposingSupply),
+    "GTF 2R Room": gtf.unlimitedRewardRoom ? "Clear" : Number.isFinite(gtf.rewardRisk) ? `${round(gtf.rewardRisk)}R` : "",
     "Index Context": institutional.index?.reason || "",
     "Derivatives Context": institutional.derivatives?.reason || "",
     "Options Context": institutional.options?.reason || "",
@@ -1105,6 +1116,8 @@ function snapshot(row) {
     sectorStrengthScore: row.sectorStrengthScore,
     institutionalContext: row.institutionalContext,
     institutionalScore: row.institutionalScore,
+    gtfContext: row.gtfContext,
+    gtfScore: row.gtfScore,
     conceptCoverage: row.conceptCoverage,
     fundamentalScore: row.fundamentalScore,
     fundamental: row.fundamental,
@@ -1135,6 +1148,12 @@ function round(value) {
 function csvValue(value) {
   const text = value == null ? "" : String(value);
   return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+}
+
+function formatGtfZone(zone) {
+  if (!zone) return "";
+  const freshness = zone.freshnessTests === 0 ? "fresh" : `tests ${zone.freshnessTests}`;
+  return `${zone.timeframe || ""} ${zone.pattern || ""} ${zone.distal}-${zone.proximal}; ${freshness}; ${zone.score}/7`;
 }
 
 function addCapitalLedgerWorksheet(workbook, transactions) {

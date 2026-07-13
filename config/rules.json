@@ -76,6 +76,17 @@
     "bollingerStdDev": 2,
     "rangeBoundMaxBandwidthPct": 10
   },
+  "gtfConfluence": {
+    "compulsory": false,
+    "baseBodyLimit": 0.495,
+    "significantGapPct": 1,
+    "maxBaseCandles": 3,
+    "entryBufferPct": 0.1,
+    "stopBufferPct": 0.4,
+    "maxSupportDistancePct": 8,
+    "supplyBlockDistancePct": 3,
+    "dirtyBaseWickRatio": 1.2
+  },
   "institutionalContext": {
     "enabled": true,
     "indexSymbols": [

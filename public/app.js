@@ -385,6 +385,7 @@ function rowHtml(row, index) {
       <td class="${classForAbove(row.dailyShortRs, 0)}">${pct(row.dailyShortRs)}</td>
       <td class="${classForAbove(row.dailyRsi, 50)}">${fmt(row.dailyRsi)}</td>
       <td>${row.fundamentalScore || 0}/${row.fundamental?.maxScore || 5}</td>
+      <td class="${row.gtfContext?.supplyBlocked ? "bad" : row.gtfContext?.score >= 5 ? "good" : ""}">${row.gtfContext?.dataAvailable ? `${fmt(row.gtfContext.score)}/${fmt(row.gtfContext.maxScore)}` : "NA"}</td>
       <td><strong>${escapeHtml(row.setupGrade || "")} ${row.score || 0}</strong></td>
       <td class="reasonCell">${escapeHtml((row.signalReason || []).join(" "))}</td>
     </tr>
@@ -399,6 +400,7 @@ function renderDetail(row) {
   const sector = row.sectorStrength || {};
   const coverage = row.conceptCoverage || {};
   const institutional = row.institutionalContext || {};
+  const gtf = row.gtfContext || {};
   elements.detailPanel.innerHTML = `
     <div class="detailHeader">
       <div>
@@ -441,6 +443,18 @@ function renderDetail(row) {
       ${setupCheckHtml("Market regime", setupChecks.marketRegimeStrong)}
       ${setupCheckHtml("Sector breadth", sector.ok, sector.breadthPct, "%")}
       ${setupCheckHtml("Prev candle low", Number.isFinite(setupValues.previousLow), setupValues.previousLow)}
+    </div>
+    <div class="reasonBlock">
+      <strong>GTF Additional Confluence</strong>
+      <p>${escapeHtml(gtf.dataAvailable ? `${gtf.score}/${gtf.maxScore} - ${gtf.grade}. ${(gtf.reasons || []).join(" ")}` : "No qualified daily/weekly GTF zone context is available for this row.")}</p>
+    </div>
+    <div class="checkGrid">
+      ${contextCheckHtml("Daily demand", gtf.checks?.dailyDemandQualified, formatGtfZone(gtf.dailyDemand))}
+      ${contextCheckHtml("Weekly demand", gtf.checks?.weeklyDemandQualified, formatGtfZone(gtf.weeklyDemand))}
+      ${contextCheckHtml("Demand retest", gtf.demandRetest, gtf.preferredEntryStyle)}
+      ${contextCheckHtml("2R runway", gtf.checks?.roomForTwoR, gtf.unlimitedRewardRoom ? "No active supply blocker" : Number.isFinite(gtf.rewardRisk) ? `${compact(gtf.rewardRisk)}R room` : "Not available")}
+      ${contextCheckHtml("Opposing supply clear", !gtf.supplyBlocked, formatGtfZone(gtf.opposingSupply))}
+      ${contextCheckHtml("Daily 50-SMA slope", gtf.dailyTrend === "up", gtf.dailyTrend || "unknown")}
     </div>
     <div class="reasonBlock">
       <strong>Institutional Multi-Market Context</strong>
@@ -800,6 +814,12 @@ function contextCheckHtml(label, ok, reason) {
   `;
 }
 
+function formatGtfZone(zone) {
+  if (!zone) return "No active qualified zone";
+  const freshness = zone.freshnessTests === 0 ? "fresh" : `tested ${zone.freshnessTests}x`;
+  return `${zone.timeframe || ""} ${zone.pattern || ""} ${fmt(zone.distal)}-${fmt(zone.proximal)}; ${freshness}; score ${fmt(zone.score)}/7; achievement ${fmt(zone.achievementR)}R`;
+}
+
 function exportCsv() {
   const headers = [
     "status",
@@ -830,6 +850,11 @@ function exportCsv() {
     "retracementPullbackVolumeRatio",
     "retracementReclaimVolumeRatio",
     "institutionalScore",
+    "gtfScore",
+    "gtfDailyDemand",
+    "gtfWeeklyDemand",
+    "gtfOpposingSupply",
+    "gtfRewardRisk",
     "indexContext",
     "derivativesContext",
     "optionsContext",
@@ -879,6 +904,15 @@ function exportCsv() {
       institutionalScore: row.institutionalContext?.maxScore
         ? `${row.institutionalContext.score}/${row.institutionalContext.maxScore}`
         : "",
+      gtfScore: row.gtfContext?.dataAvailable
+        ? `${row.gtfContext.score}/${row.gtfContext.maxScore}`
+        : "",
+      gtfDailyDemand: formatGtfZone(row.gtfContext?.dailyDemand),
+      gtfWeeklyDemand: formatGtfZone(row.gtfContext?.weeklyDemand),
+      gtfOpposingSupply: formatGtfZone(row.gtfContext?.opposingSupply),
+      gtfRewardRisk: row.gtfContext?.unlimitedRewardRoom
+        ? "Clear"
+        : Number.isFinite(row.gtfContext?.rewardRisk) ? `${compact(row.gtfContext.rewardRisk)}R` : "",
       indexContext: row.institutionalContext?.index?.reason || "",
       derivativesContext: row.institutionalContext?.derivatives?.reason || "",
       optionsContext: row.institutionalContext?.options?.reason || "",

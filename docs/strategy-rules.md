@@ -68,6 +68,21 @@ These checks do not create or block entry by themselves. They increase setup qua
 
 Candlestick, market regime, derivatives, option-chain, commodity/currency, volatility, liquidity, and fundamental checks rank a valid entry as A+/A/B/C. They never override a failed compulsory entry check.
 
+## GTF Additional Confluence
+
+The separate Obsidian GTF strategy is ingested as an optional institutional-order-location layer. It is never the main strategy and never converts a failed compulsory RS/RSI/Supertrend setup into a buy.
+
+- Detect DBR/RBR demand and RBD/DBD supply from body-to-wick bases using the 49.5% rounding guard and at most three base candles.
+- Reject dirty bases above 1.2x adverse-wick/zone-width and departures that fail the GTF closing/achievement concept.
+- Score freshness, departure strength and time at base on the GTF 7-point scale; record achievement in R and the departure type.
+- Compare daily and completed-week zones, 50-SMA seven-bar slope, demand retests, active opposing supply and available 2R runway.
+- Prefer a qualified daily-demand retest as a retracement entry style. A clear supply runway can strengthen a breakout; neither is compulsory.
+- Add GTF confluence to candidate rank and use a valid demand distal with the configured buffer as one structural-stop candidate.
+- Treat nearby opposing supply or less than 2R room as weakness for partial-exit and quality-rotation decisions.
+- LOTL is not fabricated from daily closing data. The source has no deterministic numerical distance rule, so connected-zone merging remains excluded until separately validated.
+
+The website detail panel, Telegram trade alert, CSV and Excel workbook expose the selected demand/supply zones, freshness, achievement, GTF score and 2R room.
+
 ## Entry Style Classification
 
 Every valid entry is classified so the website, Telegram alert, CSV, and trade sheet show why the buy exists:
@@ -113,10 +128,10 @@ The same stock in multiple lists is scanned once and creates only one trade. Its
 1. Completed weekly and daily candles are aligned with NIFTY 500 before any decision is made.
 2. All six compulsory RS, RSI, and Supertrend checks must pass to create an entry signal.
 3. The setup is classified as retracement, breakout, momentum continuation, or trend continuation; retracement is not mandatory.
-4. Video-derived sector, volume, trend, candle, volatility, liquidity, market, derivative, option, commodity/currency, and fundamental evidence grades the valid signal.
+4. Video-derived evidence and optional GTF demand/supply confluence grade and rank the valid signal.
 5. The selected trade universe and quality mode decide whether that signal enters the automated trade sheet.
 6. A valid new signal remains pending through weekends and exchange holidays, then uses the next real session's 09:15 candle open.
-7. An open position exits only when completed-week RS versus NIFTY 500 falls below zero; the sell then follows the same next-session execution rule.
+7. Open-position management applies the documented full/partial exit hierarchy, including the ratcheting structural stop and GTF supply weakness; every sell follows the same next-session execution rule.
 
 ## Trade Selection
 
@@ -137,7 +152,7 @@ The default trade quality is `BEST_ONLY`, which opens sheet/Telegram trades only
 - Maximum sector exposure is 25% of capital.
 - Quantity is the minimum allowed by available cash, per-stock allocation cap, stop distance, risk budget, sector capacity, and remaining portfolio-risk capacity.
 - Structural stop distance is kept between 1.5% and 8% so a very tight candle does not create oversized quantity and a very wide setup does not consume excessive risk.
-- Every valid new signal receives a comparable portfolio rank from setup grade, RS leadership/trend, entry style, volume, sector, market/index, institutional, fundamental, volatility, liquidity, and concept coverage.
+- Every valid new signal receives a comparable portfolio rank from setup grade, RS leadership/trend, entry style, GTF demand/supply confluence, volume, sector, market/index, institutional, fundamental, volatility, liquidity, and concept coverage.
 - If capital is unavailable, the signal is retained in Waiting Candidates with the exact skip reason.
 - A challenger can replace an existing position only when its rank advantage is material, the current position has at least two weakness factors, and the minimum holding rule is satisfied. Sector limits cannot be bypassed by rotation.
 - When capital is manually reduced or the legacy book exceeds limits, weaker-ranked positions are queued for controlled next-session rebalance; no historical fill is fabricated.
@@ -145,4 +160,4 @@ The default trade quality is `BEST_ONLY`, which opens sheet/Telegram trades only
 
 ## Trade Sheet
 
-The workbook contains Summary, Open Positions, Pending Orders, Closed Trades, All Trades, Waiting Candidates, and Capital Ledger sheets. It stores signal dates separately from 09:15 execution dates/prices, risk-sized quantity, initial/trailing stop, planned and current risk, position rank, partial exits, replacement candidate, invested value, realized/unrealized P&L, entry style, setup grade, institutional score, index/derivatives/options/commodity reasons, concept coverage, retracement depth/support/risk/volume, fundamentals, sector breadth, breakout/high-zone flags, volume, ATR, candle context, and candle-low references.
+The workbook contains Summary, Open Positions, Pending Orders, Closed Trades, All Trades, Waiting Candidates, and Capital Ledger sheets. It stores signal dates separately from 09:15 execution dates/prices, risk-sized quantity, initial/trailing stop, planned and current risk, position rank, partial exits, replacement candidate, invested value, realized/unrealized P&L, entry style, setup grade, GTF score/demand/supply/2R evidence, institutional score, index/derivatives/options/commodity reasons, concept coverage, retracement depth/support/risk/volume, fundamentals, sector breadth, breakout/high-zone flags, volume, ATR, candle context, and candle-low references.
