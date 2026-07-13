@@ -16,8 +16,10 @@ The 73 raw Learn2Trade videos contain several trading styles: positional equity,
 - RS55: roughly a three-month relative return comparison against the benchmark.
 - RS21: shorter relative momentum and early deterioration context.
 - Breakout confirmation: a strong stock is preferred when price confirms through a prior range/high.
+- Base continuation: a 20-session closing breakout is stronger when the recent base forms a higher low than the preceding base.
 - Retracement entry: a strong RS leader is preferred when it pulls back into Supertrend, 50-DMA, or breakout-retest support, volume contracts on the fall or expands on reclaim, and a bullish candle confirms the turn.
 - Volume shocker: unusual volume supports participation and follow-through.
+- MACD above signal and zero supports a swing-high break; rising OBV and official NSE delivery expansion confirm participation instead of replacing price action.
 - Trend context: Supertrend and 50/200-DMA structure distinguish healthy trends from weak ones.
 - Sector context: strong stocks are preferred when their industry group has broad participation.
 - Candle IPC principle: identification, placement, and confirmation; bullish engulfing, hammer, and previous-high confirmation are recorded.
@@ -29,12 +31,14 @@ The 73 raw Learn2Trade videos contain several trading styles: positional equity,
 - Fibonacci retracement: 38.2%, 50%, and 61.8% supports from the recent swing are recorded as pullback confluence, never as a standalone buy.
 - Bollinger/range context: 20-session bands and bandwidth distinguish trending participation from compressed/range-bound conditions.
 - Market regime: NIFTY 500 RSI and 50/200-DMA context show whether the broad market supports long trades.
+- Range/crash control: mixed, compressed/range-bound and weak benchmark states reduce new deployment while existing trades remain governed by their own exits.
 
 ## Ingested Index, Derivatives, Options, And Commodity Evidence
 
 - Index regime: NIFTY 500, NIFTY 50, and BANK NIFTY are tracked as institutional trend proxies using RSI, 21/55-day returns, 50/200-DMA structure, ATR percentage, and RS where applicable.
 - Sector-index alignment: financial stocks use BANK NIFTY as the closer proxy; other stocks use the broad NIFTY 500/NIFTY 50 context.
 - F&O eligibility and participation: the NSE F&O lot-size master is downloaded automatically. Each stock is tagged as F&O-listed or cash-only, with lot size where available. NSE OI-spurts underlyings are also attempted to capture change-in-OI participation, volume, futures value, and options value.
+- Cash-market operator participation: official NSE full bhavcopy/security-deliverable files compare current traded quantity, delivery quantity, delivery percentage and average price with the prior five sessions.
 - Option-chain positioning: NIFTY and BANK NIFTY option-chain snapshots are attempted automatically. When NSE allows the public endpoint, the scanner records PCR, max put OI strike, max call OI strike, expiry, and bullish/neutral/bearish option bias.
 - Commodity/currency context: Gold, silver, copper, crude oil, and USD/INR Yahoo proxies are tracked. Sector sensitivity maps metals to copper/base metals, energy to crude, exporters to USD/INR, precious-metal businesses to gold/silver, and input-cost sectors to crude risk.
 - Data gaps are explicit. If NSE option-chain, OI-spurts, or another free endpoint is unavailable during a GitHub run, the website and trade sheet show a data gap instead of pretending the confirmation exists.
@@ -44,6 +48,7 @@ The 73 raw Learn2Trade videos contain several trading styles: positional equity,
 
 - Compare current performance with the same period last year.
 - Prefer rising annual net income and operating income.
+- Prefer quarterly sales, EPS and EBITDA growth versus the same quarter last year.
 - Prefer improving EBITDA margin quarter-on-quarter and year-on-year.
 - Track P/E trend as optional market-rating context, not as a compulsory trigger.
 - Fundamentals improve confidence/grade but price action remains the actual trade trigger.
@@ -62,10 +67,11 @@ The 73 raw Learn2Trade videos contain several trading styles: positional equity,
 - Breakout, retracement, momentum, candle, volume, DMA, Fibonacci, Bollinger, sector, market, F&O/OI, option-chain, commodity/currency, liquidity, volatility, and fundamental evidence ranks valid entries instead of overriding the gate.
 - Video exit methods are separated into protective structural stops, partial risk/profit exits, confirmed daily trend exits, and the completed-week RS final exit.
 - Position size is risk-derived from a Rs. 10 lakh editable portfolio, 1% per-trade risk, 6% aggregate risk, 10% per-stock exposure, 25% sector exposure, and actual available cash.
-- A fresh closing 55-day/52-week breakout can scale an existing winner only when the current setup remains A+/A, every compulsory entry rule still passes, weekly RS and daily RS55 are rising, profit is at least 1R, and the ratcheted stop already protects average cost. Averaging down is prohibited.
+- A fresh higher-low 20-day base, 55-day or 52-week closing breakout can scale an existing winner only when the current setup remains A+/A, every compulsory entry rule still passes, weekly RS and daily RS55 are rising, profit is at least 1R, official delivery is not distributing, and the ratcheted stop already protects average cost. Averaging down is prohibited.
 - Each add-on is capped at 2.5% of portfolio capital and 0.5% incremental risk. At most two add-ons are allowed, with a 15% total winner exposure cap; the 1% total position-risk, 6% portfolio-risk and 25% sector caps still apply at the actual 09:17 fill.
 - Add-on signals are based only on a new false-to-true breakout transition after feature go-live, so old breakouts are not backfilled and consecutive scans cannot duplicate an order.
 - Valid signals that cannot receive capital remain in a ranked queue. Quality rotation needs a materially better challenger and measurable deterioration in the weakest open position.
+- Portfolio breadth adapts to total capital, and NIFTY 500 regime plus 5%/8% portfolio-loss guards throttle only new deployment.
 
 ## GTF Vault Ingestion
 
@@ -75,7 +81,7 @@ The implementation was cross-checked against the GTF vault's strategy notes, cor
 - Body-to-wick proximal/distal marking, 49.5% base guard, maximum three base candles and dirty-wick rejection.
 - Freshness tests, 7-point zone score, significant-gap/two-exciting/achievement-close departure quality and at least 1R achievement evidence.
 - Daily and completed-week demand support, 50-SMA slope, opposing supply, demand retest and 2R feasibility.
-- Demand distal as an optional structural stop, plus supply blockage as partial-exit/rotation weakness.
+- Demand/supply and 2R runway as secondary rank/risk confirmation only. GTF cannot select the primary entry style, structural stop, partial exit, full exit, or rotation by itself.
 
 Intraday HIT/DIT execution, live quote zone activation, short-side supply trades and unvalidated LOTL distance rules are not silently approximated inside this closing-basis long-equity system. Their useful higher-level evidence is retained without changing the main strategy.
 

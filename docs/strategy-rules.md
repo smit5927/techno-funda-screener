@@ -38,7 +38,8 @@ The upgraded portfolio engine merges the video exit playbooks into a hierarchy:
 - Full exit when daily RS55 is below zero and daily close is below Supertrend.
 - Full exit when price breaches the ratcheting structural stop built from Supertrend, recent candle lows, and valid Fibonacci support.
 - Full exit when price is below 200-DMA with negative daily RS55.
-- Partial 50% exit when multi-factor early weakness is confirmed, fundamentals materially deteriorate, or profit reaches 1.5R.
+- Partial 50% exit when multi-factor video-derived early weakness is confirmed, fundamentals materially deteriorate, or profit reaches 2R.
+- GTF evidence cannot originate a partial or full exit. It may only confirm a primary video-derived weakness signal.
 - The remaining quantity trails with Supertrend/recent structure. A trailing stop never moves downward.
 
 All exit decisions use completed candles and execute in the next actual market session at exactly 09:17 IST.
@@ -48,11 +49,14 @@ All exit decisions use completed candles and execute in the next actual market s
 These checks do not create or block entry by themselves. They increase setup quality and are saved in the website detail view, CSV export, Telegram alert, and trade sheet:
 
 - Price crosses the previous 55-day high.
+- Price closes through a 20-day base while the recent base low is above the preceding base low.
 - Price is inside the 52-week high zone or crosses the 52-week high.
 - Retracement buy setup: a leader pulls back 2-15% from the recent high, holds/reclaims Supertrend/50-DMA/breakout retest support within 5%, shows dry pullback volume or reclaim volume, closes with a bullish reclaim candle, and keeps support risk within 8%.
 - Fibonacci confluence checks whether the pullback is holding near the 38.2%, 50%, or 61.8% level of the recent 55-session swing.
 - Bollinger context identifies trend support versus a compressed/range-bound phase from the 20-session middle band and bandwidth.
 - Latest volume is at least 1.5x the 50-day average.
+- MACD(12,26,9) is above its signal and zero, and OBV is rising, as optional price/participation confirmation.
+- Official NSE security-deliverable bhavcopy compares traded quantity and delivery quantity with the prior five-session average; price-up, expanded participation and a close above average traded price confirm operator accumulation.
 - Weekly RS and daily RS55 are rising.
 - Close is above 50-DMA and 200-DMA, with 50-DMA above 200-DMA.
 - Close is within 7% of daily Supertrend, giving a tighter risk reference.
@@ -65,6 +69,7 @@ These checks do not create or block entry by themselves. They increase setup qua
 - NSE OI-spurts underlyings add derivative participation context: change in OI, volume, futures value, and options value.
 - NIFTY/BANKNIFTY option-chain positioning is attempted for PCR and OI support/resistance context.
 - Gold, silver, copper, crude oil, and USD/INR proxy trends are mapped to sector sensitivity.
+- Quarterly sales, EPS and EBITDA are compared with the same quarter last year alongside the original income, margin and P/E checks.
 
 Candlestick, market regime, derivatives, option-chain, commodity/currency, volatility, liquidity, and fundamental checks rank a valid entry as A+/A/B/C. They never override a failed compulsory entry check.
 
@@ -76,9 +81,9 @@ The separate Obsidian GTF strategy is ingested as an optional institutional-orde
 - Reject dirty bases above 1.2x adverse-wick/zone-width and departures that fail the GTF closing/achievement concept.
 - Score freshness, departure strength and time at base on the GTF 7-point scale; record achievement in R and the departure type.
 - Compare daily and completed-week zones, 50-SMA seven-bar slope, demand retests, active opposing supply and available 2R runway.
-- Prefer a qualified daily-demand retest as a retracement entry style. A clear supply runway can strengthen a breakout; neither is compulsory.
-- Add GTF confluence to candidate rank and use a valid demand distal with the configured buffer as one structural-stop candidate.
-- Treat only fresh score-7 opposing supply, or the resulting lack of 2R room, as weakness for partial-exit and quality-rotation decisions. Tested/low-score supply is informational and cannot trigger risk reduction.
+- Record qualified demand retests and supply runway as additional context only; video-derived price action selects the entry style.
+- Add GTF confluence to candidate rank, but do not use a GTF zone to set the structural stop or as a standalone entry/exit trigger.
+- Fresh opposing supply can confirm a video-derived weakness or block an optional winner add-on. GTF-only weakness cannot trigger risk reduction or rotation.
 - LOTL is not fabricated from daily closing data. The source has no deterministic numerical distance rule, so connected-zone merging remains excluded until separately validated.
 
 The website detail panel, Telegram trade alert, CSV and Excel workbook expose the selected demand/supply zones, freshness, achievement, GTF score and 2R room.
@@ -88,7 +93,7 @@ The website detail panel, Telegram trade alert, CSV and Excel workbook expose th
 Every valid entry is classified so the website, Telegram alert, CSV, and trade sheet show why the buy exists:
 
 - `Retracement buy`: RS leader pulls back to support/retest zone and gives reclaim confirmation.
-- `Breakout buy`: price closes through the recent high or 52-week high.
+- `Breakout buy`: price closes through a higher-low 20-day base, recent 55-day high, or 52-week high.
 - `Momentum continuation buy`: price remains near high with volume confirmation.
 - `Trend continuation buy`: compulsory RS/RSI/Supertrend checks pass, but no breakout/retracement tag is active.
 
@@ -102,6 +107,7 @@ The scanner creates a separate institutional context object for every stock:
 - `derivatives`: F&O eligibility, lot size, and OI-spurts participation when NSE data is available.
 - `options`: NIFTY/BANKNIFTY PCR, max put OI, and max call OI when the public NSE endpoint is available.
 - `commodity`: commodity/currency proxy support or risk based on the stock's sector.
+- `operator`: official NSE traded/deliverable quantity expansion, delivery percentage, average traded price, accumulation and distribution state.
 
 These modules add confluence, data-gap visibility, and trade-sheet explanation. They do not turn a failed equity RS/RSI/Supertrend setup into a buy.
 
@@ -128,10 +134,10 @@ The same stock in multiple lists is scanned once and creates only one trade. Its
 1. Completed weekly and daily candles are aligned with NIFTY 500 before any decision is made.
 2. All six compulsory RS, RSI, and Supertrend checks must pass to create an entry signal.
 3. The setup is classified as retracement, breakout, momentum continuation, or trend continuation; retracement is not mandatory.
-4. Video-derived evidence and optional GTF demand/supply confluence grade and rank the valid signal.
+4. Video-derived evidence grades and ranks the valid signal; optional GTF demand/supply context can add or subtract secondary confluence only.
 5. The selected trade universe and quality mode decide whether that signal enters the automated trade sheet.
 6. A valid new signal remains pending through weekends and exchange holidays, then uses the next real session's exact 09:17 one-minute candle open.
-7. Open-position management applies the documented full/partial exit hierarchy, including the ratcheting structural stop and GTF supply weakness; every sell follows the same next-session execution rule.
+7. Open-position management applies the video-derived full/partial exit hierarchy and ratcheting structural stop. GTF may confirm, but cannot originate, a sell.
 
 ## Trade Selection
 
@@ -146,10 +152,13 @@ The default trade quality is `BEST_ONLY`, which opens sheet/Telegram trades only
 ## Portfolio And Risk Engine
 
 - Starting capital is Rs. 10,00,000 and can be changed or increased from persistent website Trade Settings.
-- Maximum 10 open positions and maximum 10% capital allocation per stock.
+- Portfolio breadth adapts to capital: up to 10 positions below Rs. 10 lakh, 15 at Rs. 10 lakh, 20 at Rs. 25 lakh, 25 at Rs. 50 lakh, 30 at Rs. 1 crore, and 50 at Rs. 5 crore or more. Available cash and risk limits can result in fewer positions.
+- Initial capital allocation remains capped at 10% per stock (Rs. 1,00,000 at the default capital).
 - Maximum planned loss is 1% of portfolio capital per new trade.
 - Maximum aggregate open portfolio risk is 6% of capital.
 - Maximum sector exposure is 25% of capital.
+- NIFTY 500 `BULL/MIXED/RANGE/WEAK` mode caps new deployment at 100%/50%/25%/25%; this does not force an otherwise invalid exit.
+- A portfolio loss of 5% halves new deployment capacity; at 8%, new buys/add-ons freeze until risk recovers. Existing positions continue through the normal exit engine.
 - Quantity is the minimum allowed by available cash, per-stock allocation cap, stop distance, risk budget, sector capacity, and remaining portfolio-risk capacity.
 - Structural stop distance is kept between 1.5% and 8% so a very tight candle does not create oversized quantity and a very wide setup does not consume excessive risk.
 - Every valid new signal receives a comparable portfolio rank from setup grade, RS leadership/trend, entry style, GTF demand/supply confluence, volume, sector, market/index, institutional, fundamental, volatility, liquidity, and concept coverage.
@@ -161,7 +170,7 @@ The default trade quality is `BEST_ONLY`, which opens sheet/Telegram trades only
 ### Winner Pyramiding And Trailing Risk
 
 - The video-derived scale-up rule is applied only to an already profitable open position; the system never averages down.
-- A new add-on requires a fresh completed-daily 55-day or 52-week breakout, current A+/A grade, all compulsory entry checks, rising weekly RS and daily RS55, supportive market regime, no fresh GTF supply block, at least 1R open profit, and a trailing stop at or above the current blended entry.
+- A new add-on requires a fresh completed-daily higher-low 20-day base, 55-day, or 52-week breakout, current A+/A grade, all compulsory entry checks, rising weekly RS and daily RS55, supportive market regime, no delivery-distribution/GTF supply warning, at least 1R open profit, and a trailing stop at or above the current blended entry.
 - The initial position remains capped at 10%. Each add-on is capped at 2.5%, with no more than two add-ons and no more than 15% total capital in one winning stock.
 - Incremental add-on risk is capped at 0.5% of capital. Total remaining risk in that position cannot exceed 1%, aggregate portfolio risk cannot exceed 6%, and sector exposure cannot exceed 25%.
 - A signal is reserved on the closing breakout and re-sized using actual cash, risk, sector room and the exact next-session 09:17 price. Weekends and exchange holidays are skipped.
@@ -170,4 +179,4 @@ The default trade quality is `BEST_ONLY`, which opens sheet/Telegram trades only
 
 ## Trade Sheet
 
-The workbook contains Summary, Open Positions, Pending Orders, Closed Trades, All Trades, Waiting Candidates, and Capital Ledger sheets. It stores signal dates separately from exact 09:17 execution dates/prices, entry and exit execution methods, risk-sized quantity, initial/blended entry, add-on count and lot history, initial/trailing stop, planned and current risk, position rank, partial exits, replacement candidate, invested value, realized/unrealized P&L, entry style, setup grade, GTF score/demand/supply/2R evidence, institutional score, index/derivatives/options/commodity reasons, concept coverage, retracement depth/support/risk/volume, fundamentals, sector breadth, breakout/high-zone flags, volume, ATR, candle context, and candle-low references.
+The workbook contains Summary, Open Positions, Pending Orders, Closed Trades, All Trades, Waiting Candidates, and Capital Ledger sheets. It stores signal dates separately from exact 09:17 execution dates/prices, entry and exit execution methods, risk-sized quantity, initial/blended entry, add-on count and lot history, initial/trailing stop, planned and current risk, position rank, partial exits, replacement candidate, invested value, realized/unrealized P&L and percentage, market exposure/drawdown controls, entry style, setup grade, GTF additional context, institutional score, index/derivatives/options/commodity/operator reasons, concept coverage, retracement/base/breakout evidence, MACD/OBV, fundamentals, sector breadth, volume, ATR, candle context, and candle-low references.
