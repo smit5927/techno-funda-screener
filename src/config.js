@@ -85,7 +85,8 @@ export const appConfig = {
   trade: {
     capitalPerStock: numberEnv("TRADE_CAPITAL_PER_STOCK", 100000),
     totalCapital: numberEnv("TRADE_TOTAL_CAPITAL", 1000000),
-    maxOpenPositions: Math.max(1, numberEnv("TRADE_MAX_OPEN_POSITIONS", 10)),
+    maxOpenPositions: Math.max(1, numberEnv("TRADE_MAX_OPEN_POSITIONS", 15)),
+    autoPositionBreadth: boolEnv("TRADE_AUTO_POSITION_BREADTH", true),
     maxPositionPct: numberEnv("TRADE_MAX_POSITION_PCT", 10),
     riskPerTradePct: numberEnv("TRADE_RISK_PER_TRADE_PCT", 1),
     maxPortfolioRiskPct: numberEnv("TRADE_MAX_PORTFOLIO_RISK_PCT", 6),
@@ -93,7 +94,7 @@ export const appConfig = {
     minimumStopPct: numberEnv("TRADE_MINIMUM_STOP_PCT", 1.5),
     maximumStopPct: numberEnv("TRADE_MAXIMUM_STOP_PCT", 8),
     partialExitPct: numberEnv("TRADE_PARTIAL_EXIT_PCT", 50),
-    partialProfitR: numberEnv("TRADE_PARTIAL_PROFIT_R", 1.5),
+    partialProfitR: numberEnv("TRADE_PARTIAL_PROFIT_R", 2),
     rotationMinRankAdvantage: numberEnv("TRADE_ROTATION_MIN_RANK_ADVANTAGE", 15),
     rotationMinimumHoldingDays: numberEnv("TRADE_ROTATION_MIN_HOLDING_DAYS", 5),
     pyramidingEnabled: boolEnv("TRADE_PYRAMIDING_ENABLED", true),

@@ -16,7 +16,7 @@ import {
 test("portfolio defaults use ten lakh capital with institutional limits", () => {
   const rules = portfolioConfig({ trade: {} });
   assert.equal(rules.totalCapital, 1_000_000);
-  assert.equal(rules.maxOpenPositions, 10);
+  assert.equal(rules.maxOpenPositions, 15);
   assert.equal(rules.maxPositionPct, 10);
   assert.equal(rules.riskPerTradePct, 1);
   assert.equal(rules.maxPortfolioRiskPct, 6);
@@ -242,7 +242,26 @@ test("portfolio summary reserves pending capital and reports cash", () => {
   const summary = portfolioSummary(trades, [], { trade: {} });
   assert.equal(summary.deployedCapital, 180_000);
   assert.equal(summary.availableCash, 820_000);
-  assert.equal(summary.openSlots, 8);
+  assert.equal(summary.openSlots, 13);
+});
+
+test("range-bound benchmark caps new deployment without forcing existing exits", () => {
+  const summary = portfolioSummary(
+    [openTrade({ investedValue: 100_000, quantity: 1000 })],
+    [],
+    { trade: {}, marketContext: { riskMode: "RANGE", exposureCapPct: 25 } }
+  );
+  assert.equal(summary.effectiveExposureCapPct, 25);
+  assert.equal(summary.availableCash, 150_000);
+  assert.equal(summary.actualCash, 900_000);
+});
+
+test("GTF confirmation alone cannot originate a partial or full exit", () => {
+  const row = strongRow({
+    gtfContext: { supplyBlocked: true, checks: { roomForTwoR: false } }
+  });
+  const decision = positionExitDecision(openTrade(), row, { trade: {} });
+  assert.equal(decision.action, "HOLD");
 });
 
 test("structural stop remains inside configured risk band", () => {

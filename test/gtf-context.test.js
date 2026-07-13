@@ -17,7 +17,7 @@ test("detects a fresh score-7 GTF demand zone with achievement", () => {
   assert.equal(demand.active, true);
 });
 
-test("GTF remains additive while improving rank and structural stop", () => {
+test("GTF remains additive to rank but cannot replace the video-derived structural stop", () => {
   const candles = demandFixture();
   const close = candles.at(-1).close;
   const gtfContext = buildGtfContext(candles, [], close);
@@ -27,7 +27,7 @@ test("GTF remains additive while improving rank and structural stop", () => {
   assert.equal(gtfContext.dataAvailable, true);
   assert.ok(gtfContext.score >= 3);
   assert.ok(candidateRank(enhanced) > candidateRank(baseRow));
-  assert.ok(structuralStop(enhanced, close, {}) >= structuralStop(baseRow, close, {}));
+  assert.equal(structuralStop(enhanced, close, {}), structuralStop(baseRow, close, {}));
 });
 
 test("nearby active GTF supply creates a blocker and rank penalty", () => {

@@ -47,6 +47,7 @@
   "setupStrength": {
     "compulsory": false,
     "dailyRecentHighPeriod": 55,
+    "baseBreakoutPeriod": 20,
     "dailyYearHighPeriod": 252,
     "nearYearHighPct": 15,
     "volumeAveragePeriod": 50,
@@ -102,6 +103,8 @@
       { "id": "usdinr", "label": "USD/INR", "symbol": "INR=X", "group": "currency" }
     ],
     "optionChainEnabled": true,
+    "deliveryEnabled": true,
+    "deliveryExpansionMultiple": 1.2,
     "optionChainSymbols": ["NIFTY", "BANKNIFTY"],
     "fnoLotSizeUrl": "https://nsearchives.nseindia.com/content/fo/fo_mktlots.csv",
     "oiSpurtsUrl": "https://www.nseindia.com/api/live-analysis-oi-spurts-underlyings"
@@ -111,6 +114,9 @@
     "checks": [
       "netIncomeYoYUp",
       "operatingIncomeYoYUp",
+      "revenueQuarterYoYUp",
+      "epsQuarterYoYUp",
+      "ebitdaQuarterYoYUp",
       "ebitdaMarginQoQUp",
       "ebitdaMarginYoYUp",
       "peRising"

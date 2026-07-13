@@ -51,6 +51,9 @@ export function analyseFundamentals(series, candles) {
   const operatingIncomeYoYUp = compareMetric(latestAnnual, previousAnnual, [
     "operatingIncome"
   ]);
+  const revenueQuarterYoYUp = compareMetric(latestQuarter, sameQuarterLastYear, ["totalRevenue"]);
+  const epsQuarterYoYUp = compareMetric(latestQuarter, sameQuarterLastYear, ["dilutedEPS", "basicEPS"]);
+  const ebitdaQuarterYoYUp = compareMetric(latestQuarter, sameQuarterLastYear, ["ebitda"]);
   const ebitdaMarginQoQUp = compareMargin(latestQuarter, previousQuarter);
   const ebitdaMarginYoYUp = compareMargin(latestQuarter, sameQuarterLastYear);
   const peCheck = calculatePeTrend(annual, candles, data);
@@ -58,6 +61,9 @@ export function analyseFundamentals(series, candles) {
   const checks = {
     netIncomeYoYUp,
     operatingIncomeYoYUp,
+    revenueQuarterYoYUp,
+    epsQuarterYoYUp,
+    ebitdaQuarterYoYUp,
     ebitdaMarginQoQUp,
     ebitdaMarginYoYUp,
     peRising: peCheck
@@ -80,10 +86,13 @@ export function emptyFundamentals(reason) {
     available: false,
     reason,
     score: 0,
-    maxScore: 5,
+    maxScore: 8,
     checks: {
       netIncomeYoYUp: unknownCheck(),
       operatingIncomeYoYUp: unknownCheck(),
+      revenueQuarterYoYUp: unknownCheck(),
+      epsQuarterYoYUp: unknownCheck(),
+      ebitdaQuarterYoYUp: unknownCheck(),
       ebitdaMarginQoQUp: unknownCheck(),
       ebitdaMarginYoYUp: unknownCheck(),
       peRising: unknownCheck()

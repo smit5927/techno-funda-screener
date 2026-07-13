@@ -47,9 +47,10 @@ function buildMessage(scan, events) {
     `Market snapshot: Total ${scan.summary.total} | Entry candidates ${scan.summary.entry} | Exit candidates ${scan.summary.exit} | Watch ${scan.summary.watch}`,
     `Trade sheet: ${scan.tradeSettings?.scopeLabel || "All NSE Market"} | ${scan.tradeSettings?.qualityLabel || "Best only (A+/A)"}`,
     `Positions open ${scan.tradeSummary?.open ?? 0} | Pending buy ${scan.tradeSummary?.pendingEntry ?? 0} | Pending winner add ${scan.portfolioSummary?.pendingAdds ?? 0} | Pending sell ${scan.tradeSummary?.pendingExit ?? 0}`,
-    `P&L realized ${fmt(scan.tradeSummary?.realizedPnl)} | unrealized ${fmt(scan.tradeSummary?.unrealizedPnl)}`,
+    `P&L realized ${fmt(scan.tradeSummary?.realizedPnl)} | unrealized ${fmt(scan.tradeSummary?.unrealizedPnl)} (${fmt(scan.portfolioSummary?.unrealizedPnlPct)}%)`,
     `Portfolio capital ${fmt(scan.portfolioSummary?.totalCapital)} | deployed ${fmt(scan.portfolioSummary?.deployedCapital)} | cash ${fmt(scan.portfolioSummary?.availableCash)} | risk ${fmt(scan.portfolioSummary?.portfolioRisk)} (${fmt(scan.portfolioSummary?.portfolioRiskPct)}%)`,
-    `Portfolio slots ${scan.portfolioSummary?.openPositions ?? 0}/${scan.portfolioSummary?.maxOpenPositions ?? 10} | waiting ranked entries ${scan.portfolioSummary?.waitingCandidates ?? 0}`,
+    `Portfolio slots ${scan.portfolioSummary?.openPositions ?? 0}/${scan.portfolioSummary?.maxOpenPositions ?? 15} | waiting ranked entries ${scan.portfolioSummary?.waitingCandidates ?? 0}`,
+    `Market risk ${scan.portfolioSummary?.marketRiskMode || "NA"} | exposure cap ${fmt(scan.portfolioSummary?.effectiveExposureCapPct)}% | drawdown ${fmt(scan.portfolioSummary?.drawdownPct)}%`,
     ""
   ];
 

@@ -36,16 +36,19 @@ export async function buildInstitutionalContext(config, benchmarkDaily, marketCo
       derivatives: emptyDerivativesLayer("Derivatives context disabled"),
       options: emptyLayer("Option-chain context disabled"),
       commodity: emptyLayer("Commodity context disabled"),
+      delivery: emptyLayer("NSE delivery context disabled"),
       fnoBySymbol: new Map(),
-      oiBySymbol: new Map()
+      oiBySymbol: new Map(),
+      deliveryBySymbol: new Map()
     };
   }
 
-  const [index, commodity, derivatives, options] = await Promise.all([
+  const [index, commodity, derivatives, options, delivery] = await Promise.all([
     buildIndexLayer(rules, benchmarkDaily, marketContext),
     buildCommodityLayer(rules),
     buildDerivativesLayer(rules),
-    buildOptionsLayer(rules)
+    buildOptionsLayer(rules),
+    buildDeliveryLayer(rules, benchmarkDaily)
   ]);
 
   return {
@@ -55,13 +58,15 @@ export async function buildInstitutionalContext(config, benchmarkDaily, marketCo
     derivatives: derivatives.summary,
     options,
     commodity,
+    delivery: delivery.summary,
     fnoBySymbol: derivatives.fnoBySymbol,
-    oiBySymbol: derivatives.oiBySymbol
+    oiBySymbol: derivatives.oiBySymbol,
+    deliveryBySymbol: delivery.deliveryBySymbol
   };
 }
 
 export function institutionalContextForPayload(context) {
-  const { fnoBySymbol, oiBySymbol, ...payload } = context || {};
+  const { fnoBySymbol, oiBySymbol, deliveryBySymbol, ...payload } = context || {};
   return payload;
 }
 
@@ -69,6 +74,12 @@ export function buildSymbolInstitutionalContext(item, marketContext) {
   const symbol = normalizeSymbol(item.symbol);
   const fno = marketContext?.fnoBySymbol?.get(symbol) || null;
   const oi = marketContext?.oiBySymbol?.get(symbol) || null;
+  const operator = marketContext?.deliveryBySymbol?.get(symbol) || {
+    dataAvailable: false,
+    accumulation: false,
+    distribution: false,
+    reason: marketContext?.delivery?.reason || "NSE delivery history unavailable."
+  };
   const sectorLink = inferSectorProxy(item.industry);
   const index = buildSymbolIndexLayer(item, marketContext?.index, sectorLink);
   const commodity = buildSymbolCommodityLayer(sectorLink, marketContext?.commodity);
@@ -98,24 +109,27 @@ export function buildSymbolInstitutionalContext(item, marketContext) {
     index.supportsLongs,
     derivatives.fnoEligible,
     options.supportsLongs,
-    commodity.supportsSector
+    commodity.supportsSector,
+    operator.accumulation
   ].filter(Boolean).length;
   const dataGaps = [
     !index.dataAvailable,
     !derivatives.dataAvailable,
     !options.dataAvailable,
-    !commodity.dataAvailable
+    !commodity.dataAvailable,
+    !operator.dataAvailable
   ].filter(Boolean).length;
 
   return {
     score,
-    maxScore: 4,
-    grade: score >= 4 ? "Institutional A" : score >= 3 ? "Institutional B" : score >= 2 ? "Institutional C" : "Context weak",
+    maxScore: 5,
+    grade: score >= 5 ? "Institutional A" : score >= 4 ? "Institutional B" : score >= 2 ? "Institutional C" : "Context weak",
     dataGaps,
     index,
     derivatives,
     options,
-    commodity
+    commodity,
+    operator
   };
 }
 
@@ -126,6 +140,7 @@ export function buildInstitutionalReasons(context) {
     `Derivatives context: ${context.derivatives.reason}`,
     `Options context: ${context.options.reason}`,
     `Commodity/currency context: ${context.commodity.reason}`,
+    `Operator/delivery context: ${context.operator.reason}`,
     `Institutional confluence score ${context.score}/${context.maxScore} (${context.grade}).`
   ];
 }
@@ -250,6 +265,102 @@ async function buildDerivativesLayer(rules) {
       oiSymbolCount: oiBySymbol.size,
       reason: `${lotReason} ${oiReason}`.trim()
     }
+  };
+}
+
+async function buildDeliveryLayer(rules, benchmarkDaily) {
+  if (rules.deliveryEnabled === false) {
+    return { deliveryBySymbol: new Map(), summary: emptyLayer("NSE delivery context disabled") };
+  }
+  const latestDate = benchmarkDaily[benchmarkDaily.length - 1]?.date;
+  const candidateDates = previousWeekdays(latestDate, 12);
+  const downloads = await Promise.all(candidateDates.map(async (date) => {
+    const [year, month, day] = date.split("-");
+    const compactDate = `${day}${month}${year}`;
+    const url = `https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_${compactDate}.csv`;
+    try {
+      return { date, rows: parseCsv(await fetchText(url, { Referer: "https://www.nseindia.com/all-reports" })) };
+    } catch {
+      return null;
+    }
+  }));
+  const sessions = downloads.filter(Boolean).slice(0, 6);
+  const historyBySymbol = new Map();
+  for (const session of sessions) {
+    for (const row of session.rows) {
+      if (String(row.series || "").trim().toUpperCase() !== "EQ") continue;
+      const symbol = normalizeSymbol(row.symbol);
+      if (!symbol) continue;
+      if (!historyBySymbol.has(symbol)) historyBySymbol.set(symbol, []);
+      historyBySymbol.get(symbol).push({
+        date: session.date,
+        previousClose: numberOrNull(row.prev_close),
+        close: numberOrNull(row.close_price),
+        averagePrice: numberOrNull(row.avg_price),
+        tradedQuantity: numberOrNull(row.ttl_trd_qnty),
+        deliveryQuantity: numberOrNull(row.deliv_qty),
+        deliveryPct: numberOrNull(row.deliv_per)
+      });
+    }
+  }
+  const deliveryBySymbol = new Map();
+  const minimumRatio = Number(rules.deliveryExpansionMultiple) || 1.2;
+  for (const [symbol, history] of historyBySymbol) {
+    deliveryBySymbol.set(symbol, analyzeDeliveryHistory(history, minimumRatio));
+  }
+  return {
+    deliveryBySymbol,
+    summary: {
+      dataAvailable: sessions.length > 0,
+      source: "NSE Full Bhavcopy and Security Deliverable Data",
+      sessionCount: sessions.length,
+      symbolCount: deliveryBySymbol.size,
+      latestDate: sessions[0]?.date || null,
+      reason: sessions.length
+        ? `Official NSE delivery history loaded for ${deliveryBySymbol.size} EQ symbols across ${sessions.length} sessions.`
+        : "Official NSE security-deliverable bhavcopy unavailable for the recent sessions."
+    }
+  };
+}
+
+export function analyzeDeliveryHistory(history = [], minimumRatio = 1.2) {
+  const sorted = [...history].sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  const latest = sorted[0];
+  const prior = sorted.slice(1, 6);
+  const averageTraded = finiteAverage(prior.map((row) => row.tradedQuantity));
+  const averageDelivery = finiteAverage(prior.map((row) => row.deliveryQuantity));
+  const tradedQuantityRatio = ratio(latest?.tradedQuantity, averageTraded);
+  const deliveryQuantityRatio = ratio(latest?.deliveryQuantity, averageDelivery);
+  const priceChangePct =
+    Number.isFinite(latest?.close) && Number.isFinite(latest?.previousClose) && latest.previousClose > 0
+      ? ((latest.close / latest.previousClose) - 1) * 100
+      : null;
+  const closeAboveAveragePrice =
+    Number.isFinite(latest?.close) && Number.isFinite(latest?.averagePrice) && latest.close >= latest.averagePrice;
+  const participation =
+    Number.isFinite(tradedQuantityRatio) && Number.isFinite(deliveryQuantityRatio) &&
+    tradedQuantityRatio >= minimumRatio && deliveryQuantityRatio >= minimumRatio;
+  const accumulation = participation && priceChangePct > 0 && closeAboveAveragePrice;
+  const distribution = participation && priceChangePct < 0 && !closeAboveAveragePrice;
+  return {
+    dataAvailable: Boolean(latest && prior.length >= 2),
+    asOf: latest?.date || null,
+    tradedQuantityRatio,
+    deliveryQuantityRatio,
+    deliveryPct: latest?.deliveryPct ?? null,
+    averagePrice: latest?.averagePrice ?? null,
+    priceChangePct,
+    closeAboveAveragePrice,
+    participation,
+    accumulation,
+    distribution,
+    reason: !latest
+      ? "NSE delivery record unavailable for this symbol."
+      : accumulation
+        ? `Operator accumulation confirmed: price ${fmt(priceChangePct)}%, traded quantity ${fmt(tradedQuantityRatio)}x, delivery ${fmt(deliveryQuantityRatio)}x, close above average price ${fmt(latest.averagePrice)}.`
+        : distribution
+          ? `Operator distribution warning: price ${fmt(priceChangePct)}%, traded quantity ${fmt(tradedQuantityRatio)}x and delivery ${fmt(deliveryQuantityRatio)}x.`
+          : `Delivery neutral: traded quantity ${fmt(tradedQuantityRatio)}x, delivery ${fmt(deliveryQuantityRatio)}x, delivery percentage ${fmt(latest.deliveryPct)}%.`
   };
 }
 
@@ -569,6 +680,26 @@ function firstNumericValue(record) {
 function numberOrNull(value) {
   const number = Number(value);
   return Number.isFinite(number) ? number : null;
+}
+
+function previousWeekdays(latestDate, count) {
+  const start = new Date(`${latestDate || new Date().toISOString().slice(0, 10)}T12:00:00Z`);
+  const output = [];
+  for (let offset = 0; output.length < count && offset < count * 3; offset += 1) {
+    const date = new Date(start.getTime() - offset * 24 * 60 * 60 * 1000);
+    const day = date.getUTCDay();
+    if (day !== 0 && day !== 6) output.push(date.toISOString().slice(0, 10));
+  }
+  return output;
+}
+
+function finiteAverage(values) {
+  const finite = values.filter(Number.isFinite);
+  return finite.length ? finite.reduce((sum, value) => sum + value, 0) / finite.length : null;
+}
+
+function ratio(value, base) {
+  return Number.isFinite(value) && Number.isFinite(base) && base > 0 ? value / base : null;
 }
 
 function maxOiStrike(items) {

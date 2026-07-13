@@ -54,6 +54,7 @@ test("portfolio live summary reports MTM and risk against total capital", () => 
   const summary = summarizeLivePositions(positions, 1_000_000);
 
   assert.equal(summary.unrealizedPnl, 850);
+  assert.equal(summary.unrealizedPnlPct, 5.67);
   assert.equal(summary.downsideToStops, 1200);
   assert.equal(summary.stopRiskPct, 0.12);
   assert.equal(summary.breachCount, 1);

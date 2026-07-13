@@ -1,6 +1,8 @@
 import { appConfig } from "./config.js";
 import {
   calculateAtr,
+  calculateMacd,
+  calculateObv,
   calculateRelativeStrength,
   calculateRsi,
   calculateSupertrend,
@@ -121,7 +123,7 @@ export async function runScreener(options = {}) {
   };
 
   saveLatestScan(payload);
-  const journal = await updateTradeJournal(payload, config);
+  const journal = await updateTradeJournal(payload, { ...config, marketContext });
   const visibleTrades = journal.visibleTrades || journal.trades;
   payload.tradeSummary = summarizeTrades(visibleTrades);
   payload.portfolioSummary = journal.portfolioSummary;
@@ -438,7 +440,7 @@ async function scanSymbol(
   const setupReason = buildSetupStrengthReasons(setupStrength);
   const institutionalContext = buildSymbolInstitutionalContext(resolvedItem, institutionalMarketContext);
   const institutionalReason = buildInstitutionalReasons(institutionalContext);
-  const entryStyle = buildEntryStyle(setupStrength, gtfContext);
+  const entryStyle = buildEntryStyle(setupStrength);
   const weaknessReason = buildWeaknessReasons({
     dailyShortRs,
     dailyLongRs,
@@ -541,6 +543,7 @@ function buildSetupStrength({
   const previousCandle = dailyCandles[latestDailyIndex - 1] || null;
   const currentCandle = dailyCandles[latestDailyIndex] || null;
   const recentHighPeriod = setupRules.dailyRecentHighPeriod || 55;
+  const baseBreakoutPeriod = setupRules.baseBreakoutPeriod || 20;
   const yearHighPeriod = setupRules.dailyYearHighPeriod || 252;
   const volumeAveragePeriod = setupRules.volumeAveragePeriod || 50;
   const volumeExpansionMultiple = setupRules.volumeExpansionMultiple || 1.5;
@@ -554,8 +557,18 @@ function buildSetupStrength({
   const minimumAverageTurnover = setupRules.minimumAverageTurnover || 10_000_000;
 
   const priorRecentHigh = highestHigh(dailyCandles, recentHighPeriod, latestDailyIndex - 1);
+  const priorBaseHigh = highestHigh(dailyCandles, baseBreakoutPeriod, latestDailyIndex - 1);
+  const recentBaseLow = lowestLow(dailyCandles, Math.floor(baseBreakoutPeriod / 2), latestDailyIndex - 1);
+  const previousBaseLow = lowestLow(
+    dailyCandles,
+    Math.floor(baseBreakoutPeriod / 2),
+    latestDailyIndex - 1 - Math.floor(baseBreakoutPeriod / 2)
+  );
   const priorYearHigh = highestHigh(dailyCandles, yearHighPeriod, latestDailyIndex - 1);
   const recentHighBreakout = Number.isFinite(priorRecentHigh) && close > priorRecentHigh;
+  const baseBreakout = Number.isFinite(priorBaseHigh) && close > priorBaseHigh;
+  const higherLowStructure =
+    Number.isFinite(recentBaseLow) && Number.isFinite(previousBaseLow) && recentBaseLow > previousBaseLow;
   const yearHighBreakout = Number.isFinite(priorYearHigh) && close > priorYearHigh;
   const nearYearHigh =
     Number.isFinite(priorYearHigh) && close >= priorYearHigh * (1 - nearYearHighPct / 100);
@@ -583,6 +596,14 @@ function buildSetupStrength({
   const liquidEnough =
     Number.isFinite(averageTurnover) && averageTurnover >= minimumAverageTurnover;
   const candle = candleSignals(previousCandle, currentCandle);
+  const macd = calculateMacd(dailyCandles);
+  const macdValue = latestValue(macd.macd);
+  const macdSignal = latestValue(macd.signal);
+  const macdHistogram = latestValue(macd.histogram);
+  const macdBullish =
+    Number.isFinite(macdValue) && Number.isFinite(macdSignal) && macdValue > 0 && macdValue > macdSignal;
+  const obvSeries = calculateObv(dailyCandles);
+  const obvRising = risingOverLookback(obvSeries, 10);
   const marketRegimeStrong = marketContext?.strong === true;
 
   const previousLow = Number.isFinite(previousCandle?.low) ? previousCandle.low : null;
@@ -619,6 +640,8 @@ function buildSetupStrength({
 
   const checks = {
     recentHighBreakout,
+    baseBreakout,
+    higherLowStructure,
     yearHighBreakout,
     nearYearHigh,
     volumeExpansion,
@@ -634,6 +657,8 @@ function buildSetupStrength({
     bullishCandleConfirmation: candle.bullishConfirmation,
     bullishEngulfing: candle.bullishEngulfing,
     hammer: candle.hammer,
+    macdBullish,
+    obvRising,
     retracementBuyZone: retracement.retracementBuyZone,
     fibonacciSupportNearby: fibonacci.supportNearby,
     bollingerTrendSupport: bollinger.trendSupport,
@@ -649,6 +674,12 @@ function buildSetupStrength({
     checks,
     values: {
       priorRecentHigh,
+      priorBaseHigh,
+      recentBaseLow,
+      previousBaseLow,
+      macd: macdValue,
+      macdSignal,
+      macdHistogram,
       priorYearHigh,
       volumeAverage,
       volumeRatio,
@@ -697,6 +728,7 @@ function buildSetupStrength({
       bollingerBandwidthPct: bollinger.bandwidthPct,
       bollingerRangeBound: bollinger.rangeBound,
       recentHighPeriod,
+      baseBreakoutPeriod,
       yearHighPeriod,
       nearYearHighPct,
       volumeAveragePeriod,
@@ -926,23 +958,16 @@ function supportCandidate(source, value, close) {
   };
 }
 
-function buildEntryStyle(setupStrength, gtfContext) {
+function buildEntryStyle(setupStrength) {
   const checks = setupStrength?.checks || {};
   const values = setupStrength?.values || {};
-  if (gtfContext?.preferredEntryStyle === "GTF_DEMAND_RETEST") {
-    const zone = gtfContext.dailyDemand;
-    return {
-      type: "RETRACEMENT_BUY",
-      label: `GTF demand-zone retracement ${fmt(zone?.distal)}-${fmt(zone?.proximal)}`
-    };
-  }
   if (checks.retracementBuyZone) {
     return {
       type: "RETRACEMENT_BUY",
       label: `Retracement buy near ${values.retracementSupportSource || "support"}`
     };
   }
-  if (checks.yearHighBreakout || checks.recentHighBreakout) {
+  if (checks.yearHighBreakout || checks.recentHighBreakout || checks.baseBreakout) {
     return { type: "BREAKOUT_BUY", label: "Breakout buy" };
   }
   if (checks.nearYearHigh && checks.volumeExpansion) {
@@ -1082,8 +1107,13 @@ function buildConceptCoverage(row) {
   );
   addConcept(
     "Breakout or 52-week high zone",
-    checks.recentHighBreakout || checks.yearHighBreakout || checks.nearYearHigh,
-    Number.isFinite(values.priorRecentHigh) || Number.isFinite(values.priorYearHigh)
+    checks.baseBreakout || checks.recentHighBreakout || checks.yearHighBreakout || checks.nearYearHigh,
+    Number.isFinite(values.priorBaseHigh) || Number.isFinite(values.priorRecentHigh) || Number.isFinite(values.priorYearHigh)
+  );
+  addConcept(
+    "Price-action base and higher-low structure",
+    checks.baseBreakout && checks.higherLowStructure,
+    Number.isFinite(values.priorBaseHigh) && Number.isFinite(values.recentBaseLow)
   );
   addConcept(
     "Retracement/pullback buy setup",
@@ -1110,6 +1140,16 @@ function buildConceptCoverage(row) {
     "Volume participation",
     checks.volumeExpansion,
     Number.isFinite(values.volumeRatio)
+  );
+  addConcept(
+    "MACD and OBV confirmation",
+    checks.macdBullish && checks.obvRising,
+    Number.isFinite(values.macd) && Number.isFinite(values.macdSignal)
+  );
+  addConcept(
+    "Operator delivery confirmation",
+    institutional.operator?.accumulation,
+    institutional.operator?.dataAvailable
   );
   addConcept(
     "Sector breadth",
@@ -1262,9 +1302,19 @@ function buildSetupStrengthReasons(setupStrength) {
   if (checks.yearHighBreakout) {
     reasons.push(`52-week breakout: close crossed prior 52-week high ${fmt(values.priorYearHigh)}.`);
   }
+  if (checks.baseBreakout) {
+    reasons.push(
+      `${values.baseBreakoutPeriod}-day base breakout above ${fmt(values.priorBaseHigh)}${checks.higherLowStructure ? " with a higher-low structure" : ""}.`
+    );
+  }
   if (checks.volumeExpansion) {
     reasons.push(
       `Volume shocker: latest volume is ${fmt(values.volumeRatio)}x the ${values.volumeAveragePeriod}-day average.`
+    );
+  }
+  if (checks.macdBullish || checks.obvRising) {
+    reasons.push(
+      `Momentum confirmation: MACD is ${checks.macdBullish ? "above signal and zero" : "not fully confirmed"}; OBV is ${checks.obvRising ? "rising" : "not rising"}.`
     );
   }
   if (checks.retracementBuyZone) {
@@ -1384,6 +1434,17 @@ function buildMarketContext(benchmarkDaily, rules) {
   const sma50 = latestValue(simpleMovingAverage(benchmarkDaily, 50));
   const sma200 = latestValue(simpleMovingAverage(benchmarkDaily, 200));
   const close = latest?.close;
+  const bollinger = buildBollingerContext(
+    benchmarkDaily,
+    benchmarkDaily.length - 1,
+    close,
+    rules.setupStrength || {}
+  );
+  const previous21 = benchmarkDaily[benchmarkDaily.length - 22]?.close;
+  const return21Pct =
+    Number.isFinite(close) && Number.isFinite(previous21) && previous21 > 0
+      ? ((close / previous21) - 1) * 100
+      : null;
   const checks = {
     rsiAbove50: Number.isFinite(rsi) && rsi > 50,
     closeAbove50Dma: Number.isFinite(close) && Number.isFinite(sma50) && close > sma50,
@@ -1391,6 +1452,10 @@ function buildMarketContext(benchmarkDaily, rules) {
     fastAboveSlow: Number.isFinite(sma50) && Number.isFinite(sma200) && sma50 > sma200
   };
   const score = Object.values(checks).filter(Boolean).length;
+  const rangeBound =
+    bollinger.rangeBound === true && Number.isFinite(return21Pct) && Math.abs(return21Pct) <= 5;
+  const riskMode = score >= 3 ? "BULL" : rangeBound ? "RANGE" : score === 2 ? "MIXED" : "WEAK";
+  const exposureCapPct = riskMode === "BULL" ? 100 : riskMode === "MIXED" ? 50 : 25;
   return {
     asOf: latest?.date || null,
     close,
@@ -1399,8 +1464,19 @@ function buildMarketContext(benchmarkDaily, rules) {
     sma200,
     checks,
     score,
+    riskMode,
+    exposureCapPct,
+    return21Pct,
+    bollingerBandwidthPct: bollinger.bandwidthPct,
+    rangeBound,
     strong: score >= 3,
-    label: score >= 3 ? "NIFTY 500 bullish/healthy" : score === 2 ? "NIFTY 500 mixed" : "NIFTY 500 weak"
+    label: score >= 3
+      ? "NIFTY 500 bullish/healthy"
+      : rangeBound
+        ? "NIFTY 500 range-bound; new capital capped at 25%"
+        : score === 2
+          ? "NIFTY 500 mixed; new capital capped at 50%"
+          : "NIFTY 500 weak; new capital capped at 25%"
   };
 }
 

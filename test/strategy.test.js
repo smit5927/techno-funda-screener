@@ -2,10 +2,13 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   calculateRelativeStrength,
+  calculateMacd,
+  calculateObv,
   calculateRsi,
   calculateSupertrend,
   latestValue
 } from "../src/indicators.js";
+import { analyzeDeliveryHistory } from "../src/institutional-context.js";
 import {
   applyExecutionPriceCorrection,
   rowPassesTradeQuality,
@@ -74,6 +77,24 @@ test("RSI and Supertrend produce finite values on sufficient history", () => {
 
   assert.ok(Number.isFinite(latestValue(calculateRsi(candles, 14))));
   assert.ok(Number.isFinite(latestValue(calculateSupertrend(candles, 10, 3))));
+  const macd = calculateMacd(candles);
+  assert.ok(Number.isFinite(latestValue(macd.macd)));
+  assert.ok(Number.isFinite(latestValue(macd.signal)));
+  assert.ok(latestValue(calculateObv(candles)) > 0);
+});
+
+test("official delivery history confirms operator accumulation only with price and participation", () => {
+  const history = [
+    { date: "2026-07-10", previousClose: 100, close: 104, averagePrice: 102, tradedQuantity: 2000, deliveryQuantity: 1200, deliveryPct: 60 },
+    { date: "2026-07-09", tradedQuantity: 1000, deliveryQuantity: 500 },
+    { date: "2026-07-08", tradedQuantity: 1000, deliveryQuantity: 500 },
+    { date: "2026-07-07", tradedQuantity: 1000, deliveryQuantity: 500 }
+  ];
+  const result = analyzeDeliveryHistory(history, 1.2);
+  assert.equal(result.accumulation, true);
+  assert.equal(result.distribution, false);
+  assert.equal(result.tradedQuantityRatio, 2);
+  assert.equal(result.deliveryQuantityRatio, 2.4);
 });
 
 test("trade settings default to all-market best-only mode", () => {

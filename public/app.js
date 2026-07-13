@@ -296,20 +296,22 @@ function renderSummary(payload) {
     (payload.tradeSummary?.pendingPartialExit || 0);
   elements.closedTradesCount.textContent = payload.tradeSummary?.closed || 0;
   elements.realizedPnl.textContent = compact(payload.tradeSummary?.realizedPnl || 0);
-  elements.unrealizedPnl.textContent = compact(payload.tradeSummary?.unrealizedPnl || 0);
+  const unrealizedPct = payload.portfolioSummary?.unrealizedPnlPct;
+  elements.unrealizedPnl.textContent = `${compact(payload.tradeSummary?.unrealizedPnl || 0)}${Number.isFinite(unrealizedPct) ? ` (${compact(unrealizedPct)}%)` : ""}`;
   elements.tradeScopeText.textContent = payload.tradeSettings?.scopeLabel || "All NSE Market";
   elements.tradeQualityText.textContent = payload.tradeSettings?.qualityLabel || "Best only";
   const portfolio = payload.portfolioSummary || {};
   elements.totalCapital.textContent = compact(portfolio.totalCapital || payload.tradeSettings?.totalCapital || 1000000);
   elements.deployedCapital.textContent = compact(portfolio.deployedCapital || 0);
   elements.availableCash.textContent = compact(portfolio.availableCash || 0);
+  elements.availableCash.title = `Deployable cash; actual cash ${compact(portfolio.actualCash || portfolio.availableCash || 0)}. Market ${portfolio.marketRiskMode || "NA"}, exposure cap ${compact(portfolio.effectiveExposureCapPct ?? 100)}%.`;
   elements.portfolioRisk.textContent = `${compact(portfolio.portfolioRisk || 0)} (${compact(portfolio.portfolioRiskPct || 0)}%)`;
   const listLabel = state.currentList === "all" ? "All Lists" : listPayload?.label || state.currentList;
   const benchmarkLabel = payload.benchmarkLabel || payload.rules?.benchmarkLabel || payload.benchmark;
   const staleText = payload.scannedAt && isStaleScan(payload.scannedAt) ? " | Stale: waiting for next cloud scan" : "";
   const institutionalText = institutionalMeta(payload.institutionalContext);
   elements.scanMeta.textContent = payload.scannedAt
-    ? `Last scan ${formatDateTime(payload.scannedAt)} | ${listLabel} | Benchmark ${benchmarkLabel}${institutionalText}${staleText}`
+    ? `Last scan ${formatDateTime(payload.scannedAt)} | ${listLabel} | Benchmark ${benchmarkLabel} | Risk ${payload.marketContext?.riskMode || "NA"}, cap ${compact(payload.marketContext?.exposureCapPct ?? 100)}%${institutionalText}${staleText}`
     : "Waiting for first scan";
 }
 
@@ -432,7 +434,7 @@ function renderLiveMtmSummary() {
   const mtm = state.liveMtm;
   if (!mtm) return;
   const summary = mtm.summary || {};
-  elements.unrealizedPnl.textContent = compact(summary.unrealizedPnl || 0);
+  elements.unrealizedPnl.textContent = `${compact(summary.unrealizedPnl || 0)} (${compact(summary.unrealizedPnlPct || 0)}%)`;
   elements.liveStopRisk.textContent = `${compact(summary.downsideToStops || 0)} (${compact(summary.stopRiskPct || 0)}%)`;
   const warningCount = (summary.breachCount || 0) + (summary.nearStopCount || 0);
   const statusClass = summary.breachCount ? "danger" : warningCount ? "warning" : mtm.marketStatus === "OPEN" ? "live" : "closed";
@@ -485,7 +487,7 @@ function rowHtml(row, index) {
       <td class="${classForAbove(row.dailyLongRs, 0)}">${pct(row.dailyLongRs)}</td>
       <td class="${classForAbove(row.dailyShortRs, 0)}">${pct(row.dailyShortRs)}</td>
       <td class="${classForAbove(row.dailyRsi, 50)}">${fmt(row.dailyRsi)}</td>
-      <td>${row.fundamentalScore || 0}/${row.fundamental?.maxScore || 5}</td>
+      <td>${row.fundamentalScore || 0}/${row.fundamental?.maxScore || 8}</td>
       <td class="${row.gtfContext?.supplyBlocked ? "bad" : row.gtfContext?.score >= 5 ? "good" : ""}">${row.gtfContext?.dataAvailable ? `${fmt(row.gtfContext.score)}/${fmt(row.gtfContext.maxScore)}` : "NA"}</td>
       <td><strong>${escapeHtml(row.setupGrade || "")} ${row.score || 0}</strong></td>
       <td class="reasonCell" title="${escapeHtml(fullReason)}"><span class="signalPreview">${escapeHtml(reasonSummary(row.signalReason))}</span></td>
@@ -538,6 +540,9 @@ function renderDetail(row, trade = null) {
     ` : ""}
     <div class="checkGrid">
       ${checkHtml("Net income YoY", checks.netIncomeYoYUp)}
+      ${checkHtml("Quarterly sales YoY", checks.revenueQuarterYoYUp)}
+      ${checkHtml("Quarterly EPS YoY", checks.epsQuarterYoYUp)}
+      ${checkHtml("Quarterly EBITDA YoY", checks.ebitdaQuarterYoYUp)}
       ${checkHtml("Operating income YoY", checks.operatingIncomeYoYUp)}
       ${checkHtml("EBITDA margin QoQ", checks.ebitdaMarginQoQUp, true)}
       ${checkHtml("EBITDA margin YoY", checks.ebitdaMarginYoYUp, true)}

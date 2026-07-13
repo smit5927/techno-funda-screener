@@ -2,9 +2,12 @@ const ACTIVE_STATUSES = new Set(["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"]
 
 export function portfolioConfig(config = {}) {
   const trade = config.trade || config;
+  const totalCapital = positive(trade.totalCapital, 1_000_000);
   return {
-    totalCapital: positive(trade.totalCapital, 1_000_000),
-    maxOpenPositions: integer(trade.maxOpenPositions, 10),
+    totalCapital,
+    maxOpenPositions: trade.autoPositionBreadth === false
+      ? integer(trade.maxOpenPositions, adaptivePositionCount(totalCapital))
+      : adaptivePositionCount(totalCapital),
     maxPositionPct: positive(trade.maxPositionPct, 10),
     riskPerTradePct: positive(trade.riskPerTradePct, 1),
     maxPortfolioRiskPct: positive(trade.maxPortfolioRiskPct, 6),
@@ -12,7 +15,7 @@ export function portfolioConfig(config = {}) {
     minimumStopPct: positive(trade.minimumStopPct, 1.5),
     maximumStopPct: positive(trade.maximumStopPct, 8),
     partialExitPct: positive(trade.partialExitPct, 50),
-    partialProfitR: positive(trade.partialProfitR, 1.5),
+    partialProfitR: positive(trade.partialProfitR, 2),
     rotationMinRankAdvantage: positive(trade.rotationMinRankAdvantage, 15),
     rotationMinimumHoldingDays: integer(trade.rotationMinimumHoldingDays, 5),
     pyramidingEnabled: trade.pyramidingEnabled !== false,
@@ -20,7 +23,9 @@ export function portfolioConfig(config = {}) {
     pyramidMaxPositionPct: positive(trade.pyramidMaxPositionPct, 15),
     pyramidAddMaxPct: positive(trade.pyramidAddMaxPct, 2.5),
     pyramidAddRiskPct: positive(trade.pyramidAddRiskPct, 0.5),
-    pyramidMinimumRewardR: positive(trade.pyramidMinimumRewardR, 1)
+    pyramidMinimumRewardR: positive(trade.pyramidMinimumRewardR, 1),
+    marketRiskMode: config.marketContext?.riskMode || "UNRESTRICTED",
+    marketExposureCapPct: positive(config.marketContext?.exposureCapPct, 100)
   };
 }
 
@@ -75,8 +80,7 @@ export function structuralStop(row = {}, price, config = {}) {
     row.dailySupertrend,
     values.fourCandleLow,
     values.twoCandleLow,
-    values.fibonacciSupportNearby ? values.fibonacciNearestPrice : null,
-    row.gtfContext?.structuralStop
+    values.fibonacciSupportNearby ? values.fibonacciNearestPrice : null
   ].filter((value) => Number.isFinite(value) && value > 0 && value < price);
   const raw = candidates.length ? Math.max(...candidates) : price * (1 - rules.maximumStopPct / 100);
   const closestAllowed = price * (1 - rules.minimumStopPct / 100);
@@ -164,10 +168,20 @@ export function portfolioSummary(trades = [], candidates = [], config = {}) {
     pendingEntries.reduce((sum, trade) => sum + (Number(trade.plannedRisk) || 0), 0) +
     active.reduce((sum, trade) => sum + (Number(trade.pendingAdd?.plannedRisk) || 0), 0);
   const riskLimit = rules.totalCapital * rules.maxPortfolioRiskPct / 100;
-  const availableCash = Math.max(
+  const actualCash = Math.max(
     0,
     rules.totalCapital + realizedPnl - investedCapital - reservedCapital
   );
+  const totalEquity = rules.totalCapital + realizedPnl + unrealizedPnl;
+  const drawdownPct = Math.max(0, ((rules.totalCapital - totalEquity) / rules.totalCapital) * 100);
+  const drawdownExposureCapPct = drawdownPct >= 8 ? 0 : drawdownPct >= 5 ? 50 : 100;
+  const effectiveExposureCapPct = Math.min(
+    rules.marketExposureCapPct,
+    drawdownExposureCapPct
+  );
+  const exposureLimit = rules.totalCapital * effectiveExposureCapPct / 100;
+  const exposureRoom = Math.max(0, exposureLimit - investedCapital - reservedCapital);
+  const availableCash = Math.min(actualCash, exposureRoom);
   const sectorExposure = {};
   for (const trade of [...active, ...pendingEntries]) {
     const sector = normalizedSector(trade.industry || trade.entrySnapshot?.industry);
@@ -183,9 +197,17 @@ export function portfolioSummary(trades = [], candidates = [], config = {}) {
     reservedCapital: round(reservedCapital),
     deployedCapital: round(investedCapital + reservedCapital),
     availableCash: round(availableCash),
+    actualCash: round(actualCash),
     realizedPnl: round(realizedPnl),
     unrealizedPnl: round(unrealizedPnl),
-    totalEquity: round(rules.totalCapital + realizedPnl + unrealizedPnl),
+    totalEquity: round(totalEquity),
+    unrealizedPnlPct: investedCapital > 0 ? round(unrealizedPnl / investedCapital * 100) : 0,
+    drawdownPct: round(drawdownPct),
+    marketRiskMode: rules.marketRiskMode,
+    marketExposureCapPct: round(rules.marketExposureCapPct),
+    drawdownExposureCapPct: round(drawdownExposureCapPct),
+    effectiveExposureCapPct: round(effectiveExposureCapPct),
+    exposureLimit: round(exposureLimit),
     portfolioRisk: round(portfolioRisk),
     portfolioRiskPct: round(portfolioRisk / rules.totalCapital * 100),
     riskLimit: round(riskLimit),
@@ -205,12 +227,13 @@ export function portfolioSummary(trades = [], candidates = [], config = {}) {
 export function breakoutContinuationState(row = {}) {
   const checks = row.setupStrength?.checks || {};
   const values = row.setupStrength?.values || {};
+  const base = checks.baseBreakout === true && checks.higherLowStructure === true;
   const recent = checks.recentHighBreakout === true;
   const yearly = checks.yearHighBreakout === true;
   return {
-    breakout: recent || yearly,
-    type: yearly ? "52_WEEK_BREAKOUT" : recent ? "55_DAY_BREAKOUT" : null,
-    level: yearly ? values.priorYearHigh : recent ? values.priorRecentHigh : null
+    breakout: base || recent || yearly,
+    type: yearly ? "52_WEEK_BREAKOUT" : recent ? "55_DAY_BREAKOUT" : base ? "20_DAY_BASE_BREAKOUT" : null,
+    level: yearly ? values.priorYearHigh : recent ? values.priorRecentHigh : base ? values.priorBaseHigh : null
   };
 }
 
@@ -239,7 +262,7 @@ export function pyramidAddDecision(trade, row, portfolio = {}, config = {}) {
   if (!["A+", "A"].includes(String(row?.setupGrade || "").toUpperCase())) {
     reasons.push("Current setup is below A grade.");
   }
-  if (!breakout.breakout) reasons.push("No fresh 55-day or 52-week closing breakout.");
+  if (!breakout.breakout) reasons.push("No fresh higher-low base, 55-day or 52-week closing breakout.");
   if (!(close > entry)) reasons.push("Position is not trading above its average cost; averaging down is prohibited.");
   if (!Number.isFinite(rewardR) || rewardR < rules.pyramidMinimumRewardR) {
     reasons.push(`Winner has not reached the required ${rules.pyramidMinimumRewardR}R profit buffer.`);
@@ -253,6 +276,9 @@ export function pyramidAddDecision(trade, row, portfolio = {}, config = {}) {
   if (checks.marketRegimeStrong !== true) reasons.push("Broad-market regime is not supportive.");
   if (row?.sectorStrength?.ok === false) reasons.push("Sector breadth is weak.");
   if (row?.gtfContext?.supplyBlocked) reasons.push("Fresh GTF opposing supply blocks the add-on.");
+  if (row?.institutionalContext?.operator?.distribution) {
+    reasons.push("Official NSE delivery data shows distribution; winner add-on is blocked.");
+  }
   if (
     Number.isFinite(values.riskToSupertrendPct) &&
     values.riskToSupertrendPct > rules.maximumStopPct
@@ -268,7 +294,7 @@ export function pyramidAddDecision(trade, row, portfolio = {}, config = {}) {
     ...plan,
     eligible: plan.eligible,
     reasons: plan.eligible ? [
-      `${breakout.type === "52_WEEK_BREAKOUT" ? "52-week" : "55-day"} closing breakout at ${round(close)} above ${round(breakout.level)}.`,
+      `${breakout.type === "52_WEEK_BREAKOUT" ? "52-week" : breakout.type === "55_DAY_BREAKOUT" ? "55-day" : "20-day higher-low base"} closing breakout at ${round(close)} above ${round(breakout.level)}.`,
       `Winning position is ${round(rewardR)}R above average cost with a protected trailing stop.`,
       "Weekly RS and daily RS55 are rising; compulsory entry, A-grade quality, market and supply checks remain favorable."
     ] : [plan.reason],
@@ -355,8 +381,7 @@ export function nextTrailingStop(trade, row, config = {}) {
     trade.trailingStopPrice,
     row.dailySupertrend,
     values.fourCandleLow,
-    values.fibonacciSupportNearby ? values.fibonacciNearestPrice : null,
-    row.gtfContext?.structuralStop
+    values.fibonacciSupportNearby ? values.fibonacciNearestPrice : null
   ].filter((value) => Number.isFinite(value) && value > 0 && value < close);
   if (!candidates.length) return structuralStop(row, close, rules);
   const raw = Math.max(...candidates);
@@ -406,7 +431,7 @@ export function positionExitDecision(trade, row, config = {}) {
     partialReasons.push(`Profit reached ${round(rewardR)}R; lock ${rules.partialExitPct}% and trail the balance.`);
   }
   if (
-    weakness.score >= 2 &&
+    weakness.primaryScore >= 1 && weakness.score >= 2 &&
     !trade.partialExitTags?.includes("EARLY_WEAKNESS")
   ) {
     partialReasons.push(`Early deterioration: ${weakness.reasons.join("; ")}.`);
@@ -451,12 +476,14 @@ export function positionWeakness(row = {}) {
     reasons.push("close below 50-DMA");
   }
   if (!checks.marketRegimeStrong) reasons.push("broad-market regime not strong");
-  if (row.gtfContext?.supplyBlocked) reasons.push("GTF opposing supply is blocking price");
-  if (row.gtfContext?.checks?.roomForTwoR === false) reasons.push("GTF opposing supply leaves less than 2R room");
   if (["B", "C", "WATCH"].includes(String(row.setupGrade || "").toUpperCase())) {
     reasons.push(`setup grade ${row.setupGrade}`);
   }
-  return { score: reasons.length, reasons };
+  if (row.institutionalContext?.operator?.distribution) reasons.push("official NSE delivery distribution");
+  const primaryScore = reasons.length;
+  if (row.gtfContext?.supplyBlocked) reasons.push("GTF opposing supply confirmation");
+  if (row.gtfContext?.checks?.roomForTwoR === false) reasons.push("GTF confirms less than 2R room");
+  return { score: reasons.length, primaryScore, reasons };
 }
 
 export function rotationDecision(candidateRow, trades, rowBySymbol, config = {}) {
@@ -478,7 +505,7 @@ export function rotationDecision(candidateRow, trades, rowBySymbol, config = {})
     })
     .filter(Boolean)
     .filter((item) =>
-      item.weakness.score >= 2 &&
+      item.weakness.primaryScore >= 1 && item.weakness.score >= 2 &&
       (item.holdingDays >= rules.rotationMinimumHoldingDays || item.weakness.score >= 3)
     )
     .sort((a, b) => a.rank - b.rank);
@@ -520,6 +547,15 @@ function calendarDays(start, end) {
   const endMs = new Date(end || 0).getTime();
   if (!Number.isFinite(startMs) || !Number.isFinite(endMs)) return 0;
   return Math.max(0, Math.floor((endMs - startMs) / 86_400_000));
+}
+
+function adaptivePositionCount(totalCapital) {
+  if (totalCapital >= 50_000_000) return 50;
+  if (totalCapital >= 10_000_000) return 30;
+  if (totalCapital >= 5_000_000) return 25;
+  if (totalCapital >= 2_500_000) return 20;
+  if (totalCapital >= 1_000_000) return 15;
+  return 10;
 }
 
 function positive(value, fallback) {

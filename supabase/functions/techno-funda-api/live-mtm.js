@@ -39,6 +39,7 @@ export function calculatePositionMtm(trade, quote = {}) {
     stopPrice: round(stopPrice),
     unrealizedPnl: round(unrealizedPnl),
     unrealizedPnlPct: round(unrealizedPnlPct),
+    investedValue: hasPosition ? round(entryPrice * quantity) : null,
     marketValue: hasPosition ? round(ltp * quantity) : null,
     distanceToStopPct: round(distanceToStopPct),
     downsideToStop: round(downsideToStop),
@@ -54,6 +55,7 @@ export function summarizeLivePositions(positions, totalCapital) {
   const summary = (Array.isArray(positions) ? positions : []).reduce(
     (result, position) => {
       result.unrealizedPnl += finiteNumber(position?.unrealizedPnl) || 0;
+      result.investedValue += finiteNumber(position?.investedValue) || 0;
       result.marketValue += finiteNumber(position?.marketValue) || 0;
       result.downsideToStops += finiteNumber(position?.downsideToStop) || 0;
       if (position?.riskState === "BREACHED") result.breachCount += 1;
@@ -64,6 +66,8 @@ export function summarizeLivePositions(positions, totalCapital) {
     },
     {
       unrealizedPnl: 0,
+      unrealizedPnlPct: 0,
+      investedValue: 0,
       marketValue: 0,
       downsideToStops: 0,
       stopRiskPct: 0,
@@ -75,6 +79,10 @@ export function summarizeLivePositions(positions, totalCapital) {
   );
 
   summary.unrealizedPnl = round(summary.unrealizedPnl);
+  summary.investedValue = round(summary.investedValue);
+  summary.unrealizedPnlPct = summary.investedValue > 0
+    ? round((summary.unrealizedPnl / summary.investedValue) * 100)
+    : 0;
   summary.marketValue = round(summary.marketValue);
   summary.downsideToStops = round(summary.downsideToStops);
   summary.stopRiskPct = capital > 0 ? round((summary.downsideToStops / capital) * 100) : 0;

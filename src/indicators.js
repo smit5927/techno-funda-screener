@@ -140,6 +140,48 @@ export function simpleMovingAverage(candles, period) {
   return output;
 }
 
+export function exponentialMovingAverage(candles, period) {
+  const output = Array(candles.length).fill(null);
+  if (candles.length < period || period < 1) return output;
+  let seed = 0;
+  for (let index = 0; index < period; index += 1) seed += candles[index].close;
+  let value = seed / period;
+  output[period - 1] = value;
+  const multiplier = 2 / (period + 1);
+  for (let index = period; index < candles.length; index += 1) {
+    value = (candles[index].close - value) * multiplier + value;
+    output[index] = value;
+  }
+  return output;
+}
+
+export function calculateMacd(candles, fastPeriod = 12, slowPeriod = 26, signalPeriod = 9) {
+  const fast = exponentialMovingAverage(candles, fastPeriod);
+  const slow = exponentialMovingAverage(candles, slowPeriod);
+  const macd = candles.map((_, index) =>
+    Number.isFinite(fast[index]) && Number.isFinite(slow[index])
+      ? fast[index] - slow[index]
+      : null
+  );
+  const signal = emaValues(macd, signalPeriod);
+  const histogram = macd.map((value, index) =>
+    Number.isFinite(value) && Number.isFinite(signal[index]) ? value - signal[index] : null
+  );
+  return { macd, signal, histogram };
+}
+
+export function calculateObv(candles) {
+  const output = Array(candles.length).fill(null);
+  if (!candles.length) return output;
+  output[0] = 0;
+  for (let index = 1; index < candles.length; index += 1) {
+    const volume = Number(candles[index].volume) || 0;
+    const direction = Math.sign(candles[index].close - candles[index - 1].close);
+    output[index] = output[index - 1] + direction * volume;
+  }
+  return output;
+}
+
 export function latestValue(values) {
   for (let index = values.length - 1; index >= 0; index -= 1) {
     const value = values[index];
@@ -167,6 +209,22 @@ function rsiFromAverages(averageGain, averageLoss) {
   if (averageLoss === 0) return 100;
   const relativeStrength = averageGain / averageLoss;
   return 100 - 100 / (1 + relativeStrength);
+}
+
+function emaValues(values, period) {
+  const output = Array(values.length).fill(null);
+  const finiteIndexes = [];
+  for (let index = 0; index < values.length; index += 1) {
+    if (Number.isFinite(values[index])) finiteIndexes.push(index);
+    if (finiteIndexes.length < period) continue;
+    if (finiteIndexes.length === period) {
+      output[index] = finiteIndexes.reduce((sum, valueIndex) => sum + values[valueIndex], 0) / period;
+      continue;
+    }
+    const previousIndex = finiteIndexes[finiteIndexes.length - 2];
+    output[index] = (values[index] - output[previousIndex]) * (2 / (period + 1)) + output[previousIndex];
+  }
+  return output;
 }
 
 function alignWithBenchmark(stockCandles, benchmarkCandles) {
