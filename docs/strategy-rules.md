@@ -78,7 +78,7 @@ The separate Obsidian GTF strategy is ingested as an optional institutional-orde
 - Compare daily and completed-week zones, 50-SMA seven-bar slope, demand retests, active opposing supply and available 2R runway.
 - Prefer a qualified daily-demand retest as a retracement entry style. A clear supply runway can strengthen a breakout; neither is compulsory.
 - Add GTF confluence to candidate rank and use a valid demand distal with the configured buffer as one structural-stop candidate.
-- Treat nearby opposing supply or less than 2R room as weakness for partial-exit and quality-rotation decisions.
+- Treat only fresh score-7 opposing supply, or the resulting lack of 2R room, as weakness for partial-exit and quality-rotation decisions. Tested/low-score supply is informational and cannot trigger risk reduction.
 - LOTL is not fabricated from daily closing data. The source has no deterministic numerical distance rule, so connected-zone merging remains excluded until separately validated.
 
 The website detail panel, Telegram trade alert, CSV and Excel workbook expose the selected demand/supply zones, freshness, achievement, GTF score and 2R room.

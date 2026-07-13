@@ -319,7 +319,7 @@ function selectDemand(zones, close, maxDistancePct) {
 
 function selectSupply(zones, close) {
   return zones
-    .filter((zone) => zone.side === "supply" && zone.active && close <= zone.distal)
+    .filter((zone) => zone.side === "supply" && zoneBest(zone) && close <= zone.distal)
     .map((zone) => ({ ...zone, distancePct: close > 0 ? Math.max(0, (zone.distal - close) / close * 100) : null }))
     .sort(zoneSort)[0] || null;
 }

@@ -92,6 +92,7 @@ export async function updateTradeJournal(scan, config = appConfig) {
       trade.trailingStopPrice = nextTrailingStop(trade, row, config);
       trade.currentWeakness = positionWeakness(row);
     }
+    cancelInvalidGtfPartialExit(trade, row);
     if (trade.status === "PENDING_EXIT" && row) {
       const filled = await fillExit(trade, row);
       if (filled) events.push({ type: "EXIT_TRADE_CLOSED", trade });
@@ -270,6 +271,32 @@ export async function updateTradeJournal(scan, config = appConfig) {
   const visibleTrades = visibleTradesForSettings(nextJournal.trades, settings);
   await writeTradeSheets({ ...nextJournal, trades: visibleTrades }, config);
   return { ...nextJournal, visibleTrades, events, visibleCandidates: nextJournal.candidates };
+}
+
+function cancelInvalidGtfPartialExit(trade, row) {
+  if (trade.status !== "PENDING_PARTIAL_EXIT" || !row) return;
+  const reasons = Array.isArray(trade.pendingPartialExitReason)
+    ? trade.pendingPartialExitReason
+    : [];
+  const gtfOnly =
+    trade.pendingPartialExitTag === "EARLY_WEAKNESS" &&
+    reasons.some((reason) => String(reason).includes("GTF opposing supply")) &&
+    reasons.every((reason) =>
+      String(reason).includes("GTF opposing supply") || String(reason).startsWith("Sell ")
+    );
+  const stillBlocked =
+    row.gtfContext?.supplyBlocked === true ||
+    row.gtfContext?.checks?.roomForTwoR === false;
+  if (!gtfOnly || stillBlocked) return;
+  trade.status = "OPEN";
+  trade.pendingPartialExitPct = null;
+  trade.pendingPartialExitTag = null;
+  trade.pendingPartialExitReason = [];
+  trade.partialExitSignalDate = null;
+  trade.partialExitSignalScanAt = null;
+  trade.executionError = null;
+  trade.riskActionNote =
+    "Cancelled automatically: the GTF supply level no longer passes the fresh score-7 blocker gate.";
 }
 
 export async function writeTradeSheets(journal, config = appConfig) {
