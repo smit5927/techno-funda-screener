@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Techno Funda Screener</title>
-    <link rel="stylesheet" href="styles.css?v=20260711-portfolio-engine" />
+    <link rel="stylesheet" href="styles.css?v=20260713-workstation" />
   </head>
   <body>
     <header class="topbar">
@@ -21,26 +21,26 @@
 
     <main class="layout">
       <section class="summaryGrid" aria-label="Scan summary">
-        <div class="metric">
+        <button class="metric active" data-summary-filter="ALL" type="button">
           <span>Total</span>
           <strong id="totalCount">0</strong>
-        </div>
-        <div class="metric entry">
+        </button>
+        <button class="metric entry" data-summary-filter="ENTRY" type="button">
           <span>Entry</span>
           <strong id="entryCount">0</strong>
-        </div>
-        <div class="metric exit">
+        </button>
+        <button class="metric exit" data-summary-filter="EXIT" type="button">
           <span>Exit</span>
           <strong id="exitCount">0</strong>
-        </div>
-        <div class="metric watch">
+        </button>
+        <button class="metric watch" data-summary-filter="WATCH" type="button">
           <span>Watch</span>
           <strong id="watchCount">0</strong>
-        </div>
-        <div class="metric error">
+        </button>
+        <button class="metric error" data-summary-filter="ERROR" type="button">
           <span>Error</span>
           <strong id="errorCount">0</strong>
-        </div>
+        </button>
       </section>
 
       <section class="tradeBand" aria-label="Trade summary">
@@ -159,7 +159,7 @@
       <section class="positionsSection" aria-label="Open positions and pending orders">
         <div class="sectionHeading">
           <h2>Open Positions</h2>
-          <span>Risk-sized portfolio | 09:15 fill</span>
+          <span>Risk-sized portfolio</span>
         </div>
         <div class="tableShell positionsShell">
           <table class="positionsTable">
@@ -176,7 +176,7 @@
                 <th>Rank</th>
                 <th>Stop</th>
                 <th>R</th>
-                <th>Reason</th>
+                <th>Signal</th>
               </tr>
             </thead>
             <tbody id="positionsBody"></tbody>
@@ -188,7 +188,7 @@
       <section class="positionsSection" aria-label="Waiting entry candidates">
         <div class="sectionHeading">
           <h2>Waiting Candidates</h2>
-          <span>Ranked entries waiting for cash, risk, sector capacity, or rotation</span>
+          <span>Cash and risk queue</span>
         </div>
         <div class="tableShell positionsShell">
           <table class="positionsTable">
@@ -249,7 +249,7 @@
               <th>Funda</th>
               <th>GTF</th>
               <th>Score</th>
-              <th>Reason</th>
+              <th>Signal</th>
             </tr>
           </thead>
           <tbody id="resultsBody"></tbody>
@@ -258,8 +258,8 @@
       </section>
     </main>
 
-    <aside id="detailPanel" class="detailPanel" aria-live="polite"></aside>
+    <aside id="detailPanel" class="detailPanel" aria-live="polite" aria-label="Stock details"></aside>
 
-    <script src="app.js?v=20260711-portfolio-engine" type="module"></script>
+    <script src="app.js?v=20260713-workstation" type="module"></script>
   </body>
 </html>

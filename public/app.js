@@ -133,12 +133,16 @@ document.querySelectorAll(".listTab").forEach((button) => {
 
 document.querySelectorAll(".tab").forEach((button) => {
   button.addEventListener("click", () => {
-    document.querySelectorAll(".tab").forEach((tab) => tab.classList.remove("active"));
-    button.classList.add("active");
-    state.filter = button.dataset.filter;
-    state.displayLimit = 250;
-    renderRows();
+    setStatusFilter(button.dataset.filter);
   });
+});
+
+document.querySelectorAll(".metric[data-summary-filter]").forEach((button) => {
+  button.addEventListener("click", () => setStatusFilter(button.dataset.summaryFilter));
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closeDetail();
 });
 
 await loadResults();
@@ -311,7 +315,7 @@ function renderPositions(payload) {
     ["PENDING_ENTRY", "OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status)
   );
   elements.positionsBody.innerHTML = trades
-    .map((trade) => {
+    .map((trade, index) => {
       const pnl = trade.unrealizedPnl;
       const pnlClass = Number(pnl) > 0 ? "good" : Number(pnl) < 0 ? "bad" : "neutral";
       const signalDate = trade.exitSignalDate || trade.entrySignalDate || "";
@@ -322,7 +326,7 @@ function renderPositions(payload) {
             ? trade.pendingPartialExitReason || []
             : trade.entryReason || [];
       return `
-        <tr>
+        <tr data-position-index="${index}" title="Open details">
           <td><span class="pill ${escapeHtml(trade.status)}">${escapeHtml(trade.status.replace("_", " "))}</span></td>
           <td class="symbolCell"><strong>${escapeHtml(trade.symbol)}</strong><span>${escapeHtml(trade.listLabel || "")}</span></td>
           <td>${escapeHtml(signalDate)}</td>
@@ -334,12 +338,19 @@ function renderPositions(payload) {
           <td>${fmt(trade.currentRank || trade.positionRank)}</td>
           <td>${fmt(trade.trailingStopPrice || trade.initialStopPrice)}</td>
           <td>${fmt(trade.currentRewardR)}</td>
-          <td class="reasonCell">${escapeHtml(reason.join(" "))}</td>
+          <td class="reasonCell" title="${escapeHtml(reason.join(" "))}">${escapeHtml(reasonSummary(reason))}</td>
         </tr>
       `;
     })
     .join("");
   elements.positionsEmpty.classList.toggle("visible", trades.length === 0);
+  elements.positionsBody.querySelectorAll("tr").forEach((rowElement) => {
+    rowElement.addEventListener("click", () => {
+      const trade = trades[Number(rowElement.dataset.positionIndex)];
+      const row = findStockRow(trade?.yahooSymbol || trade?.symbol);
+      if (row) renderDetail(row, trade);
+    });
+  });
 }
 
 function renderRows() {
@@ -369,8 +380,9 @@ function filteredRows() {
 }
 
 function rowHtml(row, index) {
+  const fullReason = (row.signalReason || []).join(" ");
   return `
-    <tr data-index="${index}">
+    <tr data-index="${index}" title="Open stock details">
       <td><span class="pill ${escapeHtml(row.status)}">${escapeHtml(row.status)}</span></td>
       <td>${escapeHtml(row.listLabel || "")}</td>
       <td class="symbolCell">
@@ -387,12 +399,12 @@ function rowHtml(row, index) {
       <td>${row.fundamentalScore || 0}/${row.fundamental?.maxScore || 5}</td>
       <td class="${row.gtfContext?.supplyBlocked ? "bad" : row.gtfContext?.score >= 5 ? "good" : ""}">${row.gtfContext?.dataAvailable ? `${fmt(row.gtfContext.score)}/${fmt(row.gtfContext.maxScore)}` : "NA"}</td>
       <td><strong>${escapeHtml(row.setupGrade || "")} ${row.score || 0}</strong></td>
-      <td class="reasonCell">${escapeHtml((row.signalReason || []).join(" "))}</td>
+      <td class="reasonCell" title="${escapeHtml(fullReason)}">${escapeHtml(reasonSummary(row.signalReason))}</td>
     </tr>
   `;
 }
 
-function renderDetail(row) {
+function renderDetail(row, trade = null) {
   const checks = row.fundamental?.checks || {};
   const setup = row.setupStrength || {};
   const setupChecks = setup.checks || {};
@@ -409,7 +421,10 @@ function renderDetail(row) {
         <div class="neutral">${escapeHtml(row.listLabel || "")}</div>
         <div class="neutral">${escapeHtml(row.entryStyle?.label || "")}</div>
       </div>
-      <span class="pill ${escapeHtml(row.status)}">${escapeHtml(row.status)}</span>
+      <div class="detailHeaderActions">
+        <span class="pill ${escapeHtml(trade?.status || row.status)}">${escapeHtml((trade?.status || row.status).replaceAll("_", " "))}</span>
+        <button class="detailClose" type="button" title="Close details" aria-label="Close details">&times;</button>
+      </div>
     </div>
     <div class="reasonBlock">
       <strong>Signal Reason</strong>
@@ -478,7 +493,37 @@ function renderDetail(row) {
     </div>
   `;
   elements.detailPanel.classList.add("visible");
-  elements.detailPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  elements.detailPanel.scrollTop = 0;
+  elements.detailPanel.querySelector(".detailClose")?.addEventListener("click", closeDetail);
+}
+
+function closeDetail() {
+  elements.detailPanel.classList.remove("visible");
+}
+
+function setStatusFilter(filter) {
+  state.filter = filter || "ALL";
+  state.displayLimit = 250;
+  document.querySelectorAll(".tab").forEach((tab) => {
+    tab.classList.toggle("active", tab.dataset.filter === state.filter);
+  });
+  document.querySelectorAll(".metric[data-summary-filter]").forEach((metric) => {
+    metric.classList.toggle("active", metric.dataset.summaryFilter === state.filter);
+  });
+  renderRows();
+}
+
+function findStockRow(symbol) {
+  const key = String(symbol || "").replace(/\.(NS|BO)$/i, "");
+  for (const list of Object.values(state.payload?.lists || {})) {
+    const match = (list.results || []).find((row) =>
+      [row.symbol, row.yahooSymbol].some((value) =>
+        String(value || "").replace(/\.(NS|BO)$/i, "") === key
+      )
+    );
+    if (match) return match;
+  }
+  return null;
 }
 
 async function loadCustomList() {
@@ -624,7 +669,7 @@ function renderCandidates(payload) {
         <td>${fmt(candidate.rank)}</td>
         <td>${compact(candidate.plannedAllocation)}</td>
         <td>${compact(candidate.plannedRisk)}</td>
-        <td class="reasonCell">${escapeHtml(candidate.skipReason || "Waiting for portfolio allocation")}</td>
+        <td class="reasonCell" title="${escapeHtml(candidate.skipReason || "Waiting for portfolio allocation")}">${escapeHtml(reasonSummary([candidate.skipReason || "Waiting for portfolio allocation"]))}</td>
       </tr>
     `)
     .join("");
@@ -1163,4 +1208,14 @@ function syncAccessCodeInputs(accessCode) {
   if (elements.accessCodeInput) elements.accessCodeInput.value = accessCode;
   if (elements.tradeAccessCodeInput) elements.tradeAccessCodeInput.value = accessCode;
   if (elements.telegramAccessCodeInput) elements.telegramAccessCodeInput.value = accessCode;
+}
+
+function reasonSummary(reasons = []) {
+  const values = (Array.isArray(reasons) ? reasons : [reasons])
+    .map((reason) => String(reason || "").trim())
+    .filter(Boolean);
+  const priority = values.find((reason) =>
+    /GTF|retracement|breakout|exit|weakness|deterioration|risk|portfolio|waiting|capital|scope/i.test(reason)
+  );
+  return priority || values[0] || "Open details";
 }
