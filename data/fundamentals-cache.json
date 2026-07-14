@@ -824,12 +824,12 @@
     }
   },
   "ADANIPOWER.NS": {
-    "updatedAt": "2026-07-06T08:54:22.677Z",
+    "updatedAt": "2026-07-14T10:54:55.005Z",
     "value": {
       "available": true,
-      "score": 3,
-      "maxScore": 5,
-      "currentPe": 33.503021,
+      "score": 5,
+      "maxScore": 8,
+      "currentPe": 32.546828,
       "ebitdaMargin": 0.4568957940925636,
       "checks": {
         "netIncomeYoYUp": {
@@ -841,6 +841,21 @@
           "ok": false,
           "latest": 157395700000,
           "previous": 175845300000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": true,
+          "latest": 142230900000,
+          "previous": 136711800000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": true,
+          "latest": 64984700000,
+          "previous": 57648600000
         },
         "ebitdaMarginQoQUp": {
           "ok": true,
@@ -12567,12 +12582,12 @@
     }
   },
   "JUBLPHARMA.NS": {
-    "updatedAt": "2026-07-06T08:54:35.796Z",
+    "updatedAt": "2026-07-14T10:55:29.618Z",
     "value": {
       "available": true,
-      "score": 2,
-      "maxScore": 5,
-      "currentPe": 38.644338,
+      "score": 4,
+      "maxScore": 8,
+      "currentPe": 38.783892,
       "ebitdaMargin": 0.15975706363876419,
       "checks": {
         "netIncomeYoYUp": {
@@ -12584,6 +12599,21 @@
           "ok": true,
           "latest": 8194000000,
           "previous": 8051000000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": true,
+          "latest": 22722000000,
+          "previous": 18137000000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": true,
+          "latest": 3630000000,
+          "previous": 2963000000
         },
         "ebitdaMarginQoQUp": {
           "ok": true,
@@ -13657,12 +13687,12 @@
     }
   },
   "LINDEINDIA.NS": {
-    "updatedAt": "2026-07-06T08:54:36.967Z",
+    "updatedAt": "2026-07-14T10:55:34.487Z",
     "value": {
       "available": true,
-      "score": 2,
-      "maxScore": 5,
-      "currentPe": 111.519341,
+      "score": 3,
+      "maxScore": 8,
+      "currentPe": 110.517322,
       "ebitdaMargin": 0.2921103049974525,
       "checks": {
         "netIncomeYoYUp": {
@@ -13674,6 +13704,21 @@
           "ok": true,
           "latest": 6742480000,
           "previous": 5512610000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": true,
+          "latest": 6143330000,
+          "previous": 6058570000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": false,
+          "latest": 1794530000,
+          "previous": 2138010000
         },
         "ebitdaMarginQoQUp": {
           "ok": false,
@@ -15645,12 +15690,12 @@
     }
   },
   "NUVOCO.NS": {
-    "updatedAt": "2026-07-06T08:54:39.189Z",
+    "updatedAt": "2026-07-14T10:55:43.128Z",
     "value": {
       "available": true,
-      "score": 5,
-      "maxScore": 5,
-      "currentPe": 32.010924,
+      "score": 7,
+      "maxScore": 8,
+      "currentPe": 31.797418,
       "ebitdaMargin": 0.1784803810387843,
       "checks": {
         "netIncomeYoYUp": {
@@ -15662,6 +15707,21 @@
           "ok": true,
           "latest": 9728800000,
           "previous": 5034900000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": true,
+          "latest": 33067500000,
+          "previous": 24093600000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": true,
+          "latest": 5901900000,
+          "previous": 2584100000
         },
         "ebitdaMarginQoQUp": {
           "ok": true,
@@ -16914,12 +16974,12 @@
     }
   },
   "POLYCAB.NS": {
-    "updatedAt": "2026-07-06T08:54:40.651Z",
+    "updatedAt": "2026-07-14T10:55:47.404Z",
     "value": {
       "available": true,
-      "score": 5,
-      "maxScore": 5,
-      "currentPe": 53.961571,
+      "score": 7,
+      "maxScore": 8,
+      "currentPe": 52.051427,
       "ebitdaMargin": 0.13782245698195167,
       "checks": {
         "netIncomeYoYUp": {
@@ -16931,6 +16991,21 @@
           "ok": true,
           "latest": 37157340000,
           "previous": 26700440000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": true,
+          "latest": 88644770000,
+          "previous": 51396570000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": true,
+          "latest": 12217240000,
+          "previous": 6977360000
         },
         "ebitdaMarginQoQUp": {
           "ok": true,
@@ -20741,12 +20816,12 @@
     }
   },
   "TITAGARH.NS": {
-    "updatedAt": "2026-07-06T08:54:44.983Z",
+    "updatedAt": "2026-07-14T10:56:04.810Z",
     "value": {
       "available": true,
-      "score": 4,
-      "maxScore": 5,
-      "currentPe": 97.256098,
+      "score": 5,
+      "maxScore": 8,
+      "currentPe": 92.660754,
       "ebitdaMargin": 0.10236112538980843,
       "checks": {
         "netIncomeYoYUp": {
@@ -20758,6 +20833,21 @@
           "ok": false,
           "latest": 2969300000,
           "previous": 4034600000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": false,
+          "latest": 8754300000,
+          "previous": 10055700000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": true,
+          "latest": 896100000,
+          "previous": 397300000
         },
         "ebitdaMarginQoQUp": {
           "ok": true,
@@ -58774,6 +58864,994 @@
           "ok": false,
           "latest": 23.490477062406992,
           "previous": 29.576207270852695
+        }
+      }
+    }
+  },
+  "AFFORDABLE.NS": {
+    "updatedAt": "2026-07-14T10:54:55.532Z",
+    "value": {
+      "available": true,
+      "score": 6,
+      "maxScore": 8,
+      "currentPe": 27.956452,
+      "ebitdaMargin": 0.19217433303751638,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": true,
+          "latest": 69711000,
+          "previous": -116488000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": true,
+          "latest": 129882000,
+          "previous": -52347000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": true,
+          "latest": 509324000,
+          "previous": 344191000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": true,
+          "latest": 97879000,
+          "previous": -3486000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": true,
+          "latest": 0.19217433303751638,
+          "previous": 0.1525692492974709
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": true,
+          "latest": 0.19217433303751638,
+          "previous": -0.01012809748075923
+        },
+        "peRising": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        }
+      }
+    }
+  },
+  "ALPA.NS": {
+    "updatedAt": "2026-07-14T10:54:57.055Z",
+    "value": {
+      "available": true,
+      "score": 4,
+      "maxScore": 8,
+      "currentPe": 9.659741,
+      "ebitdaMargin": 0.1095440125367886,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": false,
+          "latest": 150098000,
+          "previous": 195031000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": false,
+          "latest": 11984000,
+          "previous": 25510000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": false,
+          "latest": 313956000,
+          "previous": 399193000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": true,
+          "latest": 34392000,
+          "previous": 26721000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": true,
+          "latest": 0.1095440125367886,
+          "previous": 0.08334767849396471
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": true,
+          "latest": 0.1095440125367886,
+          "previous": 0.06693754650006388
+        },
+        "peRising": {
+          "ok": true,
+          "latest": 11.0920769244241,
+          "previous": 10.440974069511679
+        }
+      }
+    }
+  },
+  "BALPHARMA.NS": {
+    "updatedAt": "2026-07-14T10:55:02.243Z",
+    "value": {
+      "available": true,
+      "score": 6,
+      "maxScore": 8,
+      "currentPe": 20.043038,
+      "ebitdaMargin": 0.12287616992781505,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": false,
+          "latest": 62836000,
+          "previous": 72154000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": true,
+          "latest": 208237000,
+          "previous": 197890000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": true,
+          "latest": 840757000,
+          "previous": 818762000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": true,
+          "latest": 103309000,
+          "previous": 87233000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": true,
+          "latest": 0.12287616992781505,
+          "previous": 0.11256510171662122
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": true,
+          "latest": 0.12287616992781505,
+          "previous": 0.10654256059758513
+        },
+        "peRising": {
+          "ok": true,
+          "latest": 18.399123141640114,
+          "previous": 18.387096158919796
+        }
+      }
+    }
+  },
+  "DHAMPURSUG.NS": {
+    "updatedAt": "2026-07-14T10:55:11.490Z",
+    "value": {
+      "available": true,
+      "score": 4,
+      "maxScore": 8,
+      "currentPe": 14.20218,
+      "ebitdaMargin": 0.1883012330581881,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": true,
+          "latest": 651000000,
+          "previous": 522100000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": true,
+          "latest": 1111900000,
+          "previous": 1076200000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": false,
+          "latest": 4906500000,
+          "previous": 6191500000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": false,
+          "latest": 923900000,
+          "previous": 1024800000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": true,
+          "latest": 0.1883012330581881,
+          "previous": 0.1375725874373864
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": true,
+          "latest": 0.1883012330581881,
+          "previous": 0.16551724137931034
+        },
+        "peRising": {
+          "ok": false,
+          "latest": 14.050545517587803,
+          "previous": 15.007519064690534
+        }
+      }
+    }
+  },
+  "EIHAHOTELS.NS": {
+    "updatedAt": "2026-07-14T10:55:13.655Z",
+    "value": {
+      "available": true,
+      "score": 0,
+      "maxScore": 8,
+      "currentPe": 22.344514,
+      "ebitdaMargin": 0.43225476745511654,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": false,
+          "latest": 871740000,
+          "previous": 918470000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": false,
+          "latest": 1033400000,
+          "previous": 1117700000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": false,
+          "latest": 1271905000,
+          "previous": 1399107000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": false,
+          "latest": 549787000,
+          "previous": 663983000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": false,
+          "latest": 0.43225476745511654,
+          "previous": 0.48118548041385223
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": false,
+          "latest": 0.43225476745511654,
+          "previous": 0.4745762833007054
+        },
+        "peRising": {
+          "ok": false,
+          "latest": 18.885394828791053,
+          "previous": 22.85666968858867
+        }
+      }
+    }
+  },
+  "GANDHITUBE.NS": {
+    "updatedAt": "2026-07-14T10:55:16.820Z",
+    "value": {
+      "available": true,
+      "score": 5,
+      "maxScore": 8,
+      "currentPe": 15.300391,
+      "ebitdaMargin": 0.40749825772162945,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": true,
+          "latest": 683643000,
+          "previous": 586741000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": true,
+          "latest": 801573000,
+          "previous": 650378000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": true,
+          "latest": 472083000,
+          "previous": 433347000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": true,
+          "latest": 192373000,
+          "previous": 182879000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": false,
+          "latest": 0.40749825772162945,
+          "previous": 0.5848590379029811
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": false,
+          "latest": 0.40749825772162945,
+          "previous": 0.4220151518298269
+        },
+        "peRising": {
+          "ok": true,
+          "latest": 13.476715467597428,
+          "previous": 13.409279710316124
+        }
+      }
+    }
+  },
+  "HGS.NS": {
+    "updatedAt": "2026-07-14T10:55:22.474Z",
+    "value": {
+      "available": true,
+      "score": 1,
+      "maxScore": 8,
+      "currentPe": 75.516236,
+      "ebitdaMargin": 0.1817511316806033,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": false,
+          "latest": 321900000,
+          "previous": 1214200000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": false,
+          "latest": -4058700000,
+          "previous": -2656000000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": false,
+          "latest": 10846700000,
+          "previous": 11610600000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": false,
+          "latest": 1971400000,
+          "previous": 2791600000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": true,
+          "latest": 0.1817511316806033,
+          "previous": 0.12436071488348738
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": false,
+          "latest": 0.1817511316806033,
+          "previous": 0.24043546414483316
+        },
+        "peRising": {
+          "ok": false,
+          "latest": 17.837164283255508,
+          "previous": 26.838661903558776
+        }
+      }
+    }
+  },
+  "INTLCONV.NS": {
+    "updatedAt": "2026-07-14T10:55:26.915Z",
+    "value": {
+      "available": true,
+      "score": 3,
+      "maxScore": 8,
+      "currentPe": 7.460894,
+      "ebitdaMargin": 0.0843038235597238,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": false,
+          "latest": 683800000,
+          "previous": 917100000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": true,
+          "latest": 386500000,
+          "previous": 197300000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": true,
+          "latest": 970300000,
+          "previous": 546000000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": false,
+          "latest": 81800000,
+          "previous": 119900000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": false,
+          "latest": 0.0843038235597238,
+          "previous": 1.1607243916242218
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": false,
+          "latest": 0.0843038235597238,
+          "previous": 0.2195970695970696
+        },
+        "peRising": {
+          "ok": true,
+          "latest": 5.596834321261784,
+          "previous": 4.574982511972507
+        }
+      }
+    }
+  },
+  "MASTEK.NS": {
+    "updatedAt": "2026-07-14T10:55:37.192Z",
+    "value": {
+      "available": true,
+      "score": 6,
+      "maxScore": 8,
+      "currentPe": 13.511969,
+      "ebitdaMargin": 0.18616204690831556,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": true,
+          "latest": 4040000000,
+          "previous": 3759300000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": true,
+          "latest": 5129500000,
+          "previous": 4713300000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": true,
+          "latest": 9380000000,
+          "previous": 8695300000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": true,
+          "latest": 1746200000,
+          "previous": 1501200000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": true,
+          "latest": 0.18616204690831556,
+          "previous": 0.18381768395018108
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": true,
+          "latest": 0.18616204690831556,
+          "previous": 0.17264499212218096
+        },
+        "peRising": {
+          "ok": false,
+          "latest": 10.364478387427607,
+          "previous": 18.0783249261811
+        }
+      }
+    }
+  },
+  "NURECA.NS": {
+    "updatedAt": "2026-07-14T10:55:43.463Z",
+    "value": {
+      "available": true,
+      "score": 5,
+      "maxScore": 8,
+      "currentPe": 110.511848,
+      "ebitdaMargin": 0.10094619404038978,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": true,
+          "latest": 20820000,
+          "previous": 8460000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": true,
+          "latest": 68520000,
+          "previous": -98280000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": true,
+          "latest": 354050000,
+          "previous": 264630000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": true,
+          "latest": 35740000,
+          "previous": -25370000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": false,
+          "latest": 0.10094619404038978,
+          "previous": 0.13722819232127542
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": true,
+          "latest": 0.10094619404038978,
+          "previous": -0.0958697048709519
+        },
+        "peRising": {
+          "ok": false,
+          "latest": 97.98578199052133,
+          "previous": 248.79999497357537
+        }
+      }
+    }
+  },
+  "PENINLAND.NS": {
+    "updatedAt": "2026-07-14T10:55:46.423Z",
+    "value": {
+      "available": true,
+      "score": 3,
+      "maxScore": 8,
+      "currentPe": 25.255814,
+      "ebitdaMargin": 0.17832681017612526,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": false,
+          "latest": -1536400000,
+          "previous": -360000000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": false,
+          "latest": 52600000,
+          "previous": 83600000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": false,
+          "latest": 408800000,
+          "previous": 630900000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": true,
+          "latest": 72900000,
+          "previous": 65000000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": true,
+          "latest": 0.17832681017612526,
+          "previous": 0.027849028948332723
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": true,
+          "latest": 0.17832681017612526,
+          "previous": 0.10302742114439689
+        },
+        "peRising": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        }
+      }
+    }
+  },
+  "RELIABLE.NS": {
+    "updatedAt": "2026-07-14T10:55:50.796Z",
+    "value": {
+      "available": true,
+      "score": 3,
+      "maxScore": 8,
+      "currentPe": 21.751124,
+      "ebitdaMargin": 0.055934106667829574,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": false,
+          "latest": 68807000,
+          "previous": 90174000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": true,
+          "latest": 135793000,
+          "previous": 131558000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": true,
+          "latest": 550344000,
+          "previous": 530080000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": false,
+          "latest": 30783000,
+          "previous": 70921000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": false,
+          "latest": 0.055934106667829574,
+          "previous": 0.250648990813956
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": false,
+          "latest": 0.055934106667829574,
+          "previous": 0.1337930123754905
+        },
+        "peRising": {
+          "ok": true,
+          "latest": 16.662668574160186,
+          "previous": 7.051844801289492
+        }
+      }
+    }
+  },
+  "ROLEXRINGS.NS": {
+    "updatedAt": "2026-07-14T10:55:52.248Z",
+    "value": {
+      "available": true,
+      "score": 2,
+      "maxScore": 8,
+      "currentPe": 27.233591,
+      "ebitdaMargin": 0.19333185035918507,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": false,
+          "latest": 1410980000,
+          "previous": 1739970000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": false,
+          "latest": 1931200000,
+          "previous": 2002050000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": true,
+          "latest": 3056920000,
+          "previous": 2838870000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": false,
+          "latest": 591000000,
+          "previous": 620980000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": false,
+          "latest": 0.19333185035918507,
+          "previous": 0.2729654304187573
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": false,
+          "latest": 0.19333185035918507,
+          "previous": 0.21874196423224734
+        },
+        "peRising": {
+          "ok": true,
+          "latest": 20.017214970596147,
+          "previous": 3.051483527111966
+        }
+      }
+    }
+  },
+  "SIGACHI.NS": {
+    "updatedAt": "2026-07-14T10:55:57.258Z",
+    "value": {
+      "available": true,
+      "score": 1,
+      "maxScore": 8,
+      "currentPe": 36.099338,
+      "ebitdaMargin": 0.14566787344200055,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": false,
+          "latest": -817591000,
+          "previous": 695631000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": false,
+          "latest": 361653000,
+          "previous": 842101000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": false,
+          "latest": 1218951000,
+          "previous": 1394168000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": false,
+          "latest": 177562000,
+          "previous": 351940000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": true,
+          "latest": 0.14566787344200055,
+          "previous": 0.05274491820062709
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": false,
+          "latest": 0.14566787344200055,
+          "previous": 0.25243729593564046
+        },
+        "peRising": {
+          "ok": false,
+          "latest": 17.082523605198535,
+          "previous": 36.1688316642464
+        }
+      }
+    }
+  },
+  "UNIVPHOTO.NS": {
+    "updatedAt": "2026-07-14T10:56:07.574Z",
+    "value": {
+      "available": true,
+      "score": 5,
+      "maxScore": 8,
+      "currentPe": 3.3961,
+      "ebitdaMargin": -2.75,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": false,
+          "latest": -799400000,
+          "previous": 870200000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": true,
+          "latest": -4100000,
+          "previous": -18800000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": true,
+          "latest": 46400000,
+          "previous": 44700000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": true,
+          "latest": -127600000,
+          "previous": -187200000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": true,
+          "latest": -2.75,
+          "previous": -5.877604166666667
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": true,
+          "latest": -2.75,
+          "previous": -4.1879194630872485
+        },
+        "peRising": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        }
+      }
+    }
+  },
+  "VIDHIING.NS": {
+    "updatedAt": "2026-07-14T10:56:09.056Z",
+    "value": {
+      "available": true,
+      "score": 4,
+      "maxScore": 8,
+      "currentPe": 30.219388,
+      "ebitdaMargin": 0.17127625755019196,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": true,
+          "latest": 489572000,
+          "previous": 433962000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": true,
+          "latest": 687614000,
+          "previous": 608874000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": true,
+          "latest": 1226790000,
+          "previous": 1095270000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": true,
+          "latest": 210120000,
+          "previous": 205359000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": false,
+          "latest": 0.17127625755019196,
+          "previous": 0.2052799864479995
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": false,
+          "latest": 0.17127625755019196,
+          "previous": 0.18749623380536307
+        },
+        "peRising": {
+          "ok": false,
+          "latest": 52.36175115207374,
+          "previous": 62.571818590490345
+        }
+      }
+    }
+  },
+  "VETO.NS": {
+    "updatedAt": "2026-07-14T10:56:09.681Z",
+    "value": {
+      "available": true,
+      "score": 4,
+      "maxScore": 8,
+      "currentPe": 9.395822,
+      "ebitdaMargin": 0.09687441261555944,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": true,
+          "latest": 251270000,
+          "previous": 221320000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": true,
+          "latest": 333906000,
+          "previous": 286331000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": true,
+          "latest": 1388571000,
+          "previous": 891798000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": true,
+          "latest": 134517000,
+          "previous": 113619000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": false,
+          "latest": 0.09687441261555944,
+          "previous": 0.10995319514757856
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": false,
+          "latest": 0.09687441261555944,
+          "previous": 0.12740441220993992
+        },
+        "peRising": {
+          "ok": false,
+          "latest": 6.420592263557617,
+          "previous": 8.745618846335823
+        }
+      }
+    }
+  },
+  "VRAJ.NS": {
+    "updatedAt": "2026-07-14T10:56:10.099Z",
+    "value": {
+      "available": true,
+      "score": 4,
+      "maxScore": 8,
+      "currentPe": 12.061856,
+      "ebitdaMargin": 0.16982750517014478,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": false,
+          "latest": 320050000,
+          "previous": 440870000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": false,
+          "latest": 338580000,
+          "previous": 542890000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": true,
+          "latest": 1702080000,
+          "previous": 1530070000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": true,
+          "latest": 289060000,
+          "previous": 175500000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": true,
+          "latest": 0.16982750517014478,
+          "previous": 0.051042150408391836
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": true,
+          "latest": 0.16982750517014478,
+          "previous": 0.11470063461148837
+        },
+        "peRising": {
+          "ok": false,
+          "latest": 9.759793625664466,
+          "previous": 10.740195736497725
+        }
+      }
+    }
+  },
+  "WORTHPERI.NS": {
+    "updatedAt": "2026-07-14T10:56:11.488Z",
+    "value": {
+      "available": true,
+      "score": 3,
+      "maxScore": 8,
+      "currentPe": 14.590958,
+      "ebitdaMargin": 0.12187054612328002,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": false,
+          "latest": 146261000,
+          "previous": 154347000
+        },
+        "operatingIncomeYoYUp": {
+          "ok": true,
+          "latest": 264010000,
+          "previous": 212945000
+        },
+        "revenueQuarterYoYUp": {
+          "ok": true,
+          "latest": 761275000,
+          "previous": 711572000
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": false,
+          "latest": 92777000,
+          "previous": 99125000
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": true,
+          "latest": 0.12187054612328002,
+          "previous": 0.1120174623172463
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": false,
+          "latest": 0.12187054612328002,
+          "previous": 0.13930424468641261
+        },
+        "peRising": {
+          "ok": false,
+          "latest": 12.542518476110486,
+          "previous": 15.273468640385842
         }
       }
     }
