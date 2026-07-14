@@ -9,7 +9,9 @@ const state = {
   cloudTradeSettings: null,
   cloudTelegram: null,
   liveMtm: null,
-  liveMtmTimer: null
+  liveMtmTimer: null,
+  lastPositionPrices: new Map(),
+  hasAnimatedCounts: false
 };
 
 const staticMode = Boolean(window.TF_STATIC_MODE);
@@ -265,6 +267,9 @@ function applyPayload(payload) {
   renderCandidateDecisions(state.payload);
   renderRows();
   startLiveMtm();
+  if (!document.body.classList.contains("appReady")) {
+    requestAnimationFrame(() => document.body.classList.add("appReady"));
+  }
 }
 
 function rowsForCurrentList(payload) {
@@ -286,12 +291,20 @@ function rowsForCurrentList(payload) {
 function renderSummary(payload) {
   const listPayload = state.currentList === "all" ? payload : payload?.lists?.[state.currentList];
   const summary = listPayload?.summary || {};
-  elements.totalCount.textContent = summary.total || 0;
-  elements.entryCount.textContent = summary.entry || 0;
-  elements.exitCount.textContent = summary.exit || 0;
-  elements.watchCount.textContent = summary.watch || 0;
-  elements.dataGapCount.textContent = summary.dataGap || 0;
-  elements.errorCount.textContent = summary.error || 0;
+  const summaryCounts = [
+    [elements.totalCount, summary.total || 0],
+    [elements.entryCount, summary.entry || 0],
+    [elements.exitCount, summary.exit || 0],
+    [elements.watchCount, summary.watch || 0],
+    [elements.dataGapCount, summary.dataGap || 0],
+    [elements.errorCount, summary.error || 0]
+  ];
+  if (!state.hasAnimatedCounts) {
+    summaryCounts.forEach(([element, value], index) => animateCount(element, value, index * 45));
+    state.hasAnimatedCounts = true;
+  } else {
+    summaryCounts.forEach(([element, value]) => { element.textContent = value; });
+  }
   elements.openTradesCount.textContent = payload.tradeSummary?.open || 0;
   elements.pendingTradesCount.textContent =
     (payload.tradeSummary?.pendingEntry || 0) +
@@ -358,6 +371,16 @@ function renderPositions(payload) {
       const riskState = livePosition?.riskState || "STALE";
       const rowRiskClass = riskState === "BREACHED" ? "riskBreached" : riskState === "NEAR_STOP" ? "riskNear" : "";
       const quoteLabel = livePosition?.isLive ? "NEAR-LIVE 1M" : "EOD";
+      const quoteKey = String(trade.yahooSymbol || trade.symbol || index);
+      const previousPrice = state.lastPositionPrices.get(quoteKey);
+      const quoteTickClass = Number.isFinite(previousPrice) && Number.isFinite(displayPrice)
+        ? displayPrice > previousPrice
+          ? "tickUp"
+          : displayPrice < previousPrice
+            ? "tickDown"
+            : ""
+        : "";
+      if (Number.isFinite(displayPrice)) state.lastPositionPrices.set(quoteKey, displayPrice);
       const stopRiskText = livePosition
         ? `${riskState.replace("_", " ")}${Number.isFinite(livePosition.distanceToStopPct) ? ` ${compact(livePosition.distanceToStopPct)}%` : ""}`
         : "EOD RISK";
@@ -379,7 +402,7 @@ function renderPositions(payload) {
           <td>${escapeHtml(trade.entryDate || "Waiting")}</td>
           <td>${fmt(trade.entryPrice)}</td>
           <td>${trade.quantity ?? "NA"}</td>
-          <td><strong>${fmt(displayPrice)}</strong><small class="quoteSource">${quoteLabel}</small></td>
+          <td class="quoteCell ${quoteTickClass}"><strong>${fmt(displayPrice)}</strong><small class="quoteSource">${quoteLabel}</small></td>
           <td>${compact(investedValue)}</td>
           <td><strong>${compact(currentValue)}</strong></td>
           <td class="${pnlClass}">${compact(pnl)}${Number.isFinite(pnlPct) ? ` (${compact(pnlPct)}%)` : ""}</td>
@@ -454,14 +477,40 @@ function renderLiveMtmSummary() {
   const mtm = state.liveMtm;
   if (!mtm) return;
   const summary = mtm.summary || {};
-  elements.unrealizedPnl.textContent = `${compact(summary.unrealizedPnl || 0)} (${compact(summary.unrealizedPnlPct || 0)}%)`;
-  elements.liveStopRisk.textContent = `${compact(summary.downsideToStops || 0)} (${compact(summary.stopRiskPct || 0)}%)`;
+  setLiveValue(elements.unrealizedPnl, `${compact(summary.unrealizedPnl || 0)} (${compact(summary.unrealizedPnlPct || 0)}%)`);
+  setLiveValue(elements.liveStopRisk, `${compact(summary.downsideToStops || 0)} (${compact(summary.stopRiskPct || 0)}%)`);
   const warningCount = (summary.breachCount || 0) + (summary.nearStopCount || 0);
   const statusClass = summary.breachCount ? "danger" : warningCount ? "warning" : mtm.marketStatus === "OPEN" ? "live" : "closed";
   const updateText = mtm.generatedAt ? formatTime(mtm.generatedAt) : "now";
   const quoteText = summary.staleCount ? `${summary.liveCount || 0} live, ${summary.staleCount} EOD` : `${summary.liveCount || 0} quotes`;
   elements.liveMtmStatus.className = `liveMtmStatus ${statusClass}`;
   elements.liveMtmStatus.innerHTML = `<i></i> ${escapeHtml(mtm.marketStatus || "CLOSED")} | ${escapeHtml(quoteText)} | ${escapeHtml(updateText)}`;
+}
+
+function animateCount(element, target, delay = 0) {
+  const value = Math.max(0, Number(target) || 0);
+  const duration = 650;
+  const startAt = performance.now() + delay;
+  element.textContent = "0";
+  function frame(now) {
+    if (now < startAt) {
+      requestAnimationFrame(frame);
+      return;
+    }
+    const progress = Math.min(1, (now - startAt) / duration);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    element.textContent = Math.round(value * eased).toLocaleString("en-IN");
+    if (progress < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+function setLiveValue(element, value) {
+  if (element.textContent === value) return;
+  element.textContent = value;
+  element.classList.remove("valueUpdated");
+  void element.offsetWidth;
+  element.classList.add("valueUpdated");
 }
 
 function renderRows() {

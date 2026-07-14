@@ -3,8 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b0f12" />
+    <meta name="color-scheme" content="dark" />
     <title>Techno Funda Screener</title>
-    <link rel="stylesheet" href="styles.css?v=20260713-live-mtm" />
+    <link rel="stylesheet" href="styles.css?v=20260714-institutional-ui" />
   </head>
   <body>
     <header class="topbar">
@@ -14,7 +16,7 @@
         <p id="scanMeta">Waiting for first scan</p>
       </div>
       <div class="actions">
-        <button id="refreshButton" type="button" title="Reload the latest published scan and current position values">Check Updates</button>
+        <button id="refreshButton" class="primaryAction" type="button" title="Reload the latest published scan and current position values"><span aria-hidden="true">↻</span> Check Updates</button>
         <button id="scanButton" type="button" title="Run scan now">Run Scan</button>
       </div>
     </header>
@@ -297,6 +299,6 @@
     <div id="detailBackdrop" class="detailBackdrop" aria-hidden="true"></div>
     <aside id="detailPanel" class="detailPanel" aria-live="polite" aria-label="Stock details"></aside>
 
-    <script src="app.js?v=20260713-video-engine-v3" type="module"></script>
+    <script src="app.js?v=20260714-institutional-ui" type="module"></script>
   </body>
 </html>
