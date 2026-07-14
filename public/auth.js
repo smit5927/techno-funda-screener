@@ -13,6 +13,9 @@ const client = window.supabase.createClient(config.supabaseUrl, config.publishab
 });
 
 const nativeFetch = window.fetch.bind(window);
+const DEVICE_STORAGE_KEY = "techno-funda-device-id";
+const PROFILE_STORAGE_KEY = "techno-funda-profile";
+const deviceId = readOrCreateDeviceId();
 let currentProfile = null;
 let pendingFactorId = null;
 let appLoaded = false;
@@ -54,6 +57,7 @@ window.fetch = async (input, options = {}) => {
   if (requestUrl.href.startsWith(config.apiUrl)) {
     const headers = new Headers(options.headers || (typeof input !== "string" ? input.headers : undefined));
     if (window.TF_ACCESS_TOKEN) headers.set("Authorization", `Bearer ${window.TF_ACCESS_TOKEN}`);
+    headers.set("X-Device-ID", deviceId);
     return nativeFetch(input, { ...options, headers });
   }
   return nativeFetch(input, options);
@@ -197,33 +201,41 @@ async function verifyMfa(event) {
 }
 
 async function resumeSession() {
-  const { data: stored } = await client.auth.getSession();
+  const { data: stored, error: sessionError } = await client.auth.getSession();
   if (!stored.session) {
     showAuthPanel("login");
+    if (sessionError) setAuthStatus("Saved login could not be restored. Please sign in once more.", true);
     return;
   }
 
   window.TF_ACCESS_TOKEN = stored.session.access_token;
   try {
-    const refreshed = await client.auth.refreshSession();
-    if (refreshed.data.session) window.TF_ACCESS_TOKEN = refreshed.data.session.access_token;
     const response = await apiGetWithRetry("meta");
     await showApplication(response.profile);
   } catch (error) {
-    if ([401, 403, 409].includes(Number(error?.status))) {
+    if (Number(error?.status) === 409) {
       await client.auth.signOut({ scope: "local" });
       window.TF_ACCESS_TOKEN = "";
+      localStorage.removeItem(PROFILE_STORAGE_KEY);
       showAuthPanel("login");
-      setAuthStatus("Please verify ID, password and OTP again.");
+      setAuthStatus("This client account was opened on another device. Sign in here to transfer access.", true);
+      return;
+    }
+    const cachedProfile = readCachedProfile();
+    if (cachedProfile) {
+      await showApplication(cachedProfile);
+      const scanMeta = document.querySelector("#scanMeta");
+      if (scanMeta) scanMeta.textContent = "Login saved | Reconnecting to latest data...";
       return;
     }
     showAuthPanel("login");
-    setAuthStatus("Your login is saved. Check the internet connection and reload; no settings were deleted.", true);
+    setAuthStatus("Your login is still saved. Check the internet connection and reload; no settings were deleted.", true);
   }
 }
 
 async function showApplication(profile) {
   currentProfile = profile;
+  cacheProfile(profile);
   elements.authGate.hidden = true;
   elements.appRoot.hidden = false;
   elements.accountName.textContent = profile.displayName || profile.username;
@@ -236,13 +248,14 @@ async function showApplication(profile) {
   });
   if (!appLoaded) {
     appLoaded = true;
-    await import("./app.js?v=20260714-session-persistence");
+    await import("./app.js?v=20260714-device-session");
   }
 }
 
 async function logout() {
   await client.auth.signOut({ scope: "local" });
   window.TF_ACCESS_TOKEN = "";
+  localStorage.removeItem(PROFILE_STORAGE_KEY);
   window.location.reload();
 }
 
@@ -426,12 +439,52 @@ async function apiGetWithRetry(view, attempts = 3) {
 }
 
 async function apiPost(body, authenticated = true) {
-  const headers = { "Content-Type": "application/json" };
+  const headers = { "Content-Type": "application/json", "X-Device-ID": deviceId };
   if (authenticated && window.TF_ACCESS_TOKEN) headers.Authorization = `Bearer ${window.TF_ACCESS_TOKEN}`;
   const response = await nativeFetch(config.apiUrl, { method: "POST", headers, body: JSON.stringify(body) });
   const payload = await response.json().catch(() => ({}));
-  if (!response.ok || payload.error) throw new Error(payload.error || `Request failed (${response.status})`);
+  if (!response.ok || payload.error) {
+    const error = new Error(payload.error || `Request failed (${response.status})`);
+    error.status = response.status;
+    throw error;
+  }
   return payload;
+}
+
+function readOrCreateDeviceId() {
+  const saved = localStorage.getItem(DEVICE_STORAGE_KEY);
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(saved || "")) return saved;
+  const id = crypto.randomUUID ? crypto.randomUUID() : fallbackUuid();
+  localStorage.setItem(DEVICE_STORAGE_KEY, id);
+  return id;
+}
+
+function fallbackUuid() {
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const value = [...bytes].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+  return `${value.slice(0, 8)}-${value.slice(8, 12)}-${value.slice(12, 16)}-${value.slice(16, 20)}-${value.slice(20)}`;
+}
+
+function cacheProfile(profile) {
+  const safeProfile = {
+    userId: profile.userId,
+    username: profile.username,
+    displayName: profile.displayName,
+    role: profile.role,
+    status: profile.status
+  };
+  localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(safeProfile));
+}
+
+function readCachedProfile() {
+  try {
+    const profile = JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY) || "null");
+    return profile?.userId && profile?.role ? profile : null;
+  } catch {
+    return null;
+  }
 }
 
 function showAuthPanel(panel) {

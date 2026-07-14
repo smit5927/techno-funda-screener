@@ -1,4 +1,4 @@
-const CACHE = "techno-funda-shell-v3";
+const CACHE = "techno-funda-shell-v4";
 const SHELL = [
   "./",
   "./styles.css",

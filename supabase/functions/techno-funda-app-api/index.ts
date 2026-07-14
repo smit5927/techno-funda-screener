@@ -5,7 +5,7 @@ import { sessionActivationUpdates, sessionIsRejected } from "./session-policy.js
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info",
+  "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info, x-device-id",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Cache-Control": "no-store"
 };
@@ -149,9 +149,10 @@ async function activateSession(context: any, request: Request) {
   }
   const sessionId = String(context.claims.session_id || "");
   if (!isUuid(sessionId)) throw httpError("Session identifier is missing", 401);
+  const deviceId = context.profile.role === "admin" ? context.deviceId : requireDeviceId(request);
 
   const now = new Date().toISOString();
-  const sessionUpdates = sessionActivationUpdates(context.profile, sessionId, now);
+  const sessionUpdates = sessionActivationUpdates(context.profile, sessionId, deviceId, now);
   const { error } = await admin()
     .from("app_profiles")
     .update(sessionUpdates)
@@ -160,6 +161,7 @@ async function activateSession(context: any, request: Request) {
   if (error) throw error;
   await audit(context.user.id, context.user.id, "SESSION_ACTIVATED", {
     sessionId,
+    deviceId: context.profile.role === "admin" ? null : deviceId,
     userAgent: request.headers.get("user-agent") || ""
   });
   return { ok: true, profile: publicProfile({ ...context.profile, ...sessionUpdates }) };
@@ -220,7 +222,10 @@ async function updateMember(context: any, body: any) {
   if (typeof body.displayName === "string" && body.displayName.trim()) updates.display_name = body.displayName.trim();
   if (typeof body.mobileNumber === "string") updates.mobile_number = body.mobileNumber.trim() || null;
   if (typeof body.contactEmail === "string" && body.contactEmail.includes("@")) updates.contact_email = body.contactEmail.trim().toLowerCase();
-  if (updates.status === "suspended") updates.active_session_id = null;
+  if (updates.status === "suspended") {
+    updates.active_session_id = null;
+    updates.active_device_id = null;
+  }
   if (Object.keys(updates).length) {
     const { error } = await admin().from("app_profiles").update(updates).eq("user_id", userId);
     if (error) throw error;
@@ -237,7 +242,7 @@ async function updateMember(context: any, body: any) {
 
 async function resetMemberSession(context: any, body: any) {
   const userId = requireUuid(body.userId);
-  const { error } = await admin().from("app_profiles").update({ active_session_id: null }).eq("user_id", userId);
+  const { error } = await admin().from("app_profiles").update({ active_session_id: null, active_device_id: null }).eq("user_id", userId);
   if (error) throw error;
   await audit(context.user.id, userId, "SESSION_REVOKED", {});
   return { ok: true };
@@ -248,7 +253,7 @@ async function setMemberPassword(context: any, body: any) {
   const password = validatePassword(body.password);
   const { error } = await admin().auth.admin.updateUserById(userId, { password });
   if (error) throw error;
-  await admin().from("app_profiles").update({ active_session_id: null }).eq("user_id", userId);
+  await admin().from("app_profiles").update({ active_session_id: null, active_device_id: null }).eq("user_id", userId);
   await audit(context.user.id, userId, "PASSWORD_RESET_BY_ADMIN", {});
   return { ok: true };
 }
@@ -256,7 +261,7 @@ async function setMemberPassword(context: any, body: any) {
 async function listUsers() {
   const { data: profiles, error } = await admin()
     .from("app_profiles")
-    .select("user_id, username, display_name, contact_email, mobile_number, role, status, active_session_id, last_login_at, created_at")
+    .select("user_id, username, display_name, contact_email, mobile_number, role, status, active_session_id, active_device_id, last_login_at, created_at")
     .order("created_at", { ascending: true });
   if (error) throw error;
   const { data: settings } = await admin().from("app_user_settings").select("*");
@@ -488,10 +493,11 @@ async function requireUser(request: Request, options: { activeSession: boolean }
     .maybeSingle();
   if (profileError) throw profileError;
   if (!profile || profile.status !== "active") throw httpError("Account is not active", 403);
-  if (sessionIsRejected(profile, claims, options.activeSession)) {
+  const deviceId = readDeviceId(request);
+  if (sessionIsRejected(profile, claims, options.activeSession, deviceId)) {
     throw httpError("This account is active on another device. Please log in again here to transfer access.", 409);
   }
-  return { token, user: data.user, profile, claims };
+  return { token, user: data.user, profile, claims, deviceId };
 }
 
 function requireAdmin(context: any) {
@@ -634,7 +640,7 @@ function publicProfile(profile: any) {
     mobileNumber: profile.mobile_number,
     role: profile.role,
     status: profile.status,
-    hasActiveSession: Boolean(profile.active_session_id),
+    hasActiveSession: Boolean(profile.active_device_id || profile.active_session_id),
     lastLoginAt: profile.last_login_at,
     createdAt: profile.created_at
   };
@@ -720,6 +726,17 @@ function requireUuid(value: any) {
   const id = String(value || "");
   if (!isUuid(id)) throw httpError("Valid user ID is required", 400);
   return id;
+}
+
+function requireDeviceId(request: Request) {
+  const deviceId = readDeviceId(request);
+  if (!isUuid(deviceId)) throw httpError("This device could not be identified. Reload the application.", 400);
+  return deviceId;
+}
+
+function readDeviceId(request: Request) {
+  const deviceId = String(request.headers.get("x-device-id") || "");
+  return isUuid(deviceId) ? deviceId : "";
 }
 
 function isUuid(value: string) {
