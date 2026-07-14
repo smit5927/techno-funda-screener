@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-14T04:55:09.134Z",
+  "updatedAt": "2026-07-14T05:01:25.925Z",
   "portfolioEngineStartedAt": "2026-07-11T05:24:12.577Z",
   "pyramidingStartedAt": "2026-07-13T06:00:40.290Z",
   "pyramidSwingEngineStartedAt": "2026-07-13T11:24:54.568Z",
@@ -28455,841 +28455,841 @@
     "custom:GRANULES.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SKYGOLD.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:THANGAMAYL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:TBZ.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:CGCL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:RML.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:NEULANDLAB.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:INOXINDIA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:UNIHEALTH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:RADICO.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:TIPSMUSIC.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:ALIVUS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:IKS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:TORNTPHARM.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:BHARATSE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:POCL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:PPAP.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:APOLLOHOSP.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:LUPIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:MARKSANS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:MMP.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SANGAMIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:ANANDRATHI.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:HAPPYFORGE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:VADILALIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:PGIL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SANSERA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:BUTTERFLY.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:CREDITACC.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:GHCLTEXTIL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:VIJIFIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:CEMPRO.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:HESTERBIO.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:OFSS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:RANEHOLDIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SFL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SHILPAMED.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SJS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:MANKIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:RAINBOW.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:AEGISVOPAK.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:INDIGRID.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:JAYBARMARU.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:MINDACORP.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:ADOR.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:GINNIFILA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:GODREJIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:GSMFOILS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:PANACHE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SANGHVIMOV.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:BLISSGVS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:HARSHA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:INDNIPPON.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:MAYURUNIQ.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:NAM-INDIA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:PRIVISCL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:RPEL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:VIYASH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:LALPATHLAB.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SHRIPISTON.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:INDHOTEL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:KRISHNADEF.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:THELEELA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:NUVAMA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:IMPAL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:PARAS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:RAMCOIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SGFIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:STOVEKRAFT.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:UNIVASTU.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:GRWRHITECH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:PIDILITIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:CAPLIPOINT.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:KMEW.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:NINSYS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:WABAG.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:FUSION.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:BETA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:KIMS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:NRL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:KOVAI.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SCHNEIDER.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:RUBICON.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:MARC.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:APTUS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:MINDSPACE.NS": {
       "status": "EXIT",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:KARURVYSYA.NS": {
       "status": "EXIT",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:FIEMIND.NS": {
       "status": "EXIT",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:GRINDWELL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:LMW.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:PREMIERENE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:PGHL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:NH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:CRAFTSMAN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:FORTIS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:MAHLOG.NS": {
       "status": "EXIT",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:RAIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SIS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SKIPPER.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:NRBBEARING.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:ASTERDM.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:KPIL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SANDHAR.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:THYROCARE.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:PRUDENT.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:VIJAYA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:ENDURANCE.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:PRICOLLTD.NS": {
       "status": "EXIT",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:MOTHERSON.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:APCOTEXIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:ASIANPAINT.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:ORIENTBELL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:PRECOT.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SAKAR.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:FINEORG.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:BAJAJ-AUTO.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:KRN.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:NIVABUPA.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:INGERRAND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:TATACOMM.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:YATHARTH.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:MGEL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SBCL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:RRKABEL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:EMMVEE.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:CAMS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:CUMMINSIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SOLARINDS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:V2RETAIL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:HAL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:NMDC.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:LLOYDSME.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:ANTHEM.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:JSWSTEEL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:ADANIPOWER.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:VBL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:BHEL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:POLYCAB.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:COALINDIA.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:TENNIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:BRPL.NS": {
@@ -29369,7 +29369,7 @@
     },
     "custom:HEXAGON.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:INVPRECQ.NS": {
@@ -29384,17 +29384,17 @@
     },
     "custom:OBSCP.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SEDEMAC.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:VIGOR.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:CLIOINFO.NS": {
@@ -29490,211 +29490,211 @@
     "custom:SW1.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:YASHHV.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:COVANCE.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:VIKRAMTH.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:CLIOINFO.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:CIL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:UNIABEXAL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:KMCSHIL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:RAJSEC.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SUDARSHAN.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:INVPRECQ.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:KELENRG.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:NEXUSSURGL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:BIMETAL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:KPL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:KVFORGE.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:UCIL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:RASRESOR.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:INDUSFINL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:TAALTECH.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:FREDUN.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:DHABRIYA.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:RRMETAL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SEKURITIND.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:MKTCREAT.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:TERAI.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:GOLKUNDIA.BO": {
       "status": "EXIT",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:EMERALD.BO": {
       "status": "EXIT",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:GSAUTO.BO": {
       "status": "EXIT",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SANCTRN.BO": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:TANFACIND.BO": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:SIMMOND.BO": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:CJGEL.BO": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:BENARAS.BO": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     },
     "custom:BRPL.BO": {
       "status": "WATCH",
       "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T04:55:08.377Z",
+      "scannedAt": "2026-07-14T05:01:25.100Z",
       "scopeListId": "custom"
     }
   },
@@ -29734,14 +29734,14 @@
   },
   "portfolioSummary": {
     "totalCapital": 1000000,
-    "investedCapital": 999849.1,
+    "investedCapital": 999555.25,
     "reservedCapital": 0,
-    "deployedCapital": 999849.1,
-    "availableCash": 150.9,
-    "actualCash": 5977.82,
+    "deployedCapital": 999555.25,
+    "availableCash": 444.75,
+    "actualCash": 6271.67,
     "realizedPnl": 5826.92,
-    "unrealizedPnl": 3432.93,
-    "totalEquity": 1009259.85,
+    "unrealizedPnl": 3413.73,
+    "totalEquity": 1009240.65,
     "unrealizedPnlPct": 0.34,
     "drawdownPct": 0,
     "marketRiskMode": "BULL",
@@ -29749,20 +29749,20 @@
     "drawdownExposureCapPct": 100,
     "effectiveExposureCapPct": 100,
     "exposureLimit": 1000000,
-    "portfolioRisk": 40729.1,
+    "portfolioRisk": 40720.4,
     "portfolioRiskPct": 4.07,
     "riskLimit": 60000,
-    "availableRisk": 19270.9,
+    "availableRisk": 19279.6,
     "openPositions": 14,
     "pendingEntries": 0,
     "pendingAdds": 0,
     "openSlots": 1,
     "maxOpenPositions": 15,
-    "capitalUtilizationPct": 99.98,
+    "capitalUtilizationPct": 99.96,
     "overallocatedCapital": 0,
     "waitingCandidates": 3,
     "sectorExposure": {
-      "Unclassified": 907009.1000000001,
+      "Unclassified": 906715.25,
       "Automobile and Auto Components": 92840
     }
   },
@@ -29792,8 +29792,8 @@
       "firstSignalDate": "2026-07-13",
       "firstSeenAt": "2026-07-13T10:52:00.870Z",
       "lastSignalDate": "2026-07-13",
-      "lastSeenAt": "2026-07-14T04:55:08.377Z",
-      "rank": 194.22,
+      "lastSeenAt": "2026-07-14T05:01:25.100Z",
+      "rank": 199.89,
       "grade": "A+",
       "score": 26,
       "entryStyle": "Trend continuation buy",
@@ -29802,7 +29802,7 @@
       "plannedStopPrice": 794.42,
       "plannedRisk": 0,
       "plannedAllocation": 0,
-      "lastEvaluatedAt": "2026-07-14T04:55:08.377Z",
+      "lastEvaluatedAt": "2026-07-14T05:01:25.100Z",
       "skipAlertedAt": "2026-07-13T10:52:00.870Z",
       "firstSignalClose": 863.5,
       "firstSignalRank": 199.89,
@@ -29831,12 +29831,14 @@
           "executionGapPct": null,
           "supertrendDistancePct": 15.28,
           "atrExtension": 2.1,
-          "currentRank": 194.22,
+          "currentRank": 199.89,
           "peakRank": 199.89,
-          "rankDecay": 5.67,
+          "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
-      }
+      },
+      "listId": "custom",
+      "listLabel": "My List"
     },
     {
       "id": "SGFIN-2026-07-10-candidate",
@@ -29856,8 +29858,8 @@
       "firstFundamentalScore": 4,
       "firstSeenAt": "2026-07-14T03:32:23.269Z",
       "lastSignalDate": "2026-07-10",
-      "lastSeenAt": "2026-07-14T04:55:08.377Z",
-      "rank": 190.17,
+      "lastSeenAt": "2026-07-14T05:01:25.100Z",
+      "rank": 195.83,
       "peakRank": 195.83,
       "grade": "A+",
       "score": 26,
@@ -29887,17 +29889,19 @@
           "executionGapPct": null,
           "supertrendDistancePct": 5.69,
           "atrExtension": 1.44,
-          "currentRank": 190.17,
+          "currentRank": 195.83,
           "peakRank": 195.83,
-          "rankDecay": 5.66,
+          "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-14T04:55:08.377Z",
+      "lastEvaluatedAt": "2026-07-14T05:01:25.100Z",
       "plannedStopPrice": 628.33,
       "plannedRisk": 0,
       "plannedAllocation": 0,
-      "skipAlertedAt": "2026-07-14T03:32:23.269Z"
+      "skipAlertedAt": "2026-07-14T03:32:23.269Z",
+      "listId": "custom",
+      "listLabel": "My List"
     },
     {
       "id": "KIMS-2026-07-10-candidate",
@@ -29918,7 +29922,7 @@
       "firstFundamentalScore": 3,
       "firstSeenAt": "2026-07-14T03:32:23.269Z",
       "lastSignalDate": "2026-07-10",
-      "lastSeenAt": "2026-07-14T04:55:08.377Z",
+      "lastSeenAt": "2026-07-14T05:01:25.100Z",
       "rank": 170.4,
       "peakRank": 170.4,
       "grade": "A+",
@@ -29955,11 +29959,13 @@
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-14T04:55:08.377Z",
+      "lastEvaluatedAt": "2026-07-14T05:01:25.100Z",
       "plannedStopPrice": 790,
       "plannedRisk": 0,
       "plannedAllocation": 0,
-      "skipAlertedAt": "2026-07-14T03:32:23.269Z"
+      "skipAlertedAt": "2026-07-14T03:32:23.269Z",
+      "listId": "custom",
+      "listLabel": "My List"
     }
   ],
   "candidateDecisionLog": [
@@ -30101,7 +30107,7 @@
     },
     {
       "id": "SAKAR-2026-07-13-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-14T04:55:08.377Z",
+      "evaluatedAt": "2026-07-14T05:01:25.100Z",
       "asOf": "2026-07-13",
       "symbol": "SAKAR",
       "industry": "My List",
@@ -30110,7 +30116,7 @@
       "outcome": "ROTATION_DEFERRED",
       "disposition": "WAITING_CONFIRMATION",
       "grade": "A+",
-      "rank": 194.22,
+      "rank": 199.89,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 863.5,
@@ -30120,16 +30126,16 @@
         "executionGapPct": null,
         "supertrendDistancePct": 15.28,
         "atrExtension": 2.1,
-        "currentRank": 194.22,
+        "currentRank": 199.89,
         "peakRank": 199.89,
-        "rankDecay": 5.67,
+        "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
       "reason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
     },
     {
       "id": "SGFIN-2026-07-10-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-14T04:55:08.377Z",
+      "evaluatedAt": "2026-07-14T05:01:25.100Z",
       "asOf": "2026-07-10",
       "symbol": "SGFIN",
       "industry": "My List",
@@ -30138,7 +30144,7 @@
       "outcome": "ROTATION_DEFERRED",
       "disposition": "WAITING_CONFIRMATION",
       "grade": "A+",
-      "rank": 190.17,
+      "rank": 195.83,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 637.9,
@@ -30148,16 +30154,16 @@
         "executionGapPct": null,
         "supertrendDistancePct": 5.69,
         "atrExtension": 1.44,
-        "currentRank": 190.17,
+        "currentRank": 195.83,
         "peakRank": 195.83,
-        "rankDecay": 5.66,
+        "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
       "reason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
     },
     {
       "id": "KIMS-2026-07-10-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-14T04:55:08.377Z",
+      "evaluatedAt": "2026-07-14T05:01:25.100Z",
       "asOf": "2026-07-10",
       "symbol": "KIMS",
       "industry": "Healthcare",
@@ -30196,8 +30202,8 @@
   "trades": [
     {
       "id": "MAYURUNIQ-2026-07-13-1783939921655",
-      "listId": "all-market",
-      "listLabel": "All NSE Market",
+      "listId": "custom",
+      "listLabel": "My List",
       "sourceLists": [
         "All NSE Market"
       ],
@@ -30657,12 +30663,49 @@
       },
       "entryActualFillTime": "09:17 IST",
       "initialRiskAmount": 3223.2,
-      "currentValue": 58150.2
+      "currentValue": 58150.2,
+      "currentGrade": "A+",
+      "currentWeakness": {
+        "score": 0,
+        "primaryScore": 0,
+        "reasons": []
+      },
+      "rotationReview": {
+        "lastObservedAsOf": "2026-07-13",
+        "weakCloseDates": [],
+        "confirmedWeakCloses": 0,
+        "currentQualifies": false,
+        "currentPrimaryScore": 0,
+        "currentScore": 0,
+        "currentReasons": []
+      },
+      "currentRewardR": 0.05,
+      "latestManagementDecision": {
+        "asOf": "2026-07-13",
+        "action": "HOLD",
+        "reasons": [],
+        "hierarchy": "FULL_EXIT > PARTIAL_EXIT > QUALITY_ROTATION > HOLD"
+      },
+      "pyramidState": {
+        "breakout": false,
+        "setupReady": false,
+        "type": "POST_ENTRY_PULLBACK_SWING_HIGH_CLOSE_BREAK",
+        "level": null,
+        "anchorDate": "2026-07-14",
+        "anchorPrice": 853,
+        "swingHighDate": null,
+        "pullbackLowDate": null,
+        "pullbackLow": null,
+        "pullbackDepthPct": null,
+        "advancePct": null,
+        "previousClose": 833.55,
+        "asOf": "2026-07-13"
+      }
     },
     {
       "id": "SANGAMIND-2026-07-13-1784004908930",
-      "listId": "all-market",
-      "listLabel": "All NSE Market",
+      "listId": "custom",
+      "listLabel": "My List",
       "sourceLists": [
         "All NSE Market"
       ],
@@ -31250,12 +31293,49 @@
       "originalInvestedValue": 72704.8,
       "initialRiskAmount": 5816.16,
       "executionError": null,
-      "currentValue": 69725.6
+      "currentValue": 69725.6,
+      "currentGrade": "A+",
+      "currentWeakness": {
+        "score": 0,
+        "primaryScore": 0,
+        "reasons": []
+      },
+      "rotationReview": {
+        "lastObservedAsOf": "2026-07-13",
+        "weakCloseDates": [],
+        "confirmedWeakCloses": 0,
+        "currentQualifies": false,
+        "currentPrimaryScore": 0,
+        "currentScore": 0,
+        "currentReasons": []
+      },
+      "currentRewardR": -0.51,
+      "latestManagementDecision": {
+        "asOf": "2026-07-13",
+        "action": "HOLD",
+        "reasons": [],
+        "hierarchy": "FULL_EXIT > PARTIAL_EXIT > QUALITY_ROTATION > HOLD"
+      },
+      "pyramidState": {
+        "breakout": false,
+        "setupReady": false,
+        "type": "POST_ENTRY_PULLBACK_SWING_HIGH_CLOSE_BREAK",
+        "level": null,
+        "anchorDate": "2026-07-14",
+        "anchorPrice": 649.15,
+        "swingHighDate": null,
+        "pullbackLowDate": null,
+        "pullbackLow": null,
+        "pullbackDepthPct": null,
+        "advancePct": null,
+        "previousClose": 558.75,
+        "asOf": "2026-07-13"
+      }
     },
     {
       "id": "NEXUSSURGL-2026-07-10-1783999943766",
       "listId": "custom",
-      "listLabel": "My Custom List",
+      "listLabel": "My List",
       "sourceLists": [
         "My Custom List"
       ],
@@ -31275,8 +31355,8 @@
       "entryPrice": 19.59,
       "executionWindow": "09:17 order / 09:21 actual fill",
       "executionMethod": "09:17 market order; first actual traded candle at 09:21 IST",
-      "quantity": 31,
-      "investedValue": 607.29,
+      "quantity": 16,
+      "investedValue": 313.44,
       "plannedQuantity": null,
       "plannedAllocation": null,
       "plannedRisk": null,
@@ -31304,8 +31384,26 @@
       "addOns": [],
       "addOnSkips": [],
       "pendingAdd": null,
-      "partialExits": [],
-      "partialExitTags": [],
+      "partialExits": [
+        {
+          "date": "2026-07-13",
+          "time": "09:17 IST",
+          "actualFillTime": "09:21 IST",
+          "price": 19.59,
+          "executionMethod": "09:17 market order; first actual traded candle at 09:21 IST",
+          "executionWindow": "09:17 order / 09:21 actual fill",
+          "quantity": 15,
+          "pnl": 0,
+          "tag": "PROFIT_LOCK",
+          "reason": [
+            "Profit reached 2.21R; lock 50% and trail the balance.",
+            "Sell 50% on the next actual market session at 09:17 IST and trail the balance."
+          ]
+        }
+      ],
+      "partialExitTags": [
+        "PROFIT_LOCK"
+      ],
       "realizedPnlToDate": 0,
       "entryReason": [
         "Weekly RSI 58.57 is above 50.",
@@ -31793,7 +31891,7 @@
       "exitReason": [],
       "lastPrice": 20.87,
       "lastPriceDate": "2026-07-10",
-      "unrealizedPnl": 39.68,
+      "unrealizedPnl": 20.48,
       "unrealizedPnlPct": 6.53,
       "pnl": null,
       "pnlPct": null,
@@ -31827,12 +31925,492 @@
       },
       "entryActualFillTime": "09:21 IST",
       "initialRiskAmount": 17.98,
-      "currentValue": 646.97
+      "currentValue": 333.92,
+      "currentGrade": "A+",
+      "currentWeakness": {
+        "score": 0,
+        "primaryScore": 0,
+        "reasons": []
+      },
+      "rotationReview": {
+        "lastObservedAsOf": "2026-07-10",
+        "weakCloseDates": [],
+        "confirmedWeakCloses": 0,
+        "currentQualifies": false,
+        "currentPrimaryScore": 0,
+        "currentScore": 0,
+        "currentReasons": []
+      },
+      "currentRewardR": 2.21,
+      "latestManagementDecision": {
+        "asOf": "2026-07-10",
+        "action": "PARTIAL_EXIT",
+        "reasons": [
+          "Profit reached 2.21R; lock 50% and trail the balance."
+        ],
+        "hierarchy": "FULL_EXIT > PARTIAL_EXIT > QUALITY_ROTATION > HOLD"
+      },
+      "partialExitSignalDate": "2026-07-10",
+      "partialExitSignalScanAt": "2026-07-14T05:01:25.100Z",
+      "pendingPartialExitPct": null,
+      "pendingPartialExitTag": null,
+      "pendingPartialExitReason": [],
+      "exitSnapshot": {
+        "industry": "My List",
+        "close": 20.8700008392334,
+        "asOf": "2026-07-10",
+        "dailyRsi": 52.69389962320794,
+        "weeklyRsi": 58.56592479820338,
+        "weeklyRs": 0.21791302357278264,
+        "dailyLongRs": 0.04561591334349502,
+        "dailyShortRs": 0.013174351634602344,
+        "dailySupertrend": 18.62684340778992,
+        "dailyPriceAboveSupertrend": true,
+        "entryStyle": {
+          "type": "TREND_CONTINUATION",
+          "label": "Trend continuation buy"
+        },
+        "setupStrength": {
+          "score": 12,
+          "checks": {
+            "recentHighBreakout": false,
+            "baseBreakout": false,
+            "higherLowStructure": true,
+            "yearHighBreakout": false,
+            "nearYearHigh": false,
+            "volumeExpansion": false,
+            "weeklyRsRising": true,
+            "dailyLongRsRising": true,
+            "dailyShortRsRising": true,
+            "closeAboveSmaFast": true,
+            "closeAboveSmaSlow": true,
+            "smaFastAboveSlow": true,
+            "favorableRiskToSupertrend": false,
+            "controlledVolatility": true,
+            "liquidEnough": false,
+            "bullishCandleConfirmation": false,
+            "bullishEngulfing": false,
+            "hammer": true,
+            "macdBullish": true,
+            "obvRising": true,
+            "retracementBuyZone": false,
+            "fibonacciSupportNearby": false,
+            "bollingerTrendSupport": true,
+            "bollingerRangeBound": false,
+            "marketRegimeStrong": true
+          },
+          "pyramidStructure": {
+            "pivotBars": 2,
+            "lookback": 160,
+            "latestDate": "2026-07-10",
+            "latestClose": 20.8700008392334,
+            "previousDate": "2026-07-09",
+            "previousClose": 20.5,
+            "points": [
+              {
+                "date": "2026-03-30",
+                "type": "LOW",
+                "price": 16.030000686645508
+              },
+              {
+                "date": "2026-04-01",
+                "type": "HIGH",
+                "price": 18
+              },
+              {
+                "date": "2026-04-06",
+                "type": "LOW",
+                "price": 17.010000228881836
+              },
+              {
+                "date": "2026-04-08",
+                "type": "HIGH",
+                "price": 18.610000610351562
+              },
+              {
+                "date": "2026-04-15",
+                "type": "HIGH",
+                "price": 20.899999618530273
+              },
+              {
+                "date": "2026-04-15",
+                "type": "LOW",
+                "price": 17.489999771118164
+              },
+              {
+                "date": "2026-04-20",
+                "type": "LOW",
+                "price": 17.75
+              },
+              {
+                "date": "2026-04-28",
+                "type": "HIGH",
+                "price": 21.459999084472656
+              },
+              {
+                "date": "2026-05-04",
+                "type": "LOW",
+                "price": 18.020000457763672
+              },
+              {
+                "date": "2026-05-12",
+                "type": "HIGH",
+                "price": 25.5
+              },
+              {
+                "date": "2026-05-18",
+                "type": "LOW",
+                "price": 19
+              },
+              {
+                "date": "2026-05-22",
+                "type": "HIGH",
+                "price": 22.989999771118164
+              },
+              {
+                "date": "2026-05-27",
+                "type": "LOW",
+                "price": 19.399999618530273
+              },
+              {
+                "date": "2026-05-29",
+                "type": "HIGH",
+                "price": 22
+              },
+              {
+                "date": "2026-06-05",
+                "type": "LOW",
+                "price": 19.260000228881836
+              },
+              {
+                "date": "2026-06-10",
+                "type": "LOW",
+                "price": 18.510000228881836
+              },
+              {
+                "date": "2026-06-11",
+                "type": "HIGH",
+                "price": 22.399999618530273
+              },
+              {
+                "date": "2026-06-16",
+                "type": "HIGH",
+                "price": 21
+              },
+              {
+                "date": "2026-06-16",
+                "type": "LOW",
+                "price": 19
+              },
+              {
+                "date": "2026-06-22",
+                "type": "HIGH",
+                "price": 21.790000915527344
+              },
+              {
+                "date": "2026-06-24",
+                "type": "LOW",
+                "price": 19.610000610351562
+              },
+              {
+                "date": "2026-07-01",
+                "type": "HIGH",
+                "price": 21.200000762939453
+              },
+              {
+                "date": "2026-07-07",
+                "type": "HIGH",
+                "price": 23.950000762939453
+              },
+              {
+                "date": "2026-07-07",
+                "type": "LOW",
+                "price": 19.010000228881836
+              }
+            ]
+          },
+          "values": {
+            "priorRecentHigh": 25.5,
+            "priorBaseHigh": 23.950000762939453,
+            "recentBaseLow": 19.010000228881836,
+            "previousBaseLow": 19,
+            "macd": 0.18624189975059835,
+            "macdSignal": 0.10742888397771289,
+            "macdHistogram": 0.07881301577288546,
+            "priorYearHigh": 25.5,
+            "volumeAverage": 3655.48,
+            "volumeRatio": 0.7569457362644577,
+            "smaFast": 20.548400001525877,
+            "smaSlow": 18.095549960136413,
+            "atr": 1.1881040042633255,
+            "atrPct": 5.69287952317575,
+            "averageTurnover": 20875.166784477235,
+            "previousLow": 20,
+            "twoCandleLow": 20,
+            "fourCandleLow": 19.010000228881836,
+            "riskToSupertrendPct": 10.748238338479505,
+            "riskToPreviousLowPct": 4.16866700646168,
+            "retracementPullbackDepthPct": 18.156859453986673,
+            "retracementSupportSource": "50-DMA",
+            "retracementSupportReference": 20.548400001525877,
+            "retracementSupportDistancePct": 1.540971848467517,
+            "retracementPullbackVolumeRatio": 0.30261415737468134,
+            "retracementCurrentVolumeRatio": 0.7569457362644577,
+            "retracementCloseLocationPct": 93.9252711287942,
+            "retracementPullbackDepthOk": false,
+            "retracementSupportProximityOk": true,
+            "retracementVolumePatternOk": true,
+            "retracementReclaimCandleOk": true,
+            "retracementRiskOk": true,
+            "retracementTrendHoldOk": true,
+            "retracementPatternLabel": "No institutional retracement setup",
+            "retracementLookback": 5,
+            "retracementMinPullbackPct": 2,
+            "retracementMaxPullbackPct": 15,
+            "retracementSupportProximityPct": 5,
+            "retracementBreakoutRetestPct": 3,
+            "retracementDryVolumeMaxRatio": 0.9,
+            "retracementReclaimVolumeMinRatio": 1.1,
+            "retracementMaxRiskPct": 8,
+            "fibonacciSwingHigh": 25.5,
+            "fibonacciSwingLow": 18.020000457763672,
+            "fibonacciNearestLevel": "61.8%",
+            "fibonacciNearestPrice": 20.87736028289795,
+            "fibonacciDistancePct": 0.03526326482324072,
+            "fibonacciSupportNearby": false,
+            "bollingerMiddle": 20.40900011062622,
+            "bollingerUpper": 21.900642612202702,
+            "bollingerLower": 18.917357609049738,
+            "bollingerPercentB": 0.6545278872517903,
+            "bollingerBandwidthPct": 14.61749711883081,
+            "bollingerRangeBound": false,
+            "recentHighPeriod": 55,
+            "baseBreakoutPeriod": 20,
+            "yearHighPeriod": 252,
+            "nearYearHighPct": 15,
+            "volumeAveragePeriod": 50,
+            "volumeExpansionMultiple": 1.5,
+            "riskToSupertrendMaxPct": 7,
+            "smaFastPeriod": 50,
+            "smaSlowPeriod": 200,
+            "atrPeriod": 14,
+            "maxAtrPct": 8,
+            "minimumAverageTurnover": 10000000,
+            "candlePattern": "hammer",
+            "marketRegimeLabel": "NIFTY 500 bullish/healthy"
+          }
+        },
+        "setupStrengthScore": 16,
+        "setupGrade": "A+",
+        "sectorStrength": {
+          "industry": "My List",
+          "total": 175,
+          "strong": 123,
+          "entry": 120,
+          "breadthPct": 70.28571428571428,
+          "ok": true,
+          "minPct": 50,
+          "minStocks": 5
+        },
+        "sectorStrengthScore": 1,
+        "institutionalContext": {
+          "score": 2,
+          "maxScore": 5,
+          "grade": "Institutional C",
+          "dataGaps": 2,
+          "index": {
+            "dataAvailable": true,
+            "supportsLongs": true,
+            "primaryBias": "BULLISH",
+            "sectorProxy": "NIFTY 500",
+            "sectorProxyBias": "BULLISH",
+            "reason": "NIFTY 500 proxy is BULLISH; broad index support is positive."
+          },
+          "derivatives": {
+            "dataAvailable": true,
+            "fnoEligible": false,
+            "oiAvailable": false,
+            "oiChangePct": null,
+            "oiVolume": null,
+            "optionValue": null,
+            "futureValue": null,
+            "participation": false,
+            "lotSize": null,
+            "underlying": "",
+            "reason": "Not present in NSE F&O lot-size master; treat as cash-equity only."
+          },
+          "options": {
+            "dataAvailable": false,
+            "supportsLongs": false,
+            "symbol": "NIFTY",
+            "pcr": null,
+            "maxPutOiStrike": null,
+            "maxCallOiStrike": null,
+            "bias": "UNKNOWN",
+            "reason": "NSE option-chain snapshot unavailable; mark this as data gap, not as bearish."
+          },
+          "commodity": {
+            "dataAvailable": true,
+            "supportsSector": true,
+            "exposure": "Broad macro",
+            "proxy": "",
+            "proxyBias": "UNKNOWN",
+            "reason": "0/5 commodity/currency proxies are bullish; 2 bearish."
+          },
+          "operator": {
+            "dataAvailable": false,
+            "accumulation": false,
+            "distribution": false,
+            "reason": "Official NSE delivery history loaded for 2395 EQ symbols across 6 sessions."
+          }
+        },
+        "institutionalScore": 2,
+        "gtfContext": {
+          "dataAvailable": true,
+          "score": 3,
+          "maxScore": 10,
+          "grade": "GTF C",
+          "rankAdjustment": 4.5,
+          "preferredEntryStyle": "GTF_CLEAR_RUNWAY",
+          "structuralStop": null,
+          "dailyTrend": "up",
+          "weeklyTrend": "up",
+          "dailyDemand": null,
+          "weeklyDemand": null,
+          "higherTimeframeDemand": null,
+          "reactingFromHtf": {
+            "active": false,
+            "sourceStatus": "PROXY_UNVALIDATED",
+            "role": "SECONDARY_CONFLUENCE_ONLY",
+            "managementClass": null,
+            "managementPlan": null,
+            "zone": null,
+            "overlapWithExecutionDemand": false,
+            "recentTouchAndReclaim": false,
+            "reason": "No fresh score-7 M/Q/HY/Y demand overlap or recent reclaim was detected."
+          },
+          "opposingSupply": null,
+          "rewardRisk": null,
+          "unlimitedRewardRoom": true,
+          "supplyDistancePct": null,
+          "supplyBlocked": false,
+          "demandRetest": false,
+          "checks": {
+            "dailyDemandQualified": false,
+            "weeklyDemandQualified": false,
+            "dailyDemandFresh": false,
+            "weeklyDemandFresh": false,
+            "demandRetest": false,
+            "reactingFromHtf": false,
+            "dailyTrendUp": true,
+            "weeklyTrendNotDown": true,
+            "roomForTwoR": true,
+            "supplyBlocked": false
+          },
+          "reasons": [
+            "GTF 50-SMA slope: daily up, weekly up.",
+            "No active daily/weekly/higher-timeframe GTF supply blocker was detected above price."
+          ]
+        },
+        "gtfScore": 1,
+        "conceptCoverage": {
+          "passed": 16,
+          "applicable": 30,
+          "weak": 11,
+          "dataGaps": 3,
+          "excluded": 6,
+          "passLabels": [
+            "Compulsory multi-timeframe engine",
+            "Relative strength leadership",
+            "RS trend follow-through",
+            "RSI momentum",
+            "Supertrend trend filter",
+            "Bollinger trend/range context",
+            "MACD and OBV confirmation",
+            "Sector breadth",
+            "50/200 DMA trend structure",
+            "Candle IPC confirmation",
+            "Market regime",
+            "Index regime confirmation",
+            "Commodity/currency macro context",
+            "Fundamental improvement",
+            "Exit rule discipline",
+            "09:17 execution discipline"
+          ],
+          "weakLabels": [
+            "Breakout or 52-week high zone",
+            "Price-action base and higher-low structure",
+            "Retracement/pullback buy setup",
+            "GTF demand/supply confluence",
+            "GTF reacting from higher timeframe (secondary proxy)",
+            "Fibonacci retracement support",
+            "Volume participation",
+            "Volatility and liquidity control",
+            "Risk reference discipline",
+            "Derivative/F&O eligibility",
+            "Derivative OI participation"
+          ],
+          "dataGapLabels": [
+            "Operator delivery confirmation",
+            "Index option-chain positioning",
+            "News/event context"
+          ],
+          "excludedLabels": [
+            "Intraday tick scalping",
+            "Broker-only live Greeks/order-book depth",
+            "Pair-trading spread execution",
+            "Short-selling execution",
+            "Options premium/straddle/strangle execution",
+            "Manual charting/terminal workflow"
+          ],
+          "summary": "16/30 applicable video-derived buckets strong; 3 data gaps; 6 non-EOD playbooks excluded."
+        },
+        "fundamentalScore": 4,
+        "fundamental": {
+          "available": true,
+          "score": 4,
+          "maxScore": 5,
+          "currentPe": 15.459259,
+          "ebitdaMargin": 0.1453914573355488,
+          "checks": {
+            "netIncomeYoYUp": {
+              "ok": true,
+              "latest": 7361000,
+              "previous": 4974000
+            },
+            "operatingIncomeYoYUp": {
+              "ok": true,
+              "latest": 9593000,
+              "previous": 6606000
+            },
+            "ebitdaMarginQoQUp": {
+              "ok": true,
+              "latest": 0.1453914573355488,
+              "previous": 0.07779445885082571
+            },
+            "ebitdaMarginYoYUp": {
+              "ok": true,
+              "latest": 0.1453914573355488,
+              "previous": 0.07740063432080438
+            },
+            "peRising": {
+              "ok": false,
+              "latest": 18.12087886936062,
+              "previous": 34.564101390349556
+            }
+          },
+          "cacheHit": true
+        },
+        "score": 26
+      },
+      "lastPartialExitDate": "2026-07-13",
+      "lastRiskActionSignalDate": "2026-07-10",
+      "lastPartialExitPrice": 19.59
     },
     {
       "id": "RAIN-2026-07-10-1783914455586",
-      "listId": "all-market",
-      "listLabel": "All NSE Market",
+      "listId": "custom",
+      "listLabel": "My List",
       "sourceLists": [
         "All NSE Market"
       ],
@@ -32247,8 +32825,8 @@
     },
     {
       "id": "INGERRAND-2026-07-10-1783914455587",
-      "listId": "all-market",
-      "listLabel": "All NSE Market",
+      "listId": "custom",
+      "listLabel": "My List",
       "sourceLists": [
         "All NSE Market"
       ],
@@ -32668,8 +33246,8 @@
     },
     {
       "id": "CRAFTSMAN-2026-07-10-1783932291458",
-      "listId": "all-market",
-      "listLabel": "All NSE Market",
+      "listId": "custom",
+      "listLabel": "My List",
       "sourceLists": [
         "All NSE Market"
       ],
@@ -33167,8 +33745,8 @@
     },
     {
       "id": "GRINDWELL-2026-07-10-1783914455587",
-      "listId": "all-market",
-      "listLabel": "All NSE Market",
+      "listId": "custom",
+      "listLabel": "My List",
       "sourceLists": [
         "All NSE Market"
       ],
@@ -34014,7 +34592,7 @@
     {
       "id": "SIS-2026-07-09-1783671948704",
       "listId": "custom",
-      "listLabel": "All NSE Market, My Custom List",
+      "listLabel": "My List",
       "sourceLists": [
         "All NSE Market",
         "My Custom List"
@@ -34374,7 +34952,7 @@
     {
       "id": "PGHL-2026-07-09-1783671948367",
       "listId": "custom",
-      "listLabel": "All NSE Market, My Custom List",
+      "listLabel": "My List",
       "sourceLists": [
         "All NSE Market",
         "My Custom List"
@@ -34698,7 +35276,7 @@
     {
       "id": "NH-2026-07-09-1783671948531",
       "listId": "custom",
-      "listLabel": "All NSE Market, Default Nifty 500, My Custom List",
+      "listLabel": "My List",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500",
@@ -35022,7 +35600,7 @@
     {
       "id": "VIJAYA-2026-07-09-1783671948591",
       "listId": "custom",
-      "listLabel": "All NSE Market, Default Nifty 500, My Custom List",
+      "listLabel": "My List",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500",
@@ -35345,7 +35923,7 @@
     {
       "id": "PRECOT-2026-07-09-1783671948651",
       "listId": "custom",
-      "listLabel": "All NSE Market, My Custom List",
+      "listLabel": "My List",
       "sourceLists": [
         "All NSE Market",
         "My Custom List"
@@ -35667,7 +36245,7 @@
     {
       "id": "PRUDENT-2026-07-09-1783671948763",
       "listId": "custom",
-      "listLabel": "All NSE Market, My Custom List",
+      "listLabel": "My List",
       "sourceLists": [
         "All NSE Market",
         "My Custom List"
@@ -36328,7 +36906,7 @@
     {
       "id": "KPIL-2026-07-09-1783671948444",
       "listId": "custom",
-      "listLabel": "All NSE Market, Default Nifty 500, My Custom List",
+      "listLabel": "My List",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500",
@@ -38403,7 +38981,7 @@
     {
       "id": "GRASIM-2026-07-09-1783661302577",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -38847,7 +39425,7 @@
     {
       "id": "SAREGAMA-2026-07-09-1783661302675",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -39289,7 +39867,7 @@
     {
       "id": "USHAMART-2026-07-09-1783661302757",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -39729,7 +40307,7 @@
     {
       "id": "TIPSMUSIC-2026-07-09-1783661303171",
       "listId": "all-market",
-      "listLabel": "All NSE Market, My Custom List",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "My Custom List"
@@ -40613,7 +41191,7 @@
     {
       "id": "ANANTRAJ-2026-07-09-1783661303739",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -41053,7 +41631,7 @@
     {
       "id": "SUMICHEM-2026-07-09-1783661303967",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -41931,7 +42509,7 @@
     {
       "id": "LENSKART-2026-07-09-1783661304420",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -43688,7 +44266,7 @@
     {
       "id": "SHRIRAMFIN-2026-07-09-1783661304996",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -44569,7 +45147,7 @@
     {
       "id": "ADANIENSOL-2026-07-08-1783573488721",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -45005,7 +45583,7 @@
     {
       "id": "ICICIBANK-2026-07-08-1783573489146",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -45885,7 +46463,7 @@
     {
       "id": "LAURUSLABS-2026-07-08-1783661302865",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -47206,7 +47784,7 @@
     {
       "id": "MMP-2026-07-08-1783661303391",
       "listId": "all-market",
-      "listLabel": "All NSE Market, My Custom List",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "My Custom List"
@@ -48091,7 +48669,7 @@
     {
       "id": "ACMESOLAR-2026-07-08-1783661303664",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -49409,7 +49987,7 @@
     {
       "id": "ACUTAAS-2026-07-08-1783661304034",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -49851,7 +50429,7 @@
     {
       "id": "AIAENG-2026-07-08-1783661304135",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -51603,7 +52181,7 @@
     {
       "id": "KIMS-2026-07-08-1783661304758",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500, My Custom List",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500",
@@ -52044,7 +52622,7 @@
     {
       "id": "MARICO-2026-07-08-1783661304856",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -52926,7 +53504,7 @@
     {
       "id": "default-BAJFINANCE-2026-07-07",
       "listId": "default",
-      "listLabel": "Default Nifty 500",
+      "listLabel": "Nifty 500",
       "symbol": "BAJFINANCE",
       "name": "Bajaj Finance Ltd.",
       "status": "CLOSED",
@@ -53308,7 +53886,7 @@
     {
       "id": "default-EXIDEIND-2026-07-07",
       "listId": "default",
-      "listLabel": "Default Nifty 500",
+      "listLabel": "Nifty 500",
       "symbol": "EXIDEIND",
       "name": "Exide Industries Ltd.",
       "status": "CLOSED",
@@ -53691,7 +54269,7 @@
     {
       "id": "TITAN-2026-07-07-1783573488381",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -54131,7 +54709,7 @@
     {
       "id": "TRAVELFOOD-2026-07-07-1783573488454",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -54572,7 +55150,7 @@
     {
       "id": "360ONE-2026-07-07-1783573488553",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -55012,7 +55590,7 @@
     {
       "id": "KAJARIACER-2026-07-07-1783573488636",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -55453,7 +56031,7 @@
     {
       "id": "CHOLAHLDNG-2026-07-07-1783573488873",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -55891,7 +56469,7 @@
     {
       "id": "TBOTEK-2026-07-07-1783573489008",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -56328,7 +56906,7 @@
     {
       "id": "NIVABUPA-2026-07-07-1783573489276",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -56769,7 +57347,7 @@
     {
       "id": "TATACAP-2026-07-07-1783573489408",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -57205,7 +57783,7 @@
     {
       "id": "BAJAJHLDNG-2026-07-07-1783573489570",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -57643,7 +58221,7 @@
     {
       "id": "JINDALSAW-2026-07-07-1783573489723",
       "listId": "all-market",
-      "listLabel": "All NSE Market, Default Nifty 500",
+      "listLabel": "All NSE Market",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500"
@@ -58081,7 +58659,7 @@
     {
       "id": "default-NAUKRI-2026-07-07",
       "listId": "default",
-      "listLabel": "Default Nifty 500",
+      "listLabel": "Nifty 500",
       "symbol": "NAUKRI",
       "name": "Info Edge (India) Ltd.",
       "status": "CLOSED",
@@ -58320,7 +58898,7 @@
     {
       "id": "default-ETERNAL-2026-07-07",
       "listId": "default",
-      "listLabel": "Default Nifty 500",
+      "listLabel": "Nifty 500",
       "symbol": "ETERNAL",
       "name": "Eternal Ltd.",
       "status": "CLOSED",
@@ -58558,7 +59136,7 @@
     {
       "id": "default-RITES-2026-07-07",
       "listId": "default",
-      "listLabel": "Default Nifty 500",
+      "listLabel": "Nifty 500",
       "symbol": "RITES",
       "name": "RITES Ltd.",
       "status": "CLOSED",
@@ -58796,7 +59374,7 @@
     {
       "id": "default-LICI-2026-07-07",
       "listId": "default",
-      "listLabel": "Default Nifty 500",
+      "listLabel": "Nifty 500",
       "symbol": "LICI",
       "name": "Life Insurance Corporation of India",
       "status": "CLOSED",
@@ -59035,7 +59613,7 @@
     {
       "id": "default-3MINDIA-2026-07-06",
       "listId": "default",
-      "listLabel": "Default Nifty 500",
+      "listLabel": "Nifty 500",
       "symbol": "3MINDIA",
       "name": "3M India Ltd.",
       "status": "CLOSED",
@@ -59415,7 +59993,7 @@
     {
       "id": "default-CUB-2026-07-06",
       "listId": "default",
-      "listLabel": "Default Nifty 500",
+      "listLabel": "Nifty 500",
       "symbol": "CUB",
       "name": "City Union Bank Ltd.",
       "status": "CLOSED",
@@ -59654,7 +60232,7 @@
     {
       "id": "default-SHREECEM-2026-07-06",
       "listId": "default",
-      "listLabel": "Default Nifty 500",
+      "listLabel": "Nifty 500",
       "symbol": "SHREECEM",
       "name": "Shree Cement Ltd.",
       "status": "CLOSED",
@@ -59892,7 +60470,7 @@
     {
       "id": "default-CANFINHOME-2026-07-06",
       "listId": "default",
-      "listLabel": "Default Nifty 500",
+      "listLabel": "Nifty 500",
       "symbol": "CANFINHOME",
       "name": "Can Fin Homes Ltd.",
       "status": "CLOSED",
@@ -60130,7 +60708,7 @@
     {
       "id": "default-CONCORDBIO-2026-07-06",
       "listId": "default",
-      "listLabel": "Default Nifty 500",
+      "listLabel": "Nifty 500",
       "symbol": "CONCORDBIO",
       "name": "Concord Biotech Ltd.",
       "status": "CLOSED",
@@ -60369,7 +60947,7 @@
     {
       "id": "HAL-2026-07-10-1783741571124",
       "listId": "custom",
-      "listLabel": "All NSE Market, Default Nifty 500, My Custom List",
+      "listLabel": "My List",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500",
@@ -60676,7 +61254,7 @@
     {
       "id": "PREMIERENE-2026-07-10-1783741571229",
       "listId": "custom",
-      "listLabel": "All NSE Market, Default Nifty 500, My Custom List",
+      "listLabel": "My List",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500",
@@ -60981,7 +61559,7 @@
     {
       "id": "SBCL-2026-07-10-1783741571328",
       "listId": "custom",
-      "listLabel": "All NSE Market, My Custom List",
+      "listLabel": "My List",
       "sourceLists": [
         "All NSE Market",
         "My Custom List"
