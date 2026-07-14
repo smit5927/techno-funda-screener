@@ -133,6 +133,7 @@ export async function runScreener(options = {}) {
   payload.portfolioSummary = journal.portfolioSummary;
   payload.portfolioRules = journal.portfolioRules;
   payload.waitingCandidates = journal.visibleCandidates || journal.candidates || [];
+  payload.candidateDecisionLog = journal.visibleCandidateDecisions || [];
   payload.trades = visibleTrades;
   payload.tradeEvents = mergeTradeEvents(
     shouldRetryTradeEvents(previousScan, options, config, payload.scannedAt)

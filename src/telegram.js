@@ -137,6 +137,12 @@ function addTradeEvents(lines, events) {
       );
       lines.push(`   Reason: ${candidate.skipReason || trade?.skipReason || "Portfolio constraint"}`);
     }
+    if (event.type === "ROTATION_CANCELLED") {
+      lines.push(
+        `ROTATION CANCELLED ${trade?.symbol || "NA"} remains open | replacement ${event.candidate?.symbol || "NA"} was not entry-ready`
+      );
+      lines.push(`   Reason: ${event.reason || "Replacement failed the latest close/09:17 preflight."}`);
+    }
     if (event.type === "PYRAMID_ADD_PENDING") {
       const add = trade.pendingAdd || {};
       lines.push(

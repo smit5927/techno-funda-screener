@@ -16,7 +16,8 @@ test("cloud state keeps portfolio data but removes thousands of detailed scan ro
     },
     portfolioSummary: { totalCapital: 1_000_000 },
     trades: [{ symbol: "ABC", status: "OPEN" }],
-    waitingCandidates: [{ symbol: "XYZ" }]
+    waitingCandidates: [{ symbol: "XYZ" }],
+    candidateDecisionLog: [{ symbol: "OLD", disposition: "EXPIRED" }]
   };
   const compact = compactCloudState(state);
   assert.equal(compact.lists["all-market"].summary.total, 2384);
@@ -24,5 +25,6 @@ test("cloud state keeps portfolio data but removes thousands of detailed scan ro
   assert.equal(compact.portfolioSummary.totalCapital, 1_000_000);
   assert.equal(compact.trades.length, 1);
   assert.equal(compact.waitingCandidates.length, 1);
+  assert.equal(compact.candidateDecisionLog.length, 1);
   assert.ok(JSON.stringify(compact).length < 10_000);
 });

@@ -41,6 +41,8 @@ const elements = {
   positionsEmpty: document.querySelector("#positionsEmpty"),
   candidatesBody: document.querySelector("#candidatesBody"),
   candidatesEmpty: document.querySelector("#candidatesEmpty"),
+  candidateDecisionsBody: document.querySelector("#candidateDecisionsBody"),
+  candidateDecisionsEmpty: document.querySelector("#candidateDecisionsEmpty"),
   resultsBody: document.querySelector("#resultsBody"),
   emptyState: document.querySelector("#emptyState"),
   refreshButton: document.querySelector("#refreshButton"),
@@ -260,6 +262,7 @@ function applyPayload(payload) {
   updateDownloadLinks(state.payload);
   renderPositions(state.payload);
   renderCandidates(state.payload);
+  renderCandidateDecisions(state.payload);
   renderRows();
   startLiveMtm();
 }
@@ -795,6 +798,28 @@ function renderCandidates(payload) {
     `)
     .join("");
   elements.candidatesEmpty.classList.toggle("visible", candidates.length === 0);
+}
+
+function renderCandidateDecisions(payload) {
+  const decisions = (payload?.candidateDecisionLog || []).slice(0, 50);
+  elements.candidateDecisionsBody.innerHTML = decisions
+    .map((decision) => {
+      const metrics = decision.metrics || {};
+      return `
+        <tr>
+          <td><span class="pill WATCH">${escapeHtml(decision.disposition || decision.outcome || "REVIEW")}</span></td>
+          <td class="symbolCell"><strong>${escapeHtml(decision.symbol || "")}</strong><span>${escapeHtml(decision.grade || "")}</span></td>
+          <td>${escapeHtml(decision.asOf || "")}</td>
+          <td>${Number.isFinite(metrics.runupPct) ? `${fmt(metrics.runupPct)}%` : "NA"}</td>
+          <td>${Number.isFinite(metrics.executionGapPct) ? `${fmt(metrics.executionGapPct)}%` : "NA"}</td>
+          <td>${Number.isFinite(metrics.supertrendDistancePct) ? `${fmt(metrics.supertrendDistancePct)}%` : "NA"}</td>
+          <td>${Number.isFinite(metrics.rankDecay) ? fmt(metrics.rankDecay) : "NA"}</td>
+          <td class="reasonCell" title="${escapeHtml(decision.reason || "")}"><span class="signalPreview">${escapeHtml(reasonSummary([decision.reason || "No reason recorded"]))}</span></td>
+        </tr>
+      `;
+    })
+    .join("");
+  elements.candidateDecisionsEmpty.classList.toggle("visible", decisions.length === 0);
 }
 
 async function saveTradeSettings() {

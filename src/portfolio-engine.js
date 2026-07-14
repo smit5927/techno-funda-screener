@@ -19,6 +19,14 @@ export function portfolioConfig(config = {}) {
     partialProfitR: positive(trade.partialProfitR, 2),
     rotationMinRankAdvantage: positive(trade.rotationMinRankAdvantage, 15),
     rotationMinimumHoldingDays: integer(trade.rotationMinimumHoldingDays, 5),
+    rotationConfirmationCloses: integer(trade.rotationConfirmationCloses, 2),
+    rotationCandidateConfirmationCloses: integer(trade.rotationCandidateConfirmationCloses, 2),
+    candidateMaxWaitDays: integer(trade.candidateMaxWaitDays, 30),
+    candidateMaxRunupPct: positive(trade.candidateMaxRunupPct, 8),
+    candidateMaxExecutionGapPct: positive(trade.candidateMaxExecutionGapPct, 3),
+    candidateMaxSupertrendDistancePct: positive(trade.candidateMaxSupertrendDistancePct, 7),
+    candidateMaxAtrExtension: positive(trade.candidateMaxAtrExtension, 3),
+    candidateMaxRankDecay: positive(trade.candidateMaxRankDecay, 15),
     pyramidingEnabled: trade.pyramidingEnabled !== false,
     pyramidMaxAddOns: integer(trade.pyramidMaxAddOns, 2),
     pyramidMaxPositionPct: positive(trade.pyramidMaxPositionPct, 15),
@@ -241,6 +249,127 @@ export function breakoutContinuationState(row = {}) {
     breakout: base || recent || yearly,
     type: yearly ? "52_WEEK_BREAKOUT" : recent ? "55_DAY_BREAKOUT" : base ? "20_DAY_BASE_BREAKOUT" : null,
     level: yearly ? values.priorYearHigh : recent ? values.priorRecentHigh : base ? values.priorBaseHigh : null
+  };
+}
+
+export function candidateEntryDecision(candidate = {}, row = {}, config = {}, options = {}) {
+  const rules = portfolioConfig(config);
+  const values = row.setupStrength?.values || {};
+  const checks = row.setupStrength?.checks || {};
+  const currentRank = candidateRank(row);
+  const firstSignalClose = Number(candidate.firstSignalClose ?? candidate.signalClose);
+  const currentClose = Number(row.close);
+  const executionPrice = Number(options.executionPrice);
+  const referencePrice = Number.isFinite(executionPrice) ? executionPrice : currentClose;
+  const peakRank = Number(candidate.peakRank ?? candidate.rank ?? currentRank);
+  const signalAgeDays = calendarDays(candidate.firstSignalDate, row.asOf);
+  const runupPct =
+    Number.isFinite(firstSignalClose) && firstSignalClose > 0 && Number.isFinite(referencePrice)
+      ? (referencePrice - firstSignalClose) / firstSignalClose * 100
+      : null;
+  const executionGapPct =
+    Number.isFinite(executionPrice) && Number.isFinite(currentClose) && currentClose > 0
+      ? (executionPrice - currentClose) / currentClose * 100
+      : null;
+  const supertrendDistancePct =
+    Number.isFinite(referencePrice) && referencePrice > 0 && Number.isFinite(Number(row.dailySupertrend))
+      ? (referencePrice - Number(row.dailySupertrend)) / referencePrice * 100
+      : Number(values.riskToSupertrendPct);
+  const atrExtension =
+    Number.isFinite(referencePrice) &&
+    Number.isFinite(Number(values.smaFast)) &&
+    Number.isFinite(Number(values.atr)) &&
+    Number(values.atr) > 0
+      ? Math.max(0, (referencePrice - Number(values.smaFast)) / Number(values.atr))
+      : null;
+  const rankDecay = Math.max(0, peakRank - currentRank);
+  const confirmedEntryCloses = new Set(candidate.entryCloseDates || []).size;
+  const reasons = [];
+  const warnings = [];
+  let disposition = "ACTIONABLE";
+
+  if (row.status !== "ENTRY") {
+    reasons.push(`Latest completed-candle status is ${row.status || "unavailable"}, not ENTRY.`);
+    disposition = "EXPIRED";
+  }
+  if (options.qualityPass === false) {
+    reasons.push(`Current setup grade ${row.setupGrade || "NA"} no longer passes the selected trade-quality filter.`);
+    disposition = "EXPIRED";
+  }
+  if (signalAgeDays > rules.candidateMaxWaitDays) {
+    warnings.push(
+      `Candidate has waited ${signalAgeDays} days; age is informational because the latest completed close still decides entry validity.`
+    );
+  }
+  if (Number.isFinite(runupPct) && runupPct > rules.candidateMaxRunupPct) {
+    warnings.push(
+      `Price is ${round(runupPct)}% above the first signal close; this is informational and does not block entry while current structure and execution risk remain valid.`
+    );
+  }
+  if (
+    Number.isFinite(supertrendDistancePct) &&
+    (supertrendDistancePct < 0 || supertrendDistancePct > rules.candidateMaxSupertrendDistancePct)
+  ) {
+    if (supertrendDistancePct < 0) {
+      reasons.push("Current/09:17 price is below daily Supertrend.");
+      if (disposition === "ACTIONABLE") disposition = "WAITING_RECONFIRMATION";
+    } else {
+      warnings.push(
+        `Price is ${round(supertrendDistancePct)}% above Supertrend; extension is recorded but does not override a valid current ENTRY.`
+      );
+    }
+  }
+  if (Number.isFinite(atrExtension) && atrExtension > rules.candidateMaxAtrExtension) {
+    warnings.push(
+      `Price is ${round(atrExtension)} ATR above the 50-DMA; extension is recorded but does not override a valid current ENTRY.`
+    );
+  }
+  if (rankDecay > rules.candidateMaxRankDecay) {
+    warnings.push(`Candidate rank deteriorated ${round(rankDecay)} points from its waiting-period peak.`);
+  }
+  if (row.institutionalContext?.operator?.distribution) {
+    warnings.push("Latest official NSE delivery context shows distribution; this remains additional evidence, not a compulsory entry override.");
+  }
+  if (
+    Number.isFinite(executionGapPct) &&
+    executionGapPct > rules.candidateMaxExecutionGapPct
+  ) {
+    warnings.push(
+      `Actual 09:17 price is ${round(executionGapPct)}% above the signal close; the gap is informational while latest ENTRY, Supertrend structure and actual-price position sizing remain valid.`
+    );
+  }
+  if (options.forRotation) {
+    if (confirmedEntryCloses < rules.rotationCandidateConfirmationCloses) {
+      reasons.push(
+        `Rotation requires ${rules.rotationCandidateConfirmationCloses} distinct valid ENTRY closes; candidate has ${confirmedEntryCloses}.`
+      );
+      if (disposition === "ACTIONABLE") disposition = "WAITING_CONFIRMATION";
+    }
+    if (checks.marketRegimeStrong !== true) {
+      reasons.push("Broad-market regime is not strong enough to justify an optional quality rotation.");
+      if (disposition === "ACTIONABLE") disposition = "WAITING_CONFIRMATION";
+    }
+  }
+
+  return {
+    actionable: reasons.length === 0,
+    disposition,
+    reasons,
+    warnings,
+    metrics: {
+      signalAgeDays,
+      firstSignalClose: Number.isFinite(firstSignalClose) ? round(firstSignalClose) : null,
+      currentClose: Number.isFinite(currentClose) ? round(currentClose) : null,
+      executionPrice: Number.isFinite(executionPrice) ? round(executionPrice) : null,
+      runupPct: round(runupPct),
+      executionGapPct: round(executionGapPct),
+      supertrendDistancePct: round(supertrendDistancePct),
+      atrExtension: round(atrExtension),
+      currentRank,
+      peakRank: round(peakRank),
+      rankDecay: round(rankDecay),
+      confirmedEntryCloses
+    }
   };
 }
 
@@ -573,32 +702,51 @@ export function positionWeakness(row = {}) {
   return { score: reasons.length, primaryScore, reasons };
 }
 
-export function rotationDecision(candidateRow, trades, rowBySymbol, config = {}) {
+export function rotationDecision(candidateRow, trades, rowBySymbol, config = {}, candidate = {}) {
   const rules = portfolioConfig(config);
   const challengerRank = candidateRank(candidateRow);
+  const candidateCheck = candidateEntryDecision(candidate, candidateRow, config, {
+    forRotation: true,
+    qualityPass: true
+  });
+  if (!candidateCheck.actionable) {
+    return {
+      rotate: false,
+      challengerRank,
+      candidateCheck,
+      reason: `Replacement is not rotation-ready: ${candidateCheck.reasons.join(" ")}`
+    };
+  }
   const eligible = trades
     .filter((trade) => trade.status === "OPEN")
     .map((trade) => {
       const row = rowBySymbol.get(trade.yahooSymbol || trade.symbol);
       if (!row) return null;
+      if (trade.lastRiskActionSignalDate === row.asOf) return null;
       const weakness = positionWeakness(row);
       return {
         trade,
         row,
         rank: candidateRank(row),
         weakness,
-        holdingDays: calendarDays(trade.entryDate, row.asOf)
+        holdingDays: calendarDays(trade.entryDate, row.asOf),
+        confirmedWeakCloses: new Set(trade.rotationReview?.weakCloseDates || []).size
       };
     })
     .filter(Boolean)
     .filter((item) =>
       item.weakness.primaryScore >= 1 && item.weakness.score >= 2 &&
+      item.confirmedWeakCloses >= rules.rotationConfirmationCloses &&
       (item.holdingDays >= rules.rotationMinimumHoldingDays || item.weakness.score >= 3)
     )
     .sort((a, b) => a.rank - b.rank);
   const weakest = eligible[0];
   if (!weakest) {
-    return { rotate: false, challengerRank, reason: "No weak open position qualifies for rotation." };
+    return {
+      rotate: false,
+      challengerRank,
+      reason: `No open position has both confirmed weakness and the required ${rules.rotationConfirmationCloses} distinct deterioration closes.`
+    };
   }
   const advantage = challengerRank - weakest.rank;
   if (advantage < rules.rotationMinRankAdvantage) {
@@ -617,7 +765,8 @@ export function rotationDecision(candidateRow, trades, rowBySymbol, config = {})
     advantage: round(advantage),
     trade: weakest.trade,
     weakness: weakest.weakness,
-    reason: `${candidateRow.symbol} rank ${challengerRank} is ${round(advantage)} points above weak position ${weakest.trade.symbol} rank ${weakest.rank}.`
+    candidateCheck,
+    reason: `${candidateRow.symbol} rank ${challengerRank} is ${round(advantage)} points above weak position ${weakest.trade.symbol} rank ${weakest.rank}; replacement and weakness are confirmed across distinct closes.`
   };
 }
 

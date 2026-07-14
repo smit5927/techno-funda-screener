@@ -218,6 +218,31 @@
         </div>
       </section>
 
+      <section class="positionsSection" aria-label="Recent candidate decisions">
+        <div class="sectionHeading">
+          <h2>Candidate Decision Log</h2>
+          <span>Freshness, extension and execution audit</span>
+        </div>
+        <div class="tableShell positionsShell">
+          <table class="positionsTable">
+            <thead>
+              <tr>
+                <th>Decision</th>
+                <th>Symbol</th>
+                <th>Close Date</th>
+                <th>Run-up</th>
+                <th>09:17 Gap</th>
+                <th>ST Distance</th>
+                <th>Rank Decay</th>
+                <th>Reason</th>
+              </tr>
+            </thead>
+            <tbody id="candidateDecisionsBody"></tbody>
+          </table>
+          <div id="candidateDecisionsEmpty" class="emptyState">No deferred or expired candidate decisions</div>
+        </div>
+      </section>
+
       <section class="controlBand">
         <div class="tabs" role="tablist" aria-label="Status filter">
           <button class="tab active" data-filter="ALL" type="button">All</button>

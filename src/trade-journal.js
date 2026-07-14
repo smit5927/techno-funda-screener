@@ -6,6 +6,7 @@ import { fetchExecutionPrice } from "./yahoo.js";
 import {
   buildPositionPlan,
   buildPyramidAddPlan,
+  candidateEntryDecision,
   candidateRank,
   nextTrailingStop,
   portfolioConfig,
@@ -46,6 +47,9 @@ export async function updateTradeJournal(scan, config = appConfig) {
   const firstLiveScan = liveMode && !journal.liveModeStartedAt;
   const trades = firstLiveScan ? [] : Array.isArray(journal.trades) ? journal.trades : [];
   let candidates = firstLiveScan ? [] : Array.isArray(journal.candidates) ? journal.candidates : [];
+  let candidateDecisionLog = firstLiveScan
+    ? []
+    : Array.isArray(journal.candidateDecisionLog) ? journal.candidateDecisionLog : [];
   const signalState =
     journal.signalState && typeof journal.signalState === "object" ? journal.signalState : {};
   const nextSignalState = { ...signalState };
@@ -103,6 +107,7 @@ export async function updateTradeJournal(scan, config = appConfig) {
       trade.currentGrade = row.setupGrade;
       trade.trailingStopPrice = nextTrailingStop(trade, row, config);
       trade.currentWeakness = positionWeakness(row);
+      recordRotationObservation(trade, row, trade.currentWeakness);
     }
     if (trade.status === "OPEN" && trade.pendingAdd && row) {
       const outcome = await fillPyramidAdd(trade, row, config, trades, candidates);
@@ -111,11 +116,16 @@ export async function updateTradeJournal(scan, config = appConfig) {
     }
     cancelInvalidGtfPartialExit(trade, row);
     if (trade.status === "PENDING_EXIT" && row) {
-      const filled = await fillExit(trade, row, config);
-      if (filled) {
-        markRotationExitReady(candidates, trade);
-        events.push({ type: "EXIT_TRADE_CLOSED", trade });
-      }
+      await attemptPendingExit(
+        trade,
+        row,
+        candidates,
+        rowBySymbol,
+        scan,
+        settings,
+        config,
+        events
+      );
     }
     if (trade.status === "PENDING_PARTIAL_EXIT" && row) {
       const filled = await fillPartialExit(trade, row);
@@ -144,6 +154,12 @@ export async function updateTradeJournal(scan, config = appConfig) {
     const decision = positionExitDecision(trade, row, config);
     trade.trailingStopPrice = decision.trailingStop || trade.trailingStopPrice;
     trade.currentRewardR = decision.rewardR;
+    trade.latestManagementDecision = {
+      asOf: row.asOf,
+      action: decision.action,
+      reasons: decision.reasons || [],
+      hierarchy: "FULL_EXIT > PARTIAL_EXIT > QUALITY_ROTATION > HOLD"
+    };
     if (decision.action === "FULL_EXIT") {
       prepareFullExit(trade, row, scan, decision.reasons, "MODEL_EXIT");
       events.push({ type: "EXIT_SIGNAL_PENDING", trade });
@@ -194,11 +210,16 @@ export async function updateTradeJournal(scan, config = appConfig) {
       scan.marketContext?.asOf
     );
     if (trade.status === "PENDING_EXIT" && row) {
-      const filled = await fillExit(trade, row, config);
-      if (filled) {
-        markRotationExitReady(candidates, trade);
-        events.push({ type: "EXIT_TRADE_CLOSED", trade });
-      }
+      await attemptPendingExit(
+        trade,
+        row,
+        candidates,
+        rowBySymbol,
+        scan,
+        settings,
+        config,
+        events
+      );
     }
     if (trade.status === "PENDING_PARTIAL_EXIT" && row) {
       const filled = await fillPartialExit(trade, row);
@@ -229,12 +250,19 @@ export async function updateTradeJournal(scan, config = appConfig) {
     };
   }
 
-  candidates = candidates.filter((candidate) => {
+  const retainedCandidates = [];
+  for (const candidate of candidates) {
     const row = rowBySymbol.get(candidate.yahooSymbol || candidate.symbol);
-    return row?.status === "ENTRY" &&
-      rowPassesTradeQuality(row, settings) &&
-      !findAnyActiveTrade(trades, row);
-  });
+    const qualityPass = Boolean(row && rowPassesTradeQuality(row, settings));
+    const decision = candidateEntryDecision(candidate, row || {}, config, { qualityPass });
+    applyCandidateDecision(candidate, decision, scan);
+    if (row && !findAnyActiveTrade(trades, row) && decision.disposition !== "EXPIRED") {
+      retainedCandidates.push(candidate);
+    } else {
+      candidateDecisionLog = recordCandidateDecision(candidateDecisionLog, candidate, decision, scan, "REMOVED");
+    }
+  }
+  candidates = retainedCandidates;
 
   let rotationScheduled = false;
   for (const candidate of [...candidates].sort((a, b) => b.rank - a.rank)) {
@@ -248,6 +276,21 @@ export async function updateTradeJournal(scan, config = appConfig) {
       candidate.lastEvaluatedAt = scan.scannedAt;
       continue;
     }
+    const candidateCheck = candidateEntryDecision(candidate, row, config, {
+      qualityPass: rowPassesTradeQuality(row, settings),
+      forRotation: false
+    });
+    applyCandidateDecision(candidate, candidateCheck, scan);
+    if (!candidateCheck.actionable) {
+      candidateDecisionLog = recordCandidateDecision(
+        candidateDecisionLog,
+        candidate,
+        candidateCheck,
+        scan,
+        "DEFERRED"
+      );
+      continue;
+    }
     const portfolio = portfolioSummary(trades, candidates, config);
     const plan = buildPositionPlan(row, row.close, portfolio, config);
     candidate.rank = plan.rank;
@@ -257,7 +300,15 @@ export async function updateTradeJournal(scan, config = appConfig) {
     candidate.plannedAllocation = plan.allocation;
     candidate.lastEvaluatedAt = scan.scannedAt;
     if (plan.eligible) {
-      const trade = createPendingEntry(row, scan, config, settings, plan, linkedRotation);
+      const trade = createPendingEntry(
+        row,
+        scan,
+        config,
+        settings,
+        plan,
+        linkedRotation,
+        candidate
+      );
       trades.push(trade);
       candidates = candidates.filter((item) => item !== candidate);
       events.push({ type: "ENTRY_SIGNAL_PENDING", trade });
@@ -274,7 +325,24 @@ export async function updateTradeJournal(scan, config = appConfig) {
       !rotationScheduled &&
       !String(plan.reason).startsWith("Sector exposure")
     ) {
-      const rotation = rotationDecision(row, trades, rowBySymbol, config);
+      const rotationCheck = candidateEntryDecision(candidate, row, config, {
+        qualityPass: rowPassesTradeQuality(row, settings),
+        forRotation: true
+      });
+      if (!rotationCheck.actionable) {
+        candidate.status = rotationCheck.disposition;
+        candidate.skipReason = rotationCheck.reasons.join(" ");
+        candidate.lastDecision = rotationCheck;
+        candidateDecisionLog = recordCandidateDecision(
+          candidateDecisionLog,
+          candidate,
+          rotationCheck,
+          scan,
+          "ROTATION_DEFERRED"
+        );
+        continue;
+      }
+      const rotation = rotationDecision(row, trades, rowBySymbol, config, candidate);
       if (rotation.rotate) {
         const weakRow = rowBySymbol.get(rotation.trade.yahooSymbol || rotation.trade.symbol);
         prepareFullExit(
@@ -295,10 +363,17 @@ export async function updateTradeJournal(scan, config = appConfig) {
         candidate.skipReason = `Waiting for ${rotation.trade.symbol} rotation exit. ${rotation.reason}`;
         rotationScheduled = true;
         events.push({ type: "ROTATION_EXIT_PENDING", trade: rotation.trade, candidate });
-        const filled = await fillExit(rotation.trade, weakRow, config);
+        const filled = await attemptPendingExit(
+          rotation.trade,
+          weakRow,
+          candidates,
+          rowBySymbol,
+          scan,
+          settings,
+          config,
+          events
+        );
         if (filled) {
-          markRotationExitReady(candidates, rotation.trade);
-          events.push({ type: "EXIT_TRADE_CLOSED", trade: rotation.trade });
           const fundedPlan = buildPositionPlan(
             row,
             row.close,
@@ -313,7 +388,8 @@ export async function updateTradeJournal(scan, config = appConfig) {
               config,
               settings,
               fundedPlan,
-              rotationExecution
+              rotationExecution,
+              candidate
             );
             trades.push(replacement);
             candidates = candidates.filter((item) => item !== candidate);
@@ -334,7 +410,14 @@ export async function updateTradeJournal(scan, config = appConfig) {
     const outcome = await fillEntry(trade, row, config, trades, candidates);
     if (outcome === "FILLED") events.push({ type: "ENTRY_TRADE_OPENED", trade });
     if (outcome === "SKIPPED") {
-      const candidate = upsertCandidate(candidates, row, scan, settings, null);
+      const candidate = upsertCandidate(
+        candidates,
+        row,
+        scan,
+        settings,
+        null,
+        trade.candidateContext
+      );
       candidate.status = "WAITING_CAPITAL";
       candidate.skipReason = trade.skipReason;
       candidate.skipAlertedAt = scan.scannedAt;
@@ -364,13 +447,20 @@ export async function updateTradeJournal(scan, config = appConfig) {
     portfolioSummary: finalPortfolio,
     capitalTransactions,
     candidates: candidates.sort((a, b) => b.rank - a.rank),
+    candidateDecisionLog: candidateDecisionLog.slice(-250),
     tradeSettings: settings,
     trades: trades.sort(sortTrades)
   };
   saveTrades(nextJournal);
   const visibleTrades = visibleTradesForSettings(nextJournal.trades, settings);
   await writeTradeSheets({ ...nextJournal, trades: visibleTrades }, config);
-  return { ...nextJournal, visibleTrades, events, visibleCandidates: nextJournal.candidates };
+  return {
+    ...nextJournal,
+    visibleTrades,
+    events,
+    visibleCandidates: nextJournal.candidates,
+    visibleCandidateDecisions: nextJournal.candidateDecisionLog.slice(-50).reverse()
+  };
 }
 
 function cancelInvalidGtfPartialExit(trade, row) {
@@ -434,7 +524,15 @@ export function rowPassesTradeQuality(row, settingsOrConfig = appConfig) {
   return ["A+", "A"].includes(grade);
 }
 
-function createPendingEntry(row, scan, config, settings, plan, rotationExecution = null) {
+function createPendingEntry(
+  row,
+  scan,
+  config,
+  settings,
+  plan,
+  rotationExecution = null,
+  candidate = null
+) {
   const sourceLists = row.sourceLists || [row.listLabel].filter(Boolean);
   return {
     id: `${row.symbol}-${row.asOf}-${Date.now()}`,
@@ -472,6 +570,12 @@ function createPendingEntry(row, scan, config, settings, plan, rotationExecution
     rotationExecution,
     rotationSourceTradeId: rotationExecution?.sourceTradeId || null,
     rotationSourceSymbol: rotationExecution?.sourceSymbol || null,
+    candidateContext: candidate ? candidateContext(candidate, row) : {
+      firstSignalDate: row.asOf,
+      firstSignalClose: row.close,
+      peakRank: plan.rank,
+      entryCloseDates: [row.asOf]
+    },
     addOns: [],
     addOnSkips: [],
     pendingAdd: null,
@@ -573,6 +677,140 @@ function cancelPendingAdd(trade, reason) {
     reason
   });
   trade.pendingAdd = null;
+}
+
+async function attemptPendingExit(
+  trade,
+  row,
+  candidates,
+  rowBySymbol,
+  scan,
+  settings,
+  config,
+  events
+) {
+  if (trade.exitType === "QUALITY_ROTATION") {
+    const preflight = await preflightRotationReplacement(
+      trade,
+      candidates,
+      rowBySymbol,
+      scan,
+      settings,
+      config
+    );
+    if (!preflight.ready) {
+      if (preflight.cancelled) {
+        events.push({
+          type: "ROTATION_CANCELLED",
+          trade,
+          candidate: preflight.candidate,
+          reason: preflight.reason
+        });
+      }
+      return false;
+    }
+  }
+  const filled = await fillExit(trade, row, config);
+  if (!filled) return false;
+  markRotationExitReady(candidates, trade);
+  events.push({ type: "EXIT_TRADE_CLOSED", trade });
+  return true;
+}
+
+async function preflightRotationReplacement(
+  sourceTrade,
+  candidates,
+  rowBySymbol,
+  scan,
+  settings,
+  config
+) {
+  const candidate = candidates.find((item) =>
+    item.rotation?.sourceTradeId === sourceTrade.id ||
+    item.symbol === sourceTrade.replacementCandidateSymbol
+  );
+  const row = candidate
+    ? rowBySymbol.get(candidate.yahooSymbol || candidate.symbol)
+    : null;
+  if (!candidate || !row) {
+    const reason = "Optional rotation cancelled because the linked replacement is no longer in the live candidate universe.";
+    cancelQualityRotation(sourceTrade, candidate, reason, scan);
+    return { ready: false, cancelled: true, candidate, reason };
+  }
+
+  const closeDecision = candidateEntryDecision(candidate, row, config, {
+    forRotation: true,
+    qualityPass: rowPassesTradeQuality(row, settings)
+  });
+  applyCandidateDecision(candidate, closeDecision, scan);
+  if (!closeDecision.actionable) {
+    const reason = `Optional rotation cancelled before selling ${sourceTrade.symbol}: ${closeDecision.reasons.join(" ")}`;
+    cancelQualityRotation(sourceTrade, candidate, reason, scan, closeDecision);
+    return { ready: false, cancelled: true, candidate, reason };
+  }
+
+  const fill = await executionPriceFetcher(config)(
+    candidate.yahooSymbol || row.yahooSymbol,
+    sourceTrade.exitSignalDate
+  );
+  if (!fill) {
+    sourceTrade.executionError =
+      "Rotation sell is waiting because the replacement's exact next-session 09:17 price is not available for preflight.";
+    candidate.status = "WAITING_EXECUTION_PREFLIGHT";
+    candidate.skipReason = sourceTrade.executionError;
+    return { ready: false, waiting: true, candidate, reason: sourceTrade.executionError };
+  }
+
+  const executionDecision = candidateEntryDecision(candidate, row, config, {
+    executionPrice: fill.price,
+    forRotation: true,
+    qualityPass: rowPassesTradeQuality(row, settings)
+  });
+  applyCandidateDecision(candidate, executionDecision, scan);
+  if (!executionDecision.actionable) {
+    const reason = `Optional rotation cancelled before selling ${sourceTrade.symbol}: ${executionDecision.reasons.join(" ")}`;
+    cancelQualityRotation(sourceTrade, candidate, reason, scan, executionDecision);
+    return { ready: false, cancelled: true, candidate, reason };
+  }
+
+  candidate.rotation = {
+    ...(candidate.rotation || {}),
+    preflight: {
+      evaluatedAt: scan.scannedAt,
+      date: fill.date,
+      time: fill.timeLabel || EXECUTION_TIME,
+      price: round(fill.price),
+      decision: executionDecision
+    }
+  };
+  sourceTrade.executionError = null;
+  return { ready: true, candidate, fill, decision: executionDecision };
+}
+
+function cancelQualityRotation(sourceTrade, candidate, reason, scan, decision = null) {
+  sourceTrade.rotationCancellations = Array.isArray(sourceTrade.rotationCancellations)
+    ? sourceTrade.rotationCancellations
+    : [];
+  sourceTrade.rotationCancellations.push({
+    cancelledAt: scan.scannedAt,
+    asOf: scan.marketContext?.asOf,
+    replacement: candidate?.symbol || sourceTrade.replacementCandidateSymbol,
+    reason
+  });
+  sourceTrade.status = "OPEN";
+  sourceTrade.exitType = null;
+  sourceTrade.exitSignalDate = null;
+  sourceTrade.exitSignalScanAt = null;
+  sourceTrade.exitReason = [];
+  sourceTrade.exitSnapshot = null;
+  sourceTrade.replacementCandidateSymbol = null;
+  sourceTrade.executionError = null;
+  if (candidate) {
+    candidate.rotation = null;
+    candidate.status = decision?.disposition || "WAITING_RECONFIRMATION";
+    candidate.skipReason = reason;
+    candidate.lastDecision = decision || candidate.lastDecision;
+  }
 }
 
 function markRotationExitReady(candidates, sourceTrade) {
@@ -775,6 +1013,32 @@ async function fillEntry(trade, row, config, trades, candidates) {
       trade.executionError =
         `Rotation replacement requires ${trade.rotationExecution.exitDate} ${trade.rotationExecution.exitTime}; no fictional later-session switch is allowed.`;
       return "WAITING";
+    }
+    const executionDecision = candidateEntryDecision(
+      trade.candidateContext || {
+        firstSignalDate: trade.entrySignalDate,
+        firstSignalClose: trade.entrySnapshot?.close,
+        peakRank: trade.positionRank,
+        entryCloseDates: [trade.entrySignalDate]
+      },
+      row,
+      config,
+      {
+        executionPrice: fill.price,
+        forRotation: Boolean(trade.rotationExecution),
+        qualityPass: rowPassesTradeQuality(row, { qualityMode: trade.tradeQualityMode })
+      }
+    );
+    trade.entryExecutionDecision = {
+      ...executionDecision,
+      evaluatedDate: fill.date,
+      evaluatedTime: fill.timeLabel || EXECUTION_TIME
+    };
+    if (!executionDecision.actionable) {
+      trade.executionError = `Entry skipped at actual 09:17 recheck: ${executionDecision.reasons.join(" ")}`;
+      trade.status = "SKIPPED_ENTRY";
+      trade.skipReason = trade.executionError;
+      return "SKIPPED";
     }
     const summary = portfolioSummary(trades, candidates, config);
     const sector = String(trade.industry || row.industry || "Unknown");
@@ -1157,8 +1421,74 @@ function findAnyActiveTrade(trades, row) {
   );
 }
 
-function upsertCandidate(candidates, row, scan, settings, existing) {
+function recordRotationObservation(trade, row, weakness) {
+  if (!row?.asOf || trade.rotationReview?.lastObservedAsOf === row.asOf) return;
+  const qualifies = weakness?.primaryScore >= 1 && weakness?.score >= 2;
+  const priorDates = Array.isArray(trade.rotationReview?.weakCloseDates)
+    ? trade.rotationReview.weakCloseDates
+    : [];
+  const weakCloseDates = qualifies
+    ? Array.from(new Set([...priorDates, row.asOf])).slice(-10)
+    : [];
+  trade.rotationReview = {
+    lastObservedAsOf: row.asOf,
+    weakCloseDates,
+    confirmedWeakCloses: weakCloseDates.length,
+    currentQualifies: qualifies,
+    currentPrimaryScore: weakness?.primaryScore || 0,
+    currentScore: weakness?.score || 0,
+    currentReasons: weakness?.reasons || []
+  };
+}
+
+function candidateContext(candidate, row) {
+  return {
+    firstSignalDate: candidate.firstSignalDate || row.asOf,
+    firstSignalClose: candidate.firstSignalClose ?? row.close,
+    firstSignalRank: candidate.firstSignalRank ?? candidate.rank ?? candidateRank(row),
+    firstFundamentalScore: candidate.firstFundamentalScore ?? row.fundamentalScore,
+    firstSeenAt: candidate.firstSeenAt,
+    peakRank: candidate.peakRank ?? candidate.rank ?? candidateRank(row),
+    entryCloseDates: [...(candidate.entryCloseDates || [row.asOf])]
+  };
+}
+
+function applyCandidateDecision(candidate, decision, scan) {
+  candidate.lastDecision = decision;
+  candidate.lastEvaluatedAt = scan.scannedAt;
+  candidate.status = decision.actionable ? "ACTIONABLE" : decision.disposition;
+  candidate.skipReason = decision.actionable
+    ? [
+        "Latest completed close remains entry-ready; waiting for cash, risk and execution checks.",
+        ...(decision.warnings || [])
+      ].join(" ")
+    : decision.reasons.join(" ");
+}
+
+function recordCandidateDecision(log, candidate, decision, scan, outcome) {
+  const reason = decision.reasons.join(" ") || candidate.skipReason || "Candidate remains actionable.";
+  const item = {
+    id: `${candidate.symbol}-${candidate.latestAsOf || candidate.lastSignalDate || "NA"}-${outcome}-${decision.disposition}`,
+    evaluatedAt: scan.scannedAt,
+    asOf: candidate.latestAsOf || candidate.lastSignalDate || null,
+    symbol: candidate.symbol,
+    industry: candidate.industry,
+    firstSignalDate: candidate.firstSignalDate,
+    firstSignalClose: candidate.firstSignalClose,
+    outcome,
+    disposition: decision.disposition,
+    grade: candidate.grade,
+    rank: candidate.rank,
+    metrics: decision.metrics,
+    reason
+  };
+  const withoutDuplicate = log.filter((entry) => entry.id !== item.id);
+  return [...withoutDuplicate, item].slice(-250);
+}
+
+function upsertCandidate(candidates, row, scan, settings, existing, seed = null) {
   const target = existing || {
+    ...(seed || {}),
     id: `${row.symbol}-${row.asOf}-candidate`,
     symbol: row.symbol,
     yahooSymbol: row.yahooSymbol,
@@ -1167,15 +1497,28 @@ function upsertCandidate(candidates, row, scan, settings, existing) {
     sourceLists: row.sourceLists || [row.listLabel].filter(Boolean),
     tradeScope: settings.scopeListId,
     tradeScopeLabel: settings.scopeLabel,
-    firstSignalDate: row.asOf,
-    firstSeenAt: scan.scannedAt
+    firstSignalDate: seed?.firstSignalDate || row.asOf,
+    firstSignalClose: seed?.firstSignalClose ?? row.close,
+    firstSignalRank: seed?.firstSignalRank ?? candidateRank(row),
+    firstFundamentalScore: seed?.firstFundamentalScore ?? row.fundamentalScore,
+    firstSeenAt: seed?.firstSeenAt || scan.scannedAt
   };
+  target.firstSignalDate = target.firstSignalDate || seed?.firstSignalDate || row.asOf;
+  target.firstSignalClose = target.firstSignalClose ?? seed?.firstSignalClose ?? row.close;
+  target.firstSignalRank = target.firstSignalRank ?? seed?.firstSignalRank ?? candidateRank(row);
+  target.firstFundamentalScore =
+    target.firstFundamentalScore ?? seed?.firstFundamentalScore ?? row.fundamentalScore;
+  target.firstSeenAt = target.firstSeenAt || seed?.firstSeenAt || scan.scannedAt;
   target.lastSignalDate = row.asOf;
   target.lastSeenAt = scan.scannedAt;
   target.rank = candidateRank(row);
+  target.peakRank = Math.max(Number(target.peakRank) || target.rank, target.rank);
   target.grade = row.setupGrade;
   target.score = row.score;
   target.entryStyle = row.entryStyle?.label || "";
+  target.latestClose = row.close;
+  target.latestAsOf = row.asOf;
+  target.entryCloseDates = Array.from(new Set([...(target.entryCloseDates || []), row.asOf])).slice(-10);
   target.status = target.status || "WAITING_ALLOCATION";
   target.skipReason = target.skipReason || "Waiting for portfolio allocation.";
   if (!existing) candidates.push(target);
@@ -1352,6 +1695,7 @@ async function writeXlsx(journal, filePath) {
   addTradeWorksheet(workbook, "Closed Trades", closed);
   addTradeWorksheet(workbook, "All Trades", journal.trades);
   addCandidateWorksheet(workbook, journal.candidates || []);
+  addCandidateDecisionWorksheet(workbook, journal.candidateDecisionLog || []);
   addCapitalLedgerWorksheet(workbook, journal.capitalTransactions || []);
 
   await workbook.xlsx.writeFile(filePath);
@@ -1426,6 +1770,11 @@ function tradeColumns() {
     { header: "Rotation Source", key: "Rotation Source", width: 20 },
     { header: "Rotation Rule", key: "Rotation Rule", width: 32 },
     { header: "Rotation Same Slot", key: "Rotation Same Slot", width: 20 },
+    { header: "Management Decision", key: "Management Decision", width: 26 },
+    { header: "Management Reasons", key: "Management Reasons", width: 70 },
+    { header: "Confirmed Weak Closes", key: "Confirmed Weak Closes", width: 22 },
+    { header: "Rotation Cancellations", key: "Rotation Cancellations", width: 70 },
+    { header: "Entry Execution Recheck", key: "Entry Execution Recheck", width: 70 },
     { header: "Entry Style", key: "Entry Style", width: 26 },
     { header: "Setup Grade", key: "Setup Grade", width: 13 },
     { header: "Setup Score", key: "Setup Score", width: 14 },
@@ -1531,6 +1880,15 @@ function tradeToRow(trade) {
     "Rotation Rule": trade.rotationExecution?.rule || "",
     "Rotation Same Slot": trade.rotationExecution
       ? (trade.entryDate === trade.rotationExecution.exitDate && trade.entryTime === trade.rotationExecution.exitTime ? "Yes" : "Pending")
+      : "",
+    "Management Decision": trade.latestManagementDecision?.action || "",
+    "Management Reasons": (trade.latestManagementDecision?.reasons || []).join(" "),
+    "Confirmed Weak Closes": trade.rotationReview?.confirmedWeakCloses ?? 0,
+    "Rotation Cancellations": (trade.rotationCancellations || []).map((item) =>
+      `${item.cancelledAt}: ${item.replacement || "NA"}; ${item.reason}`
+    ).join(" | "),
+    "Entry Execution Recheck": trade.entryExecutionDecision
+      ? `${trade.entryExecutionDecision.actionable ? "PASS" : "SKIP"}; ${(trade.entryExecutionDecision.reasons || []).join(" ")}`
       : "",
     "Entry Style": trade.entrySnapshot?.entryStyle?.label || "",
     "Setup Grade": trade.entrySnapshot?.setupGrade || "",
@@ -1694,6 +2052,12 @@ function addCandidateWorksheet(workbook, candidates) {
     { header: "Signal Date", key: "signalDate", width: 16 },
     { header: "Grade", key: "grade", width: 12 },
     { header: "Rank", key: "rank", width: 12 },
+    { header: "Valid Entry Closes", key: "confirmedCloses", width: 20 },
+    { header: "Run-up %", key: "runupPct", width: 14 },
+    { header: "09:17 Gap %", key: "executionGapPct", width: 14 },
+    { header: "ST Distance %", key: "supertrendDistancePct", width: 16 },
+    { header: "ATR Extension", key: "atrExtension", width: 16 },
+    { header: "Rank Decay", key: "rankDecay", width: 14 },
     { header: "Entry Style", key: "entryStyle", width: 28 },
     { header: "Planned Allocation", key: "allocation", width: 20 },
     { header: "Planned Risk", key: "risk", width: 16 },
@@ -1707,11 +2071,51 @@ function addCandidateWorksheet(workbook, candidates) {
     signalDate: candidate.firstSignalDate,
     grade: candidate.grade,
     rank: candidate.rank,
+    confirmedCloses: candidate.lastDecision?.metrics?.confirmedEntryCloses ?? 0,
+    runupPct: candidate.lastDecision?.metrics?.runupPct ?? "",
+    executionGapPct: candidate.lastDecision?.metrics?.executionGapPct ?? "",
+    supertrendDistancePct: candidate.lastDecision?.metrics?.supertrendDistancePct ?? "",
+    atrExtension: candidate.lastDecision?.metrics?.atrExtension ?? "",
+    rankDecay: candidate.lastDecision?.metrics?.rankDecay ?? "",
     entryStyle: candidate.entryStyle,
     allocation: candidate.plannedAllocation,
     risk: candidate.plannedRisk,
     stop: candidate.plannedStopPrice,
     reason: candidate.skipReason
+  })));
+  sheet.views = [{ state: "frozen", ySplit: 1 }];
+  formatSheet(sheet);
+}
+
+function addCandidateDecisionWorksheet(workbook, decisions) {
+  const sheet = workbook.addWorksheet("Candidate Decision Log");
+  sheet.columns = [
+    { header: "Evaluated At", key: "evaluatedAt", width: 24 },
+    { header: "Closing Date", key: "asOf", width: 16 },
+    { header: "Symbol", key: "symbol", width: 16 },
+    { header: "Industry", key: "industry", width: 24 },
+    { header: "First Signal", key: "firstSignalDate", width: 16 },
+    { header: "First Signal Close", key: "firstSignalClose", width: 18 },
+    { header: "Outcome", key: "outcome", width: 16 },
+    { header: "Disposition", key: "disposition", width: 24 },
+    { header: "Grade", key: "grade", width: 12 },
+    { header: "Rank", key: "rank", width: 12 },
+    { header: "Run-up %", key: "runupPct", width: 14 },
+    { header: "09:17 Gap %", key: "executionGapPct", width: 14 },
+    { header: "ST Distance %", key: "supertrendDistancePct", width: 16 },
+    { header: "ATR Extension", key: "atrExtension", width: 16 },
+    { header: "Rank Decay", key: "rankDecay", width: 14 },
+    { header: "Valid Entry Closes", key: "confirmedCloses", width: 20 },
+    { header: "Reason", key: "reason", width: 90 }
+  ];
+  sheet.addRows(decisions.map((decision) => ({
+    ...decision,
+    runupPct: decision.metrics?.runupPct ?? "",
+    executionGapPct: decision.metrics?.executionGapPct ?? "",
+    supertrendDistancePct: decision.metrics?.supertrendDistancePct ?? "",
+    atrExtension: decision.metrics?.atrExtension ?? "",
+    rankDecay: decision.metrics?.rankDecay ?? "",
+    confirmedCloses: decision.metrics?.confirmedEntryCloses ?? 0
   })));
   sheet.views = [{ state: "frozen", ySplit: 1 }];
   formatSheet(sheet);

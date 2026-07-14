@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   buildPositionPlan,
   buildPyramidAddPlan,
+  candidateEntryDecision,
   candidateRank,
   nextTrailingStop,
   portfolioConfig,
@@ -302,11 +303,120 @@ test("materially stronger challenger rotates only a weak position", () => {
     asOf: "2026-07-10"
   });
   const strong = strongRow({ symbol: "BEST", yahooSymbol: "BEST.NS", setupGrade: "A+" });
-  const trade = openTrade({ symbol: "WEAK", yahooSymbol: "WEAK.NS", entryDate: "2026-06-20" });
+  const trade = openTrade({
+    symbol: "WEAK",
+    yahooSymbol: "WEAK.NS",
+    entryDate: "2026-06-20",
+    rotationReview: { weakCloseDates: ["2026-07-09", "2026-07-10"] }
+  });
   const rows = new Map([["WEAK.NS", weak]]);
-  const decision = rotationDecision(strong, [trade], rows, { trade: {} });
+  const candidate = {
+    firstSignalDate: "2026-07-09",
+    firstSignalClose: 100,
+    peakRank: candidateRank(strong),
+    entryCloseDates: ["2026-07-09", "2026-07-10"]
+  };
+  const decision = rotationDecision(strong, [trade], rows, { trade: {} }, candidate);
   assert.equal(decision.rotate, true);
   assert.ok(candidateRank(strong) > candidateRank(weak));
+});
+
+test("waiting candidate run-up remains buyable when current structure is still entry-ready", () => {
+  const row = strongRow({ close: 110, dailySupertrend: 104 });
+  row.setupStrength.values.smaFast = 105;
+  row.setupStrength.values.atr = 3;
+  const decision = candidateEntryDecision(
+    {
+      firstSignalDate: "2026-07-01",
+      firstSignalClose: 100,
+      peakRank: candidateRank(row),
+      entryCloseDates: ["2026-07-01", "2026-07-02"]
+    },
+    row,
+    { trade: {} },
+    { qualityPass: true }
+  );
+  assert.equal(decision.actionable, true);
+  assert.equal(decision.disposition, "ACTIONABLE");
+  assert.match(decision.warnings.join(" "), /informational/i);
+});
+
+test("actual 09:17 gap remains buyable when execution-price structure is still safe", () => {
+  const row = strongRow({ close: 100, dailySupertrend: 99 });
+  row.setupStrength.values.smaFast = 102;
+  row.setupStrength.values.atr = 2;
+  const decision = candidateEntryDecision(
+    {
+      firstSignalDate: "2026-07-09",
+      firstSignalClose: 100,
+      peakRank: candidateRank(row),
+      entryCloseDates: ["2026-07-09", "2026-07-10"]
+    },
+    row,
+    { trade: {} },
+    { qualityPass: true, executionPrice: 104 }
+  );
+  assert.equal(decision.actionable, true);
+  assert.equal(decision.disposition, "ACTIONABLE");
+  assert.match(decision.warnings.join(" "), /09:17.*informational/i);
+});
+
+test("rotation waits for both candidate and weakness confirmation", () => {
+  const strong = strongRow({ symbol: "BEST", yahooSymbol: "BEST.NS" });
+  const weak = strongRow({
+    symbol: "WEAK",
+    yahooSymbol: "WEAK.NS",
+    setupGrade: "B",
+    dailyRsi: 45
+  });
+  const trade = openTrade({
+    symbol: "WEAK",
+    yahooSymbol: "WEAK.NS",
+    rotationReview: { weakCloseDates: ["2026-07-10"] }
+  });
+  const decision = rotationDecision(
+    strong,
+    [trade],
+    new Map([["WEAK.NS", weak]]),
+    { trade: {} },
+    {
+      firstSignalDate: "2026-07-10",
+      firstSignalClose: 100,
+      entryCloseDates: ["2026-07-10"]
+    }
+  );
+  assert.equal(decision.rotate, false);
+  assert.match(decision.reason, /not rotation-ready|distinct/i);
+});
+
+test("same-close partial risk action prevents an immediate second rotation sell", () => {
+  const strong = strongRow({ symbol: "BEST", yahooSymbol: "BEST.NS" });
+  const weak = strongRow({
+    symbol: "WEAK",
+    yahooSymbol: "WEAK.NS",
+    setupGrade: "B",
+    dailyRsi: 45
+  });
+  const trade = openTrade({
+    symbol: "WEAK",
+    yahooSymbol: "WEAK.NS",
+    lastRiskActionSignalDate: weak.asOf,
+    rotationReview: { weakCloseDates: ["2026-07-09", "2026-07-10"] }
+  });
+  const candidate = {
+    firstSignalDate: "2026-07-09",
+    firstSignalClose: 100,
+    peakRank: candidateRank(strong),
+    entryCloseDates: ["2026-07-09", "2026-07-10"]
+  };
+  const decision = rotationDecision(
+    strong,
+    [trade],
+    new Map([["WEAK.NS", weak]]),
+    { trade: {} },
+    candidate
+  );
+  assert.equal(decision.rotate, false);
 });
 
 test("portfolio summary reserves pending capital and reports cash", () => {

@@ -48,6 +48,40 @@ test("full-capital quality rotation reuses sell cash in the same exact 09:17 slo
   }
 });
 
+test("rotation does not sell the weak holding when replacement fails the 09:17 trend preflight", async () => {
+  const temp = fs.mkdtempSync(path.join(os.tmpdir(), "techno-funda-rotation-guard-"));
+  const original = {
+    dataDir: appConfig.dataDir,
+    tradesPath: appConfig.tradesPath,
+    tradeSheetPath: appConfig.tradeSheetPath,
+    tradeCsvPath: appConfig.tradeCsvPath
+  };
+  Object.assign(appConfig, {
+    dataDir: temp,
+    tradesPath: path.join(temp, "trades.json"),
+    tradeSheetPath: path.join(temp, "trades.xlsx"),
+    tradeCsvPath: path.join(temp, "trades.csv")
+  });
+
+  try {
+    fs.writeFileSync(appConfig.tradesPath, `${JSON.stringify(seedJournal(), null, 2)}\n`);
+    const journal = await updateTradeJournal(scanFixture(), testConfig({ strongPrice: 90 }));
+    const weak = journal.trades.find((trade) => trade.symbol === "WEAK");
+    const replacement = journal.trades.find((trade) => trade.symbol === "STRONG");
+    const candidate = journal.candidates.find((item) => item.symbol === "STRONG");
+
+    assert.equal(weak.status, "OPEN");
+    assert.equal(replacement, undefined);
+    assert.ok(weak.rotationCancellations?.length > 0);
+    assert.match(weak.rotationCancellations.at(-1).reason, /below daily Supertrend/i);
+    assert.equal(candidate.status, "WAITING_RECONFIRMATION");
+    assert.ok(journal.events.some((event) => event.type === "ROTATION_CANCELLED"));
+  } finally {
+    Object.assign(appConfig, original);
+    fs.rmSync(temp, { recursive: true, force: true });
+  }
+});
+
 function seedJournal() {
   return {
     updatedAt: "2026-07-10T04:00:00.000Z",
@@ -64,8 +98,11 @@ function seedJournal() {
       name: "Strong Ltd",
       industry: "Technology",
       tradeScope: "all-market",
-      firstSignalDate: "2026-07-10",
-      rank: 300,
+      firstSignalDate: "2026-07-09",
+      firstSignalClose: 100,
+      peakRank: 231,
+      entryCloseDates: ["2026-07-09"],
+      rank: 231,
       status: "WAITING_CAPITAL"
     }],
     trades: [{
@@ -96,7 +133,11 @@ function seedJournal() {
       partialExits: [],
       partialExitTags: [],
       addOns: [],
-      entrySnapshot: { fundamentalScore: 2 }
+      entrySnapshot: { fundamentalScore: 2 },
+      rotationReview: {
+        lastObservedAsOf: "2026-07-09",
+        weakCloseDates: ["2026-07-09"]
+      }
     }]
   };
 }
@@ -116,7 +157,7 @@ function scanFixture() {
   };
 }
 
-function testConfig() {
+function testConfig({ strongPrice = 100 } = {}) {
   return {
     ...appConfig,
     trade: {
@@ -139,7 +180,7 @@ function testConfig() {
         timeLabel: "09:17 IST",
         window: "09:17 IST",
         source: "test 09:17 one-minute candle open",
-        price: symbol === "WEAK.NS" ? 990 : 100
+        price: symbol === "WEAK.NS" ? 990 : strongPrice
       })
     }
   };

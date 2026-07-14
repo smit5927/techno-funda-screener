@@ -8,6 +8,7 @@ Daily-close based screener for all NSE equities, Nifty 500, and a custom uploade
 - Exit: weekly RS 21 < 0 on closed weekly candle.
 - Fundamentals are optional strength checks, not compulsory entry filters.
 - Video-ingested setup strength adds optional score/context for higher-low 20-day bases, 55-day/52-week breakouts, retracements, MACD/OBV, official NSE delivery/operator activity, RS trend, 50/200 DMA, candles, ATR/liquidity, market/sector/derivative/options/commodity context, fundamentals and risk. Winner pyramiding separately requires a post-fill advance, controlled pullback, and fresh daily close above its confirmed swing high. GTF remains secondary confluence only. Full notes are in `docs/strategy-rules.md` and `docs/video-ingestion.md`.
+- Waiting entries are re-underwritten at the latest close and actual 09:17 price before freed cash is used. Signal run-up/age are warnings rather than automatic rejection when the current entry remains valid. Optional rotations require two-close confirmation on both sides and replacement preflight before the weak holding is sold; compulsory full and partial exits remain independent.
 - Every signal stores the reason on the website, Telegram alert, JSON result, and trade sheet.
 
 ## Lists
