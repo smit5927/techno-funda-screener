@@ -36,8 +36,10 @@ const LEGACY_EXECUTION_METHODS = new Set([
   "first_5m_candle_open"
 ]);
 
-export async function updateTradeJournal(scan, config = appConfig) {
-  const journal = readTrades();
+export async function updateTradeJournal(scan, config = appConfig, options = {}) {
+  const journal = options.journal && typeof options.journal === "object"
+    ? structuredClone(options.journal)
+    : readTrades();
   const settings = tradeSettingsSummary(config);
   const riskRules = portfolioConfig(config);
   const liveMode = config.trade.onlyNewSignals !== false;
@@ -454,9 +456,11 @@ export async function updateTradeJournal(scan, config = appConfig) {
     tradeSettings: settings,
     trades: trades.sort(sortTrades)
   };
-  saveTrades(nextJournal);
+  if (options.persist !== false) saveTrades(nextJournal);
   const visibleTrades = visibleTradesForSettings(nextJournal.trades, settings);
-  await writeTradeSheets({ ...nextJournal, trades: visibleTrades }, config);
+  if (options.writeSheets !== false) {
+    await writeTradeSheets({ ...nextJournal, trades: visibleTrades }, config);
+  }
   return {
     ...nextJournal,
     visibleTrades,

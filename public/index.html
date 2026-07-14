@@ -5,10 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#100d0b" />
     <meta name="color-scheme" content="dark" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>Techno Funda Screener</title>
-    <link rel="stylesheet" href="styles.css?v=20260714-dashboard-ui" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="app-icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css?v=20260714-mobile-auth" />
   </head>
   <body>
+    <section id="authGate" class="authGate" aria-live="polite">
+      <div class="authBrand"><span>TF</span><strong>Techno Funda</strong><small>Institutional Decision System</small></div>
+      <form id="loginForm" class="authPanel">
+        <div class="authPanelHeading"><span>SECURE ACCESS</span><h1>Sign in</h1><p>Use the ID issued by your administrator.</p></div>
+        <label>User ID<input id="loginUsername" name="username" autocomplete="username" required /></label>
+        <label>Password<input id="loginPassword" name="password" type="password" autocomplete="current-password" required /></label>
+        <button class="authPrimary" type="submit">Continue</button>
+        <button id="showBootstrapButton" class="authTextButton" type="button">First owner setup</button>
+      </form>
+
+      <form id="bootstrapForm" class="authPanel" hidden>
+        <div class="authPanelHeading"><span>ONE-TIME SETUP</span><h1>Create owner</h1><p>This setup closes permanently after the owner is created.</p></div>
+        <label>Setup code<input id="bootstrapCode" type="password" autocomplete="one-time-code" required /></label>
+        <div class="authGrid">
+          <label>Owner ID<input id="bootstrapUsername" autocomplete="username" required /></label>
+          <label>Full name<input id="bootstrapName" autocomplete="name" required /></label>
+          <label>Email<input id="bootstrapEmail" type="email" autocomplete="email" required /></label>
+          <label>Mobile<input id="bootstrapMobile" type="tel" autocomplete="tel" /></label>
+        </div>
+        <label>Password<input id="bootstrapPassword" type="password" autocomplete="new-password" required /></label>
+        <button class="authPrimary" type="submit">Create secure owner</button>
+        <button id="backToLoginButton" class="authTextButton" type="button">Back to sign in</button>
+      </form>
+
+      <div id="mfaPanel" class="authPanel" hidden>
+        <div class="authPanelHeading"><span>DEVICE VERIFICATION</span><h1 id="mfaTitle">Authenticator OTP</h1><p id="mfaDescription">Enter the current code from your authenticator app.</p></div>
+        <div id="mfaEnrollment" class="mfaEnrollment" hidden>
+          <img id="mfaQrCode" alt="Authenticator enrollment QR code" />
+          <code id="mfaSecret"></code>
+        </div>
+        <form id="mfaForm">
+          <label>6-digit OTP<input id="mfaCode" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required /></label>
+          <button class="authPrimary" type="submit">Verify device</button>
+        </form>
+      </div>
+      <p id="authStatus" class="authStatus"></p>
+    </section>
+
+    <div id="appRoot" hidden>
     <header class="topbar">
       <div class="brandMark">TF</div>
       <div class="titleBlock">
@@ -16,6 +59,9 @@
         <p id="scanMeta">Waiting for first scan</p>
       </div>
       <div class="actions">
+        <button id="installAppButton" type="button" hidden>Install App</button>
+        <span id="accountName" class="accountName"></span>
+        <button id="logoutButton" type="button">Log out</button>
         <button id="refreshButton" class="primaryAction" type="button" title="Reload the latest published scan and current position values"><span aria-hidden="true">&#8635;</span> Check Updates</button>
         <button id="scanButton" type="button" title="Run scan now">Run Scan</button>
       </div>
@@ -29,6 +75,7 @@
           <button class="mainNavTab" data-view="candidates" type="button" role="tab" aria-selected="false">Candidates</button>
           <button class="mainNavTab" data-view="screener" type="button" role="tab" aria-selected="false">Screener</button>
           <button class="mainNavTab" data-view="settings" type="button" role="tab" aria-selected="false">Settings</button>
+          <button id="adminNavButton" class="mainNavTab" data-view="admin" type="button" role="tab" aria-selected="false" hidden>Users</button>
         </div>
         <div class="navDownloads" aria-label="Trade sheet downloads">
           <span class="downloadLabel">Trade Sheet</span>
@@ -198,6 +245,12 @@
           </select>
           <input id="totalCapitalInput" type="number" min="10000" step="10000" inputmode="decimal" placeholder="Total capital" aria-label="Total portfolio capital" />
           <input id="addCapitalInput" type="number" min="0" step="10000" inputmode="decimal" placeholder="Add capital" aria-label="Capital amount to add" />
+          <input id="maxOpenPositionsInput" type="number" min="1" max="100" step="1" inputmode="numeric" placeholder="Max positions" aria-label="Maximum open positions" />
+          <input id="riskPerTradeInput" type="number" min="0.1" max="10" step="0.1" inputmode="decimal" placeholder="Risk / trade %" aria-label="Risk per trade percent" />
+          <input id="maxPortfolioRiskInput" type="number" min="0.1" max="50" step="0.1" inputmode="decimal" placeholder="Portfolio risk %" aria-label="Maximum portfolio risk percent" />
+          <input id="maxPositionInput" type="number" min="0.1" max="100" step="0.1" inputmode="decimal" placeholder="Position cap %" aria-label="Maximum position allocation percent" />
+          <input id="maxSectorExposureInput" type="number" min="0.1" max="100" step="0.1" inputmode="decimal" placeholder="Sector cap %" aria-label="Maximum sector exposure percent" />
+          <label class="settingsToggle"><input id="pyramidingEnabledInput" type="checkbox" checked /><span>Pyramiding</span></label>
         </div>
         <div class="customActions">
           <button id="saveTradeSettingsButton" type="button">Save Trade Settings</button>
@@ -217,6 +270,32 @@
         </div>
       </section>
       </div>
+
+      <section id="adminPanel" class="viewPanel adminWorkspace" data-view-panel="admin" hidden>
+        <div class="adminHeader">
+          <div><span>CENTRAL CONTROL</span><h2>User Administration</h2></div>
+          <button id="openCreateUserButton" type="button">Create User</button>
+        </div>
+        <form id="createUserForm" class="adminCreateForm" hidden>
+          <div class="authGrid">
+            <label>User ID<input id="newUserUsername" required /></label>
+            <label>Full name<input id="newUserName" required /></label>
+            <label>Email<input id="newUserEmail" type="email" required /></label>
+            <label>Mobile<input id="newUserMobile" type="tel" /></label>
+            <label>Initial password<input id="newUserPassword" type="password" required /></label>
+            <label>Opening capital<input id="newUserCapital" type="number" min="10000" step="10000" value="1000000" required /></label>
+          </div>
+          <div class="adminFormActions"><button type="submit">Create User</button><button id="cancelCreateUserButton" type="button">Cancel</button></div>
+        </form>
+        <div class="tableShell adminTableShell">
+          <table class="adminUsersTable">
+            <thead><tr><th>User</th><th>Contact</th><th>Capital</th><th>Status</th><th>Last Login</th><th>Session</th><th>Actions</th></tr></thead>
+            <tbody id="adminUsersBody"></tbody>
+          </table>
+          <div id="adminUsersEmpty" class="emptyState">No users created</div>
+        </div>
+        <p id="adminStatus" class="adminStatus"></p>
+      </section>
 
       <section class="positionsSection viewPanel" data-view-panel="positions" aria-label="Open positions and pending orders" hidden>
         <div class="sectionHeading">
@@ -377,7 +456,11 @@
 
     <div id="detailBackdrop" class="detailBackdrop" aria-hidden="true"></div>
     <aside id="detailPanel" class="detailPanel" aria-live="polite" aria-label="Stock details"></aside>
+    </div>
 
-    <script src="app.js?v=20260714-dashboard-ui" type="module"></script>
+    <script src="vendor/supabase.js"></script>
+    <script src="vendor/exceljs.min.js"></script>
+    <script src="mobile-config.js"></script>
+    <script src="auth.js?v=20260714-mobile-auth" type="module"></script>
   </body>
 </html>

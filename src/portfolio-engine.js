@@ -73,11 +73,17 @@ export function candidateRank(row = {}) {
     (Number(values.atrPct) > 6 ? 6 : 0) +
     (Number(values.riskToSupertrendPct) > 8 ? 6 : 0) +
     (coverage.dataGaps || 0) * 1.5;
+  const fundamentalChecks = Object.values(row.fundamental?.checks || {});
+  const fundamentalFailures = fundamentalChecks.filter((check) => check?.ok === false).length;
+  const fundamentalEvidence = fundamentalChecks.filter((check) => check?.ok === true || check?.ok === false).length;
+  const fundamentalPenalty = fundamentalEvidence >= 3 ? fundamentalFailures * 1.5 : 0;
 
   return round(
     (gradePoints[String(row.setupGrade || "").toUpperCase()] || 0) +
       (Number(row.setupStrengthScore) || 0) * 1.5 +
-      (Number(row.fundamentalScore) || 0) * 2 +
+      (Number(row.fundamentalScore) || 0) * 3 -
+      fundamentalPenalty +
+      clamp(Number(row.aiScore) || 0, -2, 2) * 2 +
       (Number(institutional.score) || 0) * 3 +
       (Number(gtf.rankAdjustment) || 0) +
       coverageRatio * 20 +

@@ -24,6 +24,7 @@ import { readLatestScan, saveLatestScan } from "./storage.js";
 import { sendTelegramSummary } from "./telegram.js";
 import { tradeSettingsSummary, updateTradeJournal } from "./trade-journal.js";
 import { buildGtfContext } from "./gtf-context.js";
+import { applyAiDecisionReview } from "./ai-decision-review.js";
 
 export async function runScreener(options = {}) {
   const config = options.config || appConfig;
@@ -105,6 +106,8 @@ export async function runScreener(options = {}) {
     };
   }
 
+  const aiReview = await applyAiDecisionReview(scannedLists);
+
   fundamentals.save();
 
   const previous = listFilter === "all" ? null : previousScan;
@@ -125,6 +128,7 @@ export async function runScreener(options = {}) {
     scannedListIds: lists.map((list) => list.id),
     marketContext,
     institutionalContext: institutionalContextForPayload(institutionalContext),
+    aiReview,
     tradeSettings: tradeSettingsSummary(config),
     rules,
     summary: summarize(allResults)

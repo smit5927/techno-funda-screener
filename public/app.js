@@ -81,6 +81,12 @@ const elements = {
   tradeQualitySelect: document.querySelector("#tradeQualitySelect"),
   totalCapitalInput: document.querySelector("#totalCapitalInput"),
   addCapitalInput: document.querySelector("#addCapitalInput"),
+  maxOpenPositionsInput: document.querySelector("#maxOpenPositionsInput"),
+  riskPerTradeInput: document.querySelector("#riskPerTradeInput"),
+  maxPortfolioRiskInput: document.querySelector("#maxPortfolioRiskInput"),
+  maxPositionInput: document.querySelector("#maxPositionInput"),
+  maxSectorExposureInput: document.querySelector("#maxSectorExposureInput"),
+  pyramidingEnabledInput: document.querySelector("#pyramidingEnabledInput"),
   saveTradeSettingsButton: document.querySelector("#saveTradeSettingsButton"),
   tradeSettingsStatus: document.querySelector("#tradeSettingsStatus"),
   telegramAccessCodeInput: document.querySelector("#telegramAccessCodeInput"),
@@ -200,7 +206,7 @@ updatePositionSortDirection();
 await loadResults();
 
 function setMainView(view, options = {}) {
-  const allowedViews = ["dashboard", "positions", "candidates", "screener", "settings"];
+  const allowedViews = ["dashboard", "positions", "candidates", "screener", "settings", "admin"];
   const nextView = allowedViews.includes(view) ? view : "dashboard";
   const previousView = state.currentView;
   const applyView = () => {
@@ -231,6 +237,27 @@ function setMainView(view, options = {}) {
 }
 
 async function loadResults() {
+  if (cloudMode && window.TF_AUTH_MODE) {
+    const response = await fetch(cloudApiUrl, { cache: "no-store" });
+    const payload = await response.json();
+    if (!response.ok || payload.error || !payload.state) {
+      throw new Error(payload.error || "Secure cloud results unavailable");
+    }
+    applyPayload(payload.state);
+    if (payload.customList?.count != null) {
+      elements.customListStatus.textContent = `${payload.customList.count} stocks in My List`;
+    }
+    if (payload.telegram || payload.state?.telegram) {
+      state.cloudTelegram = payload.telegram || state.cloudTelegram;
+      renderTelegramStatus(payload.telegram, payload.state?.telegram);
+    }
+    if (payload.tradeSettings || payload.state?.tradeSettings) {
+      state.cloudTradeSettings = payload.tradeSettings || payload.state?.tradeSettings;
+      renderTradeSettings(state.cloudTradeSettings, { updateBadges: false });
+    }
+    return;
+  }
+
   if (staticMode) {
     const response = await fetch(`data/results.json?v=${Date.now()}`, { cache: "reload" });
     const payload = await response.json();
@@ -394,11 +421,12 @@ function renderSummary(payload) {
   const benchmarkLabel = payload.benchmarkLabel || payload.rules?.benchmarkLabel || payload.benchmark;
   const staleText = payload.scannedAt && isStaleScan(payload.scannedAt) ? " | Stale: waiting for next cloud scan" : "";
   const institutionalText = institutionalMeta(payload.institutionalContext);
+  const aiText = aiReviewMeta(payload.aiReview);
   const scanTimestamp = payload.scanMode === "EXECUTION_PASS"
     ? `Execution pass ${formatDateTime(payload.executionPassAt || payload.scannedAt)} | Full scan ${formatDateTime(payload.fullScanAt || payload.scannedAt)}`
     : `Last scan ${formatDateTime(payload.scannedAt)}`;
   elements.scanMeta.textContent = payload.scannedAt
-    ? `${scanTimestamp} | ${listLabel} | Benchmark ${benchmarkLabel} | Risk ${payload.marketContext?.riskMode || "NA"}, cap ${compact(payload.marketContext?.exposureCapPct ?? 100)}%${institutionalText}${staleText}`
+    ? `${scanTimestamp} | ${listLabel} | Benchmark ${benchmarkLabel} | Risk ${payload.marketContext?.riskMode || "NA"}, cap ${compact(payload.marketContext?.exposureCapPct ?? 100)}%${institutionalText}${aiText}${staleText}`
     : "Waiting for first scan";
 }
 
@@ -491,6 +519,12 @@ function renderPositions(payload) {
     });
   });
   renderDashboardPositions(payload);
+}
+
+function aiReviewMeta(review) {
+  if (!review) return "";
+  if (review.ok) return ` | AI evidence review ${review.reviewed || 0}`;
+  return " | AI fallback: deterministic rules";
 }
 
 function renderDashboardPositions(payload) {
@@ -1104,7 +1138,13 @@ async function saveTradeSettings() {
         scopeListId: elements.tradeScopeSelect.value,
         qualityMode: elements.tradeQualitySelect.value,
         totalCapital: Number(elements.totalCapitalInput.value),
-        addCapital: Number(elements.addCapitalInput.value || 0)
+        addCapital: Number(elements.addCapitalInput.value || 0),
+        maxOpenPositions: Number(elements.maxOpenPositionsInput.value),
+        riskPerTradePct: Number(elements.riskPerTradeInput.value),
+        maxPortfolioRiskPct: Number(elements.maxPortfolioRiskInput.value),
+        maxPositionPct: Number(elements.maxPositionInput.value),
+        maxSectorExposurePct: Number(elements.maxSectorExposureInput.value),
+        pyramidingEnabled: elements.pyramidingEnabledInput.checked
       })
     });
     const payload = await response.json().catch(() => ({}));
@@ -1193,6 +1233,19 @@ function renderTradeSettings(settings, options = {}) {
   if (elements.totalCapitalInput && Number.isFinite(Number(settings.totalCapital))) {
     elements.totalCapitalInput.value = String(settings.totalCapital);
   }
+  const numericControls = [
+    [elements.maxOpenPositionsInput, settings.maxOpenPositions],
+    [elements.riskPerTradeInput, settings.riskPerTradePct],
+    [elements.maxPortfolioRiskInput, settings.maxPortfolioRiskPct],
+    [elements.maxPositionInput, settings.maxPositionPct],
+    [elements.maxSectorExposureInput, settings.maxSectorExposurePct]
+  ];
+  numericControls.forEach(([control, value]) => {
+    if (control && Number.isFinite(Number(value))) control.value = String(value);
+  });
+  if (elements.pyramidingEnabledInput) {
+    elements.pyramidingEnabledInput.checked = settings.pyramidingEnabled !== false;
+  }
   if (updateBadges && elements.tradeScopeText) {
     elements.tradeScopeText.textContent = settings.scopeLabel || "All NSE Market";
   }
@@ -1202,7 +1255,7 @@ function renderTradeSettings(settings, options = {}) {
   if (elements.tradeSettingsStatus) {
     const updated = settings.updatedAt ? ` | saved ${formatDateTime(settings.updatedAt)}` : "";
     elements.tradeSettingsStatus.textContent =
-      `${settings.scopeLabel || "All NSE Market"} | ${settings.qualityLabel || "Best only"} | Capital Rs ${compact(settings.totalCapital || 1000000)}${updated}`;
+      `${settings.scopeLabel || "All NSE Market"} | ${settings.qualityLabel || "Best only"} | Capital Rs ${compact(settings.totalCapital || 1000000)} | Risk ${compact(settings.riskPerTradePct || 1)}%/trade${updated}`;
   }
 }
 
@@ -1632,6 +1685,7 @@ function normalizeTradingViewSymbol(value) {
 }
 
 function getAccessCode() {
+  if (window.TF_AUTH_MODE && window.TF_ACCESS_TOKEN) return "authenticated-session";
   return String(
     elements.accessCodeInput?.value ||
       elements.tradeAccessCodeInput?.value ||

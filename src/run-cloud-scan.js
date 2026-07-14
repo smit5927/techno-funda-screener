@@ -1,6 +1,7 @@
 import { pushCloudState } from "./cloud-sync.js";
 import { attemptCloud, hydrateCloudRuntime } from "./cloud-runtime.js";
 import { runScreener } from "./screener.js";
+import { syncMultiUserRuntime } from "./multi-user-runtime.js";
 
 try {
   await hydrateCloudRuntime({ includeCustomList: true });
@@ -11,6 +12,15 @@ try {
     { ok: false, reason: "cloud state upload unavailable" }
   );
   console.log(pushed.ok ? "Cloud state updated" : `Cloud state skipped: ${pushed.reason}`);
+  const multiUser = await attemptCloud(
+    () => syncMultiUserRuntime(result),
+    { ok: false, reason: "multi-user app sync unavailable", processed: 0 }
+  );
+  console.log(
+    multiUser.ok
+      ? `Multi-user app updated: ${multiUser.processed} portfolios`
+      : `Multi-user app sync skipped/partial: ${multiUser.reason || `${multiUser.failed || 0} failed`}`
+  );
   console.log(
     [
       `Scan complete at ${result.scannedAt}`,

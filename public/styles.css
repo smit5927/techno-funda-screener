@@ -452,8 +452,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .uploadRow input { width: 100%; padding: 6px 9px; }
 .telegramInputs, .settingsInputs { display: grid; gap: 8px; }
 .telegramInputs { grid-template-columns: .7fr 1.4fr .8fr; }
-.settingsInputs { grid-template-columns: .7fr 1fr 1.25fr .8fr .8fr; }
+.settingsInputs { grid-template-columns: repeat(5, minmax(140px, 1fr)); }
 .telegramInputs input, .settingsInputs input, .settingsInputs select { width: 100%; padding: 0 10px; background: var(--surface-muted); }
+.settingsToggle { min-height: 42px; display: flex; align-items: center; gap: 9px; padding: 0 11px; border: 1px solid var(--border); background: var(--surface-muted); color: var(--text); }
+.settingsToggle input { width: 18px; height: 18px; accent-color: var(--accent); }
 #customListStatus, #telegramStatus, #tradeSettingsStatus { color: var(--muted); }
 
 .positionsSection { margin: 14px 0; }
@@ -894,4 +896,133 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+/* Secure mobile application shell */
+[hidden] { display: none !important; }
+
+.authGate {
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: minmax(240px, .8fr) minmax(360px, 520px);
+  align-items: center;
+  gap: clamp(40px, 8vw, 140px);
+  padding: max(28px, env(safe-area-inset-top)) clamp(24px, 8vw, 150px) max(28px, env(safe-area-inset-bottom));
+  overflow: hidden;
+  position: relative;
+  background:
+    linear-gradient(115deg, rgba(255, 159, 67, .14), transparent 38%),
+    radial-gradient(circle at 12% 88%, rgba(255, 107, 53, .11), transparent 34%),
+    #090b0e;
+}
+
+.authGate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .18;
+  background-image: linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: linear-gradient(90deg, #000, transparent 72%);
+}
+
+.authBrand, .authPanel, .authStatus { position: relative; z-index: 1; }
+.authBrand { display: grid; align-content: center; animation: authRise .75s cubic-bezier(.2,.8,.2,1) both; }
+.authBrand span {
+  width: 92px;
+  height: 92px;
+  display: grid;
+  place-items: center;
+  background: var(--orange, #ff9f43);
+  color: #101216;
+  font-size: 32px;
+  font-weight: 900;
+  box-shadow: 0 22px 60px rgba(255,159,67,.2);
+}
+.authBrand strong { margin-top: 30px; font-size: clamp(36px, 5vw, 72px); line-height: .98; color: #f6f8fb; }
+.authBrand small { margin-top: 14px; color: #9ea8b3; font-size: 15px; text-transform: uppercase; letter-spacing: 2px; }
+
+.authPanel {
+  width: 100%;
+  padding: clamp(26px, 4vw, 46px);
+  border: 1px solid #303943;
+  background: rgba(18, 22, 27, .94);
+  box-shadow: 0 36px 100px rgba(0,0,0,.45);
+  backdrop-filter: blur(18px);
+  animation: authPanelIn .55s cubic-bezier(.2,.8,.2,1) both;
+}
+.authPanelHeading { margin-bottom: 28px; }
+.authPanelHeading span, .adminHeader span { color: #ff9f43; font-size: 11px; font-weight: 800; letter-spacing: 1.4px; }
+.authPanelHeading h1 { margin: 7px 0 8px; font-size: 32px; color: #f7f9fc; }
+.authPanelHeading p { margin: 0; color: #98a3ad; font-size: 14px; line-height: 1.55; }
+.authPanel label, .adminCreateForm label {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+  color: #b6c0ca;
+  font-size: 12px;
+  font-weight: 700;
+}
+.authPanel input, .adminCreateForm input {
+  min-height: 48px;
+  width: 100%;
+  border: 1px solid #39434e;
+  border-radius: 4px;
+  background: #0c0f13;
+  color: #f4f7fa;
+  padding: 0 14px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.authPanel input:focus, .adminCreateForm input:focus { border-color: #ff9f43; box-shadow: 0 0 0 3px rgba(255,159,67,.13); }
+.authPrimary { width: 100%; min-height: 50px; margin-top: 6px; background: #ff9f43 !important; color: #101216 !important; border-color: #ff9f43 !important; font-weight: 850 !important; }
+.authTextButton { width: 100%; margin-top: 10px; border: 0 !important; background: transparent !important; color: #aeb8c2 !important; }
+.authGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+.authStatus { position: fixed; bottom: max(18px, env(safe-area-inset-bottom)); right: 24px; color: #aeb8c2; }
+.authStatus.error, .adminStatus.error { color: #ff6b77; }
+
+.mfaEnrollment { display: grid; justify-items: center; gap: 12px; margin: 0 0 20px; padding: 18px; background: #f7f9fb; }
+.mfaEnrollment img { width: min(220px, 64vw); aspect-ratio: 1; }
+.mfaEnrollment code { max-width: 100%; overflow-wrap: anywhere; color: #14171b; font-size: 12px; }
+
+.accountName { align-self: center; color: #c5cdd5; font-size: 13px; font-weight: 750; }
+.adminWorkspace { padding: 0 0 40px; }
+.adminHeader { display: flex; align-items: end; justify-content: space-between; gap: 20px; padding: 24px 0 18px; }
+.adminHeader h2 { margin: 5px 0 0; font-size: 24px; }
+.adminCreateForm { padding: 22px; margin-bottom: 18px; border: 1px solid var(--line); background: var(--surface); animation: authPanelIn .35s ease both; }
+.adminFormActions { display: flex; gap: 8px; }
+.adminUsersTable td strong, .adminUsersTable td small { display: block; }
+.adminUsersTable td small { margin-top: 5px; color: var(--muted); }
+.adminState { display: inline-flex; padding: 5px 8px; border-radius: 3px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+.adminState.active { color: #4be0a7; background: rgba(75,224,167,.12); }
+.adminState.suspended { color: #ff6b77; background: rgba(255,107,119,.12); }
+.adminActions { display: flex; gap: 6px; min-width: 220px; }
+.adminActions button { min-height: 34px; padding: 0 10px; font-size: 11px; }
+.adminStatus { min-height: 22px; color: var(--muted); padding-top: 10px; }
+
+@keyframes authRise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+@keyframes authPanelIn { from { opacity: 0; transform: translateX(22px) scale(.985); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 820px) {
+  .authGate { grid-template-columns: 1fr; align-content: center; gap: 26px; padding-inline: 18px; }
+  .authBrand { justify-items: center; text-align: center; }
+  .authBrand span { width: 58px; height: 58px; font-size: 20px; }
+  .authBrand strong { margin-top: 16px; font-size: 30px; }
+  .authBrand small { margin-top: 8px; font-size: 10px; }
+  .authPanel { max-width: 520px; margin-inline: auto; padding: 24px 18px; }
+  .authPanelHeading { margin-bottom: 20px; }
+  .authPanelHeading h1 { font-size: 26px; }
+  .authGrid { grid-template-columns: 1fr; }
+  .authStatus { position: static; text-align: center; min-height: 22px; }
+  .topbar .actions { flex-wrap: wrap; justify-content: flex-end; }
+  .accountName { width: 100%; text-align: right; }
+  .adminHeader { align-items: center; }
+  .adminCreateForm { padding: 16px; }
+  .adminTableShell { overflow-x: auto; }
+  .adminUsersTable { min-width: 920px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .authBrand, .authPanel, .adminCreateForm { animation: none; }
 }

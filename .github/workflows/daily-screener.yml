@@ -26,6 +26,7 @@ permissions:
   contents: write
   pages: write
   id-token: write
+  models: read
 
 concurrency:
   group: techno-funda-screener
@@ -92,6 +93,10 @@ jobs:
           TRADE_QUALITY_MODE: "BEST_ONLY"
           TECHNO_FUNDA_CLOUD_API_URL: https://ywvwsumwhmfkqrqrxsvs.supabase.co/functions/v1/techno-funda-api
           TECHNO_FUNDA_INTERNAL_KEY: ${{ secrets.TECHNO_FUNDA_INTERNAL_KEY }}
+          TECHNO_FUNDA_APP_API_URL: https://nsqcjzwfacthxcwguhzw.supabase.co/functions/v1/techno-funda-app-api
+          TECHNO_FUNDA_APP_INTERNAL_KEY: ${{ secrets.TECHNO_FUNDA_APP_INTERNAL_KEY }}
+          AI_REVIEW_ENABLED: "true"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Process pending 09:17 executions and Telegram alerts
         if: env.EXECUTION_ONLY == 'true'
@@ -119,6 +124,8 @@ jobs:
           TRADE_QUALITY_MODE: "BEST_ONLY"
           TECHNO_FUNDA_CLOUD_API_URL: https://ywvwsumwhmfkqrqrxsvs.supabase.co/functions/v1/techno-funda-api
           TECHNO_FUNDA_INTERNAL_KEY: ${{ secrets.TECHNO_FUNDA_INTERNAL_KEY }}
+          TECHNO_FUNDA_APP_API_URL: https://nsqcjzwfacthxcwguhzw.supabase.co/functions/v1/techno-funda-app-api
+          TECHNO_FUNDA_APP_INTERNAL_KEY: ${{ secrets.TECHNO_FUNDA_APP_INTERNAL_KEY }}
 
       - name: Build mobile website
         run: npm run build:static
