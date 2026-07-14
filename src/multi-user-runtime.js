@@ -90,7 +90,131 @@ export function marketOnlyState(scan = {}) {
     telegram,
     ...market
   } = scan;
-  return market;
+  return {
+    ...market,
+    lists: compactMarketLists(scan.lists || {})
+  };
+}
+
+function compactMarketLists(lists) {
+  const allMarket = lists["all-market"] || { id: "all-market", label: "All NSE Market", results: [] };
+  const nifty500 = lists.default || { id: "default", label: "Nifty 500", results: [] };
+  return {
+    "all-market": {
+      id: allMarket.id || "all-market",
+      label: allMarket.label || "All NSE Market",
+      editable: false,
+      summary: allMarket.summary || summarizeRows(allMarket.results || []),
+      results: (allMarket.results || []).map(compactMobileRow)
+    },
+    default: {
+      id: nifty500.id || "default",
+      label: nifty500.label || "Nifty 500",
+      editable: false,
+      summary: nifty500.summary || summarizeRows(nifty500.results || []),
+      symbols: (nifty500.results || []).map((row) => normalizeSymbol(row.symbol || row.yahooSymbol)).filter(Boolean)
+    }
+  };
+}
+
+function compactMobileRow(row = {}) {
+  const output = pick(row, [
+    "symbol", "yahooSymbol", "name", "industry", "asOf", "status", "close",
+    "dailySupertrend", "dailyPriceAboveSupertrend", "weeklyRsi", "weeklyRs",
+    "dailyLongRs", "dailyShortRs", "dailyRsi", "fundamentalScore", "score",
+    "setupGrade", "entryStyle", "aiReview", "aiScore"
+  ]);
+  output.signalReason = compactReasons(row.signalReason);
+
+  if (row.status === "ENTRY") {
+    output.fundamental = row.fundamental;
+    output.setupStrength = {
+      score: row.setupStrength?.score,
+      checks: row.setupStrength?.checks,
+      values: pick(row.setupStrength?.values || {}, [
+        "priorBaseHigh", "recentBaseLow", "priorRecentHigh", "priorYearHigh",
+        "volumeRatio", "macd", "retracementPullbackDepthPct",
+        "retracementSupportProximityOk", "retracementSupportDistancePct",
+        "retracementVolumePatternOk", "retracementPullbackVolumeRatio",
+        "retracementReclaimCandleOk", "retracementCloseLocationPct",
+        "riskToSupertrendPct", "atrPct", "averageTurnover", "previousLow"
+      ])
+    };
+    output.sectorStrength = row.sectorStrength;
+    output.conceptCoverage = compactCoverage(row.conceptCoverage);
+    output.gtfContext = compactGtf(row.gtfContext);
+    output.institutionalContext = compactInstitutional(row.institutionalContext);
+  } else if (row.status === "EXIT") {
+    output.fundamental = row.fundamental;
+    output.gtfContext = pick(row.gtfContext || {}, [
+      "dataAvailable", "score", "maxScore", "supplyBlocked"
+    ]);
+  }
+  return output;
+}
+
+function compactReasons(input) {
+  const reasons = (Array.isArray(input) ? input : [input]).map((value) => String(value || "").trim()).filter(Boolean);
+  const selected = reasons.slice(0, 14);
+  for (const reason of reasons) {
+    if (selected.length >= 20) break;
+    if (/AI |fundamental|exit|risk|GTF|data gap|block|rotation/i.test(reason) && !selected.includes(reason)) {
+      selected.push(reason);
+    }
+  }
+  return selected;
+}
+
+function compactCoverage(coverage = {}) {
+  return {
+    summary: coverage.summary,
+    passLabels: (coverage.passLabels || []).slice(0, 12),
+    weakLabels: (coverage.weakLabels || []).slice(0, 8),
+    dataGapLabels: (coverage.dataGapLabels || []).slice(0, 8),
+    excludedLabels: (coverage.excludedLabels || []).slice(0, 8)
+  };
+}
+
+function compactGtf(gtf = {}) {
+  return {
+    ...pick(gtf, [
+      "dataAvailable", "score", "maxScore", "grade", "rankAdjustment",
+      "preferredEntryStyle", "structuralStop", "dailyTrend", "weeklyTrend",
+      "rewardRisk", "unlimitedRewardRoom", "supplyDistancePct", "supplyBlocked",
+      "demandRetest", "checks"
+    ]),
+    dailyDemand: compactZone(gtf.dailyDemand),
+    weeklyDemand: compactZone(gtf.weeklyDemand),
+    opposingSupply: compactZone(gtf.opposingSupply),
+    reactingFromHtf: gtf.reactingFromHtf ? {
+      ...pick(gtf.reactingFromHtf, ["active", "managementClass", "reason"]),
+      zone: compactZone(gtf.reactingFromHtf.zone)
+    } : null,
+    reasons: (gtf.reasons || []).slice(0, 8)
+  };
+}
+
+function compactZone(zone) {
+  return zone ? pick(zone, [
+    "timeframe", "pattern", "distal", "proximal", "freshnessTests", "score", "achievementR"
+  ]) : null;
+}
+
+function compactInstitutional(context = {}) {
+  return {
+    score: context.score,
+    maxScore: context.maxScore,
+    grade: context.grade,
+    index: pick(context.index || {}, ["supportsLongs", "reason"]),
+    derivatives: pick(context.derivatives || {}, ["fnoEligible", "reason"]),
+    options: pick(context.options || {}, ["supportsLongs", "reason"]),
+    commodity: pick(context.commodity || {}, ["supportsSector", "reason"]),
+    operator: pick(context.operator || {}, ["accumulation", "reason"])
+  };
+}
+
+function pick(object, keys) {
+  return Object.fromEntries(keys.filter((key) => object?.[key] !== undefined).map((key) => [key, object[key]]));
 }
 
 export function scanForUser(scan = {}, symbols = []) {

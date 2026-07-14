@@ -21,6 +21,36 @@ test("multi-user runtime derives a private custom list without changing common m
   const market = marketOnlyState(scan);
   assert.equal(market.trades, undefined);
   assert.equal(market.portfolioSummary, undefined);
+  assert.deepEqual(market.lists.default.symbols, []);
+  assert.equal(market.lists["all-market"].results[0].symbol, "ABC");
+});
+
+test("mobile market state keeps decision evidence but removes large execution internals", () => {
+  const scan = {
+    lists: {
+      "all-market": {
+        results: [{
+          symbol: "ABC",
+          status: "ENTRY",
+          signalReason: Array.from({ length: 30 }, (_, index) => `Reason ${index}`),
+          setupStrength: {
+            score: 10,
+            checks: { baseBreakout: true },
+            values: { priorBaseHigh: 100, unusedRawSeries: Array(1000).fill(1) },
+            pyramidStructure: { raw: Array(1000).fill(1) }
+          }
+        }]
+      },
+      default: { results: [{ symbol: "ABC" }] }
+    }
+  };
+  const market = marketOnlyState(scan);
+  const row = market.lists["all-market"].results[0];
+  assert.equal(row.setupStrength.values.priorBaseHigh, 100);
+  assert.equal(row.setupStrength.values.unusedRawSeries, undefined);
+  assert.equal(row.setupStrength.pyramidStructure, undefined);
+  assert.equal(row.signalReason.length, 14);
+  assert.deepEqual(market.lists.default.symbols, ["ABC"]);
 });
 
 test("user capital and risk settings override defaults without mutating shared config", () => {

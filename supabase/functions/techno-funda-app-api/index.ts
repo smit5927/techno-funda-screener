@@ -532,11 +532,26 @@ async function readTelegram(userId: string) {
 
 function withCustomList(lists: any, symbols: string[]) {
   const allMarket = lists["all-market"] || { results: [] };
+  const allRows = Array.isArray(allMarket.results) ? allMarket.results : [];
+  const defaultList = lists.default || { id: "default", label: "Nifty 500", symbols: [] };
+  const defaultSymbols = new Set(normalizeSymbols(defaultList.symbols || []));
   const wanted = new Set(symbols.map(normalizeSymbol));
-  const results = (Array.isArray(allMarket.results) ? allMarket.results : [])
-    .filter((row: any) => wanted.has(normalizeSymbol(row.symbol || row.yahooSymbol)));
+  const defaultResults = allRows
+    .filter((row: any) => defaultSymbols.has(normalizeSymbol(row.symbol || row.yahooSymbol)))
+    .map((row: any) => ({ ...row, listLabel: defaultList.label || "Nifty 500" }));
+  const results = allRows
+    .filter((row: any) => wanted.has(normalizeSymbol(row.symbol || row.yahooSymbol)))
+    .map((row: any) => ({ ...row, listLabel: "My List" }));
   return {
     ...lists,
+    "all-market": {
+      ...allMarket,
+      results: allRows.map((row: any) => ({ ...row, listLabel: allMarket.label || "All NSE Market" }))
+    },
+    default: {
+      ...defaultList,
+      results: defaultResults
+    },
     custom: {
       id: "custom",
       label: "My Custom List",
