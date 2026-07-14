@@ -16,6 +16,7 @@ for (const filename of [
   "index.html",
   "app.js",
   "auth.js",
+  "auth-request.js",
   "styles.css",
   "mobile-config.js",
   "manifest.webmanifest",
