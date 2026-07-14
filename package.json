@@ -11,6 +11,7 @@
     "prepare:custom": "node src/prepare-custom-list.js",
     "scan:free": "node src/prepare-custom-list.js && node src/run-scan.js --telegram",
     "scan:cloud": "node src/run-cloud-scan.js",
+    "execute:cloud": "node src/run-execution-pass.js",
     "audit:videos": "node scripts/audit-videos.js",
     "reset:live": "node src/reset-live-trades.js",
     "build:static": "node src/build-static-site.js",

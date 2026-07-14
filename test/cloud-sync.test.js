@@ -5,6 +5,9 @@ import { compactCloudState } from "../src/cloud-sync.js";
 test("cloud state keeps portfolio data but removes thousands of detailed scan rows", () => {
   const state = {
     scannedAt: "2026-07-11T00:00:00.000Z",
+    fullScanAt: "2026-07-11T00:00:00.000Z",
+    executionPassAt: "2026-07-11T04:00:00.000Z",
+    scanMode: "EXECUTION_PASS",
     summary: { total: 2384 },
     lists: {
       "all-market": {
@@ -26,5 +29,7 @@ test("cloud state keeps portfolio data but removes thousands of detailed scan ro
   assert.equal(compact.trades.length, 1);
   assert.equal(compact.waitingCandidates.length, 1);
   assert.equal(compact.candidateDecisionLog.length, 1);
+  assert.equal(compact.executionPassAt, state.executionPassAt);
+  assert.equal(compact.scanMode, "EXECUTION_PASS");
   assert.ok(JSON.stringify(compact).length < 10_000);
 });

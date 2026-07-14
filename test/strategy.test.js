@@ -148,10 +148,20 @@ test("pending order remains unfilled when no later market session candle exists"
   assert.equal(selectNextTradingSessionExecutionCandle(candles, "2026-07-10"), null);
 });
 
-test("09:15 and 09:18 prices cannot substitute for a missing exact 09:17 fill", () => {
+test("a 09:17 market order uses the first actual traded candle in the controlled opening window", () => {
   const candles = [
     openingCandle("2026-07-13", 9, 15, 100),
     openingCandle("2026-07-13", 9, 18, 102)
+  ];
+  const fill = selectNextTradingSessionExecutionCandle(candles, "2026-07-10");
+  assert.equal(fill.minutes, 9 * 60 + 18);
+  assert.equal(fill.open, 102);
+});
+
+test("a missing execution window cannot be replaced with a later session's fictional fill", () => {
+  const candles = [
+    openingCandle("2026-07-13", 9, 15, 100),
+    openingCandle("2026-07-14", 9, 17, 103)
   ];
   assert.equal(selectNextTradingSessionExecutionCandle(candles, "2026-07-10"), null);
 });

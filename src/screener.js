@@ -113,8 +113,12 @@ export async function runScreener(options = {}) {
     ...scannedLists
   };
   const allResults = uniqueResults(mergedLists);
+  const scannedAt = new Date().toISOString();
   const payload = {
-    scannedAt: new Date().toISOString(),
+    scannedAt,
+    fullScanAt: scannedAt,
+    executionPassAt: previousScan?.executionPassAt || null,
+    scanMode: "FULL_SCAN",
     benchmark: config.benchmarkSymbol,
     benchmarkLabel: config.benchmarkLabel || rules.benchmarkLabel || config.benchmarkSymbol,
     lists: mergedLists,
@@ -159,6 +163,79 @@ export async function runScreener(options = {}) {
   const finalPayload = { ...payload, telegram };
   saveLatestScan(finalPayload);
   return finalPayload;
+}
+
+export async function runExecutionPass(options = {}) {
+  const config = options.config || appConfig;
+  const previousScan = readLatestScan();
+  if (!previousScan?.lists || !Array.isArray(previousScan.trades)) {
+    throw new Error("Execution pass requires an existing completed market scan.");
+  }
+
+  const checkedAt = new Date().toISOString();
+  if (!hasPendingExecutionWork(previousScan.trades)) {
+    return {
+      ...previousScan,
+      executionPass: {
+        status: "NO_PENDING_ORDERS",
+        checkedAt
+      }
+    };
+  }
+
+  const payload = {
+    ...previousScan,
+    scannedAt: checkedAt,
+    fullScanAt: previousScan.fullScanAt || previousScan.scannedAt,
+    executionPassAt: checkedAt,
+    scanMode: "EXECUTION_PASS",
+    tradeSettings: tradeSettingsSummary(config),
+    executionPass: {
+      status: "PROCESSED",
+      checkedAt,
+      priceRule: "Exact 09:17 one-minute candle open"
+    }
+  };
+
+  const journal = await updateTradeJournal(payload, {
+    ...config,
+    marketContext: payload.marketContext
+  });
+  const visibleTrades = journal.visibleTrades || journal.trades;
+  payload.tradeSummary = summarizeTrades(visibleTrades);
+  payload.portfolioSummary = journal.portfolioSummary;
+  payload.portfolioRules = journal.portfolioRules;
+  payload.waitingCandidates = journal.visibleCandidates || journal.candidates || [];
+  payload.candidateDecisionLog = journal.visibleCandidateDecisions || [];
+  payload.trades = visibleTrades;
+  payload.tradeEvents = mergeTradeEvents(
+    shouldRetryTradeEvents(previousScan, options, config, checkedAt)
+      ? previousScan.tradeEvents
+      : [],
+    journal.events
+  );
+  saveLatestScan(payload);
+
+  let telegram = { sent: false, reason: "disabled" };
+  if (options.sendTelegram) {
+    try {
+      telegram = await sendTelegramSummary(payload, config);
+    } catch (error) {
+      telegram = { sent: false, reason: error.message || String(error) };
+      console.error(`Telegram alert failed: ${telegram.reason}`);
+    }
+  }
+
+  const finalPayload = { ...payload, telegram };
+  saveLatestScan(finalPayload);
+  return finalPayload;
+}
+
+export function hasPendingExecutionWork(trades = []) {
+  return trades.some((trade) =>
+    ["PENDING_ENTRY", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status) ||
+    Boolean(trade.pendingAdd)
+  );
 }
 
 function shouldRetryTradeEvents(previousScan, options, config, currentScanAt) {

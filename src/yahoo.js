@@ -91,26 +91,39 @@ export async function fetchExecutionPrice(symbol, afterDate) {
 
   const candle = selectNextTradingSessionExecutionCandle(candidates, afterDate);
   if (!candle) return null;
+  const actualTimeLabel = minuteLabel(candle.minutes);
+  const exact = candle.minutes === 9 * 60 + 17;
   return {
     date: candle.date,
     time: candle.time,
     price: candle.open,
     timeLabel: "09:17 IST",
-    source: "09:17 one-minute candle open",
-    window: "09:17 IST",
+    actualTimeLabel: `${actualTimeLabel} IST`,
+    source: exact
+      ? "09:17 one-minute candle open"
+      : `09:17 market order; first actual traded candle at ${actualTimeLabel} IST`,
+    window: exact ? "09:17 IST" : `09:17 order / ${actualTimeLabel} actual fill`,
     candle
   };
 }
 
 export function selectNextTradingSessionExecutionCandle(candles, afterDate) {
-  return [...(candles || [])]
-    .filter(
-      (candle) =>
-        candle.date > String(afterDate || "") &&
-        candle.minutes === 9 * 60 + 17 &&
-        Number.isFinite(candle.open)
-    )
-    .sort((a, b) => a.time - b.time)[0] || null;
+  const eligible = [...(candles || [])]
+    .filter((candle) => candle.date > String(afterDate || "") && Number.isFinite(candle.open))
+    .sort((a, b) => a.time - b.time);
+  const nextSessionDate = eligible[0]?.date;
+  if (!nextSessionDate) return null;
+  return eligible.find((candle) =>
+    candle.date === nextSessionDate &&
+    candle.minutes >= 9 * 60 + 17 &&
+    candle.minutes <= 9 * 60 + 30
+  ) || null;
+}
+
+function minuteLabel(minutes) {
+  const hour = Math.floor(minutes / 60);
+  const minute = minutes % 60;
+  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
 }
 
 // Compatibility aliases for callers that have not yet adopted the clearer execution naming.

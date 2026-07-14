@@ -27,6 +27,8 @@ test("near-live MTM calculates positional P&L and stop risk without changing sta
   assert.equal(result.status, "OPEN");
   assert.equal(result.unrealizedPnl, 1000);
   assert.equal(result.unrealizedPnlPct, 10);
+  assert.equal(result.investedValue, 10000);
+  assert.equal(result.marketValue, 11000);
   assert.equal(result.downsideToStop, 1200);
   assert.equal(result.distanceToStopPct, 10.91);
   assert.equal(result.riskState, "NORMAL");
@@ -55,6 +57,8 @@ test("portfolio live summary reports MTM and risk against total capital", () => 
 
   assert.equal(summary.unrealizedPnl, 850);
   assert.equal(summary.unrealizedPnlPct, 5.67);
+  assert.equal(summary.investedValue, 15000);
+  assert.equal(summary.marketValue, 15850);
   assert.equal(summary.downsideToStops, 1200);
   assert.equal(summary.stopRiskPct, 0.12);
   assert.equal(summary.breachCount, 1);

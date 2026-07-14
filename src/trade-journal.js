@@ -779,6 +779,7 @@ async function preflightRotationReplacement(
       evaluatedAt: scan.scannedAt,
       date: fill.date,
       time: fill.timeLabel || EXECUTION_TIME,
+      actualFillTime: fill.actualTimeLabel || fill.timeLabel || EXECUTION_TIME,
       price: round(fill.price),
       decision: executionDecision
     }
@@ -936,6 +937,7 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
       signalDate: pending.signalDate,
       date: fill.date,
       time: fill.timeLabel || EXECUTION_TIME,
+      actualFillTime: fill.actualTimeLabel || fill.timeLabel || EXECUTION_TIME,
       price: round(fill.price),
       quantity: addQuantity,
       allocation: round(addQuantity * fill.price),
@@ -1069,6 +1071,7 @@ async function fillEntry(trade, row, config, trades, candidates) {
     trade.status = "OPEN";
     trade.entryDate = fill.date;
     trade.entryTime = fill.timeLabel || EXECUTION_TIME;
+    trade.entryActualFillTime = fill.actualTimeLabel || trade.entryTime;
     trade.entryPrice = round(fill.price);
     trade.initialEntryPrice = trade.entryPrice;
     trade.quantity = quantity;
@@ -1110,6 +1113,7 @@ async function fillExit(trade, row, config = appConfig) {
     trade.status = "CLOSED";
     trade.exitDate = fill.date;
     trade.exitTime = fill.timeLabel || EXECUTION_TIME;
+    trade.exitActualFillTime = fill.actualTimeLabel || trade.exitTime;
     trade.exitPrice = round(fill.price);
     trade.exitExecutionMethod = fill.source;
     trade.exitExecutionWindow = fill.window;
@@ -1136,6 +1140,7 @@ function markToMarket(trade, row) {
   trade.lastPrice = round(row.close);
   trade.lastPriceDate = row.asOf;
   if (!Number.isFinite(trade.entryPrice) || !Number.isFinite(trade.quantity)) return;
+  trade.currentValue = round(row.close * trade.quantity);
   trade.unrealizedPnl = round((row.close - trade.entryPrice) * trade.quantity);
   trade.unrealizedPnlPct = round(((row.close / trade.entryPrice) - 1) * 100);
 }
@@ -1269,6 +1274,7 @@ async function fillPartialExit(trade, row) {
     trade.partialExits.push({
       date: fill.date,
       time: fill.timeLabel || EXECUTION_TIME,
+      actualFillTime: fill.actualTimeLabel || fill.timeLabel || EXECUTION_TIME,
       price: round(fill.price),
       executionMethod: fill.source,
       executionWindow: fill.window,
@@ -1730,6 +1736,7 @@ function tradeColumns() {
     { header: "Entry Signal Date", key: "Entry Signal Date", width: 18 },
     { header: "Entry Date", key: "Entry Date", width: 14 },
     { header: "Entry Time", key: "Entry Time", width: 13 },
+    { header: "Entry Actual Fill Time", key: "Entry Actual Fill Time", width: 22 },
     { header: "Entry Price", key: "Entry Price", width: 14 },
     { header: "Initial Entry Price", key: "Initial Entry Price", width: 18 },
     { header: "Entry Execution Method", key: "Entry Execution Method", width: 30 },
@@ -1737,12 +1744,14 @@ function tradeColumns() {
     { header: "Original Quantity", key: "Original Quantity", width: 16 },
     { header: "Initial Quantity", key: "Initial Quantity", width: 15 },
     { header: "Invested Value", key: "Invested Value", width: 16 },
+    { header: "Current Value", key: "Current Value", width: 16 },
     { header: "Last Close", key: "Last Close", width: 14 },
     { header: "Unrealized P&L", key: "Unrealized P&L", width: 16 },
     { header: "Unrealized P&L %", key: "Unrealized P&L %", width: 18 },
     { header: "Exit Signal Date", key: "Exit Signal Date", width: 18 },
     { header: "Exit Date", key: "Exit Date", width: 14 },
     { header: "Exit Time", key: "Exit Time", width: 13 },
+    { header: "Exit Actual Fill Time", key: "Exit Actual Fill Time", width: 22 },
     { header: "Exit Price", key: "Exit Price", width: 14 },
     { header: "Exit Execution Method", key: "Exit Execution Method", width: 30 },
     { header: "Realized P&L", key: "Realized P&L", width: 16 },
@@ -1835,6 +1844,7 @@ function tradeToRow(trade) {
     "Entry Signal Date": trade.entrySignalDate || "",
     "Entry Date": trade.entryDate || "",
     "Entry Time": trade.entryTime || "",
+    "Entry Actual Fill Time": trade.entryActualFillTime || trade.entryTime || "",
     "Entry Price": trade.entryPrice ?? "",
     "Initial Entry Price": trade.initialEntryPrice ?? trade.entryPrice ?? "",
     "Entry Execution Method": trade.executionMethod || "",
@@ -1842,12 +1852,18 @@ function tradeToRow(trade) {
     "Original Quantity": trade.originalQuantity ?? "",
     "Initial Quantity": trade.initialQuantity ?? "",
     "Invested Value": trade.investedValue ?? "",
+    "Current Value": trade.currentValue ?? (
+      Number.isFinite(trade.lastPrice) && Number.isFinite(trade.quantity)
+        ? round(trade.lastPrice * trade.quantity)
+        : ""
+    ),
     "Last Close": trade.lastPrice ?? "",
     "Unrealized P&L": trade.unrealizedPnl ?? "",
     "Unrealized P&L %": trade.unrealizedPnlPct ?? "",
     "Exit Signal Date": trade.exitSignalDate || "",
     "Exit Date": trade.exitDate || "",
     "Exit Time": trade.exitTime || "",
+    "Exit Actual Fill Time": trade.exitActualFillTime || trade.exitTime || "",
     "Exit Price": trade.exitPrice ?? "",
     "Exit Execution Method": trade.exitExecutionMethod || "",
     "Realized P&L": trade.pnl ?? "",

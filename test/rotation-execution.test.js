@@ -38,10 +38,12 @@ test("full-capital quality rotation reuses sell cash in the same exact 09:17 slo
     assert.equal(bought.status, "OPEN");
     assert.equal(bought.entryDate, sold.exitDate);
     assert.equal(bought.entryTime, sold.exitTime);
+    assert.equal(bought.entryActualFillTime, "09:17 IST");
     assert.equal(bought.rotationSourceSymbol, "WEAK");
     assert.equal(bought.rotationExecution.rule, "SELL_THEN_BUY_SAME_0917_SLOT");
     assert.equal(bought.quantity, 9);
     assert.equal(bought.investedValue, 900);
+    assert.equal(bought.currentValue, 900);
   } finally {
     Object.assign(appConfig, original);
     fs.rmSync(temp, { recursive: true, force: true });

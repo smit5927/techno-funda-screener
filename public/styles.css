@@ -257,6 +257,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .positionsShell { min-height: 92px; max-height: 300px; }
 table { width: 100%; min-width: 1280px; border-collapse: collapse; table-layout: auto; }
 .positionsTable { min-width: 1080px; }
+.openPositionsTable { min-width: 1320px; }
 th, td {
   height: 54px;
   padding: 8px 10px;
@@ -501,6 +502,14 @@ body.detailOpen { overflow: hidden; }
   .positionsTable th:nth-child(2) { width: 100px; }
   .positionsTable th:nth-child(8), .positionsTable th:nth-child(10) { width: 82px; }
   .positionsTable td, .positionsTable th { padding-inline: 5px; }
+  .openPositionsTable th:nth-child(9), .openPositionsTable td:nth-child(9) { display: table-cell; }
+  .openPositionsTable th:nth-child(13), .openPositionsTable td:nth-child(13),
+  .openPositionsTable th:nth-child(14), .openPositionsTable td:nth-child(14) { display: none; }
+  .openPositionsTable th:nth-child(1) { width: 78px; }
+  .openPositionsTable th:nth-child(2) { width: 84px; }
+  .openPositionsTable th:nth-child(8),
+  .openPositionsTable th:nth-child(9),
+  .openPositionsTable th:nth-child(10) { width: 72px; }
   .symbolCell span { max-width: 96px; }
   .detailPanel { width: 100%; max-width: 100%; }
   .checkGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }

@@ -125,11 +125,13 @@ The same stock in multiple lists is scanned once and creates only one trade. Its
 
 - Indicators use only completed daily and weekly closing candles.
 - A new entry or compulsory exit signal is executed in the first actual exchange session after the signal date.
-- Saturday, Sunday, and NSE market holidays are never treated as execution days. The order remains pending until a real 09:17 one-minute market candle exists.
-- Execution price is the open of the exact one-minute candle stamped 09:17 IST; the 09:15 daily/market open is not used.
+- Saturday, Sunday, and NSE market holidays are never treated as execution days. The order remains pending until the next real exchange session reaches the 09:17 execution time.
+- The model order time is 09:17 IST. If an illiquid stock has no transaction candle at exactly 09:17, the first real traded candle up to 09:30 on that same intended session is used; order time and actual fill time are stored separately. A later trading session can never substitute for a missed intended-session window.
+- Execution price is the exact 09:17 candle open when traded, otherwise the first real one-minute traded candle through 09:30 on that same session; the 09:15 daily/market open is never substituted.
 - Trade states are `PENDING_ENTRY`, `OPEN`, `PENDING_EXIT`, and `CLOSED`.
 - Existing signals are baselined without old alerts or historical trades.
-- The free online workflow runs at 08:00 IST to publish prior-close candidates and again at 09:25 IST to fill the actual 09:17 execution price.
+- The free online workflow runs the full scan at 08:00 IST, then uses staggered lightweight execution retries from 09:21 through 10:10 IST to process 09:17 orders without rescanning the market.
+- Execution retries are idempotent: after an order fills or is skipped, later retries cannot duplicate the trade or Telegram alert.
 
 ## Final Decision Hierarchy
 

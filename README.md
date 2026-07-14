@@ -76,7 +76,7 @@ Every scan updates:
 - `data/techno-funda-trade-sheet.xlsx`
 - `data/techno-funda-trade-sheet.csv`
 
-A new closing signal is executed on the next trading session using the exact 09:17 one-minute candle open. The journal separates signal dates from execution dates, prevents duplicate positions across lists, and calculates quantity from Rs. 100000, invested value, realized/unrealized P&L, holding days, and full reasons.
+A new closing signal submits its model order at 09:17 on the next trading session. The exact 09:17 one-minute candle is preferred; when an illiquid stock has no transaction at that minute, the first actual traded candle through 09:30 is used and its real fill time is separately audited. The journal separates signal dates from execution dates, prevents duplicate positions across lists, and calculates quantity, invested/current value, realized/unrealized P&L, holding days, and full reasons.
 
 Live mode is baseline based:
 
@@ -86,7 +86,8 @@ Live mode is baseline based:
 - A trade opens only when a symbol changes into ENTRY after the go-live baseline.
 - A trade closes only for trades opened by this system after go-live.
 - Weekly RS below zero remains the compulsory exit; daily weakness remains an early-warning reference.
-- The cloud workflow runs at 08:00 IST for prior-close candidates and again at 09:25 IST so the requested opening-window price is available in the trade sheet.
+- The cloud workflow runs the full prior-close scan at 08:00 IST. Lightweight, idempotent execution passes retry after 09:17 at staggered times from 09:21 through 10:10 IST, so delays in GitHub's free scheduled runners do not leave valid pending orders stuck. These passes reuse the saved closing scan and do not rescan the full market.
+- Every open-position row shows invested value and current market value. The website uses near-live one-minute quotes when available; the downloadable Excel records the latest processed EOD/execution value.
 
 Position sizing uses:
 

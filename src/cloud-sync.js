@@ -75,6 +75,10 @@ export function compactCloudState(state = {}) {
   );
   return {
     scannedAt: state.scannedAt,
+    fullScanAt: state.fullScanAt,
+    executionPassAt: state.executionPassAt,
+    scanMode: state.scanMode,
+    executionPass: state.executionPass,
     benchmark: state.benchmark,
     benchmarkLabel: state.benchmarkLabel,
     summary: state.summary,

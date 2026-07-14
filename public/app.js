@@ -313,8 +313,11 @@ function renderSummary(payload) {
   const benchmarkLabel = payload.benchmarkLabel || payload.rules?.benchmarkLabel || payload.benchmark;
   const staleText = payload.scannedAt && isStaleScan(payload.scannedAt) ? " | Stale: waiting for next cloud scan" : "";
   const institutionalText = institutionalMeta(payload.institutionalContext);
+  const scanTimestamp = payload.scanMode === "EXECUTION_PASS"
+    ? `Execution pass ${formatDateTime(payload.executionPassAt || payload.scannedAt)} | Full scan ${formatDateTime(payload.fullScanAt || payload.scannedAt)}`
+    : `Last scan ${formatDateTime(payload.scannedAt)}`;
   elements.scanMeta.textContent = payload.scannedAt
-    ? `Last scan ${formatDateTime(payload.scannedAt)} | ${listLabel} | Benchmark ${benchmarkLabel} | Risk ${payload.marketContext?.riskMode || "NA"}, cap ${compact(payload.marketContext?.exposureCapPct ?? 100)}%${institutionalText}${staleText}`
+    ? `${scanTimestamp} | ${listLabel} | Benchmark ${benchmarkLabel} | Risk ${payload.marketContext?.riskMode || "NA"}, cap ${compact(payload.marketContext?.exposureCapPct ?? 100)}%${institutionalText}${staleText}`
     : "Waiting for first scan";
 }
 
@@ -341,6 +344,16 @@ function renderPositions(payload) {
       const pnlPct = Number.isFinite(livePosition?.unrealizedPnlPct)
         ? livePosition.unrealizedPnlPct
         : trade.unrealizedPnlPct;
+      const investedValue = Number.isFinite(livePosition?.investedValue)
+        ? livePosition.investedValue
+        : trade.investedValue;
+      const currentValue = Number.isFinite(livePosition?.marketValue)
+        ? livePosition.marketValue
+        : Number.isFinite(trade.currentValue)
+          ? trade.currentValue
+          : Number.isFinite(displayPrice) && Number.isFinite(trade.quantity)
+            ? displayPrice * trade.quantity
+            : null;
       const pnlClass = Number(pnl) > 0 ? "good" : Number(pnl) < 0 ? "bad" : "neutral";
       const riskState = livePosition?.riskState || "STALE";
       const rowRiskClass = riskState === "BREACHED" ? "riskBreached" : riskState === "NEAR_STOP" ? "riskNear" : "";
@@ -351,7 +364,9 @@ function renderPositions(payload) {
       const displayStatus = trade.pendingAdd ? "PENDING_ADD" : trade.status;
       const signalDate = trade.exitSignalDate || trade.pendingAdd?.signalDate || trade.entrySignalDate || "";
       const reason =
-        trade.status === "PENDING_EXIT"
+        trade.status === "PENDING_ENTRY" && trade.executionError
+          ? [trade.executionError, ...(trade.entryReason || [])]
+          : trade.status === "PENDING_EXIT"
           ? trade.exitReason || []
           : trade.status === "PENDING_PARTIAL_EXIT"
             ? trade.pendingPartialExitReason || []
@@ -365,6 +380,8 @@ function renderPositions(payload) {
           <td>${fmt(trade.entryPrice)}</td>
           <td>${trade.quantity ?? "NA"}</td>
           <td><strong>${fmt(displayPrice)}</strong><small class="quoteSource">${quoteLabel}</small></td>
+          <td>${compact(investedValue)}</td>
+          <td><strong>${compact(currentValue)}</strong></td>
           <td class="${pnlClass}">${compact(pnl)}${Number.isFinite(pnlPct) ? ` (${compact(pnlPct)}%)` : ""}</td>
           <td>${fmt(trade.currentRank || trade.positionRank)}</td>
           <td>${fmt(trade.trailingStopPrice || trade.initialStopPrice)}<small class="riskState ${escapeHtml(riskState)}">${escapeHtml(stopRiskText)}</small></td>
@@ -1164,7 +1181,7 @@ function configureMode() {
   }
   if (!staticMode) return;
   elements.scanButton.textContent = "Refresh Latest";
-  elements.scanButton.title = "Free cloud scan runs automatically at 08:00 and 09:25 IST";
+  elements.scanButton.title = "Prior-close scan runs at 08:00 IST; lightweight 09:17 execution retries run automatically after market open";
   if (!cloudMode) elements.editListButton.hidden = true;
   if (elements.accessCodeInput) {
     elements.accessCodeInput.value = localStorage.getItem("tfAccessCode") || "";
