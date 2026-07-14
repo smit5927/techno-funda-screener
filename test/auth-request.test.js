@@ -1,0 +1,16 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { resolveRequestUrl } from "../public/auth-request.js";
+
+test("authenticated fetch routing recognizes URL objects", () => {
+  const target = new URL("https://example.supabase.co/functions/v1/app?view=meta");
+  assert.equal(resolveRequestUrl(target, "https://example.test/").href, target.href);
+});
+
+test("authenticated fetch routing recognizes strings and Request-like objects", () => {
+  assert.equal(resolveRequestUrl("/api/state", "https://example.test/").href, "https://example.test/api/state");
+  assert.equal(
+    resolveRequestUrl({ url: "https://example.supabase.co/functions/v1/app" }, "https://example.test/").href,
+    "https://example.supabase.co/functions/v1/app"
+  );
+});

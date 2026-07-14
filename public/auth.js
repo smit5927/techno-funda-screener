@@ -1,3 +1,5 @@
+import { resolveRequestUrl } from "./auth-request.js?v=20260714-url-auth-fix";
+
 const config = window.TF_MOBILE_CONFIG;
 if (!config?.supabaseUrl || !config?.publishableKey || !config?.apiUrl || !window.supabase?.createClient) {
   throw new Error("Secure application configuration is unavailable.");
@@ -53,10 +55,11 @@ const elements = {
 window.TF_STATIC_MODE = true;
 window.TF_SUPABASE = client;
 window.fetch = async (input, options = {}) => {
-  const requestUrl = new URL(typeof input === "string" ? input : input.url, window.location.href);
+  const requestUrl = resolveRequestUrl(input, window.location.href);
   if (requestUrl.href.startsWith(config.apiUrl)) {
     const headers = new Headers(options.headers || (typeof input !== "string" ? input.headers : undefined));
-    if (window.TF_ACCESS_TOKEN) headers.set("Authorization", `Bearer ${window.TF_ACCESS_TOKEN}`);
+    const accessToken = await currentAccessToken();
+    if (accessToken) headers.set("Authorization", `Bearer ${accessToken}`);
     headers.set("X-Device-ID", deviceId);
     return nativeFetch(input, { ...options, headers });
   }
@@ -248,7 +251,7 @@ async function showApplication(profile) {
   });
   if (!appLoaded) {
     appLoaded = true;
-    await import("./app.js?v=20260714-device-session");
+    await import("./app.js?v=20260714-url-auth-fix");
   }
 }
 
@@ -440,7 +443,8 @@ async function apiGetWithRetry(view, attempts = 3) {
 
 async function apiPost(body, authenticated = true) {
   const headers = { "Content-Type": "application/json", "X-Device-ID": deviceId };
-  if (authenticated && window.TF_ACCESS_TOKEN) headers.Authorization = `Bearer ${window.TF_ACCESS_TOKEN}`;
+  const accessToken = authenticated ? await currentAccessToken() : "";
+  if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
   const response = await nativeFetch(config.apiUrl, { method: "POST", headers, body: JSON.stringify(body) });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok || payload.error) {
@@ -449,6 +453,12 @@ async function apiPost(body, authenticated = true) {
     throw error;
   }
   return payload;
+}
+
+async function currentAccessToken() {
+  const { data } = await client.auth.getSession();
+  window.TF_ACCESS_TOKEN = data.session?.access_token || "";
+  return window.TF_ACCESS_TOKEN;
 }
 
 function readOrCreateDeviceId() {

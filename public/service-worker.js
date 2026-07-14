@@ -1,8 +1,9 @@
-const CACHE = "techno-funda-shell-v4";
+const CACHE = "techno-funda-shell-v5";
 const SHELL = [
   "./",
   "./styles.css",
   "./auth.js",
+  "./auth-request.js",
   "./app.js",
   "./mobile-config.js",
   "./manifest.webmanifest",
