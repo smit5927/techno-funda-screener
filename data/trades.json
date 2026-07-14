@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-14T08:05:40.115Z",
+  "updatedAt": "2026-07-14T09:43:28.746Z",
   "portfolioEngineStartedAt": "2026-07-11T05:24:12.577Z",
   "pyramidingStartedAt": "2026-07-13T06:00:40.290Z",
   "pyramidSwingEngineStartedAt": "2026-07-13T11:24:54.568Z",
@@ -28455,841 +28455,841 @@
     "custom:GRANULES.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SKYGOLD.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:THANGAMAYL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:TBZ.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:CGCL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:RML.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:NEULANDLAB.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:INOXINDIA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:UNIHEALTH.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:RADICO.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:TIPSMUSIC.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:ALIVUS.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:IKS.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:TORNTPHARM.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:BHARATSE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:POCL.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:PPAP.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:APOLLOHOSP.NS": {
-      "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "status": "ENTRY",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:LUPIN.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:MARKSANS.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:MMP.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SANGAMIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:ANANDRATHI.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:HAPPYFORGE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:VADILALIND.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:PGIL.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SANSERA.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:BUTTERFLY.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:CREDITACC.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:GHCLTEXTIL.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:VIJIFIN.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:CEMPRO.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:HESTERBIO.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:OFSS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:RANEHOLDIN.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SFL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SHILPAMED.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SJS.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:MANKIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:RAINBOW.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:AEGISVOPAK.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:INDIGRID.NS": {
-      "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "status": "ENTRY",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:JAYBARMARU.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:MINDACORP.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:ADOR.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:GINNIFILA.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:GODREJIND.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:GSMFOILS.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:PANACHE.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SANGHVIMOV.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:BLISSGVS.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:HARSHA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:INDNIPPON.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:MAYURUNIQ.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:NAM-INDIA.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:PRIVISCL.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:RPEL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:VIYASH.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:LALPATHLAB.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SHRIPISTON.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:INDHOTEL.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:KRISHNADEF.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:THELEELA.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:NUVAMA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:IMPAL.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:PARAS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:RAMCOIND.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SGFIN.NS": {
-      "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "status": "WATCH",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:STOVEKRAFT.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:UNIVASTU.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:GRWRHITECH.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:PIDILITIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:CAPLIPOINT.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:KMEW.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:NINSYS.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:WABAG.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:FUSION.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:BETA.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:KIMS.NS": {
-      "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "status": "WATCH",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:NRL.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:KOVAI.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SCHNEIDER.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:RUBICON.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:MARC.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:APTUS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:MINDSPACE.NS": {
       "status": "EXIT",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:KARURVYSYA.NS": {
       "status": "EXIT",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:FIEMIND.NS": {
       "status": "EXIT",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:GRINDWELL.NS": {
-      "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "status": "WATCH",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:LMW.NS": {
-      "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "status": "ENTRY",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:PREMIERENE.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:PGHL.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:NH.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:CRAFTSMAN.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:FORTIS.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:MAHLOG.NS": {
       "status": "EXIT",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:RAIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SIS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SKIPPER.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:NRBBEARING.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:ASTERDM.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:KPIL.NS": {
-      "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "status": "WATCH",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SANDHAR.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:THYROCARE.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:PRUDENT.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:VIJAYA.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:ENDURANCE.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:PRICOLLTD.NS": {
       "status": "EXIT",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:MOTHERSON.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:APCOTEXIND.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:ASIANPAINT.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:ORIENTBELL.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:PRECOT.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SAKAR.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:FINEORG.NS": {
-      "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "status": "ENTRY",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:BAJAJ-AUTO.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:KRN.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:NIVABUPA.NS": {
-      "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "status": "ENTRY",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:INGERRAND.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:TATACOMM.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:YATHARTH.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:MGEL.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SBCL.NS": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:RRKABEL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:EMMVEE.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:CAMS.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:CUMMINSIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SOLARINDS.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:V2RETAIL.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:HAL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:NMDC.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:LLOYDSME.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:ANTHEM.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:JSWSTEEL.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:ADANIPOWER.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:VBL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:BHEL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:POLYCAB.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:COALINDIA.NS": {
       "status": "WATCH",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:TENNIND.NS": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:BRPL.NS": {
@@ -29369,7 +29369,7 @@
     },
     "custom:HEXAGON.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:INVPRECQ.NS": {
@@ -29384,17 +29384,17 @@
     },
     "custom:OBSCP.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SEDEMAC.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:VIGOR.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:CLIOINFO.NS": {
@@ -29489,212 +29489,212 @@
     },
     "custom:SW1.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:YASHHV.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:COVANCE.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:VIKRAMTH.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:CLIOINFO.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:CIL.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:UNIABEXAL.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:KMCSHIL.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:RAJSEC.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SUDARSHAN.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:INVPRECQ.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:KELENRG.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:NEXUSSURGL.BO": {
-      "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "status": "WATCH",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:BIMETAL.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:KPL.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:KVFORGE.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:UCIL.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:RASRESOR.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:INDUSFINL.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:TAALTECH.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:FREDUN.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:DHABRIYA.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:RRMETAL.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SEKURITIND.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:MKTCREAT.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:TERAI.BO": {
       "status": "ENTRY",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:GOLKUNDIA.BO": {
       "status": "EXIT",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:EMERALD.BO": {
       "status": "EXIT",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:GSAUTO.BO": {
       "status": "EXIT",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SANCTRN.BO": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:TANFACIND.BO": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:SIMMOND.BO": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:CJGEL.BO": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:BENARAS.BO": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     },
     "custom:BRPL.BO": {
       "status": "WATCH",
-      "asOf": "2026-07-10",
-      "scannedAt": "2026-07-14T08:05:39.733Z",
+      "asOf": "2026-07-13",
+      "scannedAt": "2026-07-14T09:43:28.265Z",
       "scopeListId": "custom"
     }
   },
@@ -29734,36 +29734,37 @@
   },
   "portfolioSummary": {
     "totalCapital": 1000000,
-    "investedCapital": 999555.25,
+    "investedCapital": 999997.7,
     "reservedCapital": 0,
-    "deployedCapital": 999555.25,
-    "availableCash": 444.75,
-    "actualCash": 6271.67,
+    "deployedCapital": 999997.7,
+    "availableCash": 2.3,
+    "actualCash": 5829.22,
     "realizedPnl": 5826.92,
-    "unrealizedPnl": 3413.73,
-    "totalEquity": 1009240.65,
-    "unrealizedPnlPct": 0.34,
+    "unrealizedPnl": 5019.16,
+    "totalEquity": 1010846.08,
+    "unrealizedPnlPct": 0.5,
     "drawdownPct": 0,
     "marketRiskMode": "BULL",
     "marketExposureCapPct": 100,
     "drawdownExposureCapPct": 100,
     "effectiveExposureCapPct": 100,
     "exposureLimit": 1000000,
-    "portfolioRisk": 40720.4,
-    "portfolioRiskPct": 4.07,
+    "portfolioRisk": 41266.57,
+    "portfolioRiskPct": 4.13,
     "riskLimit": 60000,
-    "availableRisk": 19279.6,
-    "openPositions": 14,
+    "availableRisk": 18733.43,
+    "openPositions": 15,
     "pendingEntries": 0,
     "pendingAdds": 0,
-    "openSlots": 1,
+    "openSlots": 0,
     "maxOpenPositions": 15,
-    "capitalUtilizationPct": 99.96,
+    "capitalUtilizationPct": 100,
     "overallocatedCapital": 0,
-    "waitingCandidates": 3,
+    "waitingCandidates": 5,
     "sectorExposure": {
       "Unclassified": 906715.25,
-      "Automobile and Auto Components": 92840
+      "Automobile and Auto Components": 92840,
+      "Financial Services": 442.45
     }
   },
   "capitalTransactions": [
@@ -29792,8 +29793,8 @@
       "firstSignalDate": "2026-07-13",
       "firstSeenAt": "2026-07-13T10:52:00.870Z",
       "lastSignalDate": "2026-07-13",
-      "lastSeenAt": "2026-07-14T08:05:39.733Z",
-      "rank": 199.89,
+      "lastSeenAt": "2026-07-14T09:43:28.265Z",
+      "rank": 202.39,
       "grade": "A+",
       "score": 26,
       "entryStyle": "Trend continuation buy",
@@ -29802,12 +29803,12 @@
       "plannedStopPrice": 794.42,
       "plannedRisk": 0,
       "plannedAllocation": 0,
-      "lastEvaluatedAt": "2026-07-14T08:05:39.733Z",
+      "lastEvaluatedAt": "2026-07-14T09:43:28.265Z",
       "skipAlertedAt": "2026-07-13T10:52:00.870Z",
       "firstSignalClose": 863.5,
       "firstSignalRank": 199.89,
       "firstFundamentalScore": 4,
-      "peakRank": 199.89,
+      "peakRank": 202.39,
       "latestClose": 863.5,
       "latestAsOf": "2026-07-13",
       "entryCloseDates": [
@@ -29831,8 +29832,8 @@
           "executionGapPct": null,
           "supertrendDistancePct": 15.28,
           "atrExtension": 2.1,
-          "currentRank": 199.89,
-          "peakRank": 199.89,
+          "currentRank": 202.39,
+          "peakRank": 202.39,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
@@ -29841,97 +29842,96 @@
       "listLabel": "My List"
     },
     {
-      "id": "SGFIN-2026-07-10-candidate",
-      "symbol": "SGFIN",
-      "yahooSymbol": "SGFIN.NS",
-      "name": "SGFIN",
-      "industry": "My List",
-      "sourceLists": [
-        "All NSE Market",
-        "My Custom List"
-      ],
-      "tradeScope": "custom",
-      "tradeScopeLabel": "My List",
-      "firstSignalDate": "2026-07-10",
-      "firstSignalClose": 637.9000244140625,
-      "firstSignalRank": 195.83,
-      "firstFundamentalScore": 4,
-      "firstSeenAt": "2026-07-14T03:32:23.269Z",
-      "lastSignalDate": "2026-07-10",
-      "lastSeenAt": "2026-07-14T08:05:39.733Z",
-      "rank": 195.83,
-      "peakRank": 195.83,
-      "grade": "A+",
-      "score": 26,
-      "entryStyle": "Trend continuation buy",
-      "latestClose": 637.9000244140625,
-      "latestAsOf": "2026-07-10",
-      "entryCloseDates": [
-        "2026-07-10"
-      ],
-      "status": "WAITING_CONFIRMATION",
-      "skipReason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1.",
-      "lastDecision": {
-        "actionable": false,
-        "disposition": "WAITING_CONFIRMATION",
-        "reasons": [
-          "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
-        ],
-        "warnings": [
-          "Latest official NSE delivery context shows distribution; this remains additional evidence, not a compulsory entry override."
-        ],
-        "metrics": {
-          "signalAgeDays": 0,
-          "firstSignalClose": 637.9,
-          "currentClose": 637.9,
-          "executionPrice": null,
-          "runupPct": 0,
-          "executionGapPct": null,
-          "supertrendDistancePct": 5.69,
-          "atrExtension": 1.44,
-          "currentRank": 195.83,
-          "peakRank": 195.83,
-          "rankDecay": 0,
-          "confirmedEntryCloses": 1
-        }
-      },
-      "lastEvaluatedAt": "2026-07-14T08:05:39.733Z",
-      "plannedStopPrice": 628.33,
-      "plannedRisk": 0,
-      "plannedAllocation": 0,
-      "skipAlertedAt": "2026-07-14T03:32:23.269Z",
-      "listId": "custom",
-      "listLabel": "My List"
-    },
-    {
-      "id": "KIMS-2026-07-10-candidate",
-      "symbol": "KIMS",
-      "yahooSymbol": "KIMS.NS",
-      "name": "KIMS",
+      "id": "APOLLOHOSP-2026-07-13-candidate",
+      "symbol": "APOLLOHOSP",
+      "yahooSymbol": "APOLLOHOSP.NS",
+      "name": "APOLLOHOSP",
       "industry": "Healthcare",
       "sourceLists": [
         "All NSE Market",
         "Default Nifty 500",
         "My Custom List"
       ],
+      "listId": "custom",
+      "listLabel": "My List",
       "tradeScope": "custom",
       "tradeScopeLabel": "My List",
-      "firstSignalDate": "2026-07-10",
-      "firstSignalClose": 814.9000244140625,
-      "firstSignalRank": 170.4,
-      "firstFundamentalScore": 3,
-      "firstSeenAt": "2026-07-14T03:32:23.269Z",
-      "lastSignalDate": "2026-07-10",
-      "lastSeenAt": "2026-07-14T08:05:39.733Z",
-      "rank": 170.4,
-      "peakRank": 170.4,
+      "firstSignalDate": "2026-07-13",
+      "firstSignalClose": 8782.5,
+      "firstSignalRank": 191.38,
+      "firstFundamentalScore": 6,
+      "firstSeenAt": "2026-07-14T09:43:28.265Z",
+      "lastSignalDate": "2026-07-13",
+      "lastSeenAt": "2026-07-14T09:43:28.265Z",
+      "rank": 191.38,
+      "peakRank": 191.38,
       "grade": "A+",
-      "score": 23,
+      "score": 28,
       "entryStyle": "Trend continuation buy",
-      "latestClose": 814.9000244140625,
-      "latestAsOf": "2026-07-10",
+      "latestClose": 8782.5,
+      "latestAsOf": "2026-07-13",
       "entryCloseDates": [
-        "2026-07-10"
+        "2026-07-13"
+      ],
+      "status": "WAITING_CONFIRMATION",
+      "skipReason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1.",
+      "lastDecision": {
+        "actionable": false,
+        "disposition": "WAITING_CONFIRMATION",
+        "reasons": [
+          "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
+        ],
+        "warnings": [],
+        "metrics": {
+          "signalAgeDays": 0,
+          "firstSignalClose": 8782.5,
+          "currentClose": 8782.5,
+          "executionPrice": null,
+          "runupPct": 0,
+          "executionGapPct": null,
+          "supertrendDistancePct": 3.4,
+          "atrExtension": 2.9,
+          "currentRank": 191.38,
+          "peakRank": 191.38,
+          "rankDecay": 0,
+          "confirmedEntryCloses": 1
+        }
+      },
+      "lastEvaluatedAt": "2026-07-14T09:43:28.265Z",
+      "plannedStopPrice": 8650.76,
+      "plannedRisk": 0,
+      "plannedAllocation": 0,
+      "skipAlertedAt": "2026-07-14T09:43:28.265Z"
+    },
+    {
+      "id": "INDIGRID-2026-07-13-candidate",
+      "symbol": "INDIGRID",
+      "yahooSymbol": "INDIGRID.NS",
+      "name": "INDIGRID",
+      "industry": "My List",
+      "sourceLists": [
+        "My Custom List"
+      ],
+      "listId": "custom",
+      "listLabel": "My List",
+      "tradeScope": "custom",
+      "tradeScopeLabel": "My List",
+      "firstSignalDate": "2026-07-13",
+      "firstSignalClose": 179.52000427246094,
+      "firstSignalRank": 177.33,
+      "firstFundamentalScore": 2,
+      "firstSeenAt": "2026-07-14T09:43:28.265Z",
+      "lastSignalDate": "2026-07-13",
+      "lastSeenAt": "2026-07-14T09:43:28.265Z",
+      "rank": 177.33,
+      "peakRank": 177.33,
+      "grade": "A+",
+      "score": 27,
+      "entryStyle": "Trend continuation buy",
+      "latestClose": 179.52000427246094,
+      "latestAsOf": "2026-07-13",
+      "entryCloseDates": [
+        "2026-07-13"
       ],
       "status": "WAITING_CONFIRMATION",
       "skipReason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1.",
@@ -29942,30 +29942,150 @@
           "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
         ],
         "warnings": [
-          "Latest official NSE delivery context shows distribution; this remains additional evidence, not a compulsory entry override."
+          "Price is 3.44 ATR above the 50-DMA; extension is recorded but does not override a valid current ENTRY."
         ],
         "metrics": {
           "signalAgeDays": 0,
-          "firstSignalClose": 814.9,
-          "currentClose": 814.9,
+          "firstSignalClose": 179.52,
+          "currentClose": 179.52,
           "executionPrice": null,
           "runupPct": 0,
           "executionGapPct": null,
-          "supertrendDistancePct": 4.02,
-          "atrExtension": 1.65,
-          "currentRank": 170.4,
-          "peakRank": 170.4,
+          "supertrendDistancePct": 2.62,
+          "atrExtension": 3.44,
+          "currentRank": 177.33,
+          "peakRank": 177.33,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-14T08:05:39.733Z",
-      "plannedStopPrice": 790,
+      "lastEvaluatedAt": "2026-07-14T09:43:28.265Z",
+      "plannedStopPrice": 176.13,
       "plannedRisk": 0,
       "plannedAllocation": 0,
-      "skipAlertedAt": "2026-07-14T03:32:23.269Z",
+      "skipAlertedAt": "2026-07-14T09:43:28.265Z"
+    },
+    {
+      "id": "LMW-2026-07-13-candidate",
+      "symbol": "LMW",
+      "yahooSymbol": "LMW.NS",
+      "name": "LMW",
+      "industry": "My List",
+      "sourceLists": [
+        "All NSE Market",
+        "My Custom List"
+      ],
       "listId": "custom",
-      "listLabel": "My List"
+      "listLabel": "My List",
+      "tradeScope": "custom",
+      "tradeScopeLabel": "My List",
+      "firstSignalDate": "2026-07-13",
+      "firstSignalClose": 16326,
+      "firstSignalRank": 173.68,
+      "firstFundamentalScore": 4,
+      "firstSeenAt": "2026-07-14T09:43:28.265Z",
+      "lastSignalDate": "2026-07-13",
+      "lastSeenAt": "2026-07-14T09:43:28.265Z",
+      "rank": 173.68,
+      "peakRank": 173.68,
+      "grade": "A+",
+      "score": 25,
+      "entryStyle": "Retracement buy near 50-DMA",
+      "latestClose": 16326,
+      "latestAsOf": "2026-07-13",
+      "entryCloseDates": [
+        "2026-07-13"
+      ],
+      "status": "WAITING_CONFIRMATION",
+      "skipReason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1.",
+      "lastDecision": {
+        "actionable": false,
+        "disposition": "WAITING_CONFIRMATION",
+        "reasons": [
+          "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
+        ],
+        "warnings": [],
+        "metrics": {
+          "signalAgeDays": 0,
+          "firstSignalClose": 16326,
+          "currentClose": 16326,
+          "executionPrice": null,
+          "runupPct": 0,
+          "executionGapPct": null,
+          "supertrendDistancePct": 5.67,
+          "atrExtension": 2.04,
+          "currentRank": 173.68,
+          "peakRank": 173.68,
+          "rankDecay": 0,
+          "confirmedEntryCloses": 1
+        }
+      },
+      "lastEvaluatedAt": "2026-07-14T09:43:28.265Z",
+      "plannedStopPrice": 15684,
+      "plannedRisk": 0,
+      "plannedAllocation": 0,
+      "skipAlertedAt": "2026-07-14T09:43:28.265Z"
+    },
+    {
+      "id": "FINEORG-2026-07-13-candidate",
+      "symbol": "FINEORG",
+      "yahooSymbol": "FINEORG.NS",
+      "name": "FINEORG",
+      "industry": "My List",
+      "sourceLists": [
+        "All NSE Market",
+        "My Custom List"
+      ],
+      "listId": "custom",
+      "listLabel": "My List",
+      "tradeScope": "custom",
+      "tradeScopeLabel": "My List",
+      "firstSignalDate": "2026-07-13",
+      "firstSignalClose": 5024,
+      "firstSignalRank": 166.42,
+      "firstFundamentalScore": 3,
+      "firstSeenAt": "2026-07-14T09:43:28.265Z",
+      "lastSignalDate": "2026-07-13",
+      "lastSeenAt": "2026-07-14T09:43:28.265Z",
+      "rank": 166.42,
+      "peakRank": 166.42,
+      "grade": "A+",
+      "score": 23,
+      "entryStyle": "Trend continuation buy",
+      "latestClose": 5024,
+      "latestAsOf": "2026-07-13",
+      "entryCloseDates": [
+        "2026-07-13"
+      ],
+      "status": "WAITING_CONFIRMATION",
+      "skipReason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1.",
+      "lastDecision": {
+        "actionable": false,
+        "disposition": "WAITING_CONFIRMATION",
+        "reasons": [
+          "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
+        ],
+        "warnings": [],
+        "metrics": {
+          "signalAgeDays": 0,
+          "firstSignalClose": 5024,
+          "currentClose": 5024,
+          "executionPrice": null,
+          "runupPct": 0,
+          "executionGapPct": null,
+          "supertrendDistancePct": 4.16,
+          "atrExtension": 1.22,
+          "currentRank": 166.42,
+          "peakRank": 166.42,
+          "rankDecay": 0,
+          "confirmedEntryCloses": 1
+        }
+      },
+      "lastEvaluatedAt": "2026-07-14T09:43:28.265Z",
+      "plannedStopPrice": 4875,
+      "plannedRisk": 0,
+      "plannedAllocation": 0,
+      "skipAlertedAt": "2026-07-14T09:43:28.265Z"
     }
   ],
   "candidateDecisionLog": [
@@ -30106,34 +30226,6 @@
       "reason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
     },
     {
-      "id": "SAKAR-2026-07-13-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-14T08:05:39.733Z",
-      "asOf": "2026-07-13",
-      "symbol": "SAKAR",
-      "industry": "My List",
-      "firstSignalDate": "2026-07-13",
-      "firstSignalClose": 863.5,
-      "outcome": "ROTATION_DEFERRED",
-      "disposition": "WAITING_CONFIRMATION",
-      "grade": "A+",
-      "rank": 199.89,
-      "metrics": {
-        "signalAgeDays": 0,
-        "firstSignalClose": 863.5,
-        "currentClose": 863.5,
-        "executionPrice": null,
-        "runupPct": 0,
-        "executionGapPct": null,
-        "supertrendDistancePct": 15.28,
-        "atrExtension": 2.1,
-        "currentRank": 199.89,
-        "peakRank": 199.89,
-        "rankDecay": 0,
-        "confirmedEntryCloses": 1
-      },
-      "reason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
-    },
-    {
       "id": "SGFIN-2026-07-10-ROTATION_DEFERRED-WAITING_CONFIRMATION",
       "evaluatedAt": "2026-07-14T08:05:39.733Z",
       "asOf": "2026-07-10",
@@ -30188,6 +30280,202 @@
         "confirmedEntryCloses": 1
       },
       "reason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
+    },
+    {
+      "id": "SGFIN-2026-07-10-REMOVED-EXPIRED",
+      "evaluatedAt": "2026-07-14T09:43:28.265Z",
+      "asOf": "2026-07-10",
+      "symbol": "SGFIN",
+      "industry": "My List",
+      "firstSignalDate": "2026-07-10",
+      "firstSignalClose": 637.9000244140625,
+      "outcome": "REMOVED",
+      "disposition": "EXPIRED",
+      "grade": "A+",
+      "rank": 195.83,
+      "metrics": {
+        "signalAgeDays": 3,
+        "firstSignalClose": 637.9,
+        "currentClose": 617.05,
+        "executionPrice": null,
+        "runupPct": -3.27,
+        "executionGapPct": null,
+        "supertrendDistancePct": 2.5,
+        "atrExtension": 0.7,
+        "currentRank": 125.55,
+        "peakRank": 195.83,
+        "rankDecay": 70.28,
+        "confirmedEntryCloses": 1
+      },
+      "reason": "Latest completed-candle status is WATCH, not ENTRY. Current setup grade WATCH no longer passes the selected trade-quality filter."
+    },
+    {
+      "id": "KIMS-2026-07-10-REMOVED-EXPIRED",
+      "evaluatedAt": "2026-07-14T09:43:28.265Z",
+      "asOf": "2026-07-10",
+      "symbol": "KIMS",
+      "industry": "Healthcare",
+      "firstSignalDate": "2026-07-10",
+      "firstSignalClose": 814.9000244140625,
+      "outcome": "REMOVED",
+      "disposition": "EXPIRED",
+      "grade": "A+",
+      "rank": 170.4,
+      "metrics": {
+        "signalAgeDays": 3,
+        "firstSignalClose": 814.9,
+        "currentClose": 800.95,
+        "executionPrice": null,
+        "runupPct": -1.71,
+        "executionGapPct": null,
+        "supertrendDistancePct": 2.35,
+        "atrExtension": 0.99,
+        "currentRank": 89.18,
+        "peakRank": 170.4,
+        "rankDecay": 81.22,
+        "confirmedEntryCloses": 1
+      },
+      "reason": "Latest completed-candle status is WATCH, not ENTRY. Current setup grade WATCH no longer passes the selected trade-quality filter."
+    },
+    {
+      "id": "SAKAR-2026-07-13-ROTATION_DEFERRED-WAITING_CONFIRMATION",
+      "evaluatedAt": "2026-07-14T09:43:28.265Z",
+      "asOf": "2026-07-13",
+      "symbol": "SAKAR",
+      "industry": "My List",
+      "firstSignalDate": "2026-07-13",
+      "firstSignalClose": 863.5,
+      "outcome": "ROTATION_DEFERRED",
+      "disposition": "WAITING_CONFIRMATION",
+      "grade": "A+",
+      "rank": 202.39,
+      "metrics": {
+        "signalAgeDays": 0,
+        "firstSignalClose": 863.5,
+        "currentClose": 863.5,
+        "executionPrice": null,
+        "runupPct": 0,
+        "executionGapPct": null,
+        "supertrendDistancePct": 15.28,
+        "atrExtension": 2.1,
+        "currentRank": 202.39,
+        "peakRank": 202.39,
+        "rankDecay": 0,
+        "confirmedEntryCloses": 1
+      },
+      "reason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
+    },
+    {
+      "id": "APOLLOHOSP-2026-07-13-ROTATION_DEFERRED-WAITING_CONFIRMATION",
+      "evaluatedAt": "2026-07-14T09:43:28.265Z",
+      "asOf": "2026-07-13",
+      "symbol": "APOLLOHOSP",
+      "industry": "Healthcare",
+      "firstSignalDate": "2026-07-13",
+      "firstSignalClose": 8782.5,
+      "outcome": "ROTATION_DEFERRED",
+      "disposition": "WAITING_CONFIRMATION",
+      "grade": "A+",
+      "rank": 191.38,
+      "metrics": {
+        "signalAgeDays": 0,
+        "firstSignalClose": 8782.5,
+        "currentClose": 8782.5,
+        "executionPrice": null,
+        "runupPct": 0,
+        "executionGapPct": null,
+        "supertrendDistancePct": 3.4,
+        "atrExtension": 2.9,
+        "currentRank": 191.38,
+        "peakRank": 191.38,
+        "rankDecay": 0,
+        "confirmedEntryCloses": 1
+      },
+      "reason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
+    },
+    {
+      "id": "INDIGRID-2026-07-13-ROTATION_DEFERRED-WAITING_CONFIRMATION",
+      "evaluatedAt": "2026-07-14T09:43:28.265Z",
+      "asOf": "2026-07-13",
+      "symbol": "INDIGRID",
+      "industry": "My List",
+      "firstSignalDate": "2026-07-13",
+      "firstSignalClose": 179.52000427246094,
+      "outcome": "ROTATION_DEFERRED",
+      "disposition": "WAITING_CONFIRMATION",
+      "grade": "A+",
+      "rank": 177.33,
+      "metrics": {
+        "signalAgeDays": 0,
+        "firstSignalClose": 179.52,
+        "currentClose": 179.52,
+        "executionPrice": null,
+        "runupPct": 0,
+        "executionGapPct": null,
+        "supertrendDistancePct": 2.62,
+        "atrExtension": 3.44,
+        "currentRank": 177.33,
+        "peakRank": 177.33,
+        "rankDecay": 0,
+        "confirmedEntryCloses": 1
+      },
+      "reason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
+    },
+    {
+      "id": "LMW-2026-07-13-ROTATION_DEFERRED-WAITING_CONFIRMATION",
+      "evaluatedAt": "2026-07-14T09:43:28.265Z",
+      "asOf": "2026-07-13",
+      "symbol": "LMW",
+      "industry": "My List",
+      "firstSignalDate": "2026-07-13",
+      "firstSignalClose": 16326,
+      "outcome": "ROTATION_DEFERRED",
+      "disposition": "WAITING_CONFIRMATION",
+      "grade": "A+",
+      "rank": 173.68,
+      "metrics": {
+        "signalAgeDays": 0,
+        "firstSignalClose": 16326,
+        "currentClose": 16326,
+        "executionPrice": null,
+        "runupPct": 0,
+        "executionGapPct": null,
+        "supertrendDistancePct": 5.67,
+        "atrExtension": 2.04,
+        "currentRank": 173.68,
+        "peakRank": 173.68,
+        "rankDecay": 0,
+        "confirmedEntryCloses": 1
+      },
+      "reason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
+    },
+    {
+      "id": "FINEORG-2026-07-13-ROTATION_DEFERRED-WAITING_CONFIRMATION",
+      "evaluatedAt": "2026-07-14T09:43:28.265Z",
+      "asOf": "2026-07-13",
+      "symbol": "FINEORG",
+      "industry": "My List",
+      "firstSignalDate": "2026-07-13",
+      "firstSignalClose": 5024,
+      "outcome": "ROTATION_DEFERRED",
+      "disposition": "WAITING_CONFIRMATION",
+      "grade": "A+",
+      "rank": 166.42,
+      "metrics": {
+        "signalAgeDays": 0,
+        "firstSignalClose": 5024,
+        "currentClose": 5024,
+        "executionPrice": null,
+        "runupPct": 0,
+        "executionGapPct": null,
+        "supertrendDistancePct": 4.16,
+        "atrExtension": 1.22,
+        "currentRank": 166.42,
+        "peakRank": 166.42,
+        "rankDecay": 0,
+        "confirmedEntryCloses": 1
+      },
+      "reason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
     }
   ],
   "tradeSettings": {
@@ -30233,7 +30521,7 @@
       "riskPerShare": 47.4,
       "riskBudget": 10000,
       "positionRank": 191.09,
-      "currentRank": 191.09,
+      "currentRank": 193.59,
       "allocationMethod": "min(capital cap, 1% risk budget, cash, sector cap)",
       "rotationExecution": null,
       "rotationSourceTradeId": null,
@@ -30735,7 +31023,7 @@
       "riskPerShare": 51.93,
       "riskBudget": 10000,
       "positionRank": 195.78,
-      "currentRank": 195.78,
+      "currentRank": 198.28,
       "allocationMethod": "min(capital cap, 1% risk budget, cash, sector cap)",
       "rotationExecution": null,
       "rotationSourceTradeId": null,
@@ -31333,132 +31621,118 @@
       }
     },
     {
-      "id": "NEXUSSURGL-2026-07-10-1783999943766",
+      "id": "NIVABUPA-2026-07-13-1784022208660",
       "listId": "custom",
       "listLabel": "My List",
       "sourceLists": [
+        "All NSE Market",
+        "Default Nifty 500",
         "My Custom List"
       ],
       "tradeScope": "custom",
       "tradeScopeLabel": "My List",
       "tradeQualityMode": "STRONG_OR_BETTER",
       "tradeQualityLabel": "Strong and best (A+/A/B)",
-      "symbol": "NEXUSSURGL",
-      "yahooSymbol": "NEXUSSURGL.BO",
-      "name": "NEXUSSURGL",
-      "industry": "My List",
+      "symbol": "NIVABUPA",
+      "yahooSymbol": "NIVABUPA.NS",
+      "name": "NIVABUPA",
+      "industry": "Financial Services",
       "status": "OPEN",
-      "entrySignalDate": "2026-07-10",
-      "entrySignalScanAt": "2026-07-14T03:32:23.269Z",
-      "entryDate": "2026-07-13",
+      "entrySignalDate": "2026-07-13",
+      "entrySignalScanAt": "2026-07-14T09:43:28.265Z",
+      "entryDate": "2026-07-14",
       "entryTime": "09:17 IST",
-      "entryPrice": 19.59,
-      "executionWindow": "09:17 order / 09:21 actual fill",
-      "executionMethod": "09:17 market order; first actual traded candle at 09:21 IST",
-      "quantity": 16,
-      "investedValue": 313.44,
+      "entryPrice": 88.49,
+      "executionWindow": "09:17 IST",
+      "executionMethod": "09:17 one-minute candle open",
+      "quantity": 5,
+      "investedValue": 442.45,
       "plannedQuantity": null,
       "plannedAllocation": null,
       "plannedRisk": null,
-      "initialStopPrice": 19.01,
-      "trailingStopPrice": 19.01,
-      "riskPerShare": 0.58,
+      "initialStopPrice": 84.5,
+      "trailingStopPrice": 84.5,
+      "riskPerShare": 3.99,
       "riskBudget": 10000,
-      "positionRank": 168.93,
-      "currentRank": 168.93,
+      "positionRank": 176.28,
+      "currentRank": 176.28,
       "allocationMethod": "min(capital cap, 1% risk budget, cash, sector cap)",
       "rotationExecution": null,
       "rotationSourceTradeId": null,
       "rotationSourceSymbol": null,
       "candidateContext": {
-        "firstSignalDate": "2026-07-10",
-        "firstSignalClose": 20.8700008392334,
-        "firstSignalRank": 168.93,
-        "firstFundamentalScore": 4,
-        "firstSeenAt": "2026-07-14T03:32:23.269Z",
-        "peakRank": 168.93,
+        "firstSignalDate": "2026-07-13",
+        "firstSignalClose": 88.08999633789062,
+        "firstSignalRank": 180.45,
+        "firstFundamentalScore": 1,
+        "firstSeenAt": "2026-07-14T09:43:28.265Z",
+        "peakRank": 180.45,
         "entryCloseDates": [
-          "2026-07-10"
+          "2026-07-13"
         ]
       },
       "addOns": [],
       "addOnSkips": [],
       "pendingAdd": null,
-      "partialExits": [
-        {
-          "date": "2026-07-13",
-          "time": "09:17 IST",
-          "actualFillTime": "09:21 IST",
-          "price": 19.59,
-          "executionMethod": "09:17 market order; first actual traded candle at 09:21 IST",
-          "executionWindow": "09:17 order / 09:21 actual fill",
-          "quantity": 15,
-          "pnl": 0,
-          "tag": "PROFIT_LOCK",
-          "reason": [
-            "Profit reached 2.21R; lock 50% and trail the balance.",
-            "Sell 50% on the next actual market session at 09:17 IST and trail the balance."
-          ]
-        }
-      ],
-      "partialExitTags": [
-        "PROFIT_LOCK"
-      ],
+      "partialExits": [],
+      "partialExitTags": [],
       "realizedPnlToDate": 0,
       "entryReason": [
-        "Weekly RSI 58.57 is above 50.",
-        "Daily RSI 52.69 is above 50.",
-        "Weekly RS 21.8% is above 0.",
-        "Daily long RS55 4.6% is above 0.",
-        "Daily short RS21 1.3% is above 0.",
-        "Daily close 20.87 is above Supertrend(10, 3) 18.63.",
-        "Entry style: Trend continuation buy.",
+        "Weekly RSI 61.25 is above 50.",
+        "Daily RSI 63.34 is above 50.",
+        "Weekly RS 13.3% is above 0.",
+        "Daily long RS55 10.5% is above 0.",
+        "Daily short RS21 1.6% is above 0.",
+        "Daily close 88.09 is above Supertrend(10, 3) 81.07.",
+        "Entry style: Momentum continuation buy.",
+        "Price action strength: close is within 15% of 52-week high 92.90.",
+        "Volume shocker: latest volume is 2.77x the 50-day average.",
         "Momentum confirmation: MACD is above signal and zero; OBV is rising.",
-        "Bollinger context: close is above the middle band 20.41 with bandwidth 14.62%.",
+        "Bollinger context: bandwidth 4.85% indicates a range-bound/compressed phase.",
         "RS trend strength: weekly RS and daily RS55 are rising.",
         "Trend strength: close is above 50-DMA and 200-DMA, with fast DMA above slow DMA.",
-        "Price confirmation: hammer is present.",
-        "Volatility is controlled: ATR(14) is 5.69% of price.",
+        "Volatility is controlled: ATR(14) is 2.54% of price.",
+        "Liquidity strength: 20-day average turnover is Rs 190458904.28.",
         "Market regime supports longs: NIFTY 500 bullish/healthy.",
-        "GTF 50-SMA slope: daily up, weekly up.",
+        "GTF 50-SMA slope: daily up, weekly sideways.",
         "No active daily/weekly/higher-timeframe GTF supply blocker was detected above price.",
         "Index context: NIFTY 500 proxy is BULLISH; broad index support is positive.",
         "Derivatives context: Not present in NSE F&O lot-size master; treat as cash-equity only.",
         "Options context: NSE option-chain snapshot unavailable; mark this as data gap, not as bearish.",
         "Commodity/currency context: 0/5 commodity/currency proxies are bullish; 2 bearish.",
-        "Operator/delivery context: Official NSE delivery history loaded for 2395 EQ symbols across 6 sessions.",
-        "Institutional confluence score 2/5 (Institutional C).",
+        "Operator/delivery context: Operator accumulation confirmed: price 1.83%, traded quantity 6.96x, delivery 8.40x, close above average price 87.40.",
+        "Institutional confluence score 3/5 (Institutional C).",
         "Execution plan: buy on the next actual market session using the exact 09:17 one-minute candle open; weekends and exchange holidays are skipped.",
         "Sector breadth strong: My List has 123/175 stocks (70.29%) passing daily strength.",
-        "Institutional concept coverage: 16/30 applicable video-derived buckets are strong.",
+        "Institutional concept coverage: 17/30 applicable video-derived buckets are strong.",
         "Trade sheet filter: My List, Strong and best (A+/A/B).",
-        "Portfolio rank 168.93; planned allocation Rs 83.48, quantity 4, initial stop 20, planned risk Rs 3.48.",
-        "Closing signal dated 2026-07-10; buy fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
+        "Portfolio rank 180.45; planned allocation Rs 440.45, quantity 5, initial stop 84.5, planned risk Rs 17.95.",
+        "Closing signal dated 2026-07-13; buy fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
       ],
       "entrySnapshot": {
-        "industry": "My List",
-        "close": 20.8700008392334,
-        "asOf": "2026-07-10",
-        "dailyRsi": 52.69389962320794,
-        "weeklyRsi": 58.56592479820338,
-        "weeklyRs": 0.21791302357278264,
-        "dailyLongRs": 0.04561591334349502,
-        "dailyShortRs": 0.013174351634602344,
-        "dailySupertrend": 18.62684340778992,
+        "industry": "Financial Services",
+        "close": 88.08999633789062,
+        "asOf": "2026-07-13",
+        "dailyRsi": 63.340096415084815,
+        "weeklyRsi": 61.251021791144616,
+        "weeklyRs": 0.1329931400555293,
+        "dailyLongRs": 0.10494775269670109,
+        "dailyShortRs": 0.01560948842650789,
+        "dailySupertrend": 81.0680733588365,
         "dailyPriceAboveSupertrend": true,
         "entryStyle": {
-          "type": "TREND_CONTINUATION",
-          "label": "Trend continuation buy"
+          "type": "MOMENTUM_CONTINUATION",
+          "label": "Momentum continuation buy"
         },
         "setupStrength": {
-          "score": 12,
+          "score": 14,
           "checks": {
             "recentHighBreakout": false,
             "baseBreakout": false,
             "higherLowStructure": true,
             "yearHighBreakout": false,
-            "nearYearHigh": false,
-            "volumeExpansion": false,
+            "nearYearHigh": true,
+            "volumeExpansion": true,
             "weeklyRsRising": true,
             "dailyLongRsRising": true,
             "dailyShortRsRising": true,
@@ -31467,176 +31741,176 @@
             "smaFastAboveSlow": true,
             "favorableRiskToSupertrend": false,
             "controlledVolatility": true,
-            "liquidEnough": false,
+            "liquidEnough": true,
             "bullishCandleConfirmation": false,
             "bullishEngulfing": false,
-            "hammer": true,
+            "hammer": false,
             "macdBullish": true,
             "obvRising": true,
             "retracementBuyZone": false,
             "fibonacciSupportNearby": false,
             "bollingerTrendSupport": true,
-            "bollingerRangeBound": false,
+            "bollingerRangeBound": true,
             "marketRegimeStrong": true
           },
           "pyramidStructure": {
             "pivotBars": 2,
             "lookback": 160,
-            "latestDate": "2026-07-10",
-            "latestClose": 20.8700008392334,
-            "previousDate": "2026-07-09",
-            "previousClose": 20.5,
+            "latestDate": "2026-07-13",
+            "latestClose": 88.08999633789062,
+            "previousDate": "2026-07-10",
+            "previousClose": 86.51000213623047,
             "points": [
+              {
+                "date": "2026-02-20",
+                "type": "HIGH",
+                "price": 77.19999694824219
+              },
+              {
+                "date": "2026-02-24",
+                "type": "LOW",
+                "price": 75.51000213623047
+              },
+              {
+                "date": "2026-03-02",
+                "type": "LOW",
+                "price": 70.0999984741211
+              },
+              {
+                "date": "2026-03-09",
+                "type": "LOW",
+                "price": 67.8499984741211
+              },
+              {
+                "date": "2026-03-13",
+                "type": "HIGH",
+                "price": 77
+              },
+              {
+                "date": "2026-03-13",
+                "type": "LOW",
+                "price": 69.0199966430664
+              },
+              {
+                "date": "2026-03-24",
+                "type": "LOW",
+                "price": 67.5
+              },
+              {
+                "date": "2026-03-25",
+                "type": "HIGH",
+                "price": 73.5999984741211
+              },
               {
                 "date": "2026-03-30",
                 "type": "LOW",
-                "price": 16.030000686645508
-              },
-              {
-                "date": "2026-04-01",
-                "type": "HIGH",
-                "price": 18
-              },
-              {
-                "date": "2026-04-06",
-                "type": "LOW",
-                "price": 17.010000228881836
+                "price": 68.37000274658203
               },
               {
                 "date": "2026-04-08",
                 "type": "HIGH",
-                "price": 18.610000610351562
+                "price": 75.22000122070312
               },
               {
-                "date": "2026-04-15",
+                "date": "2026-04-13",
+                "type": "LOW",
+                "price": 71.86000061035156
+              },
+              {
+                "date": "2026-04-22",
                 "type": "HIGH",
-                "price": 20.899999618530273
-              },
-              {
-                "date": "2026-04-15",
-                "type": "LOW",
-                "price": 17.489999771118164
-              },
-              {
-                "date": "2026-04-20",
-                "type": "LOW",
-                "price": 17.75
+                "price": 81.80999755859375
               },
               {
                 "date": "2026-04-28",
-                "type": "HIGH",
-                "price": 21.459999084472656
+                "type": "LOW",
+                "price": 76.36000061035156
               },
               {
                 "date": "2026-05-04",
-                "type": "LOW",
-                "price": 18.020000457763672
+                "type": "HIGH",
+                "price": 81.9000015258789
               },
               {
-                "date": "2026-05-12",
+                "date": "2026-05-11",
                 "type": "HIGH",
-                "price": 25.5
+                "price": 89.7699966430664
               },
               {
                 "date": "2026-05-18",
                 "type": "LOW",
-                "price": 19
+                "price": 78.05999755859375
               },
               {
                 "date": "2026-05-22",
                 "type": "HIGH",
-                "price": 22.989999771118164
-              },
-              {
-                "date": "2026-05-27",
-                "type": "LOW",
-                "price": 19.399999618530273
+                "price": 86.45999908447266
               },
               {
                 "date": "2026-05-29",
                 "type": "HIGH",
-                "price": 22
+                "price": 85.25
               },
               {
-                "date": "2026-06-05",
+                "date": "2026-06-08",
                 "type": "LOW",
-                "price": 19.260000228881836
+                "price": 80.69000244140625
               },
               {
-                "date": "2026-06-10",
+                "date": "2026-06-15",
+                "type": "HIGH",
+                "price": 86.91000366210938
+              },
+              {
+                "date": "2026-06-19",
+                "type": "HIGH",
+                "price": 89
+              },
+              {
+                "date": "2026-06-30",
                 "type": "LOW",
-                "price": 18.510000228881836
-              },
-              {
-                "date": "2026-06-11",
-                "type": "HIGH",
-                "price": 22.399999618530273
-              },
-              {
-                "date": "2026-06-16",
-                "type": "HIGH",
-                "price": 21
-              },
-              {
-                "date": "2026-06-16",
-                "type": "LOW",
-                "price": 19
-              },
-              {
-                "date": "2026-06-22",
-                "type": "HIGH",
-                "price": 21.790000915527344
-              },
-              {
-                "date": "2026-06-24",
-                "type": "LOW",
-                "price": 19.610000610351562
-              },
-              {
-                "date": "2026-07-01",
-                "type": "HIGH",
-                "price": 21.200000762939453
+                "price": 84.12999725341797
               },
               {
                 "date": "2026-07-07",
                 "type": "HIGH",
-                "price": 23.950000762939453
+                "price": 88.4000015258789
               },
               {
-                "date": "2026-07-07",
+                "date": "2026-07-08",
                 "type": "LOW",
-                "price": 19.010000228881836
+                "price": 84.44000244140625
               }
             ]
           },
           "values": {
-            "priorRecentHigh": 25.5,
-            "priorBaseHigh": 23.950000762939453,
-            "recentBaseLow": 19.010000228881836,
-            "previousBaseLow": 19,
-            "macd": 0.18624189975059835,
-            "macdSignal": 0.10742888397771289,
-            "macdHistogram": 0.07881301577288546,
-            "priorYearHigh": 25.5,
-            "volumeAverage": 3655.48,
-            "volumeRatio": 0.7569457362644577,
-            "smaFast": 20.548400001525877,
-            "smaSlow": 18.095549960136413,
-            "atr": 1.1881040042633255,
-            "atrPct": 5.69287952317575,
-            "averageTurnover": 20875.166784477235,
-            "previousLow": 20,
-            "twoCandleLow": 20,
-            "fourCandleLow": 19.010000228881836,
-            "riskToSupertrendPct": 10.748238338479505,
-            "riskToPreviousLowPct": 4.16866700646168,
-            "retracementPullbackDepthPct": 18.156859453986673,
-            "retracementSupportSource": "50-DMA",
-            "retracementSupportReference": 20.548400001525877,
-            "retracementSupportDistancePct": 1.540971848467517,
-            "retracementPullbackVolumeRatio": 0.30261415737468134,
-            "retracementCurrentVolumeRatio": 0.7569457362644577,
-            "retracementCloseLocationPct": 93.9252711287942,
+            "priorRecentHigh": 89.7699966430664,
+            "priorBaseHigh": 89,
+            "recentBaseLow": 84.12999725341797,
+            "previousBaseLow": 82.5,
+            "macd": 0.8658124133084186,
+            "macdSignal": 0.8401638858493152,
+            "macdHistogram": 0.0256485274591034,
+            "priorYearHigh": 92.9000015258789,
+            "volumeAverage": 2862088.32,
+            "volumeRatio": 2.773085632801157,
+            "smaFast": 83.86720031738281,
+            "smaSlow": 78.00244998931885,
+            "atr": 2.2334576002732915,
+            "atrPct": 2.535427055424456,
+            "averageTurnover": 190458904.28014678,
+            "previousLow": 85.98999786376953,
+            "twoCandleLow": 84.5,
+            "fourCandleLow": 84.44000244140625,
+            "riskToSupertrendPct": 7.97130579063692,
+            "riskToPreviousLowPct": 2.3839238976308255,
+            "retracementPullbackDepthPct": 1.8714496691535076,
+            "retracementSupportSource": "55D high retest",
+            "retracementSupportReference": 89.7699966430664,
+            "retracementSupportDistancePct": 1.9071408502864855,
+            "retracementPullbackVolumeRatio": 0.3986426945762457,
+            "retracementCurrentVolumeRatio": 2.773085632801157,
+            "retracementCloseLocationPct": 64.6752948217198,
             "retracementPullbackDepthOk": false,
             "retracementSupportProximityOk": true,
             "retracementVolumePatternOk": true,
@@ -31652,18 +31926,18 @@
             "retracementDryVolumeMaxRatio": 0.9,
             "retracementReclaimVolumeMinRatio": 1.1,
             "retracementMaxRiskPct": 8,
-            "fibonacciSwingHigh": 25.5,
-            "fibonacciSwingLow": 18.020000457763672,
-            "fibonacciNearestLevel": "61.8%",
-            "fibonacciNearestPrice": 20.87736028289795,
-            "fibonacciDistancePct": 0.03526326482324072,
+            "fibonacciSwingHigh": 89.7699966430664,
+            "fibonacciSwingLow": 76.36000061035156,
+            "fibonacciNearestLevel": "38.2%",
+            "fibonacciNearestPrice": 84.64737815856934,
+            "fibonacciDistancePct": 3.908069386353799,
             "fibonacciSupportNearby": false,
-            "bollingerMiddle": 20.40900011062622,
-            "bollingerUpper": 21.900642612202702,
-            "bollingerLower": 18.917357609049738,
-            "bollingerPercentB": 0.6545278872517903,
-            "bollingerBandwidthPct": 14.61749711883081,
-            "bollingerRangeBound": false,
+            "bollingerMiddle": 85.85250053405761,
+            "bollingerUpper": 87.93410322982862,
+            "bollingerLower": 83.7708978382866,
+            "bollingerPercentB": 1.0374454520977312,
+            "bollingerBandwidthPct": 4.849253505307608,
+            "bollingerRangeBound": true,
             "recentHighPeriod": 55,
             "baseBreakoutPeriod": 20,
             "yearHighPeriod": 252,
@@ -31676,11 +31950,11 @@
             "atrPeriod": 14,
             "maxAtrPct": 8,
             "minimumAverageTurnover": 10000000,
-            "candlePattern": "hammer",
+            "candlePattern": "No bullish confirmation pattern",
             "marketRegimeLabel": "NIFTY 500 bullish/healthy"
           }
         },
-        "setupStrengthScore": 16,
+        "setupStrengthScore": 19,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -31694,10 +31968,10 @@
         },
         "sectorStrengthScore": 1,
         "institutionalContext": {
-          "score": 2,
+          "score": 3,
           "maxScore": 5,
           "grade": "Institutional C",
-          "dataGaps": 2,
+          "dataGaps": 1,
           "index": {
             "dataAvailable": true,
             "supportsLongs": true,
@@ -31738,13 +32012,21 @@
             "reason": "0/5 commodity/currency proxies are bullish; 2 bearish."
           },
           "operator": {
-            "dataAvailable": false,
-            "accumulation": false,
+            "dataAvailable": true,
+            "asOf": "2026-07-13",
+            "tradedQuantityRatio": 6.956318704771267,
+            "deliveryQuantityRatio": 8.402582370802627,
+            "deliveryPct": 68.49,
+            "averagePrice": 87.4,
+            "priceChangePct": 1.8263784533580019,
+            "closeAboveAveragePrice": true,
+            "participation": true,
+            "accumulation": true,
             "distribution": false,
-            "reason": "Official NSE delivery history loaded for 2395 EQ symbols across 6 sessions."
+            "reason": "Operator accumulation confirmed: price 1.83%, traded quantity 6.96x, delivery 8.40x, close above average price 87.40."
           }
         },
-        "institutionalScore": 2,
+        "institutionalScore": 3,
         "gtfContext": {
           "dataAvailable": true,
           "score": 3,
@@ -31754,9 +32036,41 @@
           "preferredEntryStyle": "GTF_CLEAR_RUNWAY",
           "structuralStop": null,
           "dailyTrend": "up",
-          "weeklyTrend": "up",
-          "dailyDemand": null,
-          "weeklyDemand": null,
+          "weeklyTrend": "sideways",
+          "dailyDemand": {
+            "timeframe": "daily",
+            "side": "demand",
+            "pattern": "DBR",
+            "proximal": 85.12,
+            "distal": 84.13,
+            "entry": 85.21,
+            "stopLoss": 83.79,
+            "score": 4,
+            "freshnessTests": 2,
+            "achievementR": 2.2,
+            "baseWickRatio": 0.39,
+            "departureQuality": "achievement_close",
+            "legoutDate": "2026-07-02",
+            "active": true,
+            "distancePct": 3.37
+          },
+          "weeklyDemand": {
+            "timeframe": "weekly",
+            "side": "demand",
+            "pattern": "DBR",
+            "proximal": 84.4,
+            "distal": 76.36,
+            "entry": 84.48,
+            "stopLoss": 76.05,
+            "score": 3,
+            "freshnessTests": 2,
+            "achievementR": 0.26,
+            "baseWickRatio": 0.67,
+            "departureQuality": "single_exciting_candle",
+            "legoutDate": "2026-05-18",
+            "active": true,
+            "distancePct": 4.19
+          },
           "higherTimeframeDemand": null,
           "reactingFromHtf": {
             "active": false,
@@ -31788,16 +32102,16 @@
             "supplyBlocked": false
           },
           "reasons": [
-            "GTF 50-SMA slope: daily up, weekly up.",
+            "GTF 50-SMA slope: daily up, weekly sideways.",
             "No active daily/weekly/higher-timeframe GTF supply blocker was detected above price."
           ]
         },
         "gtfScore": 1,
         "conceptCoverage": {
-          "passed": 16,
+          "passed": 17,
           "applicable": 30,
           "weak": 11,
-          "dataGaps": 3,
+          "dataGaps": 2,
           "excluded": 6,
           "passLabels": [
             "Compulsory multi-timeframe engine",
@@ -31805,33 +32119,33 @@
             "RS trend follow-through",
             "RSI momentum",
             "Supertrend trend filter",
-            "Bollinger trend/range context",
+            "Breakout or 52-week high zone",
+            "Volume participation",
             "MACD and OBV confirmation",
+            "Operator delivery confirmation",
             "Sector breadth",
             "50/200 DMA trend structure",
-            "Candle IPC confirmation",
+            "Volatility and liquidity control",
             "Market regime",
             "Index regime confirmation",
             "Commodity/currency macro context",
-            "Fundamental improvement",
             "Exit rule discipline",
             "09:17 execution discipline"
           ],
           "weakLabels": [
-            "Breakout or 52-week high zone",
             "Price-action base and higher-low structure",
             "Retracement/pullback buy setup",
             "GTF demand/supply confluence",
             "GTF reacting from higher timeframe (secondary proxy)",
             "Fibonacci retracement support",
-            "Volume participation",
-            "Volatility and liquidity control",
+            "Bollinger trend/range context",
+            "Candle IPC confirmation",
             "Risk reference discipline",
             "Derivative/F&O eligibility",
-            "Derivative OI participation"
+            "Derivative OI participation",
+            "Fundamental improvement"
           ],
           "dataGapLabels": [
-            "Operator delivery confirmation",
             "Index option-chain positioning",
             "News/event context"
           ],
@@ -31843,40 +32157,55 @@
             "Options premium/straddle/strangle execution",
             "Manual charting/terminal workflow"
           ],
-          "summary": "16/30 applicable video-derived buckets strong; 3 data gaps; 6 non-EOD playbooks excluded."
+          "summary": "17/30 applicable video-derived buckets strong; 2 data gaps; 6 non-EOD playbooks excluded."
         },
-        "fundamentalScore": 4,
+        "fundamentalScore": 1,
         "fundamental": {
           "available": true,
-          "score": 4,
-          "maxScore": 5,
-          "currentPe": 15.459259,
-          "ebitdaMargin": 0.1453914573355488,
+          "score": 1,
+          "maxScore": 8,
+          "currentPe": 121.84507,
+          "ebitdaMargin": null,
           "checks": {
             "netIncomeYoYUp": {
-              "ok": true,
-              "latest": 7361000,
-              "previous": 4974000
+              "ok": false,
+              "latest": 1307800000,
+              "previous": 2135200000
             },
             "operatingIncomeYoYUp": {
+              "ok": null,
+              "latest": null,
+              "previous": null
+            },
+            "revenueQuarterYoYUp": {
               "ok": true,
-              "latest": 9593000,
-              "previous": 6606000
+              "latest": 21385600000,
+              "previous": 12580200000
+            },
+            "epsQuarterYoYUp": {
+              "ok": null,
+              "latest": null,
+              "previous": null
+            },
+            "ebitdaQuarterYoYUp": {
+              "ok": null,
+              "latest": null,
+              "previous": null
             },
             "ebitdaMarginQoQUp": {
-              "ok": true,
-              "latest": 0.1453914573355488,
-              "previous": 0.07779445885082571
+              "ok": null,
+              "latest": null,
+              "previous": null
             },
             "ebitdaMarginYoYUp": {
-              "ok": true,
-              "latest": 0.1453914573355488,
-              "previous": 0.07740063432080438
+              "ok": null,
+              "latest": null,
+              "previous": null
             },
             "peRising": {
-              "ok": false,
-              "latest": 18.12087886936062,
-              "previous": 34.564101390349556
+              "ok": null,
+              "latest": null,
+              "previous": null
             }
           },
           "cacheHit": true
@@ -31889,535 +32218,45 @@
       "exitTime": null,
       "exitPrice": null,
       "exitReason": [],
-      "lastPrice": 20.87,
-      "lastPriceDate": "2026-07-10",
-      "unrealizedPnl": 20.48,
-      "unrealizedPnlPct": 6.53,
+      "lastPrice": 88.09,
+      "lastPriceDate": "2026-07-13",
+      "unrealizedPnl": -2,
+      "unrealizedPnlPct": -0.45,
       "pnl": null,
       "pnlPct": null,
       "holdingDays": null,
-      "executionError": null,
-      "originalQuantity": 31,
-      "originalInvestedValue": 607.29,
-      "initialEntryPrice": 19.59,
-      "initialQuantity": 31,
       "entryExecutionDecision": {
         "actionable": true,
         "disposition": "ACTIONABLE",
         "reasons": [],
-        "warnings": [],
+        "warnings": [
+          "Price is 8.39% above Supertrend; extension is recorded but does not override a valid current ENTRY."
+        ],
         "metrics": {
           "signalAgeDays": 0,
-          "firstSignalClose": 20.87,
-          "currentClose": 20.87,
-          "executionPrice": 19.59,
-          "runupPct": -6.13,
-          "executionGapPct": -6.13,
-          "supertrendDistancePct": 4.92,
-          "atrExtension": 0,
-          "currentRank": 168.93,
-          "peakRank": 168.93,
-          "rankDecay": 0,
+          "firstSignalClose": 88.09,
+          "currentClose": 88.09,
+          "executionPrice": 88.49,
+          "runupPct": 0.45,
+          "executionGapPct": 0.45,
+          "supertrendDistancePct": 8.39,
+          "atrExtension": 2.07,
+          "currentRank": 176.28,
+          "peakRank": 180.45,
+          "rankDecay": 4.17,
           "confirmedEntryCloses": 1
         },
-        "evaluatedDate": "2026-07-13",
+        "evaluatedDate": "2026-07-14",
         "evaluatedTime": "09:17 IST"
       },
-      "entryActualFillTime": "09:21 IST",
-      "initialRiskAmount": 17.98,
-      "currentValue": 333.92,
-      "currentGrade": "A+",
-      "currentWeakness": {
-        "score": 0,
-        "primaryScore": 0,
-        "reasons": []
-      },
-      "rotationReview": {
-        "lastObservedAsOf": "2026-07-10",
-        "weakCloseDates": [],
-        "confirmedWeakCloses": 0,
-        "currentQualifies": false,
-        "currentPrimaryScore": 0,
-        "currentScore": 0,
-        "currentReasons": []
-      },
-      "latestManagementDecision": {
-        "asOf": "2026-07-10",
-        "action": "HOLD",
-        "reasons": [],
-        "hierarchy": "FULL_EXIT > PARTIAL_EXIT > QUALITY_ROTATION > HOLD"
-      },
-      "partialExitSignalDate": "2026-07-10",
-      "partialExitSignalScanAt": "2026-07-14T05:01:25.100Z",
-      "pendingPartialExitPct": null,
-      "pendingPartialExitTag": null,
-      "pendingPartialExitReason": [],
-      "exitSnapshot": {
-        "industry": "My List",
-        "close": 20.8700008392334,
-        "asOf": "2026-07-10",
-        "dailyRsi": 52.69389962320794,
-        "weeklyRsi": 58.56592479820338,
-        "weeklyRs": 0.21791302357278264,
-        "dailyLongRs": 0.04561591334349502,
-        "dailyShortRs": 0.013174351634602344,
-        "dailySupertrend": 18.62684340778992,
-        "dailyPriceAboveSupertrend": true,
-        "entryStyle": {
-          "type": "TREND_CONTINUATION",
-          "label": "Trend continuation buy"
-        },
-        "setupStrength": {
-          "score": 12,
-          "checks": {
-            "recentHighBreakout": false,
-            "baseBreakout": false,
-            "higherLowStructure": true,
-            "yearHighBreakout": false,
-            "nearYearHigh": false,
-            "volumeExpansion": false,
-            "weeklyRsRising": true,
-            "dailyLongRsRising": true,
-            "dailyShortRsRising": true,
-            "closeAboveSmaFast": true,
-            "closeAboveSmaSlow": true,
-            "smaFastAboveSlow": true,
-            "favorableRiskToSupertrend": false,
-            "controlledVolatility": true,
-            "liquidEnough": false,
-            "bullishCandleConfirmation": false,
-            "bullishEngulfing": false,
-            "hammer": true,
-            "macdBullish": true,
-            "obvRising": true,
-            "retracementBuyZone": false,
-            "fibonacciSupportNearby": false,
-            "bollingerTrendSupport": true,
-            "bollingerRangeBound": false,
-            "marketRegimeStrong": true
-          },
-          "pyramidStructure": {
-            "pivotBars": 2,
-            "lookback": 160,
-            "latestDate": "2026-07-10",
-            "latestClose": 20.8700008392334,
-            "previousDate": "2026-07-09",
-            "previousClose": 20.5,
-            "points": [
-              {
-                "date": "2026-03-30",
-                "type": "LOW",
-                "price": 16.030000686645508
-              },
-              {
-                "date": "2026-04-01",
-                "type": "HIGH",
-                "price": 18
-              },
-              {
-                "date": "2026-04-06",
-                "type": "LOW",
-                "price": 17.010000228881836
-              },
-              {
-                "date": "2026-04-08",
-                "type": "HIGH",
-                "price": 18.610000610351562
-              },
-              {
-                "date": "2026-04-15",
-                "type": "HIGH",
-                "price": 20.899999618530273
-              },
-              {
-                "date": "2026-04-15",
-                "type": "LOW",
-                "price": 17.489999771118164
-              },
-              {
-                "date": "2026-04-20",
-                "type": "LOW",
-                "price": 17.75
-              },
-              {
-                "date": "2026-04-28",
-                "type": "HIGH",
-                "price": 21.459999084472656
-              },
-              {
-                "date": "2026-05-04",
-                "type": "LOW",
-                "price": 18.020000457763672
-              },
-              {
-                "date": "2026-05-12",
-                "type": "HIGH",
-                "price": 25.5
-              },
-              {
-                "date": "2026-05-18",
-                "type": "LOW",
-                "price": 19
-              },
-              {
-                "date": "2026-05-22",
-                "type": "HIGH",
-                "price": 22.989999771118164
-              },
-              {
-                "date": "2026-05-27",
-                "type": "LOW",
-                "price": 19.399999618530273
-              },
-              {
-                "date": "2026-05-29",
-                "type": "HIGH",
-                "price": 22
-              },
-              {
-                "date": "2026-06-05",
-                "type": "LOW",
-                "price": 19.260000228881836
-              },
-              {
-                "date": "2026-06-10",
-                "type": "LOW",
-                "price": 18.510000228881836
-              },
-              {
-                "date": "2026-06-11",
-                "type": "HIGH",
-                "price": 22.399999618530273
-              },
-              {
-                "date": "2026-06-16",
-                "type": "HIGH",
-                "price": 21
-              },
-              {
-                "date": "2026-06-16",
-                "type": "LOW",
-                "price": 19
-              },
-              {
-                "date": "2026-06-22",
-                "type": "HIGH",
-                "price": 21.790000915527344
-              },
-              {
-                "date": "2026-06-24",
-                "type": "LOW",
-                "price": 19.610000610351562
-              },
-              {
-                "date": "2026-07-01",
-                "type": "HIGH",
-                "price": 21.200000762939453
-              },
-              {
-                "date": "2026-07-07",
-                "type": "HIGH",
-                "price": 23.950000762939453
-              },
-              {
-                "date": "2026-07-07",
-                "type": "LOW",
-                "price": 19.010000228881836
-              }
-            ]
-          },
-          "values": {
-            "priorRecentHigh": 25.5,
-            "priorBaseHigh": 23.950000762939453,
-            "recentBaseLow": 19.010000228881836,
-            "previousBaseLow": 19,
-            "macd": 0.18624189975059835,
-            "macdSignal": 0.10742888397771289,
-            "macdHistogram": 0.07881301577288546,
-            "priorYearHigh": 25.5,
-            "volumeAverage": 3655.48,
-            "volumeRatio": 0.7569457362644577,
-            "smaFast": 20.548400001525877,
-            "smaSlow": 18.095549960136413,
-            "atr": 1.1881040042633255,
-            "atrPct": 5.69287952317575,
-            "averageTurnover": 20875.166784477235,
-            "previousLow": 20,
-            "twoCandleLow": 20,
-            "fourCandleLow": 19.010000228881836,
-            "riskToSupertrendPct": 10.748238338479505,
-            "riskToPreviousLowPct": 4.16866700646168,
-            "retracementPullbackDepthPct": 18.156859453986673,
-            "retracementSupportSource": "50-DMA",
-            "retracementSupportReference": 20.548400001525877,
-            "retracementSupportDistancePct": 1.540971848467517,
-            "retracementPullbackVolumeRatio": 0.30261415737468134,
-            "retracementCurrentVolumeRatio": 0.7569457362644577,
-            "retracementCloseLocationPct": 93.9252711287942,
-            "retracementPullbackDepthOk": false,
-            "retracementSupportProximityOk": true,
-            "retracementVolumePatternOk": true,
-            "retracementReclaimCandleOk": true,
-            "retracementRiskOk": true,
-            "retracementTrendHoldOk": true,
-            "retracementPatternLabel": "No institutional retracement setup",
-            "retracementLookback": 5,
-            "retracementMinPullbackPct": 2,
-            "retracementMaxPullbackPct": 15,
-            "retracementSupportProximityPct": 5,
-            "retracementBreakoutRetestPct": 3,
-            "retracementDryVolumeMaxRatio": 0.9,
-            "retracementReclaimVolumeMinRatio": 1.1,
-            "retracementMaxRiskPct": 8,
-            "fibonacciSwingHigh": 25.5,
-            "fibonacciSwingLow": 18.020000457763672,
-            "fibonacciNearestLevel": "61.8%",
-            "fibonacciNearestPrice": 20.87736028289795,
-            "fibonacciDistancePct": 0.03526326482324072,
-            "fibonacciSupportNearby": false,
-            "bollingerMiddle": 20.40900011062622,
-            "bollingerUpper": 21.900642612202702,
-            "bollingerLower": 18.917357609049738,
-            "bollingerPercentB": 0.6545278872517903,
-            "bollingerBandwidthPct": 14.61749711883081,
-            "bollingerRangeBound": false,
-            "recentHighPeriod": 55,
-            "baseBreakoutPeriod": 20,
-            "yearHighPeriod": 252,
-            "nearYearHighPct": 15,
-            "volumeAveragePeriod": 50,
-            "volumeExpansionMultiple": 1.5,
-            "riskToSupertrendMaxPct": 7,
-            "smaFastPeriod": 50,
-            "smaSlowPeriod": 200,
-            "atrPeriod": 14,
-            "maxAtrPct": 8,
-            "minimumAverageTurnover": 10000000,
-            "candlePattern": "hammer",
-            "marketRegimeLabel": "NIFTY 500 bullish/healthy"
-          }
-        },
-        "setupStrengthScore": 16,
-        "setupGrade": "A+",
-        "sectorStrength": {
-          "industry": "My List",
-          "total": 175,
-          "strong": 123,
-          "entry": 120,
-          "breadthPct": 70.28571428571428,
-          "ok": true,
-          "minPct": 50,
-          "minStocks": 5
-        },
-        "sectorStrengthScore": 1,
-        "institutionalContext": {
-          "score": 2,
-          "maxScore": 5,
-          "grade": "Institutional C",
-          "dataGaps": 2,
-          "index": {
-            "dataAvailable": true,
-            "supportsLongs": true,
-            "primaryBias": "BULLISH",
-            "sectorProxy": "NIFTY 500",
-            "sectorProxyBias": "BULLISH",
-            "reason": "NIFTY 500 proxy is BULLISH; broad index support is positive."
-          },
-          "derivatives": {
-            "dataAvailable": true,
-            "fnoEligible": false,
-            "oiAvailable": false,
-            "oiChangePct": null,
-            "oiVolume": null,
-            "optionValue": null,
-            "futureValue": null,
-            "participation": false,
-            "lotSize": null,
-            "underlying": "",
-            "reason": "Not present in NSE F&O lot-size master; treat as cash-equity only."
-          },
-          "options": {
-            "dataAvailable": false,
-            "supportsLongs": false,
-            "symbol": "NIFTY",
-            "pcr": null,
-            "maxPutOiStrike": null,
-            "maxCallOiStrike": null,
-            "bias": "UNKNOWN",
-            "reason": "NSE option-chain snapshot unavailable; mark this as data gap, not as bearish."
-          },
-          "commodity": {
-            "dataAvailable": true,
-            "supportsSector": true,
-            "exposure": "Broad macro",
-            "proxy": "",
-            "proxyBias": "UNKNOWN",
-            "reason": "0/5 commodity/currency proxies are bullish; 2 bearish."
-          },
-          "operator": {
-            "dataAvailable": false,
-            "accumulation": false,
-            "distribution": false,
-            "reason": "Official NSE delivery history loaded for 2395 EQ symbols across 6 sessions."
-          }
-        },
-        "institutionalScore": 2,
-        "gtfContext": {
-          "dataAvailable": true,
-          "score": 3,
-          "maxScore": 10,
-          "grade": "GTF C",
-          "rankAdjustment": 4.5,
-          "preferredEntryStyle": "GTF_CLEAR_RUNWAY",
-          "structuralStop": null,
-          "dailyTrend": "up",
-          "weeklyTrend": "up",
-          "dailyDemand": null,
-          "weeklyDemand": null,
-          "higherTimeframeDemand": null,
-          "reactingFromHtf": {
-            "active": false,
-            "sourceStatus": "PROXY_UNVALIDATED",
-            "role": "SECONDARY_CONFLUENCE_ONLY",
-            "managementClass": null,
-            "managementPlan": null,
-            "zone": null,
-            "overlapWithExecutionDemand": false,
-            "recentTouchAndReclaim": false,
-            "reason": "No fresh score-7 M/Q/HY/Y demand overlap or recent reclaim was detected."
-          },
-          "opposingSupply": null,
-          "rewardRisk": null,
-          "unlimitedRewardRoom": true,
-          "supplyDistancePct": null,
-          "supplyBlocked": false,
-          "demandRetest": false,
-          "checks": {
-            "dailyDemandQualified": false,
-            "weeklyDemandQualified": false,
-            "dailyDemandFresh": false,
-            "weeklyDemandFresh": false,
-            "demandRetest": false,
-            "reactingFromHtf": false,
-            "dailyTrendUp": true,
-            "weeklyTrendNotDown": true,
-            "roomForTwoR": true,
-            "supplyBlocked": false
-          },
-          "reasons": [
-            "GTF 50-SMA slope: daily up, weekly up.",
-            "No active daily/weekly/higher-timeframe GTF supply blocker was detected above price."
-          ]
-        },
-        "gtfScore": 1,
-        "conceptCoverage": {
-          "passed": 16,
-          "applicable": 30,
-          "weak": 11,
-          "dataGaps": 3,
-          "excluded": 6,
-          "passLabels": [
-            "Compulsory multi-timeframe engine",
-            "Relative strength leadership",
-            "RS trend follow-through",
-            "RSI momentum",
-            "Supertrend trend filter",
-            "Bollinger trend/range context",
-            "MACD and OBV confirmation",
-            "Sector breadth",
-            "50/200 DMA trend structure",
-            "Candle IPC confirmation",
-            "Market regime",
-            "Index regime confirmation",
-            "Commodity/currency macro context",
-            "Fundamental improvement",
-            "Exit rule discipline",
-            "09:17 execution discipline"
-          ],
-          "weakLabels": [
-            "Breakout or 52-week high zone",
-            "Price-action base and higher-low structure",
-            "Retracement/pullback buy setup",
-            "GTF demand/supply confluence",
-            "GTF reacting from higher timeframe (secondary proxy)",
-            "Fibonacci retracement support",
-            "Volume participation",
-            "Volatility and liquidity control",
-            "Risk reference discipline",
-            "Derivative/F&O eligibility",
-            "Derivative OI participation"
-          ],
-          "dataGapLabels": [
-            "Operator delivery confirmation",
-            "Index option-chain positioning",
-            "News/event context"
-          ],
-          "excludedLabels": [
-            "Intraday tick scalping",
-            "Broker-only live Greeks/order-book depth",
-            "Pair-trading spread execution",
-            "Short-selling execution",
-            "Options premium/straddle/strangle execution",
-            "Manual charting/terminal workflow"
-          ],
-          "summary": "16/30 applicable video-derived buckets strong; 3 data gaps; 6 non-EOD playbooks excluded."
-        },
-        "fundamentalScore": 4,
-        "fundamental": {
-          "available": true,
-          "score": 4,
-          "maxScore": 5,
-          "currentPe": 15.459259,
-          "ebitdaMargin": 0.1453914573355488,
-          "checks": {
-            "netIncomeYoYUp": {
-              "ok": true,
-              "latest": 7361000,
-              "previous": 4974000
-            },
-            "operatingIncomeYoYUp": {
-              "ok": true,
-              "latest": 9593000,
-              "previous": 6606000
-            },
-            "ebitdaMarginQoQUp": {
-              "ok": true,
-              "latest": 0.1453914573355488,
-              "previous": 0.07779445885082571
-            },
-            "ebitdaMarginYoYUp": {
-              "ok": true,
-              "latest": 0.1453914573355488,
-              "previous": 0.07740063432080438
-            },
-            "peRising": {
-              "ok": false,
-              "latest": 18.12087886936062,
-              "previous": 34.564101390349556
-            }
-          },
-          "cacheHit": true
-        },
-        "score": 26
-      },
-      "lastPartialExitDate": "2026-07-13",
-      "lastRiskActionSignalDate": "2026-07-10",
-      "lastPartialExitPrice": 19.59,
-      "pyramidState": {
-        "breakout": false,
-        "setupReady": false,
-        "type": "POST_ENTRY_PULLBACK_SWING_HIGH_CLOSE_BREAK",
-        "level": null,
-        "anchorDate": "2026-07-13",
-        "anchorPrice": 19.59,
-        "swingHighDate": null,
-        "pullbackLowDate": null,
-        "pullbackLow": null,
-        "pullbackDepthPct": null,
-        "advancePct": null,
-        "previousClose": 20.5,
-        "asOf": "2026-07-10"
-      }
+      "entryActualFillTime": "09:17 IST",
+      "initialEntryPrice": 88.49,
+      "originalQuantity": 5,
+      "initialQuantity": 5,
+      "originalInvestedValue": 442.45,
+      "initialRiskAmount": 19.95,
+      "executionError": null,
+      "currentValue": 440.45
     },
     {
       "id": "RAIN-2026-07-10-1783914455586",
@@ -32452,7 +32291,7 @@
       "riskPerShare": 17.56,
       "riskBudget": 10000,
       "positionRank": 179.24,
-      "currentRank": 180.4,
+      "currentRank": 184.4,
       "allocationMethod": "min(capital cap, 1% risk budget, cash, sector cap)",
       "partialExits": [],
       "partialExitTags": [],
@@ -32868,7 +32707,7 @@
       "riskPerShare": 102.4,
       "riskBudget": 10000,
       "positionRank": 167.02,
-      "currentRank": 166.98,
+      "currentRank": 133.99,
       "allocationMethod": "min(capital cap, 1% risk budget, cash, sector cap)",
       "partialExits": [],
       "partialExitTags": [],
@@ -33194,10 +33033,10 @@
       "exitTime": null,
       "exitPrice": null,
       "exitReason": [],
-      "lastPrice": 4452,
-      "lastPriceDate": "2026-07-10",
-      "unrealizedPnl": 662.2,
-      "unrealizedPnlPct": 0.68,
+      "lastPrice": 4444.4,
+      "lastPriceDate": "2026-07-13",
+      "unrealizedPnl": 495,
+      "unrealizedPnlPct": 0.51,
       "pnl": null,
       "pnlPct": null,
       "holdingDays": null,
@@ -33205,13 +33044,13 @@
       "originalInvestedValue": 97281.8,
       "initialRiskAmount": 2252.8,
       "executionError": null,
-      "currentGrade": "A+",
+      "currentGrade": "A",
       "currentWeakness": {
         "score": 0,
         "primaryScore": 0,
         "reasons": []
       },
-      "currentRewardR": 0.29,
+      "currentRewardR": 0.22,
       "entryExecutionCorrection": {
         "correctedAt": "2026-07-13T05:37:41.930Z",
         "previousPrice": 4422,
@@ -33236,11 +33075,11 @@
         "pullbackLow": null,
         "pullbackDepthPct": null,
         "advancePct": null,
-        "previousClose": 4354.5,
-        "asOf": "2026-07-10"
+        "previousClose": 4452,
+        "asOf": "2026-07-13"
       },
       "rotationReview": {
-        "lastObservedAsOf": "2026-07-10",
+        "lastObservedAsOf": "2026-07-13",
         "weakCloseDates": [],
         "confirmedWeakCloses": 0,
         "currentQualifies": false,
@@ -33249,12 +33088,12 @@
         "currentReasons": []
       },
       "latestManagementDecision": {
-        "asOf": "2026-07-10",
+        "asOf": "2026-07-13",
         "action": "HOLD",
         "reasons": [],
         "hierarchy": "FULL_EXIT > PARTIAL_EXIT > QUALITY_ROTATION > HOLD"
       },
-      "currentValue": 97944
+      "currentValue": 97776.8
     },
     {
       "id": "CRAFTSMAN-2026-07-10-1783932291458",
@@ -33289,7 +33128,7 @@
       "riskPerShare": 328.5,
       "riskBudget": 10000,
       "positionRank": 131.92,
-      "currentRank": 150.6,
+      "currentRank": 189.74,
       "allocationMethod": "min(capital cap, 1% risk budget, cash, sector cap)",
       "addOns": [],
       "addOnSkips": [],
@@ -33694,10 +33533,10 @@
       "exitTime": null,
       "exitPrice": null,
       "exitReason": [],
-      "lastPrice": 9301,
-      "lastPriceDate": "2026-07-10",
-      "unrealizedPnl": 170,
-      "unrealizedPnlPct": 0.18,
+      "lastPrice": 9333,
+      "lastPriceDate": "2026-07-13",
+      "unrealizedPnl": 490,
+      "unrealizedPnlPct": 0.53,
       "pnl": null,
       "pnlPct": null,
       "holdingDays": null,
@@ -33709,14 +33548,11 @@
       "executionError": null,
       "currentGrade": "A+",
       "currentWeakness": {
-        "score": 2,
+        "score": 0,
         "primaryScore": 0,
-        "reasons": [
-          "GTF opposing supply confirmation",
-          "GTF confirms less than 2R room"
-        ]
+        "reasons": []
       },
-      "currentRewardR": 0.05,
+      "currentRewardR": 0.15,
       "pyramidState": {
         "breakout": false,
         "setupReady": false,
@@ -33729,31 +33565,25 @@
         "pullbackLow": null,
         "pullbackDepthPct": null,
         "advancePct": null,
-        "previousClose": 9282.5,
-        "asOf": "2026-07-10"
+        "previousClose": 9301,
+        "asOf": "2026-07-13"
       },
       "rotationReview": {
-        "lastObservedAsOf": "2026-07-10",
+        "lastObservedAsOf": "2026-07-13",
         "weakCloseDates": [],
         "confirmedWeakCloses": 0,
         "currentQualifies": false,
         "currentPrimaryScore": 0,
-        "currentScore": 2,
-        "currentReasons": [
-          "GTF opposing supply confirmation",
-          "GTF confirms less than 2R room"
-        ]
+        "currentScore": 0,
+        "currentReasons": []
       },
       "latestManagementDecision": {
-        "asOf": "2026-07-10",
+        "asOf": "2026-07-13",
         "action": "HOLD",
-        "reasons": [
-          "GTF opposing supply confirmation",
-          "GTF confirms less than 2R room"
-        ],
+        "reasons": [],
         "hierarchy": "FULL_EXIT > PARTIAL_EXIT > QUALITY_ROTATION > HOLD"
       },
-      "currentValue": 93010
+      "currentValue": 93330
     },
     {
       "id": "GRINDWELL-2026-07-10-1783914455587",
@@ -33784,11 +33614,11 @@
       "plannedAllocation": null,
       "plannedRisk": null,
       "initialStopPrice": 1974.43,
-      "trailingStopPrice": 2015.38,
+      "trailingStopPrice": 2003.79,
       "riskPerShare": 73.77,
       "riskBudget": 10000,
       "positionRank": 170.76,
-      "currentRank": 170.72,
+      "currentRank": 96.97,
       "allocationMethod": "min(capital cap, 1% risk budget, cash, sector cap)",
       "partialExits": [
         {
@@ -34178,10 +34008,10 @@
       "exitTime": null,
       "exitPrice": null,
       "exitReason": [],
-      "lastPrice": 2058.6,
-      "lastPriceDate": "2026-07-10",
-      "unrealizedPnl": 135.2,
-      "unrealizedPnlPct": 0.51,
+      "lastPrice": 2034.3,
+      "lastPriceDate": "2026-07-13",
+      "unrealizedPnl": -180.7,
+      "unrealizedPnlPct": -0.68,
       "pnl": null,
       "pnlPct": null,
       "holdingDays": null,
@@ -34189,11 +34019,13 @@
       "originalInvestedValue": 100361.8,
       "initialRiskAmount": 3614.73,
       "executionError": null,
-      "currentGrade": "A+",
+      "currentGrade": "WATCH",
       "currentWeakness": {
-        "score": 1,
-        "primaryScore": 0,
+        "score": 3,
+        "primaryScore": 2,
         "reasons": [
+          "daily RSI below 50",
+          "setup grade WATCH",
           "GTF confirms less than 2R room"
         ]
       },
@@ -34578,28 +34410,46 @@
       "initialQuantity": 49,
       "pyramidState": {
         "breakout": false,
-        "type": null,
+        "setupReady": false,
+        "type": "POST_ENTRY_PULLBACK_SWING_HIGH_CLOSE_BREAK",
         "level": null,
-        "asOf": "2026-07-10"
+        "anchorDate": "2026-07-13",
+        "anchorPrice": 2048.2,
+        "swingHighDate": null,
+        "pullbackLowDate": null,
+        "pullbackLow": null,
+        "pullbackDepthPct": null,
+        "advancePct": null,
+        "previousClose": 2058.6,
+        "asOf": "2026-07-13"
       },
       "rotationReview": {
-        "lastObservedAsOf": "2026-07-10",
-        "weakCloseDates": [],
-        "confirmedWeakCloses": 0,
-        "currentQualifies": false,
-        "currentPrimaryScore": 0,
-        "currentScore": 1,
+        "lastObservedAsOf": "2026-07-13",
+        "weakCloseDates": [
+          "2026-07-13"
+        ],
+        "confirmedWeakCloses": 1,
+        "currentQualifies": true,
+        "currentPrimaryScore": 2,
+        "currentScore": 3,
         "currentReasons": [
+          "daily RSI below 50",
+          "setup grade WATCH",
           "GTF confirms less than 2R room"
         ]
       },
-      "currentValue": 26761.8,
+      "currentValue": 26445.9,
       "latestManagementDecision": {
-        "asOf": "2026-07-10",
+        "asOf": "2026-07-13",
         "action": "HOLD",
-        "reasons": [],
+        "reasons": [
+          "daily RSI below 50",
+          "setup grade WATCH",
+          "GTF confirms less than 2R room"
+        ],
         "hierarchy": "FULL_EXIT > PARTIAL_EXIT > QUALITY_ROTATION > HOLD"
-      }
+      },
+      "currentRewardR": -0.19
     },
     {
       "id": "SIS-2026-07-09-1783671948704",
@@ -34883,7 +34733,7 @@
       "realizedPnlToDate": -501.6,
       "initialStopPrice": 402.78,
       "trailingStopPrice": 423.3,
-      "currentRank": 83.84,
+      "currentRank": 88.84,
       "currentGrade": "WATCH",
       "currentWeakness": {
         "score": 3,
@@ -35215,10 +35065,10 @@
       "exitTime": null,
       "exitPrice": null,
       "exitReason": [],
-      "lastPrice": 6839,
-      "lastPriceDate": "2026-07-10",
-      "unrealizedPnl": 3262.5,
-      "unrealizedPnlPct": 3.28,
+      "lastPrice": 6867,
+      "lastPriceDate": "2026-07-13",
+      "unrealizedPnl": 3682.5,
+      "unrealizedPnlPct": 3.71,
       "pnl": null,
       "pnlPct": null,
       "holdingDays": null,
@@ -35231,14 +35081,14 @@
       "realizedPnlToDate": 0,
       "initialStopPrice": 6083.5,
       "trailingStopPrice": 6281.58,
-      "currentRank": 206.45,
+      "currentRank": 193.14,
       "currentGrade": "A+",
       "currentWeakness": {
         "score": 0,
         "primaryScore": 0,
         "reasons": []
       },
-      "currentRewardR": 0.4,
+      "currentRewardR": 0.46,
       "entryExecutionCorrection": {
         "correctedAt": "2026-07-13T05:37:42.079Z",
         "previousPrice": 6612.5,
@@ -35265,11 +35115,11 @@
         "pullbackLow": null,
         "pullbackDepthPct": null,
         "advancePct": null,
-        "previousClose": 6612,
-        "asOf": "2026-07-10"
+        "previousClose": 6839,
+        "asOf": "2026-07-13"
       },
       "rotationReview": {
-        "lastObservedAsOf": "2026-07-10",
+        "lastObservedAsOf": "2026-07-13",
         "weakCloseDates": [],
         "confirmedWeakCloses": 0,
         "currentQualifies": false,
@@ -35278,12 +35128,12 @@
         "currentReasons": []
       },
       "latestManagementDecision": {
-        "asOf": "2026-07-10",
+        "asOf": "2026-07-13",
         "action": "HOLD",
         "reasons": [],
         "hierarchy": "FULL_EXIT > PARTIAL_EXIT > QUALITY_ROTATION > HOLD"
       },
-      "currentValue": 102585
+      "currentValue": 103005
     },
     {
       "id": "NH-2026-07-09-1783671948531",
@@ -35539,10 +35389,10 @@
       "exitTime": null,
       "exitPrice": null,
       "exitReason": [],
-      "lastPrice": 2027.3,
-      "lastPriceDate": "2026-07-10",
-      "unrealizedPnl": 1543.5,
-      "unrealizedPnlPct": 1.58,
+      "lastPrice": 2037.8,
+      "lastPriceDate": "2026-07-13",
+      "unrealizedPnl": 2058,
+      "unrealizedPnlPct": 2.1,
       "pnl": null,
       "pnlPct": null,
       "holdingDays": null,
@@ -35555,14 +35405,14 @@
       "realizedPnlToDate": 0,
       "initialStopPrice": 1842.85,
       "trailingStopPrice": 1957,
-      "currentRank": 174.34,
+      "currentRank": 182.64,
       "currentGrade": "A+",
       "currentWeakness": {
         "score": 0,
         "primaryScore": 0,
         "reasons": []
       },
-      "currentRewardR": 0.21,
+      "currentRewardR": 0.27,
       "entryExecutionCorrection": {
         "correctedAt": "2026-07-13T05:37:42.150Z",
         "previousPrice": 2003.1,
@@ -35589,11 +35439,11 @@
         "pullbackLow": null,
         "pullbackDepthPct": null,
         "advancePct": null,
-        "previousClose": 1993.2,
-        "asOf": "2026-07-10"
+        "previousClose": 2027.3,
+        "asOf": "2026-07-13"
       },
       "rotationReview": {
-        "lastObservedAsOf": "2026-07-10",
+        "lastObservedAsOf": "2026-07-13",
         "weakCloseDates": [],
         "confirmedWeakCloses": 0,
         "currentQualifies": false,
@@ -35602,12 +35452,12 @@
         "currentReasons": []
       },
       "latestManagementDecision": {
-        "asOf": "2026-07-10",
+        "asOf": "2026-07-13",
         "action": "HOLD",
         "reasons": [],
         "hierarchy": "FULL_EXIT > PARTIAL_EXIT > QUALITY_ROTATION > HOLD"
       },
-      "currentValue": 99337.7
+      "currentValue": 99852.2
     },
     {
       "id": "VIJAYA-2026-07-09-1783671948591",
@@ -35862,10 +35712,10 @@
       "exitTime": null,
       "exitPrice": null,
       "exitReason": [],
-      "lastPrice": 1389.1,
-      "lastPriceDate": "2026-07-10",
-      "unrealizedPnl": 1107.6,
-      "unrealizedPnlPct": 1.14,
+      "lastPrice": 1388.8,
+      "lastPriceDate": "2026-07-13",
+      "unrealizedPnl": 1086.3,
+      "unrealizedPnlPct": 1.11,
       "pnl": null,
       "pnlPct": null,
       "holdingDays": null,
@@ -35878,14 +35728,14 @@
       "realizedPnlToDate": 0,
       "initialStopPrice": 1285.88,
       "trailingStopPrice": 1303.2,
-      "currentRank": 189.34,
+      "currentRank": 182.98,
       "currentGrade": "A+",
       "currentWeakness": {
         "score": 0,
         "primaryScore": 0,
         "reasons": []
       },
-      "currentRewardR": 0.18,
+      "currentRewardR": 0.17,
       "entryExecutionCorrection": {
         "correctedAt": "2026-07-13T05:37:42.227Z",
         "previousPrice": 1397.7,
@@ -35912,11 +35762,11 @@
         "pullbackLow": null,
         "pullbackDepthPct": null,
         "advancePct": null,
-        "previousClose": 1377.8,
-        "asOf": "2026-07-10"
+        "previousClose": 1389.1,
+        "asOf": "2026-07-13"
       },
       "rotationReview": {
-        "lastObservedAsOf": "2026-07-10",
+        "lastObservedAsOf": "2026-07-13",
         "weakCloseDates": [],
         "confirmedWeakCloses": 0,
         "currentQualifies": false,
@@ -35925,12 +35775,12 @@
         "currentReasons": []
       },
       "latestManagementDecision": {
-        "asOf": "2026-07-10",
+        "asOf": "2026-07-13",
         "action": "HOLD",
         "reasons": [],
         "hierarchy": "FULL_EXIT > PARTIAL_EXIT > QUALITY_ROTATION > HOLD"
       },
-      "currentValue": 98626.1
+      "currentValue": 98604.8
     },
     {
       "id": "PRECOT-2026-07-09-1783671948651",
@@ -36184,10 +36034,10 @@
       "exitTime": null,
       "exitPrice": null,
       "exitReason": [],
-      "lastPrice": 809.95,
-      "lastPriceDate": "2026-07-10",
-      "unrealizedPnl": -124.95,
-      "unrealizedPnlPct": -0.13,
+      "lastPrice": 796.5,
+      "lastPriceDate": "2026-07-13",
+      "unrealizedPnl": -1725.5,
+      "unrealizedPnlPct": -1.79,
       "pnl": null,
       "pnlPct": null,
       "holdingDays": null,
@@ -36200,14 +36050,14 @@
       "realizedPnlToDate": 0,
       "initialStopPrice": 771.79,
       "trailingStopPrice": 771.79,
-      "currentRank": 189.61,
+      "currentRank": 186.42,
       "currentGrade": "A+",
       "currentWeakness": {
         "score": 0,
         "primaryScore": 0,
         "reasons": []
       },
-      "currentRewardR": -0.03,
+      "currentRewardR": -0.37,
       "entryExecutionCorrection": {
         "correctedAt": "2026-07-13T05:37:42.290Z",
         "previousPrice": 838.9,
@@ -36234,11 +36084,11 @@
         "pullbackLow": null,
         "pullbackDepthPct": null,
         "advancePct": null,
-        "previousClose": 800.45,
-        "asOf": "2026-07-10"
+        "previousClose": 809.95,
+        "asOf": "2026-07-13"
       },
       "rotationReview": {
-        "lastObservedAsOf": "2026-07-10",
+        "lastObservedAsOf": "2026-07-13",
         "weakCloseDates": [],
         "confirmedWeakCloses": 0,
         "currentQualifies": false,
@@ -36247,12 +36097,12 @@
         "currentReasons": []
       },
       "latestManagementDecision": {
-        "asOf": "2026-07-10",
+        "asOf": "2026-07-13",
         "action": "HOLD",
         "reasons": [],
         "hierarchy": "FULL_EXIT > PARTIAL_EXIT > QUALITY_ROTATION > HOLD"
       },
-      "currentValue": 96384.05
+      "currentValue": 94783.5
     },
     {
       "id": "PRUDENT-2026-07-09-1783671948763",
@@ -36506,10 +36356,10 @@
       "exitTime": null,
       "exitPrice": null,
       "exitReason": [],
-      "lastPrice": 2983.2,
-      "lastPriceDate": "2026-07-10",
-      "unrealizedPnl": -92.4,
-      "unrealizedPnlPct": -0.09,
+      "lastPrice": 3069.7,
+      "lastPriceDate": "2026-07-13",
+      "unrealizedPnl": 2762.1,
+      "unrealizedPnlPct": 2.8,
       "pnl": null,
       "pnlPct": null,
       "holdingDays": null,
@@ -36522,14 +36372,14 @@
       "realizedPnlToDate": 0,
       "initialStopPrice": 2728.17,
       "trailingStopPrice": 2936.17,
-      "currentRank": 172.05,
+      "currentRank": 170.48,
       "currentGrade": "A+",
       "currentWeakness": {
         "score": 0,
         "primaryScore": 0,
         "reasons": []
       },
-      "currentRewardR": -0.01,
+      "currentRewardR": 0.32,
       "partialExitSignalDate": null,
       "partialExitSignalScanAt": null,
       "pendingPartialExitPct": null,
@@ -36895,11 +36745,11 @@
         "pullbackLow": null,
         "pullbackDepthPct": null,
         "advancePct": null,
-        "previousClose": 2960,
-        "asOf": "2026-07-10"
+        "previousClose": 2983.2,
+        "asOf": "2026-07-13"
       },
       "rotationReview": {
-        "lastObservedAsOf": "2026-07-10",
+        "lastObservedAsOf": "2026-07-13",
         "weakCloseDates": [],
         "confirmedWeakCloses": 0,
         "currentQualifies": false,
@@ -36908,12 +36758,12 @@
         "currentReasons": []
       },
       "latestManagementDecision": {
-        "asOf": "2026-07-10",
+        "asOf": "2026-07-13",
         "action": "HOLD",
         "reasons": [],
         "hierarchy": "FULL_EXIT > PARTIAL_EXIT > QUALITY_ROTATION > HOLD"
       },
-      "currentValue": 98445.6
+      "currentValue": 101300.1
     },
     {
       "id": "KPIL-2026-07-09-1783671948444",
@@ -37169,10 +37019,10 @@
       "exitTime": null,
       "exitPrice": null,
       "exitReason": [],
-      "lastPrice": 1352,
-      "lastPriceDate": "2026-07-10",
-      "unrealizedPnl": 22.2,
-      "unrealizedPnlPct": 0.04,
+      "lastPrice": 1341.7,
+      "lastPriceDate": "2026-07-13",
+      "unrealizedPnl": -358.9,
+      "unrealizedPnlPct": -0.72,
       "pnl": null,
       "pnlPct": null,
       "holdingDays": null,
@@ -37202,13 +37052,17 @@
       ],
       "realizedPnlToDate": -644.4,
       "initialStopPrice": 1251.2,
-      "trailingStopPrice": 1331.72,
-      "currentRank": 192.45,
-      "currentGrade": "A+",
+      "trailingStopPrice": 1321.57,
+      "currentRank": 118.38,
+      "currentGrade": "WATCH",
       "currentWeakness": {
-        "score": 0,
-        "primaryScore": 0,
-        "reasons": []
+        "score": 3,
+        "primaryScore": 3,
+        "reasons": [
+          "daily RS21 below zero",
+          "daily RSI below 50",
+          "setup grade WATCH"
+        ]
       },
       "partialExitSignalDate": "2026-07-13",
       "partialExitSignalScanAt": "2026-07-13T10:52:00.870Z",
@@ -37640,29 +37494,49 @@
       "initialQuantity": 73,
       "pyramidState": {
         "breakout": false,
-        "type": null,
+        "setupReady": false,
+        "type": "POST_ENTRY_PULLBACK_SWING_HIGH_CLOSE_BREAK",
         "level": null,
-        "asOf": "2026-07-10"
+        "anchorDate": "2026-07-10",
+        "anchorPrice": 1351.4,
+        "swingHighDate": null,
+        "pullbackLowDate": null,
+        "pullbackLow": null,
+        "pullbackDepthPct": null,
+        "advancePct": null,
+        "previousClose": 1352,
+        "asOf": "2026-07-13"
       },
       "rotationReview": {
-        "lastObservedAsOf": "2026-07-10",
-        "weakCloseDates": [],
-        "confirmedWeakCloses": 0,
-        "currentQualifies": false,
-        "currentPrimaryScore": 0,
-        "currentScore": 0,
-        "currentReasons": []
+        "lastObservedAsOf": "2026-07-13",
+        "weakCloseDates": [
+          "2026-07-13"
+        ],
+        "confirmedWeakCloses": 1,
+        "currentQualifies": true,
+        "currentPrimaryScore": 3,
+        "currentScore": 3,
+        "currentReasons": [
+          "daily RS21 below zero",
+          "daily RSI below 50",
+          "setup grade WATCH"
+        ]
       },
-      "currentValue": 50024,
+      "currentValue": 49642.9,
       "lastPartialExitDate": "2026-07-14",
       "lastRiskActionSignalDate": "2026-07-10",
       "lastPartialExitPrice": 1333.5,
       "latestManagementDecision": {
-        "asOf": "2026-07-10",
+        "asOf": "2026-07-13",
         "action": "HOLD",
-        "reasons": [],
+        "reasons": [
+          "daily RS21 below zero",
+          "daily RSI below 50",
+          "setup grade WATCH"
+        ],
         "hierarchy": "FULL_EXIT > PARTIAL_EXIT > QUALITY_ROTATION > HOLD"
-      }
+      },
+      "currentRewardR": -0.1
     },
     {
       "id": "AZAD-2026-07-09-1783661302358",
@@ -60955,6 +60829,1128 @@
       "addOnSkips": [],
       "initialEntryPrice": 1293.6,
       "initialQuantity": 77
+    },
+    {
+      "id": "NEXUSSURGL-2026-07-10-1783999943766",
+      "listId": "custom",
+      "listLabel": "My List",
+      "sourceLists": [
+        "My Custom List"
+      ],
+      "tradeScope": "custom",
+      "tradeScopeLabel": "My List",
+      "tradeQualityMode": "STRONG_OR_BETTER",
+      "tradeQualityLabel": "Strong and best (A+/A/B)",
+      "symbol": "NEXUSSURGL",
+      "yahooSymbol": "NEXUSSURGL.BO",
+      "name": "NEXUSSURGL",
+      "industry": "My List",
+      "status": "PENDING_PARTIAL_EXIT",
+      "entrySignalDate": "2026-07-10",
+      "entrySignalScanAt": "2026-07-14T03:32:23.269Z",
+      "entryDate": "2026-07-13",
+      "entryTime": "09:17 IST",
+      "entryPrice": 19.59,
+      "executionWindow": "09:17 order / 09:21 actual fill",
+      "executionMethod": "09:17 market order; first actual traded candle at 09:21 IST",
+      "quantity": 16,
+      "investedValue": 313.44,
+      "plannedQuantity": null,
+      "plannedAllocation": null,
+      "plannedRisk": null,
+      "initialStopPrice": 19.01,
+      "trailingStopPrice": 19.01,
+      "riskPerShare": 0.58,
+      "riskBudget": 10000,
+      "positionRank": 168.93,
+      "currentRank": 64.43,
+      "allocationMethod": "min(capital cap, 1% risk budget, cash, sector cap)",
+      "rotationExecution": null,
+      "rotationSourceTradeId": null,
+      "rotationSourceSymbol": null,
+      "candidateContext": {
+        "firstSignalDate": "2026-07-10",
+        "firstSignalClose": 20.8700008392334,
+        "firstSignalRank": 168.93,
+        "firstFundamentalScore": 4,
+        "firstSeenAt": "2026-07-14T03:32:23.269Z",
+        "peakRank": 168.93,
+        "entryCloseDates": [
+          "2026-07-10"
+        ]
+      },
+      "addOns": [],
+      "addOnSkips": [],
+      "pendingAdd": null,
+      "partialExits": [
+        {
+          "date": "2026-07-13",
+          "time": "09:17 IST",
+          "actualFillTime": "09:21 IST",
+          "price": 19.59,
+          "executionMethod": "09:17 market order; first actual traded candle at 09:21 IST",
+          "executionWindow": "09:17 order / 09:21 actual fill",
+          "quantity": 15,
+          "pnl": 0,
+          "tag": "PROFIT_LOCK",
+          "reason": [
+            "Profit reached 2.21R; lock 50% and trail the balance.",
+            "Sell 50% on the next actual market session at 09:17 IST and trail the balance."
+          ]
+        }
+      ],
+      "partialExitTags": [
+        "PROFIT_LOCK"
+      ],
+      "realizedPnlToDate": 0,
+      "entryReason": [
+        "Weekly RSI 58.57 is above 50.",
+        "Daily RSI 52.69 is above 50.",
+        "Weekly RS 21.8% is above 0.",
+        "Daily long RS55 4.6% is above 0.",
+        "Daily short RS21 1.3% is above 0.",
+        "Daily close 20.87 is above Supertrend(10, 3) 18.63.",
+        "Entry style: Trend continuation buy.",
+        "Momentum confirmation: MACD is above signal and zero; OBV is rising.",
+        "Bollinger context: close is above the middle band 20.41 with bandwidth 14.62%.",
+        "RS trend strength: weekly RS and daily RS55 are rising.",
+        "Trend strength: close is above 50-DMA and 200-DMA, with fast DMA above slow DMA.",
+        "Price confirmation: hammer is present.",
+        "Volatility is controlled: ATR(14) is 5.69% of price.",
+        "Market regime supports longs: NIFTY 500 bullish/healthy.",
+        "GTF 50-SMA slope: daily up, weekly up.",
+        "No active daily/weekly/higher-timeframe GTF supply blocker was detected above price.",
+        "Index context: NIFTY 500 proxy is BULLISH; broad index support is positive.",
+        "Derivatives context: Not present in NSE F&O lot-size master; treat as cash-equity only.",
+        "Options context: NSE option-chain snapshot unavailable; mark this as data gap, not as bearish.",
+        "Commodity/currency context: 0/5 commodity/currency proxies are bullish; 2 bearish.",
+        "Operator/delivery context: Official NSE delivery history loaded for 2395 EQ symbols across 6 sessions.",
+        "Institutional confluence score 2/5 (Institutional C).",
+        "Execution plan: buy on the next actual market session using the exact 09:17 one-minute candle open; weekends and exchange holidays are skipped.",
+        "Sector breadth strong: My List has 123/175 stocks (70.29%) passing daily strength.",
+        "Institutional concept coverage: 16/30 applicable video-derived buckets are strong.",
+        "Trade sheet filter: My List, Strong and best (A+/A/B).",
+        "Portfolio rank 168.93; planned allocation Rs 83.48, quantity 4, initial stop 20, planned risk Rs 3.48.",
+        "Closing signal dated 2026-07-10; buy fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays."
+      ],
+      "entrySnapshot": {
+        "industry": "My List",
+        "close": 20.8700008392334,
+        "asOf": "2026-07-10",
+        "dailyRsi": 52.69389962320794,
+        "weeklyRsi": 58.56592479820338,
+        "weeklyRs": 0.21791302357278264,
+        "dailyLongRs": 0.04561591334349502,
+        "dailyShortRs": 0.013174351634602344,
+        "dailySupertrend": 18.62684340778992,
+        "dailyPriceAboveSupertrend": true,
+        "entryStyle": {
+          "type": "TREND_CONTINUATION",
+          "label": "Trend continuation buy"
+        },
+        "setupStrength": {
+          "score": 12,
+          "checks": {
+            "recentHighBreakout": false,
+            "baseBreakout": false,
+            "higherLowStructure": true,
+            "yearHighBreakout": false,
+            "nearYearHigh": false,
+            "volumeExpansion": false,
+            "weeklyRsRising": true,
+            "dailyLongRsRising": true,
+            "dailyShortRsRising": true,
+            "closeAboveSmaFast": true,
+            "closeAboveSmaSlow": true,
+            "smaFastAboveSlow": true,
+            "favorableRiskToSupertrend": false,
+            "controlledVolatility": true,
+            "liquidEnough": false,
+            "bullishCandleConfirmation": false,
+            "bullishEngulfing": false,
+            "hammer": true,
+            "macdBullish": true,
+            "obvRising": true,
+            "retracementBuyZone": false,
+            "fibonacciSupportNearby": false,
+            "bollingerTrendSupport": true,
+            "bollingerRangeBound": false,
+            "marketRegimeStrong": true
+          },
+          "pyramidStructure": {
+            "pivotBars": 2,
+            "lookback": 160,
+            "latestDate": "2026-07-10",
+            "latestClose": 20.8700008392334,
+            "previousDate": "2026-07-09",
+            "previousClose": 20.5,
+            "points": [
+              {
+                "date": "2026-03-30",
+                "type": "LOW",
+                "price": 16.030000686645508
+              },
+              {
+                "date": "2026-04-01",
+                "type": "HIGH",
+                "price": 18
+              },
+              {
+                "date": "2026-04-06",
+                "type": "LOW",
+                "price": 17.010000228881836
+              },
+              {
+                "date": "2026-04-08",
+                "type": "HIGH",
+                "price": 18.610000610351562
+              },
+              {
+                "date": "2026-04-15",
+                "type": "HIGH",
+                "price": 20.899999618530273
+              },
+              {
+                "date": "2026-04-15",
+                "type": "LOW",
+                "price": 17.489999771118164
+              },
+              {
+                "date": "2026-04-20",
+                "type": "LOW",
+                "price": 17.75
+              },
+              {
+                "date": "2026-04-28",
+                "type": "HIGH",
+                "price": 21.459999084472656
+              },
+              {
+                "date": "2026-05-04",
+                "type": "LOW",
+                "price": 18.020000457763672
+              },
+              {
+                "date": "2026-05-12",
+                "type": "HIGH",
+                "price": 25.5
+              },
+              {
+                "date": "2026-05-18",
+                "type": "LOW",
+                "price": 19
+              },
+              {
+                "date": "2026-05-22",
+                "type": "HIGH",
+                "price": 22.989999771118164
+              },
+              {
+                "date": "2026-05-27",
+                "type": "LOW",
+                "price": 19.399999618530273
+              },
+              {
+                "date": "2026-05-29",
+                "type": "HIGH",
+                "price": 22
+              },
+              {
+                "date": "2026-06-05",
+                "type": "LOW",
+                "price": 19.260000228881836
+              },
+              {
+                "date": "2026-06-10",
+                "type": "LOW",
+                "price": 18.510000228881836
+              },
+              {
+                "date": "2026-06-11",
+                "type": "HIGH",
+                "price": 22.399999618530273
+              },
+              {
+                "date": "2026-06-16",
+                "type": "HIGH",
+                "price": 21
+              },
+              {
+                "date": "2026-06-16",
+                "type": "LOW",
+                "price": 19
+              },
+              {
+                "date": "2026-06-22",
+                "type": "HIGH",
+                "price": 21.790000915527344
+              },
+              {
+                "date": "2026-06-24",
+                "type": "LOW",
+                "price": 19.610000610351562
+              },
+              {
+                "date": "2026-07-01",
+                "type": "HIGH",
+                "price": 21.200000762939453
+              },
+              {
+                "date": "2026-07-07",
+                "type": "HIGH",
+                "price": 23.950000762939453
+              },
+              {
+                "date": "2026-07-07",
+                "type": "LOW",
+                "price": 19.010000228881836
+              }
+            ]
+          },
+          "values": {
+            "priorRecentHigh": 25.5,
+            "priorBaseHigh": 23.950000762939453,
+            "recentBaseLow": 19.010000228881836,
+            "previousBaseLow": 19,
+            "macd": 0.18624189975059835,
+            "macdSignal": 0.10742888397771289,
+            "macdHistogram": 0.07881301577288546,
+            "priorYearHigh": 25.5,
+            "volumeAverage": 3655.48,
+            "volumeRatio": 0.7569457362644577,
+            "smaFast": 20.548400001525877,
+            "smaSlow": 18.095549960136413,
+            "atr": 1.1881040042633255,
+            "atrPct": 5.69287952317575,
+            "averageTurnover": 20875.166784477235,
+            "previousLow": 20,
+            "twoCandleLow": 20,
+            "fourCandleLow": 19.010000228881836,
+            "riskToSupertrendPct": 10.748238338479505,
+            "riskToPreviousLowPct": 4.16866700646168,
+            "retracementPullbackDepthPct": 18.156859453986673,
+            "retracementSupportSource": "50-DMA",
+            "retracementSupportReference": 20.548400001525877,
+            "retracementSupportDistancePct": 1.540971848467517,
+            "retracementPullbackVolumeRatio": 0.30261415737468134,
+            "retracementCurrentVolumeRatio": 0.7569457362644577,
+            "retracementCloseLocationPct": 93.9252711287942,
+            "retracementPullbackDepthOk": false,
+            "retracementSupportProximityOk": true,
+            "retracementVolumePatternOk": true,
+            "retracementReclaimCandleOk": true,
+            "retracementRiskOk": true,
+            "retracementTrendHoldOk": true,
+            "retracementPatternLabel": "No institutional retracement setup",
+            "retracementLookback": 5,
+            "retracementMinPullbackPct": 2,
+            "retracementMaxPullbackPct": 15,
+            "retracementSupportProximityPct": 5,
+            "retracementBreakoutRetestPct": 3,
+            "retracementDryVolumeMaxRatio": 0.9,
+            "retracementReclaimVolumeMinRatio": 1.1,
+            "retracementMaxRiskPct": 8,
+            "fibonacciSwingHigh": 25.5,
+            "fibonacciSwingLow": 18.020000457763672,
+            "fibonacciNearestLevel": "61.8%",
+            "fibonacciNearestPrice": 20.87736028289795,
+            "fibonacciDistancePct": 0.03526326482324072,
+            "fibonacciSupportNearby": false,
+            "bollingerMiddle": 20.40900011062622,
+            "bollingerUpper": 21.900642612202702,
+            "bollingerLower": 18.917357609049738,
+            "bollingerPercentB": 0.6545278872517903,
+            "bollingerBandwidthPct": 14.61749711883081,
+            "bollingerRangeBound": false,
+            "recentHighPeriod": 55,
+            "baseBreakoutPeriod": 20,
+            "yearHighPeriod": 252,
+            "nearYearHighPct": 15,
+            "volumeAveragePeriod": 50,
+            "volumeExpansionMultiple": 1.5,
+            "riskToSupertrendMaxPct": 7,
+            "smaFastPeriod": 50,
+            "smaSlowPeriod": 200,
+            "atrPeriod": 14,
+            "maxAtrPct": 8,
+            "minimumAverageTurnover": 10000000,
+            "candlePattern": "hammer",
+            "marketRegimeLabel": "NIFTY 500 bullish/healthy"
+          }
+        },
+        "setupStrengthScore": 16,
+        "setupGrade": "A+",
+        "sectorStrength": {
+          "industry": "My List",
+          "total": 175,
+          "strong": 123,
+          "entry": 120,
+          "breadthPct": 70.28571428571428,
+          "ok": true,
+          "minPct": 50,
+          "minStocks": 5
+        },
+        "sectorStrengthScore": 1,
+        "institutionalContext": {
+          "score": 2,
+          "maxScore": 5,
+          "grade": "Institutional C",
+          "dataGaps": 2,
+          "index": {
+            "dataAvailable": true,
+            "supportsLongs": true,
+            "primaryBias": "BULLISH",
+            "sectorProxy": "NIFTY 500",
+            "sectorProxyBias": "BULLISH",
+            "reason": "NIFTY 500 proxy is BULLISH; broad index support is positive."
+          },
+          "derivatives": {
+            "dataAvailable": true,
+            "fnoEligible": false,
+            "oiAvailable": false,
+            "oiChangePct": null,
+            "oiVolume": null,
+            "optionValue": null,
+            "futureValue": null,
+            "participation": false,
+            "lotSize": null,
+            "underlying": "",
+            "reason": "Not present in NSE F&O lot-size master; treat as cash-equity only."
+          },
+          "options": {
+            "dataAvailable": false,
+            "supportsLongs": false,
+            "symbol": "NIFTY",
+            "pcr": null,
+            "maxPutOiStrike": null,
+            "maxCallOiStrike": null,
+            "bias": "UNKNOWN",
+            "reason": "NSE option-chain snapshot unavailable; mark this as data gap, not as bearish."
+          },
+          "commodity": {
+            "dataAvailable": true,
+            "supportsSector": true,
+            "exposure": "Broad macro",
+            "proxy": "",
+            "proxyBias": "UNKNOWN",
+            "reason": "0/5 commodity/currency proxies are bullish; 2 bearish."
+          },
+          "operator": {
+            "dataAvailable": false,
+            "accumulation": false,
+            "distribution": false,
+            "reason": "Official NSE delivery history loaded for 2395 EQ symbols across 6 sessions."
+          }
+        },
+        "institutionalScore": 2,
+        "gtfContext": {
+          "dataAvailable": true,
+          "score": 3,
+          "maxScore": 10,
+          "grade": "GTF C",
+          "rankAdjustment": 4.5,
+          "preferredEntryStyle": "GTF_CLEAR_RUNWAY",
+          "structuralStop": null,
+          "dailyTrend": "up",
+          "weeklyTrend": "up",
+          "dailyDemand": null,
+          "weeklyDemand": null,
+          "higherTimeframeDemand": null,
+          "reactingFromHtf": {
+            "active": false,
+            "sourceStatus": "PROXY_UNVALIDATED",
+            "role": "SECONDARY_CONFLUENCE_ONLY",
+            "managementClass": null,
+            "managementPlan": null,
+            "zone": null,
+            "overlapWithExecutionDemand": false,
+            "recentTouchAndReclaim": false,
+            "reason": "No fresh score-7 M/Q/HY/Y demand overlap or recent reclaim was detected."
+          },
+          "opposingSupply": null,
+          "rewardRisk": null,
+          "unlimitedRewardRoom": true,
+          "supplyDistancePct": null,
+          "supplyBlocked": false,
+          "demandRetest": false,
+          "checks": {
+            "dailyDemandQualified": false,
+            "weeklyDemandQualified": false,
+            "dailyDemandFresh": false,
+            "weeklyDemandFresh": false,
+            "demandRetest": false,
+            "reactingFromHtf": false,
+            "dailyTrendUp": true,
+            "weeklyTrendNotDown": true,
+            "roomForTwoR": true,
+            "supplyBlocked": false
+          },
+          "reasons": [
+            "GTF 50-SMA slope: daily up, weekly up.",
+            "No active daily/weekly/higher-timeframe GTF supply blocker was detected above price."
+          ]
+        },
+        "gtfScore": 1,
+        "conceptCoverage": {
+          "passed": 16,
+          "applicable": 30,
+          "weak": 11,
+          "dataGaps": 3,
+          "excluded": 6,
+          "passLabels": [
+            "Compulsory multi-timeframe engine",
+            "Relative strength leadership",
+            "RS trend follow-through",
+            "RSI momentum",
+            "Supertrend trend filter",
+            "Bollinger trend/range context",
+            "MACD and OBV confirmation",
+            "Sector breadth",
+            "50/200 DMA trend structure",
+            "Candle IPC confirmation",
+            "Market regime",
+            "Index regime confirmation",
+            "Commodity/currency macro context",
+            "Fundamental improvement",
+            "Exit rule discipline",
+            "09:17 execution discipline"
+          ],
+          "weakLabels": [
+            "Breakout or 52-week high zone",
+            "Price-action base and higher-low structure",
+            "Retracement/pullback buy setup",
+            "GTF demand/supply confluence",
+            "GTF reacting from higher timeframe (secondary proxy)",
+            "Fibonacci retracement support",
+            "Volume participation",
+            "Volatility and liquidity control",
+            "Risk reference discipline",
+            "Derivative/F&O eligibility",
+            "Derivative OI participation"
+          ],
+          "dataGapLabels": [
+            "Operator delivery confirmation",
+            "Index option-chain positioning",
+            "News/event context"
+          ],
+          "excludedLabels": [
+            "Intraday tick scalping",
+            "Broker-only live Greeks/order-book depth",
+            "Pair-trading spread execution",
+            "Short-selling execution",
+            "Options premium/straddle/strangle execution",
+            "Manual charting/terminal workflow"
+          ],
+          "summary": "16/30 applicable video-derived buckets strong; 3 data gaps; 6 non-EOD playbooks excluded."
+        },
+        "fundamentalScore": 4,
+        "fundamental": {
+          "available": true,
+          "score": 4,
+          "maxScore": 5,
+          "currentPe": 15.459259,
+          "ebitdaMargin": 0.1453914573355488,
+          "checks": {
+            "netIncomeYoYUp": {
+              "ok": true,
+              "latest": 7361000,
+              "previous": 4974000
+            },
+            "operatingIncomeYoYUp": {
+              "ok": true,
+              "latest": 9593000,
+              "previous": 6606000
+            },
+            "ebitdaMarginQoQUp": {
+              "ok": true,
+              "latest": 0.1453914573355488,
+              "previous": 0.07779445885082571
+            },
+            "ebitdaMarginYoYUp": {
+              "ok": true,
+              "latest": 0.1453914573355488,
+              "previous": 0.07740063432080438
+            },
+            "peRising": {
+              "ok": false,
+              "latest": 18.12087886936062,
+              "previous": 34.564101390349556
+            }
+          },
+          "cacheHit": true
+        },
+        "score": 26
+      },
+      "exitSignalDate": null,
+      "exitSignalScanAt": null,
+      "exitDate": null,
+      "exitTime": null,
+      "exitPrice": null,
+      "exitReason": [],
+      "lastPrice": 19.9,
+      "lastPriceDate": "2026-07-13",
+      "unrealizedPnl": 4.96,
+      "unrealizedPnlPct": 1.58,
+      "pnl": null,
+      "pnlPct": null,
+      "holdingDays": null,
+      "executionError": "Partial exit is pending until the next actual market-session exact 09:17 candle.",
+      "originalQuantity": 31,
+      "originalInvestedValue": 607.29,
+      "initialEntryPrice": 19.59,
+      "initialQuantity": 31,
+      "entryExecutionDecision": {
+        "actionable": true,
+        "disposition": "ACTIONABLE",
+        "reasons": [],
+        "warnings": [],
+        "metrics": {
+          "signalAgeDays": 0,
+          "firstSignalClose": 20.87,
+          "currentClose": 20.87,
+          "executionPrice": 19.59,
+          "runupPct": -6.13,
+          "executionGapPct": -6.13,
+          "supertrendDistancePct": 4.92,
+          "atrExtension": 0,
+          "currentRank": 168.93,
+          "peakRank": 168.93,
+          "rankDecay": 0,
+          "confirmedEntryCloses": 1
+        },
+        "evaluatedDate": "2026-07-13",
+        "evaluatedTime": "09:17 IST"
+      },
+      "entryActualFillTime": "09:21 IST",
+      "initialRiskAmount": 17.98,
+      "currentValue": 318.4,
+      "currentGrade": "WATCH",
+      "currentWeakness": {
+        "score": 5,
+        "primaryScore": 5,
+        "reasons": [
+          "daily RS21 below zero",
+          "daily RS55 below zero",
+          "daily RSI below 50",
+          "close below 50-DMA",
+          "setup grade WATCH"
+        ]
+      },
+      "rotationReview": {
+        "lastObservedAsOf": "2026-07-13",
+        "weakCloseDates": [
+          "2026-07-13"
+        ],
+        "confirmedWeakCloses": 1,
+        "currentQualifies": true,
+        "currentPrimaryScore": 5,
+        "currentScore": 5,
+        "currentReasons": [
+          "daily RS21 below zero",
+          "daily RS55 below zero",
+          "daily RSI below 50",
+          "close below 50-DMA",
+          "setup grade WATCH"
+        ]
+      },
+      "latestManagementDecision": {
+        "asOf": "2026-07-13",
+        "action": "PARTIAL_EXIT",
+        "reasons": [
+          "Early deterioration: daily RS21 below zero; daily RS55 below zero; daily RSI below 50; close below 50-DMA; setup grade WATCH.",
+          "Fundamental score materially deteriorated from the entry snapshot."
+        ],
+        "hierarchy": "FULL_EXIT > PARTIAL_EXIT > QUALITY_ROTATION > HOLD"
+      },
+      "partialExitSignalDate": "2026-07-13",
+      "partialExitSignalScanAt": "2026-07-14T09:43:28.265Z",
+      "pendingPartialExitPct": 50,
+      "pendingPartialExitTag": "EARLY_WEAKNESS",
+      "pendingPartialExitReason": [
+        "Early deterioration: daily RS21 below zero; daily RS55 below zero; daily RSI below 50; close below 50-DMA; setup grade WATCH.",
+        "Fundamental score materially deteriorated from the entry snapshot.",
+        "Sell 50% on the next actual market session at 09:17 IST and trail the balance."
+      ],
+      "exitSnapshot": {
+        "industry": "My List",
+        "close": 19.899999618530273,
+        "asOf": "2026-07-13",
+        "dailyRsi": 47.04973236587,
+        "weeklyRsi": 58.56592479820338,
+        "weeklyRs": 0.21791302357278264,
+        "dailyLongRs": -0.03907499800523073,
+        "dailyShortRs": -0.017691179383930833,
+        "dailySupertrend": 18.62684340778992,
+        "dailyPriceAboveSupertrend": true,
+        "entryStyle": {
+          "type": "TREND_CONTINUATION",
+          "label": "Trend continuation buy"
+        },
+        "setupStrength": {
+          "score": 7,
+          "checks": {
+            "recentHighBreakout": false,
+            "baseBreakout": false,
+            "higherLowStructure": false,
+            "yearHighBreakout": false,
+            "nearYearHigh": false,
+            "volumeExpansion": false,
+            "weeklyRsRising": true,
+            "dailyLongRsRising": false,
+            "dailyShortRsRising": false,
+            "closeAboveSmaFast": false,
+            "closeAboveSmaSlow": true,
+            "smaFastAboveSlow": true,
+            "favorableRiskToSupertrend": true,
+            "controlledVolatility": true,
+            "liquidEnough": false,
+            "bullishCandleConfirmation": false,
+            "bullishEngulfing": false,
+            "hammer": false,
+            "macdBullish": true,
+            "obvRising": false,
+            "retracementBuyZone": false,
+            "fibonacciSupportNearby": false,
+            "bollingerTrendSupport": false,
+            "bollingerRangeBound": false,
+            "marketRegimeStrong": true
+          },
+          "pyramidStructure": {
+            "pivotBars": 2,
+            "lookback": 160,
+            "latestDate": "2026-07-13",
+            "latestClose": 19.899999618530273,
+            "previousDate": "2026-07-10",
+            "previousClose": 20.8700008392334,
+            "points": [
+              {
+                "date": "2026-03-30",
+                "type": "LOW",
+                "price": 16.030000686645508
+              },
+              {
+                "date": "2026-04-01",
+                "type": "HIGH",
+                "price": 18
+              },
+              {
+                "date": "2026-04-06",
+                "type": "LOW",
+                "price": 17.010000228881836
+              },
+              {
+                "date": "2026-04-08",
+                "type": "HIGH",
+                "price": 18.610000610351562
+              },
+              {
+                "date": "2026-04-15",
+                "type": "HIGH",
+                "price": 20.899999618530273
+              },
+              {
+                "date": "2026-04-15",
+                "type": "LOW",
+                "price": 17.489999771118164
+              },
+              {
+                "date": "2026-04-20",
+                "type": "LOW",
+                "price": 17.75
+              },
+              {
+                "date": "2026-04-28",
+                "type": "HIGH",
+                "price": 21.459999084472656
+              },
+              {
+                "date": "2026-05-04",
+                "type": "LOW",
+                "price": 18.020000457763672
+              },
+              {
+                "date": "2026-05-12",
+                "type": "HIGH",
+                "price": 25.5
+              },
+              {
+                "date": "2026-05-18",
+                "type": "LOW",
+                "price": 19
+              },
+              {
+                "date": "2026-05-22",
+                "type": "HIGH",
+                "price": 22.989999771118164
+              },
+              {
+                "date": "2026-05-27",
+                "type": "LOW",
+                "price": 19.399999618530273
+              },
+              {
+                "date": "2026-05-29",
+                "type": "HIGH",
+                "price": 22
+              },
+              {
+                "date": "2026-06-05",
+                "type": "LOW",
+                "price": 19.260000228881836
+              },
+              {
+                "date": "2026-06-10",
+                "type": "LOW",
+                "price": 18.510000228881836
+              },
+              {
+                "date": "2026-06-11",
+                "type": "HIGH",
+                "price": 22.399999618530273
+              },
+              {
+                "date": "2026-06-16",
+                "type": "HIGH",
+                "price": 21
+              },
+              {
+                "date": "2026-06-16",
+                "type": "LOW",
+                "price": 19
+              },
+              {
+                "date": "2026-06-22",
+                "type": "HIGH",
+                "price": 21.790000915527344
+              },
+              {
+                "date": "2026-06-24",
+                "type": "LOW",
+                "price": 19.610000610351562
+              },
+              {
+                "date": "2026-07-01",
+                "type": "HIGH",
+                "price": 21.200000762939453
+              },
+              {
+                "date": "2026-07-07",
+                "type": "HIGH",
+                "price": 23.950000762939453
+              },
+              {
+                "date": "2026-07-07",
+                "type": "LOW",
+                "price": 19.010000228881836
+              }
+            ]
+          },
+          "values": {
+            "priorRecentHigh": 25.5,
+            "priorBaseHigh": 23.950000762939453,
+            "recentBaseLow": 18.860000610351562,
+            "previousBaseLow": 19,
+            "macd": 0.11423055951797778,
+            "macdSignal": 0.10878921908576586,
+            "macdHistogram": 0.005441340432211922,
+            "priorYearHigh": 25.5,
+            "volumeAverage": 3701.84,
+            "volumeRatio": 1.0192228729496682,
+            "smaFast": 20.583400001525877,
+            "smaSlow": 18.101049962043763,
+            "atr": 1.210382289673088,
+            "atrPct": 6.082323180277937,
+            "averageTurnover": 23155.829678821563,
+            "previousLow": 18.860000610351562,
+            "twoCandleLow": 18.860000610351562,
+            "fourCandleLow": 18.860000610351562,
+            "riskToSupertrendPct": 6.39777002585884,
+            "riskToPreviousLowPct": 5.226125769421099,
+            "retracementPullbackDepthPct": 21.960785809685202,
+            "retracementSupportSource": "Supertrend",
+            "retracementSupportReference": 18.62684340778992,
+            "retracementSupportDistancePct": 6.39777002585884,
+            "retracementPullbackVolumeRatio": 0.4322715190283751,
+            "retracementCurrentVolumeRatio": 1.0192228729496682,
+            "retracementCloseLocationPct": 35.5703933363117,
+            "retracementPullbackDepthOk": false,
+            "retracementSupportProximityOk": false,
+            "retracementVolumePatternOk": true,
+            "retracementReclaimCandleOk": false,
+            "retracementRiskOk": true,
+            "retracementTrendHoldOk": false,
+            "retracementPatternLabel": "No institutional retracement setup",
+            "retracementLookback": 5,
+            "retracementMinPullbackPct": 2,
+            "retracementMaxPullbackPct": 15,
+            "retracementSupportProximityPct": 5,
+            "retracementBreakoutRetestPct": 3,
+            "retracementDryVolumeMaxRatio": 0.9,
+            "retracementReclaimVolumeMinRatio": 1.1,
+            "retracementMaxRiskPct": 8,
+            "fibonacciSwingHigh": 25.5,
+            "fibonacciSwingLow": 18.020000457763672,
+            "fibonacciNearestLevel": "61.8%",
+            "fibonacciNearestPrice": 20.87736028289795,
+            "fibonacciDistancePct": 4.911360216598134,
+            "fibonacciSupportNearby": false,
+            "bollingerMiddle": 20.40300006866455,
+            "bollingerUpper": 21.901801424648898,
+            "bollingerLower": 18.904198712680202,
+            "bollingerPercentB": 0.3321990942542457,
+            "bollingerBandwidthPct": 14.691970307702402,
+            "bollingerRangeBound": false,
+            "recentHighPeriod": 55,
+            "baseBreakoutPeriod": 20,
+            "yearHighPeriod": 252,
+            "nearYearHighPct": 15,
+            "volumeAveragePeriod": 50,
+            "volumeExpansionMultiple": 1.5,
+            "riskToSupertrendMaxPct": 7,
+            "smaFastPeriod": 50,
+            "smaSlowPeriod": 200,
+            "atrPeriod": 14,
+            "maxAtrPct": 8,
+            "minimumAverageTurnover": 10000000,
+            "candlePattern": "No bullish confirmation pattern",
+            "marketRegimeLabel": "NIFTY 500 bullish/healthy"
+          }
+        },
+        "setupStrengthScore": 11,
+        "setupGrade": "WATCH",
+        "sectorStrength": {
+          "industry": "My List",
+          "total": 175,
+          "strong": 123,
+          "entry": 120,
+          "breadthPct": 70.28571428571428,
+          "ok": true,
+          "minPct": 50,
+          "minStocks": 5
+        },
+        "sectorStrengthScore": 1,
+        "institutionalContext": {
+          "score": 2,
+          "maxScore": 5,
+          "grade": "Institutional C",
+          "dataGaps": 2,
+          "index": {
+            "dataAvailable": true,
+            "supportsLongs": true,
+            "primaryBias": "BULLISH",
+            "sectorProxy": "NIFTY 500",
+            "sectorProxyBias": "BULLISH",
+            "reason": "NIFTY 500 proxy is BULLISH; broad index support is positive."
+          },
+          "derivatives": {
+            "dataAvailable": true,
+            "fnoEligible": false,
+            "oiAvailable": false,
+            "oiChangePct": null,
+            "oiVolume": null,
+            "optionValue": null,
+            "futureValue": null,
+            "participation": false,
+            "lotSize": null,
+            "underlying": "",
+            "reason": "Not present in NSE F&O lot-size master; treat as cash-equity only."
+          },
+          "options": {
+            "dataAvailable": false,
+            "supportsLongs": false,
+            "symbol": "NIFTY",
+            "pcr": null,
+            "maxPutOiStrike": null,
+            "maxCallOiStrike": null,
+            "bias": "UNKNOWN",
+            "reason": "NSE option-chain snapshot unavailable; mark this as data gap, not as bearish."
+          },
+          "commodity": {
+            "dataAvailable": true,
+            "supportsSector": true,
+            "exposure": "Broad macro",
+            "proxy": "",
+            "proxyBias": "UNKNOWN",
+            "reason": "0/5 commodity/currency proxies are bullish; 2 bearish."
+          },
+          "operator": {
+            "dataAvailable": false,
+            "accumulation": false,
+            "distribution": false,
+            "reason": "Official NSE delivery history loaded for 2395 EQ symbols across 6 sessions."
+          }
+        },
+        "institutionalScore": 2,
+        "gtfContext": {
+          "dataAvailable": true,
+          "score": 3,
+          "maxScore": 10,
+          "grade": "GTF C",
+          "rankAdjustment": 4.5,
+          "preferredEntryStyle": "GTF_CLEAR_RUNWAY",
+          "structuralStop": null,
+          "dailyTrend": "up",
+          "weeklyTrend": "up",
+          "dailyDemand": null,
+          "weeklyDemand": null,
+          "higherTimeframeDemand": null,
+          "reactingFromHtf": {
+            "active": false,
+            "sourceStatus": "PROXY_UNVALIDATED",
+            "role": "SECONDARY_CONFLUENCE_ONLY",
+            "managementClass": null,
+            "managementPlan": null,
+            "zone": null,
+            "overlapWithExecutionDemand": false,
+            "recentTouchAndReclaim": false,
+            "reason": "No fresh score-7 M/Q/HY/Y demand overlap or recent reclaim was detected."
+          },
+          "opposingSupply": null,
+          "rewardRisk": null,
+          "unlimitedRewardRoom": true,
+          "supplyDistancePct": null,
+          "supplyBlocked": false,
+          "demandRetest": false,
+          "checks": {
+            "dailyDemandQualified": false,
+            "weeklyDemandQualified": false,
+            "dailyDemandFresh": false,
+            "weeklyDemandFresh": false,
+            "demandRetest": false,
+            "reactingFromHtf": false,
+            "dailyTrendUp": true,
+            "weeklyTrendNotDown": true,
+            "roomForTwoR": true,
+            "supplyBlocked": false
+          },
+          "reasons": [
+            "GTF 50-SMA slope: daily up, weekly up.",
+            "No active daily/weekly/higher-timeframe GTF supply blocker was detected above price."
+          ]
+        },
+        "gtfScore": 1,
+        "conceptCoverage": {
+          "passed": 8,
+          "applicable": 30,
+          "weak": 18,
+          "dataGaps": 4,
+          "excluded": 6,
+          "passLabels": [
+            "Supertrend trend filter",
+            "Sector breadth",
+            "Risk reference discipline",
+            "Market regime",
+            "Index regime confirmation",
+            "Commodity/currency macro context",
+            "Exit rule discipline",
+            "09:17 execution discipline"
+          ],
+          "weakLabels": [
+            "Compulsory multi-timeframe engine",
+            "Relative strength leadership",
+            "RS trend follow-through",
+            "RSI momentum",
+            "Breakout or 52-week high zone",
+            "Price-action base and higher-low structure",
+            "Retracement/pullback buy setup",
+            "GTF demand/supply confluence",
+            "GTF reacting from higher timeframe (secondary proxy)",
+            "Fibonacci retracement support",
+            "Bollinger trend/range context",
+            "Volume participation",
+            "MACD and OBV confirmation",
+            "50/200 DMA trend structure",
+            "Candle IPC confirmation",
+            "Volatility and liquidity control",
+            "Derivative/F&O eligibility",
+            "Derivative OI participation"
+          ],
+          "dataGapLabels": [
+            "Operator delivery confirmation",
+            "Index option-chain positioning",
+            "News/event context",
+            "Fundamental improvement"
+          ],
+          "excludedLabels": [
+            "Intraday tick scalping",
+            "Broker-only live Greeks/order-book depth",
+            "Pair-trading spread execution",
+            "Short-selling execution",
+            "Options premium/straddle/strangle execution",
+            "Manual charting/terminal workflow"
+          ],
+          "summary": "8/30 applicable video-derived buckets strong; 4 data gaps; 6 non-EOD playbooks excluded."
+        },
+        "fundamentalScore": 0,
+        "fundamental": {
+          "available": false,
+          "reason": "Skipped until at least 4/6 compulsory technical checks pass.",
+          "score": 0,
+          "maxScore": 8,
+          "checks": {
+            "netIncomeYoYUp": {
+              "ok": null,
+              "latest": null,
+              "previous": null
+            },
+            "operatingIncomeYoYUp": {
+              "ok": null,
+              "latest": null,
+              "previous": null
+            },
+            "revenueQuarterYoYUp": {
+              "ok": null,
+              "latest": null,
+              "previous": null
+            },
+            "epsQuarterYoYUp": {
+              "ok": null,
+              "latest": null,
+              "previous": null
+            },
+            "ebitdaQuarterYoYUp": {
+              "ok": null,
+              "latest": null,
+              "previous": null
+            },
+            "ebitdaMarginQoQUp": {
+              "ok": null,
+              "latest": null,
+              "previous": null
+            },
+            "ebitdaMarginYoYUp": {
+              "ok": null,
+              "latest": null,
+              "previous": null
+            },
+            "peRising": {
+              "ok": null,
+              "latest": null,
+              "previous": null
+            }
+          }
+        },
+        "score": 14
+      },
+      "lastPartialExitDate": "2026-07-13",
+      "lastRiskActionSignalDate": "2026-07-10",
+      "lastPartialExitPrice": 19.59,
+      "pyramidState": {
+        "breakout": false,
+        "setupReady": false,
+        "type": "POST_ENTRY_PULLBACK_SWING_HIGH_CLOSE_BREAK",
+        "level": null,
+        "anchorDate": "2026-07-13",
+        "anchorPrice": 19.59,
+        "swingHighDate": null,
+        "pullbackLowDate": null,
+        "pullbackLow": null,
+        "pullbackDepthPct": null,
+        "advancePct": null,
+        "previousClose": 20.5,
+        "asOf": "2026-07-10"
+      },
+      "currentRewardR": 0.53
     },
     {
       "id": "HAL-2026-07-10-1783741571124",
