@@ -205,6 +205,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .mainNavTab.active { background: linear-gradient(180deg, rgba(255, 118, 26, .1), transparent); color: #fff; }
 .mainNavTab.active::after { right: 12px; left: 12px; }
 .navDownloads { display: flex; align-items: center; gap: 6px; flex: 0 0 auto; }
+.downloadLabel { color: var(--muted); font-size: 10px; font-weight: 800; text-transform: uppercase; }
 .navDownloads a {
   display: grid;
   place-items: center;
@@ -298,7 +299,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .tradeBand {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(12, minmax(86px, 1fr)) auto auto;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   margin: 9px 0;
   overflow: hidden;
   background: linear-gradient(105deg, rgba(255, 118, 26, .085), rgba(16, 21, 25, .97) 30%, rgba(101, 181, 255, .05));
@@ -321,6 +322,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   padding: 10px 11px;
   border-right: 1px solid var(--line-soft);
 }
+.tradeBand > div:nth-child(6n) { border-right: 0; }
+.tradeBand > div:nth-child(-n + 6) { border-bottom: 1px solid var(--line-soft); }
 .tradeBand > div:nth-child(5), .tradeBand > div:nth-child(10), .tradeBand > div:nth-child(11), .tradeBand > div:nth-child(12) {
   background: rgba(255, 255, 255, .012);
 }
@@ -331,8 +334,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   color: var(--text-soft);
   font-size: 15px;
   line-height: 1.25;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  text-overflow: clip;
+  white-space: normal;
 }
 .tradeBand #unrealizedPnl { color: var(--blue); }
 .tradeBand #availableCash { color: var(--green); }
@@ -349,6 +352,47 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   transition: background-color .18s ease, color .18s ease;
 }
 .downloadButton:hover { background: var(--surface-hover); color: var(--text); }
+.tradeBand .downloadButton { display: none; }
+
+.dashboardPositions { margin-top: 16px; }
+.dashboardHeading {
+  align-items: center;
+  min-height: 52px;
+  margin-bottom: 7px;
+}
+.dashboardHeading > div:first-child { min-width: 0; }
+.dashboardHeading > div:first-child > span { display: block; margin: 3px 0 0 11px; }
+.dashboardPositionActions { display: flex; align-items: center; gap: 7px; }
+.tradeSheetAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text-soft);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 800;
+  transition: border-color .18s ease, background-color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.tradeSheetAction:hover { border-color: rgba(255, 153, 67, .65); background: rgba(255, 118, 26, .1); transform: translateY(-1px); }
+.tradeSheetAction.primary {
+  border-color: rgba(255, 174, 82, .72);
+  background: linear-gradient(135deg, var(--brand-bright), var(--brand) 48%, var(--brand-deep));
+  color: #fff;
+  box-shadow: 0 7px 22px rgba(255, 102, 20, .2);
+}
+.dashboardPositionsShell { min-height: 110px; max-height: 430px; }
+.dashboardPositionsTable { min-width: 980px; }
+.dashboardPositionsTable tbody tr { animation: rowReveal .32s cubic-bezier(.2, .8, .2, 1) both; }
+.dashboardPositionsTable tbody tr:nth-child(2) { animation-delay: .035s; }
+.dashboardPositionsTable tbody tr:nth-child(3) { animation-delay: .07s; }
+.dashboardPositionsTable tbody tr:nth-child(4) { animation-delay: .105s; }
+.dashboardPositionsTable tbody tr:nth-child(5) { animation-delay: .14s; }
+.dashboardPositionsTable tbody tr:nth-child(6) { animation-delay: .175s; }
 
 .listBand {
   display: flex;
@@ -704,9 +748,6 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
 @keyframes valueFlash { 0% { color: var(--text); background: rgba(101, 181, 255, .24); } 100% { background: transparent; } }
 
 @media (max-width: 1420px) {
-  .tradeBand { grid-template-columns: repeat(6, 1fr); }
-  .tradeBand > div:nth-child(6n) { border-right: 0; }
-  .tradeBand .downloadButton { min-height: 48px; border-top: 1px solid var(--line); }
   .settingsInputs { grid-template-columns: repeat(3, 1fr); }
 }
 
@@ -733,6 +774,7 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
   .mainNavInner { width: 100%; min-height: 48px; padding: 0 5px; gap: 5px; }
   .mainNavTab { min-height: 47px; padding: 0 11px; font-size: 11px; }
   .navDownloads { gap: 4px; }
+  .downloadLabel { display: none; }
   .navDownloads a { min-width: 40px; min-height: 32px; padding: 0 6px; font-size: 10px; }
   .summaryGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .metric { min-height: 66px; padding: 9px 11px; }
@@ -740,9 +782,32 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
   .tradeBand { grid-template-columns: repeat(2, 1fr); }
   .tradeBand > div { min-height: 55px; }
   .tradeBand > div:nth-child(2n) { border-right: 0; }
+  .tradeBand > div:nth-child(-n + 10) { border-bottom: 1px solid var(--line-soft); }
   .tradeBand strong { font-size: 14px; }
   #excelDownloadLink { grid-column: 1; }
   #csvDownloadLink { grid-column: 2; }
+  .dashboardHeading { align-items: stretch; flex-direction: column; }
+  .dashboardHeading > div:first-child > span { display: block; max-width: none; margin-left: 11px; }
+  .dashboardPositionActions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+  .dashboardPositionActions .primary { grid-column: 1 / -1; }
+  .dashboardPositionActions a, .dashboardPositionActions button { min-width: 0; padding-inline: 6px; font-size: 11px; }
+  .dashboardPositionsShell { max-height: 360px; }
+  .dashboardPositionsTable { min-width: 0; table-layout: fixed; }
+  .dashboardPositionsTable th:nth-child(3), .dashboardPositionsTable td:nth-child(3),
+  .dashboardPositionsTable th:nth-child(4), .dashboardPositionsTable td:nth-child(4),
+  .dashboardPositionsTable th:nth-child(5), .dashboardPositionsTable td:nth-child(5),
+  .dashboardPositionsTable th:nth-child(9), .dashboardPositionsTable td:nth-child(9) { display: none; }
+  .dashboardPositionsTable th:nth-child(1) { width: 82px; }
+  .dashboardPositionsTable th:nth-child(2) { width: 100px; }
+  .dashboardPositionsTable th:nth-child(6), .dashboardPositionsTable th:nth-child(7) { width: 76px; }
+  .dashboardPositionsTable th:nth-child(8) { width: 98px; }
+  .dashboardPositionsTable th, .dashboardPositionsTable td { padding-inline: 5px; }
+  .dashboardPositionsTable th:nth-child(6),
+  .dashboardPositionsTable th:nth-child(7),
+  .dashboardPositionsTable th:nth-child(8) { font-size: 0; }
+  .dashboardPositionsTable th:nth-child(6)::after { content: "Invested"; font-size: 10px; }
+  .dashboardPositionsTable th:nth-child(7)::after { content: "Current"; font-size: 10px; }
+  .dashboardPositionsTable th:nth-child(8)::after { content: "P&L"; font-size: 10px; }
   .listTabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: visible; }
   .listTabs button { min-width: 0; padding-inline: 4px; font-size: 11px; }
   .listActions { display: grid; width: 100%; grid-template-columns: repeat(3, minmax(0, 1fr)); align-self: stretch; }
@@ -769,29 +834,21 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
 
   table { min-width: 0; table-layout: fixed; }
   th, td { height: 54px; font-size: 12px; }
-  #resultsBody td, .tableShell > table:not(.positionsTable) th { padding-inline: 5px; }
-  .tableShell > table:not(.positionsTable) th:nth-child(2),
-  .tableShell > table:not(.positionsTable) td:nth-child(2),
-  .tableShell > table:not(.positionsTable) th:nth-child(4),
-  .tableShell > table:not(.positionsTable) td:nth-child(4),
-  .tableShell > table:not(.positionsTable) th:nth-child(5),
-  .tableShell > table:not(.positionsTable) td:nth-child(5),
-  .tableShell > table:not(.positionsTable) th:nth-child(6),
-  .tableShell > table:not(.positionsTable) td:nth-child(6),
-  .tableShell > table:not(.positionsTable) th:nth-child(8),
-  .tableShell > table:not(.positionsTable) td:nth-child(8),
-  .tableShell > table:not(.positionsTable) th:nth-child(9),
-  .tableShell > table:not(.positionsTable) td:nth-child(9),
-  .tableShell > table:not(.positionsTable) th:nth-child(11),
-  .tableShell > table:not(.positionsTable) td:nth-child(11),
-  .tableShell > table:not(.positionsTable) th:nth-child(14),
-  .tableShell > table:not(.positionsTable) td:nth-child(14) { display: none; }
-  .tableShell > table:not(.positionsTable) th:nth-child(1) { width: 62px; }
-  .tableShell > table:not(.positionsTable) th:nth-child(3) { width: 88px; }
-  .tableShell > table:not(.positionsTable) th:nth-child(7),
-  .tableShell > table:not(.positionsTable) th:nth-child(10),
-  .tableShell > table:not(.positionsTable) th:nth-child(12) { width: 48px; }
-  .tableShell > table:not(.positionsTable) th:nth-child(13) { width: 54px; }
+  #resultsBody td, .resultsTable th { padding-inline: 5px; }
+  .resultsTable th:nth-child(2), .resultsTable td:nth-child(2),
+  .resultsTable th:nth-child(4), .resultsTable td:nth-child(4),
+  .resultsTable th:nth-child(5), .resultsTable td:nth-child(5),
+  .resultsTable th:nth-child(6), .resultsTable td:nth-child(6),
+  .resultsTable th:nth-child(8), .resultsTable td:nth-child(8),
+  .resultsTable th:nth-child(9), .resultsTable td:nth-child(9),
+  .resultsTable th:nth-child(11), .resultsTable td:nth-child(11),
+  .resultsTable th:nth-child(14), .resultsTable td:nth-child(14) { display: none; }
+  .resultsTable th:nth-child(1) { width: 62px; }
+  .resultsTable th:nth-child(3) { width: 88px; }
+  .resultsTable th:nth-child(7),
+  .resultsTable th:nth-child(10),
+  .resultsTable th:nth-child(12) { width: 48px; }
+  .resultsTable th:nth-child(13) { width: 54px; }
 
   .positionsTable { min-width: 0; table-layout: fixed; }
   .positionsTable th:nth-child(3), .positionsTable td:nth-child(3),

@@ -44,6 +44,9 @@ const elements = {
   liveMtmStatus: document.querySelector("#liveMtmStatus"),
   positionsBody: document.querySelector("#positionsBody"),
   positionsEmpty: document.querySelector("#positionsEmpty"),
+  dashboardPositionsBody: document.querySelector("#dashboardPositionsBody"),
+  dashboardPositionsEmpty: document.querySelector("#dashboardPositionsEmpty"),
+  openPositionsViewButton: document.querySelector("#openPositionsViewButton"),
   positionSortSelect: document.querySelector("#positionSortSelect"),
   positionSortDirection: document.querySelector("#positionSortDirection"),
   candidatesBody: document.querySelector("#candidatesBody"),
@@ -89,6 +92,8 @@ const elements = {
   csvDownloadLink: document.querySelector("#csvDownloadLink"),
   topExcelDownloadLink: document.querySelector("#topExcelDownloadLink"),
   topCsvDownloadLink: document.querySelector("#topCsvDownloadLink"),
+  dashboardExcelDownloadLink: document.querySelector("#dashboardExcelDownloadLink"),
+  dashboardCsvDownloadLink: document.querySelector("#dashboardCsvDownloadLink"),
   detailPanel: document.querySelector("#detailPanel"),
   detailBackdrop: document.querySelector("#detailBackdrop")
 };
@@ -113,6 +118,7 @@ elements.loadMoreButton.addEventListener("click", () => {
 document.querySelectorAll(".mainNavTab").forEach((button) => {
   button.addEventListener("click", () => setMainView(button.dataset.view));
 });
+elements.openPositionsViewButton.addEventListener("click", () => setMainView("positions"));
 elements.positionSortSelect.addEventListener("change", (event) => {
   state.positionSort = event.target.value;
   state.positionSortDirection = state.positionSort === "symbol" ? "asc" : "desc";
@@ -480,6 +486,57 @@ function renderPositions(payload) {
   elements.positionsBody.querySelectorAll("tr").forEach((rowElement) => {
     rowElement.addEventListener("click", () => {
       const trade = trades[Number(rowElement.dataset.positionIndex)];
+      const row = findStockRow(trade?.yahooSymbol || trade?.symbol);
+      if (row) renderDetail(row, trade);
+    });
+  });
+  renderDashboardPositions(payload);
+}
+
+function renderDashboardPositions(payload) {
+  const trades = (payload?.trades || []).filter((trade) =>
+    ["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status)
+  );
+  elements.dashboardPositionsBody.innerHTML = trades
+    .map((trade, index) => {
+      const livePosition = findLivePosition(trade);
+      const displayPrice = Number.isFinite(livePosition?.ltp) ? livePosition.ltp : trade.lastPrice;
+      const pnl = Number.isFinite(livePosition?.unrealizedPnl) ? livePosition.unrealizedPnl : trade.unrealizedPnl;
+      const pnlPct = Number.isFinite(livePosition?.unrealizedPnlPct) ? livePosition.unrealizedPnlPct : trade.unrealizedPnlPct;
+      const investedValue = Number.isFinite(livePosition?.investedValue) ? livePosition.investedValue : trade.investedValue;
+      const currentValue = Number.isFinite(livePosition?.marketValue)
+        ? livePosition.marketValue
+        : Number.isFinite(trade.currentValue)
+          ? trade.currentValue
+          : Number.isFinite(displayPrice) && Number.isFinite(trade.quantity)
+            ? displayPrice * trade.quantity
+            : null;
+      const pnlClass = Number(pnl) > 0 ? "good" : Number(pnl) < 0 ? "bad" : "neutral";
+      const riskState = livePosition?.riskState || "STALE";
+      const rowRiskClass = riskState === "BREACHED" ? "riskBreached" : riskState === "NEAR_STOP" ? "riskNear" : "";
+      const quoteLabel = livePosition?.isLive ? "NEAR-LIVE 1M" : "EOD";
+      const stopRiskText = livePosition
+        ? `${riskState.replace("_", " ")}${Number.isFinite(livePosition.distanceToStopPct) ? ` ${compact(livePosition.distanceToStopPct)}%` : ""}`
+        : "EOD RISK";
+      return `
+        <tr class="${rowRiskClass}" data-dashboard-position-index="${index}" title="Open position details">
+          <td><span class="pill ${escapeHtml(trade.status)}">${escapeHtml(trade.status.replaceAll("_", " "))}</span></td>
+          <td class="symbolCell"><strong>${escapeHtml(trade.symbol)}</strong><span>${escapeHtml(trade.tradeScopeLabel || trade.listLabel || "")}</span></td>
+          <td>${fmt(trade.entryPrice)}</td>
+          <td>${trade.quantity ?? "NA"}</td>
+          <td><strong>${fmt(displayPrice)}</strong><small class="quoteSource">${quoteLabel}</small></td>
+          <td>${compact(investedValue)}</td>
+          <td><strong>${compact(currentValue)}</strong></td>
+          <td class="${pnlClass}">${compact(pnl)}${Number.isFinite(pnlPct) ? ` (${compact(pnlPct)}%)` : ""}</td>
+          <td>${fmt(trade.trailingStopPrice || trade.initialStopPrice)}<small class="riskState ${escapeHtml(riskState)}">${escapeHtml(stopRiskText)}</small></td>
+        </tr>
+      `;
+    })
+    .join("");
+  elements.dashboardPositionsEmpty.classList.toggle("visible", trades.length === 0);
+  elements.dashboardPositionsBody.querySelectorAll("tr").forEach((rowElement) => {
+    rowElement.addEventListener("click", () => {
+      const trade = trades[Number(rowElement.dataset.dashboardPositionIndex)];
       const row = findStockRow(trade?.yahooSymbol || trade?.symbol);
       if (row) renderDetail(row, trade);
     });
@@ -1158,6 +1215,8 @@ function updateDownloadLinks(payload) {
   elements.csvDownloadLink.href = csvHref;
   elements.topExcelDownloadLink.href = excelHref;
   elements.topCsvDownloadLink.href = csvHref;
+  elements.dashboardExcelDownloadLink.href = excelHref;
+  elements.dashboardCsvDownloadLink.href = csvHref;
 }
 
 function reasonListHtml(reasons = []) {

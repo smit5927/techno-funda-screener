@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#100d0b" />
     <meta name="color-scheme" content="dark" />
     <title>Techno Funda Screener</title>
-    <link rel="stylesheet" href="styles.css?v=20260714-navigation-ui" />
+    <link rel="stylesheet" href="styles.css?v=20260714-dashboard-ui" />
   </head>
   <body>
     <header class="topbar">
@@ -31,6 +31,7 @@
           <button class="mainNavTab" data-view="settings" type="button" role="tab" aria-selected="false">Settings</button>
         </div>
         <div class="navDownloads" aria-label="Trade sheet downloads">
+          <span class="downloadLabel">Trade Sheet</span>
           <a id="topExcelDownloadLink" href="/api/trades/download" title="Download complete Excel trade sheet">Excel</a>
           <a id="topCsvDownloadLink" href="/api/trades/download.csv" title="Download trade sheet as CSV">CSV</a>
         </div>
@@ -117,6 +118,39 @@
         </div>
         <a id="excelDownloadLink" class="downloadButton" href="/api/trades/download">Excel</a>
         <a id="csvDownloadLink" class="downloadButton" href="/api/trades/download.csv">CSV</a>
+      </section>
+
+      <section class="dashboardPositions" aria-label="Portfolio positions snapshot">
+        <div class="sectionHeading dashboardHeading">
+          <div>
+            <h2>Portfolio Positions</h2>
+            <span>Active capital and near-live performance</span>
+          </div>
+          <div class="dashboardPositionActions">
+            <a id="dashboardExcelDownloadLink" class="tradeSheetAction primary" href="/api/trades/download">Download Excel Trade Sheet</a>
+            <a id="dashboardCsvDownloadLink" class="tradeSheetAction" href="/api/trades/download.csv">Download CSV</a>
+            <button id="openPositionsViewButton" type="button">Full Positions</button>
+          </div>
+        </div>
+        <div class="tableShell dashboardPositionsShell">
+          <table class="dashboardPositionsTable">
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Symbol</th>
+                <th>Entry</th>
+                <th>Qty</th>
+                <th>LTP / Close</th>
+                <th>Invested Value</th>
+                <th>Current Value</th>
+                <th>Unrealized P&amp;L</th>
+                <th>Stop / Risk</th>
+              </tr>
+            </thead>
+            <tbody id="dashboardPositionsBody"></tbody>
+          </table>
+          <div id="dashboardPositionsEmpty" class="emptyState">No active portfolio positions</div>
+        </div>
       </section>
       </div>
 
@@ -315,7 +349,7 @@
       </section>
 
       <section class="tableShell">
-        <table>
+        <table class="resultsTable">
           <thead>
             <tr>
               <th>Status</th>
@@ -344,6 +378,6 @@
     <div id="detailBackdrop" class="detailBackdrop" aria-hidden="true"></div>
     <aside id="detailPanel" class="detailPanel" aria-live="polite" aria-label="Stock details"></aside>
 
-    <script src="app.js?v=20260714-navigation-ui" type="module"></script>
+    <script src="app.js?v=20260714-dashboard-ui" type="module"></script>
   </body>
 </html>
