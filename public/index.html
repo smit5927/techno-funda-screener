@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#08101a" />
+    <meta name="theme-color" content="#100d0b" />
     <meta name="color-scheme" content="dark" />
     <title>Techno Funda Screener</title>
-    <link rel="stylesheet" href="styles.css?v=20260714-cobalt-ui" />
+    <link rel="stylesheet" href="styles.css?v=20260714-navigation-ui" />
   </head>
   <body>
     <header class="topbar">
@@ -16,12 +16,29 @@
         <p id="scanMeta">Waiting for first scan</p>
       </div>
       <div class="actions">
-        <button id="refreshButton" class="primaryAction" type="button" title="Reload the latest published scan and current position values"><span aria-hidden="true">↻</span> Check Updates</button>
+        <button id="refreshButton" class="primaryAction" type="button" title="Reload the latest published scan and current position values"><span aria-hidden="true">&#8635;</span> Check Updates</button>
         <button id="scanButton" type="button" title="Run scan now">Run Scan</button>
       </div>
     </header>
 
+    <nav class="mainNav" aria-label="Main navigation">
+      <div class="mainNavInner">
+        <div class="mainNavTabs" role="tablist" aria-label="Workspace views">
+          <button class="mainNavTab active" data-view="dashboard" type="button" role="tab" aria-selected="true">Dashboard</button>
+          <button class="mainNavTab" data-view="positions" type="button" role="tab" aria-selected="false">Open Positions</button>
+          <button class="mainNavTab" data-view="candidates" type="button" role="tab" aria-selected="false">Candidates</button>
+          <button class="mainNavTab" data-view="screener" type="button" role="tab" aria-selected="false">Screener</button>
+          <button class="mainNavTab" data-view="settings" type="button" role="tab" aria-selected="false">Settings</button>
+        </div>
+        <div class="navDownloads" aria-label="Trade sheet downloads">
+          <a id="topExcelDownloadLink" href="/api/trades/download" title="Download complete Excel trade sheet">Excel</a>
+          <a id="topCsvDownloadLink" href="/api/trades/download.csv" title="Download trade sheet as CSV">CSV</a>
+        </div>
+      </div>
+    </nav>
+
     <main class="layout">
+      <div class="viewPanel" data-view-panel="dashboard">
       <section class="summaryGrid" aria-label="Scan summary">
         <button class="metric active" data-summary-filter="ALL" type="button">
           <span>Total</span>
@@ -101,20 +118,20 @@
         <a id="excelDownloadLink" class="downloadButton" href="/api/trades/download">Excel</a>
         <a id="csvDownloadLink" class="downloadButton" href="/api/trades/download.csv">CSV</a>
       </section>
+      </div>
 
-      <section class="listBand">
-        <div class="listTabs" role="tablist" aria-label="List filter">
-          <button class="listTab active" data-list="all-market" type="button">All NSE Market</button>
-          <button class="listTab" data-list="default" type="button">Nifty 500</button>
-          <button class="listTab" data-list="custom" type="button">My List</button>
-          <button class="listTab" data-list="all" type="button">All Lists</button>
-        </div>
+      <div class="viewPanel" data-view-panel="settings" hidden>
+        <section class="settingsMenu" aria-label="Settings categories">
+          <div>
+            <span>Workspace Settings</span>
+            <strong>Lists, portfolio rules and alerts</strong>
+          </div>
         <div class="listActions">
           <button id="editListButton" type="button">Edit My List</button>
           <button id="tradeSettingsButton" type="button">Trade Settings</button>
           <button id="telegramSettingsButton" type="button">Telegram</button>
         </div>
-      </section>
+        </section>
 
       <section id="customListPanel" class="customListPanel" hidden>
         <div class="accessRow">
@@ -165,11 +182,28 @@
           <span id="telegramStatus"></span>
         </div>
       </section>
+      </div>
 
-      <section class="positionsSection" aria-label="Open positions and pending orders">
+      <section class="positionsSection viewPanel" data-view-panel="positions" aria-label="Open positions and pending orders" hidden>
         <div class="sectionHeading">
           <h2>Open Positions</h2>
-          <span id="liveMtmStatus" class="liveMtmStatus"><i></i> Near-live MTM connecting</span>
+          <div class="sectionTools">
+            <span id="liveMtmStatus" class="liveMtmStatus"><i></i> Near-live MTM connecting</span>
+            <label class="sortControl">
+              <span>Sort</span>
+              <select id="positionSortSelect" aria-label="Sort open positions">
+                <option value="default">Portfolio Order</option>
+                <option value="symbol">Stock Name</option>
+                <option value="pnl">P&amp;L Amount</option>
+                <option value="pnlPct">P&amp;L Percentage</option>
+                <option value="investedValue">Invested Value</option>
+                <option value="currentValue">Current Value</option>
+                <option value="rank">Rank</option>
+                <option value="risk">Stop Distance</option>
+              </select>
+            </label>
+            <button id="positionSortDirection" class="sortDirection" type="button" title="Reverse sort direction">High to Low</button>
+          </div>
         </div>
         <div class="tableShell positionsShell">
           <table class="positionsTable">
@@ -197,7 +231,7 @@
         </div>
       </section>
 
-      <section class="positionsSection" aria-label="Waiting entry candidates">
+      <section class="positionsSection viewPanel" data-view-panel="candidates" aria-label="Waiting entry candidates" hidden>
         <div class="sectionHeading">
           <h2>Waiting Candidates</h2>
           <span>Cash and risk queue</span>
@@ -222,7 +256,7 @@
         </div>
       </section>
 
-      <section class="positionsSection" aria-label="Recent candidate decisions">
+      <section class="positionsSection viewPanel" data-view-panel="candidates" aria-label="Recent candidate decisions" hidden>
         <div class="sectionHeading">
           <h2>Candidate Decision Log</h2>
           <span>Freshness, extension and execution audit</span>
@@ -244,6 +278,16 @@
             <tbody id="candidateDecisionsBody"></tbody>
           </table>
           <div id="candidateDecisionsEmpty" class="emptyState">No deferred or expired candidate decisions</div>
+        </div>
+      </section>
+
+      <div class="viewPanel" data-view-panel="screener" hidden>
+      <section class="listBand">
+        <div class="listTabs" role="tablist" aria-label="List filter">
+          <button class="listTab active" data-list="all-market" type="button">All NSE Market</button>
+          <button class="listTab" data-list="default" type="button">Nifty 500</button>
+          <button class="listTab" data-list="custom" type="button">My List</button>
+          <button class="listTab" data-list="all" type="button">All Lists</button>
         </div>
       </section>
 
@@ -294,11 +338,12 @@
         </table>
         <div id="emptyState" class="emptyState">No rows to show</div>
       </section>
+      </div>
     </main>
 
     <div id="detailBackdrop" class="detailBackdrop" aria-hidden="true"></div>
     <aside id="detailPanel" class="detailPanel" aria-live="polite" aria-label="Stock details"></aside>
 
-    <script src="app.js?v=20260714-institutional-ui" type="module"></script>
+    <script src="app.js?v=20260714-navigation-ui" type="module"></script>
   </body>
 </html>

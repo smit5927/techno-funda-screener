@@ -1,6 +1,7 @@
 const state = {
   payload: null,
   rows: [],
+  currentView: new URLSearchParams(window.location.search).get("view") || localStorage.getItem("tfMainView") || "dashboard",
   currentList: "all-market",
   filter: "ALL",
   search: "",
@@ -11,7 +12,9 @@ const state = {
   liveMtm: null,
   liveMtmTimer: null,
   lastPositionPrices: new Map(),
-  hasAnimatedCounts: false
+  hasAnimatedCounts: false,
+  positionSort: new URLSearchParams(window.location.search).get("sort") || localStorage.getItem("tfPositionSort") || "default",
+  positionSortDirection: new URLSearchParams(window.location.search).get("direction") || localStorage.getItem("tfPositionSortDirection") || "desc"
 };
 
 const staticMode = Boolean(window.TF_STATIC_MODE);
@@ -41,6 +44,8 @@ const elements = {
   liveMtmStatus: document.querySelector("#liveMtmStatus"),
   positionsBody: document.querySelector("#positionsBody"),
   positionsEmpty: document.querySelector("#positionsEmpty"),
+  positionSortSelect: document.querySelector("#positionSortSelect"),
+  positionSortDirection: document.querySelector("#positionSortDirection"),
   candidatesBody: document.querySelector("#candidatesBody"),
   candidatesEmpty: document.querySelector("#candidatesEmpty"),
   candidateDecisionsBody: document.querySelector("#candidateDecisionsBody"),
@@ -82,6 +87,8 @@ const elements = {
   telegramStatus: document.querySelector("#telegramStatus"),
   excelDownloadLink: document.querySelector("#excelDownloadLink"),
   csvDownloadLink: document.querySelector("#csvDownloadLink"),
+  topExcelDownloadLink: document.querySelector("#topExcelDownloadLink"),
+  topCsvDownloadLink: document.querySelector("#topCsvDownloadLink"),
   detailPanel: document.querySelector("#detailPanel"),
   detailBackdrop: document.querySelector("#detailBackdrop")
 };
@@ -102,6 +109,22 @@ elements.exportButton.addEventListener("click", exportCsv);
 elements.loadMoreButton.addEventListener("click", () => {
   state.displayLimit += 250;
   renderRows();
+});
+document.querySelectorAll(".mainNavTab").forEach((button) => {
+  button.addEventListener("click", () => setMainView(button.dataset.view));
+});
+elements.positionSortSelect.addEventListener("change", (event) => {
+  state.positionSort = event.target.value;
+  state.positionSortDirection = state.positionSort === "symbol" ? "asc" : "desc";
+  persistPositionSort();
+  updatePositionSortDirection();
+  renderPositions(state.payload);
+});
+elements.positionSortDirection.addEventListener("click", () => {
+  state.positionSortDirection = state.positionSortDirection === "desc" ? "asc" : "desc";
+  persistPositionSort();
+  updatePositionSortDirection();
+  renderPositions(state.payload);
 });
 elements.editListButton.addEventListener("click", async () => {
   elements.customListPanel.hidden = !elements.customListPanel.hidden;
@@ -149,7 +172,10 @@ document.querySelectorAll(".tab").forEach((button) => {
 });
 
 document.querySelectorAll(".metric[data-summary-filter]").forEach((button) => {
-  button.addEventListener("click", () => setStatusFilter(button.dataset.summaryFilter));
+  button.addEventListener("click", () => {
+    setStatusFilter(button.dataset.summaryFilter);
+    setMainView("screener");
+  });
 });
 
 document.addEventListener("keydown", (event) => {
@@ -160,7 +186,43 @@ document.addEventListener("visibilitychange", () => {
 });
 
 configureMode();
+setMainView(state.currentView, { persist: false, scroll: false, animate: false });
+if (![...elements.positionSortSelect.options].some((option) => option.value === state.positionSort)) state.positionSort = "default";
+if (!["asc", "desc"].includes(state.positionSortDirection)) state.positionSortDirection = "desc";
+elements.positionSortSelect.value = state.positionSort;
+updatePositionSortDirection();
 await loadResults();
+
+function setMainView(view, options = {}) {
+  const allowedViews = ["dashboard", "positions", "candidates", "screener", "settings"];
+  const nextView = allowedViews.includes(view) ? view : "dashboard";
+  const previousView = state.currentView;
+  const applyView = () => {
+    state.currentView = nextView;
+    document.body.dataset.currentView = nextView;
+    document.querySelectorAll("[data-view-panel]").forEach((panel) => {
+      panel.hidden = panel.dataset.viewPanel !== nextView;
+    });
+    document.querySelectorAll(".mainNavTab").forEach((button) => {
+      const active = button.dataset.view === nextView;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-selected", String(active));
+    });
+    if (options.persist !== false) {
+      localStorage.setItem("tfMainView", nextView);
+      const url = new URL(window.location.href);
+      url.searchParams.set("view", nextView);
+      window.history.replaceState({}, "", url);
+    }
+  };
+  const canAnimate = options.animate !== false && previousView !== nextView && typeof document.startViewTransition === "function";
+  if (canAnimate) document.startViewTransition(applyView);
+  else applyView();
+  if (options.scroll !== false) {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
+  }
+}
 
 async function loadResults() {
   if (staticMode) {
@@ -344,9 +406,9 @@ function institutionalMeta(context) {
 }
 
 function renderPositions(payload) {
-  const trades = (payload?.trades || []).filter((trade) =>
+  const trades = sortPositionTrades((payload?.trades || []).filter((trade) =>
     ["PENDING_ENTRY", "OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status)
-  );
+  ));
   elements.positionsBody.innerHTML = trades
     .map((trade, index) => {
       const livePosition = findLivePosition(trade);
@@ -422,6 +484,65 @@ function renderPositions(payload) {
       if (row) renderDetail(row, trade);
     });
   });
+}
+
+function sortPositionTrades(trades) {
+  if (state.positionSort === "default") return trades;
+  const direction = state.positionSortDirection === "asc" ? 1 : -1;
+  return trades
+    .map((trade, index) => ({ trade, index, value: positionSortValue(trade, state.positionSort) }))
+    .sort((a, b) => {
+      const aMissing = a.value == null || (typeof a.value === "number" && !Number.isFinite(a.value));
+      const bMissing = b.value == null || (typeof b.value === "number" && !Number.isFinite(b.value));
+      if (aMissing && bMissing) return a.index - b.index;
+      if (aMissing) return 1;
+      if (bMissing) return -1;
+      if (typeof a.value === "string") {
+        const compared = a.value.localeCompare(b.value, "en", { sensitivity: "base" });
+        return compared === 0 ? a.index - b.index : compared * direction;
+      }
+      const compared = (a.value - b.value) * direction;
+      return compared === 0 ? a.index - b.index : compared;
+    })
+    .map((item) => item.trade);
+}
+
+function positionSortValue(trade, field) {
+  const livePosition = findLivePosition(trade);
+  const displayPrice = Number.isFinite(livePosition?.ltp) ? livePosition.ltp : trade.lastPrice;
+  if (field === "symbol") return String(trade.symbol || "");
+  if (field === "pnl") return Number.isFinite(livePosition?.unrealizedPnl) ? livePosition.unrealizedPnl : trade.unrealizedPnl;
+  if (field === "pnlPct") return Number.isFinite(livePosition?.unrealizedPnlPct) ? livePosition.unrealizedPnlPct : trade.unrealizedPnlPct;
+  if (field === "investedValue") return Number.isFinite(livePosition?.investedValue) ? livePosition.investedValue : trade.investedValue;
+  if (field === "currentValue") {
+    if (Number.isFinite(livePosition?.marketValue)) return livePosition.marketValue;
+    if (Number.isFinite(trade.currentValue)) return trade.currentValue;
+    return Number.isFinite(displayPrice) && Number.isFinite(trade.quantity) ? displayPrice * trade.quantity : null;
+  }
+  if (field === "rank") return Number(trade.currentRank ?? trade.positionRank);
+  if (field === "risk") return Number.isFinite(livePosition?.distanceToStopPct) ? livePosition.distanceToStopPct : null;
+  return null;
+}
+
+function updatePositionSortDirection() {
+  const isDefault = state.positionSort === "default";
+  elements.positionSortDirection.disabled = isDefault;
+  if (isDefault) {
+    elements.positionSortDirection.textContent = "Portfolio Order";
+  } else if (state.positionSort === "symbol") {
+    elements.positionSortDirection.textContent = state.positionSortDirection === "asc" ? "A to Z" : "Z to A";
+  } else {
+    elements.positionSortDirection.textContent = state.positionSortDirection === "asc" ? "Low to High" : "High to Low";
+  }
+}
+
+function persistPositionSort() {
+  localStorage.setItem("tfPositionSort", state.positionSort);
+  localStorage.setItem("tfPositionSortDirection", state.positionSortDirection);
+  const url = new URL(window.location.href);
+  url.searchParams.set("sort", state.positionSort);
+  url.searchParams.set("direction", state.positionSortDirection);
+  window.history.replaceState({}, "", url);
 }
 
 function findLivePosition(trade) {
@@ -1031,8 +1152,12 @@ function renderTradeSettings(settings, options = {}) {
 function updateDownloadLinks(payload) {
   if (!staticMode) return;
   const version = encodeURIComponent(payload?.scannedAt || Date.now());
-  elements.excelDownloadLink.href = `data/techno-funda-trade-sheet.xlsx?v=${version}`;
-  elements.csvDownloadLink.href = `data/techno-funda-trade-sheet.csv?v=${version}`;
+  const excelHref = `data/techno-funda-trade-sheet.xlsx?v=${version}`;
+  const csvHref = `data/techno-funda-trade-sheet.csv?v=${version}`;
+  elements.excelDownloadLink.href = excelHref;
+  elements.csvDownloadLink.href = csvHref;
+  elements.topExcelDownloadLink.href = excelHref;
+  elements.topCsvDownloadLink.href = csvHref;
 }
 
 function reasonListHtml(reasons = []) {
