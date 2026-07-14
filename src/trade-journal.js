@@ -79,6 +79,9 @@ export async function updateTradeJournal(scan, config = appConfig) {
     });
   }
   const rows = uniqueScannedRows(scan, settings.scopeListId);
+  const scopeRowBySymbol = new Map(
+    rows.map((row) => [row.yahooSymbol || row.symbol, row])
+  );
   const rowBySymbol = new Map(
     allScannedRows(scan).map((row) => [row.yahooSymbol || row.symbol, row])
   );
@@ -252,7 +255,7 @@ export async function updateTradeJournal(scan, config = appConfig) {
 
   const retainedCandidates = [];
   for (const candidate of candidates) {
-    const row = rowBySymbol.get(candidate.yahooSymbol || candidate.symbol);
+    const row = scopeRowBySymbol.get(candidate.yahooSymbol || candidate.symbol);
     const qualityPass = Boolean(row && rowPassesTradeQuality(row, settings));
     const decision = candidateEntryDecision(candidate, row || {}, config, { qualityPass });
     applyCandidateDecision(candidate, decision, scan);
@@ -266,7 +269,7 @@ export async function updateTradeJournal(scan, config = appConfig) {
 
   let rotationScheduled = false;
   for (const candidate of [...candidates].sort((a, b) => b.rank - a.rank)) {
-    const row = rowBySymbol.get(candidate.yahooSymbol || candidate.symbol);
+    const row = scopeRowBySymbol.get(candidate.yahooSymbol || candidate.symbol);
     if (!row) continue;
     const linkedRotation = rotationExecutionForCandidate(candidate, trades);
     if (candidate.rotation?.sourceTradeId && !linkedRotation) {
@@ -536,8 +539,8 @@ function createPendingEntry(
   const sourceLists = row.sourceLists || [row.listLabel].filter(Boolean);
   return {
     id: `${row.symbol}-${row.asOf}-${Date.now()}`,
-    listId: row.listId,
-    listLabel: sourceLists.join(", "),
+    listId: settings.scopeListId,
+    listLabel: settings.scopeLabel,
     sourceLists,
     tradeScope: settings.scopeListId,
     tradeScopeLabel: settings.scopeLabel,
@@ -1310,6 +1313,8 @@ function migrateTradeMetadata(trades) {
   for (const trade of trades) {
     trade.tradeScope = inferTradeScope(trade);
     trade.tradeScopeLabel = TRADE_SCOPE_LABELS[trade.tradeScope];
+    trade.listId = trade.tradeScope;
+    trade.listLabel = trade.tradeScopeLabel;
     trade.tradeQualityMode = trade.tradeQualityMode || "LEGACY";
     trade.tradeQualityLabel = trade.tradeQualityLabel || "Legacy trade";
     trade.industry = trade.industry || trade.entrySnapshot?.industry || "Unknown";
@@ -1501,6 +1506,8 @@ function upsertCandidate(candidates, row, scan, settings, existing, seed = null)
     name: row.name,
     industry: row.industry || "Unknown",
     sourceLists: row.sourceLists || [row.listLabel].filter(Boolean),
+    listId: settings.scopeListId,
+    listLabel: settings.scopeLabel,
     tradeScope: settings.scopeListId,
     tradeScopeLabel: settings.scopeLabel,
     firstSignalDate: seed?.firstSignalDate || row.asOf,
@@ -1510,6 +1517,10 @@ function upsertCandidate(candidates, row, scan, settings, existing, seed = null)
     firstSeenAt: seed?.firstSeenAt || scan.scannedAt
   };
   target.firstSignalDate = target.firstSignalDate || seed?.firstSignalDate || row.asOf;
+  target.listId = settings.scopeListId;
+  target.listLabel = settings.scopeLabel;
+  target.tradeScope = settings.scopeListId;
+  target.tradeScopeLabel = settings.scopeLabel;
   target.firstSignalClose = target.firstSignalClose ?? seed?.firstSignalClose ?? row.close;
   target.firstSignalRank = target.firstSignalRank ?? seed?.firstSignalRank ?? candidateRank(row);
   target.firstFundamentalScore =
@@ -1601,11 +1612,7 @@ function executionRow(trade, row, latestMarketClose) {
 }
 
 function visibleTradesForSettings(trades, settings) {
-  return trades.filter(
-    (trade) =>
-      ["PENDING_ENTRY", "OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status) ||
-      tradeMatchesSettings(trade, settings)
-  );
+  return trades.filter((trade) => tradeMatchesSettings(trade, settings));
 }
 
 function tradeMatchesSettings(trade, settings) {

@@ -374,7 +374,7 @@ function renderPositions(payload) {
       return `
         <tr class="${rowRiskClass}" data-position-index="${index}" title="Open details">
           <td><span class="pill ${escapeHtml(displayStatus)}">${escapeHtml(displayStatus.replaceAll("_", " "))}</span></td>
-          <td class="symbolCell"><strong>${escapeHtml(trade.symbol)}</strong><span>${escapeHtml(trade.listLabel || "")}</span>${trade.addOns?.length ? `<span>${trade.addOns.length} winner add${trade.addOns.length === 1 ? "" : "s"}</span>` : ""}</td>
+          <td class="symbolCell"><strong>${escapeHtml(trade.symbol)}</strong><span>${escapeHtml(trade.tradeScopeLabel || trade.listLabel || "")}</span>${trade.addOns?.length ? `<span>${trade.addOns.length} winner add${trade.addOns.length === 1 ? "" : "s"}</span>` : ""}</td>
           <td>${escapeHtml(signalDate)}</td>
           <td>${escapeHtml(trade.entryDate || "Waiting")}</td>
           <td>${fmt(trade.entryPrice)}</td>

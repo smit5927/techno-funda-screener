@@ -88,6 +88,7 @@ Live mode is baseline based:
 - Weekly RS below zero remains the compulsory exit; daily weakness remains an early-warning reference.
 - The cloud workflow runs the full prior-close scan at 08:00 IST. Lightweight, idempotent execution passes retry after 09:17 at staggered times from 09:21 through 10:10 IST, so delays in GitHub's free scheduled runners do not leave valid pending orders stuck. These passes reuse the saved closing scan and do not rescan the full market.
 - Every open-position row shows invested value and current market value. The website uses near-live one-minute quotes when available; the downloadable Excel records the latest processed EOD/execution value.
+- Trade scope is strict: candidate lookup, new orders, open-position display, Telegram trade alerts, and the trade sheet use only the currently selected universe. Source-list memberships remain audit metadata and cannot admit an out-of-scope waiting candidate.
 
 Position sizing uses:
 
