@@ -84,7 +84,7 @@ const elements = {
   detailBackdrop: document.querySelector("#detailBackdrop")
 };
 
-elements.refreshButton.addEventListener("click", loadResults);
+elements.refreshButton.addEventListener("click", refreshPublishedData);
 elements.scanButton.addEventListener("click", () => runScan());
 elements.searchInput.addEventListener("input", (event) => {
   state.search = event.target.value.trim().toLowerCase();
@@ -157,8 +157,8 @@ document.addEventListener("visibilitychange", () => {
   if (!document.hidden && cloudMode) fetchLiveMtm();
 });
 
-await loadResults();
 configureMode();
+await loadResults();
 
 async function loadResults() {
   if (staticMode) {
@@ -817,6 +817,20 @@ function renderCandidates(payload) {
   elements.candidatesEmpty.classList.toggle("visible", candidates.length === 0);
 }
 
+async function refreshPublishedData() {
+  elements.refreshButton.disabled = true;
+  const previousLabel = elements.refreshButton.textContent;
+  elements.refreshButton.textContent = "Checking...";
+  try {
+    await loadResults();
+  } catch (error) {
+    elements.scanMeta.textContent = `Update check failed: ${error.message}`;
+  } finally {
+    elements.refreshButton.disabled = false;
+    elements.refreshButton.textContent = previousLabel || "Check Updates";
+  }
+}
+
 function renderCandidateDecisions(payload) {
   const decisions = (payload?.candidateDecisionLog || []).slice(0, 50);
   elements.candidateDecisionsBody.innerHTML = decisions
@@ -1180,8 +1194,9 @@ function configureMode() {
     elements.tradeSettingsPanel.hidden = true;
   }
   if (!staticMode) return;
-  elements.scanButton.textContent = "Refresh Latest";
-  elements.scanButton.title = "Prior-close scan runs at 08:00 IST; lightweight 09:17 execution retries run automatically after market open";
+  elements.scanButton.hidden = true;
+  elements.refreshButton.textContent = "Check Updates";
+  elements.refreshButton.title = "Reloads the latest automatically published scan and near-live position values; it does not start a new scan";
   if (!cloudMode) elements.editListButton.hidden = true;
   if (elements.accessCodeInput) {
     elements.accessCodeInput.value = localStorage.getItem("tfAccessCode") || "";

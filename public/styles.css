@@ -188,6 +188,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   border-radius: 7px;
 }
 .customListPanel[hidden], .tradeSettingsPanel[hidden], .telegramPanel[hidden] { display: none; }
+.actions button[hidden] { display: none; }
 .customListPanel textarea {
   width: 100%;
   resize: vertical;
