@@ -37,6 +37,7 @@ const elements = {
   logoutButton: document.querySelector("#logoutButton"),
   accountName: document.querySelector("#accountName"),
   installAppButton: document.querySelector("#installAppButton"),
+  installHelpDialog: document.querySelector("#installHelpDialog"),
   adminNavButton: document.querySelector("#adminNavButton"),
   openCreateUserButton: document.querySelector("#openCreateUserButton"),
   cancelCreateUserButton: document.querySelector("#cancelCreateUserButton"),
@@ -79,11 +80,15 @@ elements.installAppButton.addEventListener("click", installApp);
 window.addEventListener("beforeinstallprompt", (event) => {
   event.preventDefault();
   installPrompt = event;
-  elements.installAppButton.hidden = false;
+  updateInstallButton();
 });
 window.addEventListener("appinstalled", () => {
   installPrompt = null;
-  elements.installAppButton.hidden = true;
+  updateInstallButton();
+});
+
+client.auth.onAuthStateChange((_event, session) => {
+  window.TF_ACCESS_TOKEN = session?.access_token || "";
 });
 
 if ("serviceWorker" in navigator) {
@@ -192,20 +197,28 @@ async function verifyMfa(event) {
 }
 
 async function resumeSession() {
-  const { data } = await client.auth.getSession();
-  if (!data.session) {
+  const { data: stored } = await client.auth.getSession();
+  if (!stored.session) {
     showAuthPanel("login");
     return;
   }
-  window.TF_ACCESS_TOKEN = data.session.access_token;
+
+  window.TF_ACCESS_TOKEN = stored.session.access_token;
   try {
-    const response = await apiGet("meta");
+    const refreshed = await client.auth.refreshSession();
+    if (refreshed.data.session) window.TF_ACCESS_TOKEN = refreshed.data.session.access_token;
+    const response = await apiGetWithRetry("meta");
     await showApplication(response.profile);
-  } catch {
-    await client.auth.signOut({ scope: "local" });
-    window.TF_ACCESS_TOKEN = "";
+  } catch (error) {
+    if ([401, 403, 409].includes(Number(error?.status))) {
+      await client.auth.signOut({ scope: "local" });
+      window.TF_ACCESS_TOKEN = "";
+      showAuthPanel("login");
+      setAuthStatus("Please verify ID, password and OTP again.");
+      return;
+    }
     showAuthPanel("login");
-    setAuthStatus("Please verify ID, password and OTP again.");
+    setAuthStatus("Your login is saved. Check the internet connection and reload; no settings were deleted.", true);
   }
 }
 
@@ -215,6 +228,7 @@ async function showApplication(profile) {
   elements.appRoot.hidden = false;
   elements.accountName.textContent = profile.displayName || profile.username;
   elements.adminNavButton.hidden = profile.role !== "admin";
+  updateInstallButton();
   document.querySelector(".accessRow")?.setAttribute("hidden", "");
   ["tradeAccessCodeInput", "telegramAccessCodeInput"].forEach((id) => {
     const input = document.getElementById(id);
@@ -222,7 +236,7 @@ async function showApplication(profile) {
   });
   if (!appLoaded) {
     appLoaded = true;
-    await import("./app.js?v=20260714-mobile-auth");
+    await import("./app.js?v=20260714-session-persistence");
   }
 }
 
@@ -369,11 +383,19 @@ function saveBlob(blob, filename) {
 }
 
 async function installApp() {
-  if (!installPrompt) return;
+  if (!installPrompt) {
+    elements.installHelpDialog?.showModal();
+    return;
+  }
   installPrompt.prompt();
   await installPrompt.userChoice;
   installPrompt = null;
-  elements.installAppButton.hidden = true;
+  updateInstallButton();
+}
+
+function updateInstallButton() {
+  const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  elements.installAppButton.hidden = standalone;
 }
 
 async function apiGet(view) {
@@ -381,8 +403,26 @@ async function apiGet(view) {
   if (view) url.searchParams.set("view", view);
   const response = await window.fetch(url, { cache: "no-store" });
   const payload = await response.json().catch(() => ({}));
-  if (!response.ok || payload.error) throw new Error(payload.error || `Request failed (${response.status})`);
+  if (!response.ok || payload.error) {
+    const error = new Error(payload.error || `Request failed (${response.status})`);
+    error.status = response.status;
+    throw error;
+  }
   return payload;
+}
+
+async function apiGetWithRetry(view, attempts = 3) {
+  let lastError;
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    try {
+      return await apiGet(view);
+    } catch (error) {
+      lastError = error;
+      if ([401, 403, 409].includes(Number(error?.status)) || attempt === attempts - 1) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 600 * (attempt + 1)));
+    }
+  }
+  throw lastError;
 }
 
 async function apiPost(body, authenticated = true) {

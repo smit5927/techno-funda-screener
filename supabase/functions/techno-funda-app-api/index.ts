@@ -1,6 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.110.4";
 import { calculatePositionMtm, summarizeLivePositions } from "./live-mtm.js";
+import { sessionActivationUpdates, sessionIsRejected } from "./session-policy.js";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -150,9 +151,10 @@ async function activateSession(context: any, request: Request) {
   if (!isUuid(sessionId)) throw httpError("Session identifier is missing", 401);
 
   const now = new Date().toISOString();
+  const sessionUpdates = sessionActivationUpdates(context.profile, sessionId, now);
   const { error } = await admin()
     .from("app_profiles")
-    .update({ active_session_id: sessionId, last_login_at: now })
+    .update(sessionUpdates)
     .eq("user_id", context.user.id)
     .eq("status", "active");
   if (error) throw error;
@@ -160,7 +162,7 @@ async function activateSession(context: any, request: Request) {
     sessionId,
     userAgent: request.headers.get("user-agent") || ""
   });
-  return { ok: true, profile: publicProfile({ ...context.profile, active_session_id: sessionId, last_login_at: now }) };
+  return { ok: true, profile: publicProfile({ ...context.profile, ...sessionUpdates }) };
 }
 
 async function createMember(context: any, body: any) {
@@ -486,7 +488,7 @@ async function requireUser(request: Request, options: { activeSession: boolean }
     .maybeSingle();
   if (profileError) throw profileError;
   if (!profile || profile.status !== "active") throw httpError("Account is not active", 403);
-  if (options.activeSession && profile.active_session_id !== claims.session_id) {
+  if (sessionIsRejected(profile, claims, options.activeSession)) {
     throw httpError("This account is active on another device. Please log in again here to transfer access.", 409);
   }
   return { token, user: data.user, profile, claims };

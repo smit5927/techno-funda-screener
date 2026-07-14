@@ -10,7 +10,7 @@
     <title>Techno Funda Screener</title>
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="app-icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css?v=20260714-mobile-auth" />
+    <link rel="stylesheet" href="styles.css?v=20260714-session-persistence" />
   </head>
   <body>
     <section id="authGate" class="authGate" aria-live="polite">
@@ -59,11 +59,11 @@
         <p id="scanMeta">Waiting for first scan</p>
       </div>
       <div class="actions">
-        <button id="installAppButton" type="button" hidden>Install App</button>
+        <button id="installAppButton" class="installAppButton" type="button" title="Install Techno Funda on this device" hidden><span aria-hidden="true">+</span> Install</button>
         <span id="accountName" class="accountName"></span>
         <button id="logoutButton" type="button">Log out</button>
-        <button id="refreshButton" class="primaryAction" type="button" title="Reload the latest published scan and current position values"><span aria-hidden="true">&#8635;</span> Check Updates</button>
-        <button id="scanButton" type="button" title="Run scan now">Run Scan</button>
+        <button id="refreshButton" class="primaryAction" type="button" title="Reload the latest published scan and current position values"><span aria-hidden="true">&#8635;</span> Update</button>
+        <button id="scanButton" type="button" title="Run scan now">Scan</button>
       </div>
     </header>
 
@@ -456,11 +456,20 @@
 
     <div id="detailBackdrop" class="detailBackdrop" aria-hidden="true"></div>
     <aside id="detailPanel" class="detailPanel" aria-live="polite" aria-label="Stock details"></aside>
+    <dialog id="installHelpDialog" class="installHelpDialog">
+      <form method="dialog">
+        <div class="installHelpHeading"><span>APP INSTALL</span><h2>Add Techno Funda to this device</h2></div>
+        <p><strong>Android Chrome:</strong> open the browser menu and choose Install app or Add to Home screen.</p>
+        <p><strong>iPhone Safari:</strong> tap Share, then Add to Home Screen.</p>
+        <p><strong>PC Chrome:</strong> use the install icon in the address bar.</p>
+        <button type="submit">Close</button>
+      </form>
+    </dialog>
     </div>
 
     <script src="vendor/supabase.js"></script>
     <script src="vendor/exceljs.min.js"></script>
     <script src="mobile-config.js"></script>
-    <script src="auth.js?v=20260714-mobile-auth" type="module"></script>
+    <script src="auth.js?v=20260714-session-persistence" type="module"></script>
   </body>
 </html>
