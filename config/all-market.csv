@@ -82,7 +82,6 @@ AGIIL,Agi Infra Limited,NSE Equity,EQ,INE976R01033,true
 AGL,Allcargo Global Limited,NSE Equity,BE,INE1YPB01014,true
 AGRITECH,Agri-Tech (India) Limited,NSE Equity,BE,INE449G01018,true
 AGROPHOS,Agro Phos India Limited,NSE Equity,EQ,INE740V01019,true
-AGSTRA,AGS Transact Technologies Limited,NSE Equity,BZ,INE583L01014,true
 AHCL,Anlon Healthcare Limited,NSE Equity,EQ,INE0Y8W01025,true
 AHLADA,Ahlada Engineers Limited,NSE Equity,EQ,INE00PV01013,true
 AHLEAST,Asian Hotels (East) Limited,NSE Equity,EQ,INE926K01017,true
@@ -222,6 +221,7 @@ AUBANK,AU Small Finance Bank Limited,Financial Services,EQ,INE949L01017,true
 AURIONPRO,Aurionpro Solutions Limited,NSE Equity,EQ,INE132H01018,true
 AUROPHARMA,Aurobindo Pharma Limited,Healthcare,EQ,INE406A01037,true
 AURUM,Aurum PropTech Limited,NSE Equity,EQ,INE898S01029,true
+AURUS,AURUS GEM CORPORATION LIMITED,NSE Equity,EQ,INE142K01011,true
 AUSOMENT,Ausom Enterprise Limited,NSE Equity,BE,INE218C01016,true
 AUTOAXLES,Automotive Axles Limited,NSE Equity,EQ,INE449A01011,true
 AUTOIND,Autoline Industries Limited,NSE Equity,BE,INE718H01014,true
@@ -307,7 +307,6 @@ BESTAGRO,Best Agrolife Limited,NSE Equity,EQ,INE052T01021,true
 BETA,Beta Drugs Limited,NSE Equity,EQ,INE351Y01019,true
 BFINVEST,BF Investment Limited,NSE Equity,EQ,INE878K01010,true
 BFUTILITIE,BF Utilities Limited,NSE Equity,EQ,INE243D01012,true
-BGLOBAL,Bharatiya Global Infomedia Limited,NSE Equity,BZ,INE224M01013,true
 BGRENERGY,BGR Energy Systems Limited,NSE Equity,BE,INE661I01014,true
 BHAGCHEM,Bhagiradha Chemicals & Industries Limited,NSE Equity,EQ,INE414D01027,true
 BHAGERIA,Bhageria Industries Limited,NSE Equity,BE,INE354C01027,true
@@ -440,12 +439,10 @@ CIFL,Capital India Finance Limited,NSE Equity,EQ,INE345H01024,true
 CINELINE,Cineline India Limited,NSE Equity,EQ,INE704H01022,true
 CINEVISTA,Cinevista Limited,NSE Equity,EQ,INE039B01026,true
 CIPLA,Cipla Limited,Healthcare,EQ,INE059A01026,true
-CLCIND,CLC Industries Limited,NSE Equity,BE,INE376C01038,true
 CLEAN,Clean Science and Technology Limited,Chemicals,EQ,INE227W01023,true
 CLEANMAX,Clean Max Enviro Energy Solutions Limited,NSE Equity,EQ,INE647U01026,true
 CLEDUCATE,CL Educate Limited,NSE Equity,BE,INE201M01029,true
 CLSEL,Chaman Lal Setia Exports Limited,NSE Equity,EQ,INE419D01026,true
-CMICABLES,CMI Limited,NSE Equity,BZ,INE981B01011,true
 CMPDI,Central Mine Planning & Design Institute Limited,NSE Equity,EQ,INE05HV01027,true
 CMRGREEN,CMR Green Technologies Limited,NSE Equity,EQ,INE00WV01027,true
 CMSINFO,CMS Info Systems Limited,NSE Equity,EQ,INE925R01014,true
@@ -560,7 +557,6 @@ DIGIDRIVE,Digidrive Distributors Limited,NSE Equity,EQ,INE0PSC01024,true
 DIGISPICE,DiGiSPICE Technologies Limited,NSE Equity,BE,INE927C01020,true
 DIGITIDE,Digitide Solutions Limited,NSE Equity,EQ,INE0U4701011,true
 DIGJAMLMTD,Digjam Limited,NSE Equity,EQ,INE731U01028,true
-DIL,Debock Industries Limited,NSE Equity,BZ,INE411Y01011,true
 DISAQ,Disa India Limited,NSE Equity,EQ,INE131C01011,true
 DISHTV,Dish TV India Limited,NSE Equity,BE,INE836F01026,true
 DIVGIITTS,Divgi Torqtransfer Systems Limited,NSE Equity,EQ,INE753U01022,true
@@ -602,7 +598,6 @@ EBGNG,GNG Electronics Limited,NSE Equity,EQ,INE18JU01028,true
 ECLERX,eClerx Services Limited,Services,EQ,INE738I01010,true
 ECOSMOBLTY,Ecos (India) Mobility & Hospitality Limited,NSE Equity,BE,INE06HJ01020,true
 EDELWEISS,Edelweiss Financial Services Limited,NSE Equity,EQ,INE532F01054,true
-EDUCOMP,Educomp Solutions Limited,NSE Equity,BZ,INE216H01027,true
 EFCIL,EFC (I) Limited,NSE Equity,EQ,INE886D01026,true
 EICHERMOT,Eicher Motors Limited,Automobile and Auto Components,EQ,INE066A01021,true
 EIDPARRY,EID Parry India Limited,Fast Moving Consumer Goods,EQ,INE126A01031,true
@@ -674,7 +669,6 @@ FACT,Fertilizers and Chemicals Travancore Limited,Chemicals,EQ,INE188A01015,true
 FAIRCHEMOR,Fairchem Organics Limited,NSE Equity,BE,INE0DNW01011,true
 FAZE3Q,Faze Three Limited,NSE Equity,EQ,INE963C01033,true
 FCL,Fineotex Chemical Limited,NSE Equity,EQ,INE045J01034,true
-FCONSUMER,Future Consumer Limited,NSE Equity,BZ,INE220J01025,true
 FCSSOFT,FCS Software Solutions Limited,NSE Equity,BE,INE512B01022,true
 FDC,FDC Limited,NSE Equity,EQ,INE258B01022,true
 FEDDERSHOL,Fedders Holding Limited,NSE Equity,EQ,INE417D01020,true
@@ -739,13 +733,11 @@ GEEKAYWIRE,Geekay Wires Limited,NSE Equity,EQ,INE669X01032,true
 GEMAROMA,Gem Aromatics Limited,NSE Equity,EQ,INE06XZ01023,true
 GENCON,Generic Engineering Construction and Projects Limited,NSE Equity,EQ,INE854S01022,true
 GENESYS,Genesys International Corporation Limited,NSE Equity,EQ,INE727B01026,true
-GENSOL,Gensol Engineering Limited,NSE Equity,BZ,INE06H201014,true
 GENUSPAPER,Genus Paper & Boards Limited,NSE Equity,EQ,INE949P01018,true
 GENUSPOWER,Genus Power Infrastructures Limited,NSE Equity,EQ,INE955D01029,true
 GEOJITFSL,Geojit Financial Services Limited,NSE Equity,EQ,INE007B01023,true
 GESHIP,The Great Eastern Shipping Company Limited,Services,EQ,INE017A01032,true
 GFLLIMITED,GFL Limited,NSE Equity,EQ,INE538A01037,true
-GFSTEELS,Grand Foundry Limited,NSE Equity,BE,INE534A01028,true
 GHCL,GHCL Limited,NSE Equity,EQ,INE539A01019,true
 GHCLTEXTIL,GHCL Textiles Limited,NSE Equity,EQ,INE0PA801013,true
 GICHSGFIN,GIC Housing Finance Limited,NSE Equity,EQ,INE289B01019,true
@@ -960,7 +952,6 @@ IL&FSTRANS,IL&FS Transportation Networks Limited,NSE Equity,BZ,INE975G01012,true
 IMAGICAA,Imagicaaworld Entertainment Limited,NSE Equity,EQ,INE172N01012,true
 IMFA,Indian Metals & Ferro Alloys Limited,NSE Equity,EQ,INE919H01018,true
 IMPAL,India Motor Parts and Accessories Limited,NSE Equity,EQ,INE547E01014,true
-IMPEXFERRO,Impex Ferro Tech Limited,NSE Equity,BZ,INE691G01015,true
 INA,Insolation Energy Limited,NSE Equity,EQ,INE0LGX01024,true
 INCREDIBLE,INCREDIBLE INDUSTRIES LIMITED,NSE Equity,EQ,INE452L01012,true
 INDBANK,Indbank Merchant Banking Services Limited,NSE Equity,EQ,INE841B01017,true
@@ -1262,7 +1253,6 @@ LUPIN,Lupin Limited,Healthcare,EQ,INE326A01037,true
 LUXIND,Lux Industries Limited,NSE Equity,EQ,INE150G01020,true
 LXCHEM,Laxmi Organic Industries Limited,NSE Equity,EQ,INE576O01020,true
 LYKALABS,Lyka Labs Limited,NSE Equity,BE,INE933A01014,true
-LYPSAGEMS,Lypsa Gems & Jewellery Limited,NSE Equity,EQ,INE142K01011,true
 M&M,Mahindra & Mahindra Limited,Automobile and Auto Components,EQ,INE101A01026,true
 M&MFIN,Mahindra & Mahindra Financial Services Limited,Financial Services,EQ,INE774D01024,true
 MAANALU,Maan Aluminium Limited,NSE Equity,EQ,INE215I01027,true
@@ -1416,7 +1406,6 @@ MUTHOOTMF,Muthoot Microfin Limited,NSE Equity,EQ,INE046W01019,true
 MVGJL,Manoj Vaibhav Gems N Jewellers Limited,NSE Equity,EQ,INE0KNT01012,true
 MWL,Mangalam Worldwide Limited,NSE Equity,EQ,INE0JYY01029,true
 NACLIND,NACL Industries Limited,NSE Equity,EQ,INE295D01020,true
-NAGAFERT,Nagarjuna Fertilizers and Chemicals Limited,NSE Equity,BZ,INE454M01024,true
 NAGREEKCAP,Nagreeka Capital & Infrastructure Limited,NSE Equity,BE,INE245I01016,true
 NAGREEKEXP,Nagreeka Exports Limited,NSE Equity,EQ,INE123B01028,true
 NAHARCAP,Nahar Capital and Financial Services Limited,NSE Equity,EQ,INE049I01012,true
@@ -1688,7 +1677,6 @@ QUADFUTURE,Quadrant Future Tek Limited,NSE Equity,EQ,INE0LRY01011,true
 QUESS,Quess Corp Limited,NSE Equity,EQ,INE615P01015,true
 QUICKHEAL,Quick Heal Technologies Limited,NSE Equity,BE,INE306L01010,true
 QUINT,Quint Digital Limited,NSE Equity,EQ,INE641R01017,true
-QUINTEGRA,Quintegra Solutions Limited,NSE Equity,BE,INE033B01011,true
 RACE,Race Eco Chain Limited,NSE Equity,EQ,INE084Q01012,true
 RACLGEAR,RACL Geartech Limited,NSE Equity,EQ,INE704B01017,true
 RADAAN,Radaan Mediaworks India Limited,NSE Equity,EQ,INE874F01027,true
@@ -1707,7 +1695,6 @@ RAJRATAN,Rajratan Global Wire Limited,NSE Equity,EQ,INE451D01029,true
 RAJRILTD,Raj Rayon Industries Limited,NSE Equity,BE,INE533D01032,true
 RAJSREESUG,Rajshree Sugars & Chemicals Limited,NSE Equity,EQ,INE562B01019,true
 RAJTV,Raj Television Network Limited,NSE Equity,EQ,INE952H01027,true
-RAJVIR,Rajvir Industries Limited,NSE Equity,BZ,INE011H01014,true
 RALLIS,Rallis India Limited,NSE Equity,EQ,INE613A01020,true
 RAMANEWS,Shree Rama Newsprint Limited,NSE Equity,EQ,INE278B01020,true
 RAMAPHO,Rama Phosphates Limited,NSE Equity,EQ,INE809A01032,true
@@ -1742,7 +1729,6 @@ RELCHEMQ,Reliance Chemotex Industries Limited,NSE Equity,EQ,INE750D01016,true
 RELIABLE,Reliable Data Services Limited,NSE Equity,EQ,INE375Y01018,true
 RELIANCE,Reliance Industries Limited,Oil Gas & Consumable Fuels,EQ,INE002A01018,true
 RELIGARE,Religare Enterprises Limited,NSE Equity,EQ,INE621H01010,true
-RELINFRA,Reliance Infrastructure Limited,NSE Equity,BE,INE036A01016,true
 RELTD,Ravindra Energy Limited,NSE Equity,EQ,INE206N01018,true
 REMSONSIND,Remsons Industries Limited,NSE Equity,EQ,INE474C01023,true
 RENUKA,Shree Renuka Sugars Limited,NSE Equity,EQ,INE087H01022,true
@@ -1808,7 +1794,7 @@ RVNL,Rail Vikas Nigam Limited,Construction,EQ,INE415G01027,true
 RVTH,Revathi Equipment India Limited,NSE Equity,EQ,INE0DAB01012,true
 S&SPOWER,S&S Power Switchgears Limited,NSE Equity,EQ,INE902B01017,true
 SAATVIKGL,Saatvik Green Energy Limited,NSE Equity,EQ,INE13B501022,true
-SABEVENTS,Sab Events & Governance Now Media Limited,NSE Equity,BE,INE860T01019,true
+SABEVENTS,Sab Events & Governance Now Media Limited,NSE Equity,EQ,INE860T01019,true
 SADBHAV,Sadbhav Engineering Limited,NSE Equity,EQ,INE226H01026,true
 SADBHIN,Sadbhav Infrastructure Project Limited,NSE Equity,BE,INE764L01010,true
 SADHNANIQ,Sadhana Nitrochem Limited,NSE Equity,BE,INE888C01040,true
@@ -1969,7 +1955,6 @@ SJS,S.J.S. Enterprises Limited,NSE Equity,EQ,INE284S01014,true
 SJVN,SJVN Limited,Power,EQ,INE002L01015,true
 SKFINDIA,SKF India Limited,NSE Equity,EQ,INE640A01023,true
 SKFINDUS,SKF India (Industrial) Limited,NSE Equity,EQ,INE2J8701016,true
-SKIL,SKIL Infrastructure Limited,NSE Equity,BZ,INE429F01012,true
 SKIPPER,Skipper Limited,NSE Equity,EQ,INE439E01022,true
 SKMEGGPROD,SKM Egg Products Export (India) Limited,NSE Equity,EQ,INE411D01023,true
 SKYGOLD,SKY GOLD AND DIAMONDS LIMITED,NSE Equity,EQ,INE01IU01018,true
@@ -2014,7 +1999,6 @@ SRF,SRF Limited,Chemicals,EQ,INE647A01010,true
 SRGHFL,SRG Housing Finance Limited,NSE Equity,EQ,INE559N01010,true
 SRHHYPOLTD,Sree Rayalaseema Hi-Strength Hypo Limited,NSE Equity,EQ,INE917H01012,true
 SRM,SRM Contractors Limited,NSE Equity,EQ,INE0R6Z01013,true
-SRPL,Shree Ram Proteins Limited,NSE Equity,BZ,INE008Z01020,true
 SRTL,Shree Ram Twistex Limited,NSE Equity,EQ,INE19GK01015,true
 SSDL,Saraswati Saree Depot Limited,NSE Equity,EQ,INE0PQ101010,true
 SSWL,Steel Strips Wheels Limited,NSE Equity,EQ,INE802C01033,true
@@ -2245,7 +2229,6 @@ UNITDSPR,United Spirits Limited,Fast Moving Consumer Goods,EQ,INE854D01024,true
 UNITECH,Unitech Limited,NSE Equity,EQ,INE694A01020,true
 UNITEDPOLY,United Polyfab Gujarat Limited,NSE Equity,BE,INE368U01029,true
 UNITEDTEA,The United Nilgiri Tea Estates Company Limited,NSE Equity,EQ,INE458F01011,true
-UNIVAFOODS,Univa Foods Limited,NSE Equity,BE,INE275F01019,true
 UNIVASTU,Univastu India Limited,NSE Equity,BE,INE562X01013,true
 UNIVCABLES,Universal Cables Limited,NSE Equity,EQ,INE279A01012,true
 UNIVPHOTO,Universus Photo Imagings Limited,NSE Equity,BE,INE03V001013,true
