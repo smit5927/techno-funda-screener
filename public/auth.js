@@ -251,7 +251,7 @@ async function showApplication(profile) {
   });
   if (!appLoaded) {
     appLoaded = true;
-    await import("./app.js?v=20260715-decision-desk");
+    await import("./app.js?v=20260715-daily-pnl");
   }
 }
 
@@ -352,7 +352,7 @@ async function downloadTradeSheet(event, format) {
     const payload = await apiGet("state");
     const state = payload.state || {};
     const trades = Array.isArray(state.trades) ? state.trades : [];
-    const tradeRows = trades.map(tradeSheetRow);
+    const tradeRows = trades.map((trade) => tradeSheetRow(trade, state));
     if (format === "csv") {
       const headers = tradeSheetColumns().map(({ header }) => header);
       const rows = tradeRows.map((row) => tradeSheetColumns().map(({ key }) => row[key]));
@@ -389,28 +389,52 @@ function tradeSheetColumns() {
     ["Entry Price", "entryPrice", 14], ["Quantity", "quantity", 12], ["Original Quantity", "originalQuantity", 16],
     ["Exit Date", "exitDate", 16], ["Exit Price", "exitPrice", 14], ["Invested Value", "investedValue", 17],
     ["Current Value", "currentValue", 17], ["Last Price", "lastPrice", 14], ["Unrealized P&L", "unrealizedPnl", 18],
-    ["Unrealized P&L %", "unrealizedPnlPct", 18], ["Partial Realized P&L", "partialRealizedPnl", 21],
+    ["Unrealized P&L %", "unrealizedPnlPct", 18], ["Today P&L", "dayPnl", 17], ["Today P&L %", "dayPnlPct", 17],
+    ["Partial Realized P&L", "partialRealizedPnl", 21],
     ["Final Realized P&L", "finalRealizedPnl", 20], ["Booked P&L Contribution", "bookedPnlContribution", 23],
     ["Total Position P&L", "totalPositionPnl", 20], ["Trailing Stop", "trailingStopPrice", 15],
     ["Management Decision", "managementDecision", 22], ["Reason", "reason", 80]
   ].map(([header, key, width]) => ({ header, key, width }));
 }
 
-function tradeSheetRow(trade) {
+function tradeSheetRow(trade, state = {}) {
   const closed = trade.status === "CLOSED";
   const partialRealizedPnl = Number(trade.realizedPnlToDate || 0);
   const finalRealizedPnl = closed ? Number(trade.pnl || 0) : null;
   const bookedPnlContribution = closed ? finalRealizedPnl : partialRealizedPnl;
   const unrealizedPnl = closed ? 0 : Number(trade.unrealizedPnl || 0);
+  const marketRow = tradeSheetMarketRow(state, trade);
+  const previousClose = Number(marketRow?.setupStrength?.pyramidStructure?.previousClose);
+  const lastPrice = Number(trade.lastPrice);
+  const quantity = Number(trade.quantity);
+  const dayPnl = !closed && previousClose > 0 && lastPrice > 0 && quantity > 0
+    ? (lastPrice - previousClose) * quantity
+    : null;
+  const dayPnlPct = !closed && previousClose > 0 && lastPrice > 0
+    ? (lastPrice / previousClose - 1) * 100
+    : null;
   return {
     ...trade,
     partialRealizedPnl,
     finalRealizedPnl,
     bookedPnlContribution,
+    dayPnl,
+    dayPnlPct,
     totalPositionPnl: bookedPnlContribution + unrealizedPnl,
     managementDecision: trade.latestManagementDecision?.action || "",
     reason: tradeSheetReason(trade)
   };
+}
+
+function tradeSheetMarketRow(state, trade) {
+  const symbol = String(trade?.symbol || "").replace(/\.(NS|BO)$/i, "");
+  for (const list of Object.values(state?.lists || {})) {
+    const row = (list?.results || []).find((item) =>
+      [item?.symbol, item?.yahooSymbol].some((value) => String(value || "").replace(/\.(NS|BO)$/i, "") === symbol)
+    );
+    if (row) return row;
+  }
+  return null;
 }
 
 function tradeSheetReason(trade) {

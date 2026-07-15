@@ -463,6 +463,7 @@ async function fetchQuote(symbol: string) {
     const response = await fetch(url, { headers: { "User-Agent": "Techno-Funda-Mobile/1.0" } });
     if (!response.ok) throw new Error(String(response.status));
     const result = (await response.json())?.chart?.result?.[0];
+    const previousClose = Number(result?.meta?.chartPreviousClose ?? result?.meta?.previousClose ?? result?.meta?.regularMarketPreviousClose);
     const times = result?.timestamp || [];
     const closes = result?.indicators?.quote?.[0]?.close || [];
     for (let index = closes.length - 1; index >= 0; index -= 1) {
@@ -470,6 +471,7 @@ async function fetchQuote(symbol: string) {
       if (!Number.isFinite(ltp) || ltp <= 0) continue;
       return {
         ltp,
+        previousClose: Number.isFinite(previousClose) && previousClose > 0 ? previousClose : null,
         asOf: Number.isFinite(Number(times[index])) ? new Date(Number(times[index]) * 1000).toISOString() : null,
         marketState: result?.meta?.marketState || "",
         source: "Yahoo 1m"

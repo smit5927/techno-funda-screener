@@ -724,6 +724,11 @@ body.detailOpen { overflow: hidden; }
 .decisionDeskLead > strong { display: block; margin-top: 3px; font-size: 21px; }
 .decisionDeskLead p { margin: 6px 0 0; color: var(--muted-strong); font-size: 14px; line-height: 1.48; }
 .decisionDeskLead b { color: var(--text); }
+.decisionPnlStrip { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); }
+.decisionPnlStrip > div { min-width: 0; padding: 11px 14px; background: var(--surface-raised); }
+.decisionPnlStrip span { display: block; color: var(--muted); font-size: 10px; font-weight: 800; text-transform: uppercase; }
+.decisionPnlStrip strong { display: block; margin-top: 4px; font-size: 18px; }
+.decisionPnlStrip small { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; line-height: 1.35; }
 .decisionLevelGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); }
 .decisionLevel { min-width: 0; padding: 11px 12px; background: var(--surface-muted); }
 .decisionLevel strong { display: block; margin-top: 4px; color: var(--text); font-size: 15px; overflow-wrap: anywhere; }
@@ -832,18 +837,20 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
   .dashboardPositionsTable th:nth-child(3), .dashboardPositionsTable td:nth-child(3),
   .dashboardPositionsTable th:nth-child(4), .dashboardPositionsTable td:nth-child(4),
   .dashboardPositionsTable th:nth-child(5), .dashboardPositionsTable td:nth-child(5),
-  .dashboardPositionsTable th:nth-child(9), .dashboardPositionsTable td:nth-child(9) { display: none; }
+  .dashboardPositionsTable th:nth-child(10), .dashboardPositionsTable td:nth-child(10) { display: none; }
   .dashboardPositionsTable th:nth-child(1) { width: 82px; }
   .dashboardPositionsTable th:nth-child(2) { width: 100px; }
   .dashboardPositionsTable th:nth-child(6), .dashboardPositionsTable th:nth-child(7) { width: 76px; }
-  .dashboardPositionsTable th:nth-child(8) { width: 98px; }
+  .dashboardPositionsTable th:nth-child(8), .dashboardPositionsTable th:nth-child(9) { width: 88px; }
   .dashboardPositionsTable th, .dashboardPositionsTable td { padding-inline: 5px; }
   .dashboardPositionsTable th:nth-child(6),
   .dashboardPositionsTable th:nth-child(7),
-  .dashboardPositionsTable th:nth-child(8) { font-size: 0; }
+  .dashboardPositionsTable th:nth-child(8),
+  .dashboardPositionsTable th:nth-child(9) { font-size: 0; }
   .dashboardPositionsTable th:nth-child(6)::after { content: "Invested"; font-size: 10px; }
   .dashboardPositionsTable th:nth-child(7)::after { content: "Current"; font-size: 10px; }
-  .dashboardPositionsTable th:nth-child(8)::after { content: "P&L"; font-size: 10px; }
+  .dashboardPositionsTable th:nth-child(8)::after { content: "Today"; font-size: 10px; }
+  .dashboardPositionsTable th:nth-child(9)::after { content: "Total"; font-size: 10px; }
   .listTabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: visible; }
   .listTabs button { min-width: 0; padding-inline: 4px; font-size: 11px; }
   .listActions { display: grid; width: 100%; grid-template-columns: repeat(3, minmax(0, 1fr)); align-self: stretch; }
@@ -903,20 +910,31 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
   .openPositionsTable th:nth-child(13), .openPositionsTable td:nth-child(13),
   .openPositionsTable th:nth-child(14), .openPositionsTable td:nth-child(14) { display: none; }
   .positionsTable:has(#positionsBody) th:nth-child(9),
-  .positionsTable:has(#positionsBody) td:nth-child(9) { display: table-cell; }
+  .positionsTable:has(#positionsBody) td:nth-child(9),
+  .positionsTable:has(#positionsBody) th:nth-child(10),
+  .positionsTable:has(#positionsBody) td:nth-child(10),
+  .positionsTable:has(#positionsBody) th:nth-child(11),
+  .positionsTable:has(#positionsBody) td:nth-child(11) { display: table-cell; }
+  .positionsTable:has(#positionsBody) th:nth-child(12),
+  .positionsTable:has(#positionsBody) td:nth-child(12),
   .positionsTable:has(#positionsBody) th:nth-child(13),
   .positionsTable:has(#positionsBody) td:nth-child(13),
   .positionsTable:has(#positionsBody) th:nth-child(14),
-  .positionsTable:has(#positionsBody) td:nth-child(14) { display: none; }
+  .positionsTable:has(#positionsBody) td:nth-child(14),
+  .positionsTable:has(#positionsBody) th:nth-child(15),
+  .positionsTable:has(#positionsBody) td:nth-child(15) { display: none; }
   .positionsTable:has(#positionsBody) th:nth-child(8),
   .positionsTable:has(#positionsBody) th:nth-child(9) { width: 76px; }
-  .positionsTable:has(#positionsBody) th:nth-child(10) { width: 96px; }
+  .positionsTable:has(#positionsBody) th:nth-child(10),
+  .positionsTable:has(#positionsBody) th:nth-child(11) { width: 88px; }
   .positionsTable:has(#positionsBody) th:nth-child(8),
   .positionsTable:has(#positionsBody) th:nth-child(9),
-  .positionsTable:has(#positionsBody) th:nth-child(10) { font-size: 0; }
+  .positionsTable:has(#positionsBody) th:nth-child(10),
+  .positionsTable:has(#positionsBody) th:nth-child(11) { font-size: 0; }
   .positionsTable:has(#positionsBody) th:nth-child(8)::after { content: "Invested"; font-size: 10px; }
   .positionsTable:has(#positionsBody) th:nth-child(9)::after { content: "Current"; font-size: 10px; }
-  .positionsTable:has(#positionsBody) th:nth-child(10)::after { content: "P&L"; font-size: 10px; }
+  .positionsTable:has(#positionsBody) th:nth-child(10)::after { content: "Today"; font-size: 10px; }
+  .positionsTable:has(#positionsBody) th:nth-child(11)::after { content: "Total"; font-size: 10px; }
   .openPositionsTable th:nth-child(1) { width: 78px; }
   .openPositionsTable th:nth-child(2) { width: 84px; }
   .openPositionsTable th:nth-child(8),

@@ -15,11 +15,15 @@ export function calculatePositionMtm(trade, quote = {}) {
   const fallbackPrice = finiteNumber(trade?.lastPrice);
   const quotedPrice = finiteNumber(quote?.ltp);
   const ltp = quotedPrice && quotedPrice > 0 ? quotedPrice : fallbackPrice;
+  const previousClose = finiteNumber(quote?.previousClose);
   const stopPrice =
     finiteNumber(trade?.trailingStopPrice) ?? finiteNumber(trade?.initialStopPrice);
   const hasPosition = entryPrice > 0 && quantity > 0 && ltp > 0;
   const unrealizedPnl = hasPosition ? (ltp - entryPrice) * quantity : null;
   const unrealizedPnlPct = hasPosition ? ((ltp / entryPrice) - 1) * 100 : null;
+  const hasPreviousClose = hasPosition && previousClose > 0;
+  const dayPnl = hasPreviousClose ? (ltp - previousClose) * quantity : null;
+  const dayPnlPct = hasPreviousClose ? ((ltp / previousClose) - 1) * 100 : null;
   const hasStop = hasPosition && stopPrice > 0;
   const distanceToStopPct = hasStop ? ((ltp - stopPrice) / ltp) * 100 : null;
   const downsideToStop = hasStop ? Math.max(0, (ltp - stopPrice) * quantity) : null;
@@ -37,6 +41,9 @@ export function calculatePositionMtm(trade, quote = {}) {
     quantity: round(quantity, 4),
     ltp: round(ltp),
     stopPrice: round(stopPrice),
+    previousClose: round(previousClose),
+    dayPnl: round(dayPnl),
+    dayPnlPct: round(dayPnlPct),
     unrealizedPnl: round(unrealizedPnl),
     unrealizedPnlPct: round(unrealizedPnlPct),
     investedValue: hasPosition ? round(entryPrice * quantity) : null,
@@ -55,6 +62,8 @@ export function summarizeLivePositions(positions, totalCapital) {
   const summary = (Array.isArray(positions) ? positions : []).reduce(
     (result, position) => {
       result.unrealizedPnl += finiteNumber(position?.unrealizedPnl) || 0;
+      result.dayPnl += finiteNumber(position?.dayPnl) || 0;
+      result.previousMarketValue += (finiteNumber(position?.previousClose) || 0) * (finiteNumber(position?.quantity) || 0);
       result.investedValue += finiteNumber(position?.investedValue) || 0;
       result.marketValue += finiteNumber(position?.marketValue) || 0;
       result.downsideToStops += finiteNumber(position?.downsideToStop) || 0;
@@ -67,6 +76,9 @@ export function summarizeLivePositions(positions, totalCapital) {
     {
       unrealizedPnl: 0,
       unrealizedPnlPct: 0,
+      dayPnl: 0,
+      dayPnlPct: 0,
+      previousMarketValue: 0,
       investedValue: 0,
       marketValue: 0,
       downsideToStops: 0,
@@ -79,6 +91,11 @@ export function summarizeLivePositions(positions, totalCapital) {
   );
 
   summary.unrealizedPnl = round(summary.unrealizedPnl);
+  summary.dayPnl = round(summary.dayPnl);
+  summary.dayPnlPct = summary.previousMarketValue > 0
+    ? round((summary.dayPnl / summary.previousMarketValue) * 100)
+    : 0;
+  summary.previousMarketValue = round(summary.previousMarketValue);
   summary.investedValue = round(summary.investedValue);
   summary.unrealizedPnlPct = summary.investedValue > 0
     ? round((summary.unrealizedPnl / summary.investedValue) * 100)

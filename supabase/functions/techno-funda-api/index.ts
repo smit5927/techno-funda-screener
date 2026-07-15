@@ -308,6 +308,7 @@ async function fetchNearLiveQuote(symbol: string) {
     if (!response.ok) throw new Error(`Quote ${symbol} returned ${response.status}`);
     const body = await response.json();
     const result = body?.chart?.result?.[0];
+    const previousClose = Number(result?.meta?.chartPreviousClose ?? result?.meta?.previousClose ?? result?.meta?.regularMarketPreviousClose);
     const timestamps = Array.isArray(result?.timestamp) ? result.timestamp : [];
     const closes = Array.isArray(result?.indicators?.quote?.[0]?.close)
       ? result.indicators.quote[0].close
@@ -318,6 +319,7 @@ async function fetchNearLiveQuote(symbol: string) {
       if (!Number.isFinite(ltp) || ltp <= 0) continue;
       return {
         ltp,
+        previousClose: Number.isFinite(previousClose) && previousClose > 0 ? previousClose : null,
         asOf: Number.isFinite(timestamp) ? new Date(timestamp * 1000).toISOString() : null,
         isLive: false,
         marketState: String(result?.meta?.marketState || ""),

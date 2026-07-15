@@ -448,24 +448,10 @@ function renderPositions(payload) {
   elements.positionsBody.innerHTML = trades
     .map((trade, index) => {
       const livePosition = findLivePosition(trade);
-      const displayPrice = Number.isFinite(livePosition?.ltp) ? livePosition.ltp : trade.lastPrice;
-      const pnl = Number.isFinite(livePosition?.unrealizedPnl)
-        ? livePosition.unrealizedPnl
-        : trade.unrealizedPnl;
-      const pnlPct = Number.isFinite(livePosition?.unrealizedPnlPct)
-        ? livePosition.unrealizedPnlPct
-        : trade.unrealizedPnlPct;
-      const investedValue = Number.isFinite(livePosition?.investedValue)
-        ? livePosition.investedValue
-        : trade.investedValue;
-      const currentValue = Number.isFinite(livePosition?.marketValue)
-        ? livePosition.marketValue
-        : Number.isFinite(trade.currentValue)
-          ? trade.currentValue
-          : Number.isFinite(displayPrice) && Number.isFinite(trade.quantity)
-            ? displayPrice * trade.quantity
-            : null;
-      const pnlClass = Number(pnl) > 0 ? "good" : Number(pnl) < 0 ? "bad" : "neutral";
+      const performance = positionPerformance(trade, livePosition);
+      const { displayPrice, investedValue, currentValue, dayPnl, dayPnlPct, totalPnl, totalPnlPct } = performance;
+      const dayPnlClass = Number(dayPnl) > 0 ? "good" : Number(dayPnl) < 0 ? "bad" : "neutral";
+      const totalPnlClass = Number(totalPnl) > 0 ? "good" : Number(totalPnl) < 0 ? "bad" : "neutral";
       const riskState = livePosition?.riskState || "STALE";
       const rowRiskClass = riskState === "BREACHED" ? "riskBreached" : riskState === "NEAR_STOP" ? "riskNear" : "";
       const quoteLabel = livePosition?.isLive ? "NEAR-LIVE 1M" : "EOD";
@@ -503,7 +489,8 @@ function renderPositions(payload) {
           <td class="quoteCell ${quoteTickClass}"><strong>${fmt(displayPrice)}</strong><small class="quoteSource">${quoteLabel}</small></td>
           <td>${compact(investedValue)}</td>
           <td><strong>${compact(currentValue)}</strong></td>
-          <td class="${pnlClass}">${compact(pnl)}${Number.isFinite(pnlPct) ? ` (${compact(pnlPct)}%)` : ""}</td>
+          <td class="${dayPnlClass}">${Number.isFinite(dayPnl) ? compact(dayPnl) : "NA"}${Number.isFinite(dayPnlPct) ? ` (${compact(dayPnlPct)}%)` : ""}</td>
+          <td class="${totalPnlClass}">${compact(totalPnl)}${Number.isFinite(totalPnlPct) ? ` (${compact(totalPnlPct)}%)` : ""}</td>
           <td>${fmt(trade.currentRank || trade.positionRank)}</td>
           <td>${fmt(trade.trailingStopPrice || trade.initialStopPrice)}<small class="riskState ${escapeHtml(riskState)}">${escapeHtml(stopRiskText)}</small></td>
           <td>${fmt(trade.currentRewardR)}</td>
@@ -536,18 +523,10 @@ function renderDashboardPositions(payload) {
   elements.dashboardPositionsBody.innerHTML = trades
     .map((trade, index) => {
       const livePosition = findLivePosition(trade);
-      const displayPrice = Number.isFinite(livePosition?.ltp) ? livePosition.ltp : trade.lastPrice;
-      const pnl = Number.isFinite(livePosition?.unrealizedPnl) ? livePosition.unrealizedPnl : trade.unrealizedPnl;
-      const pnlPct = Number.isFinite(livePosition?.unrealizedPnlPct) ? livePosition.unrealizedPnlPct : trade.unrealizedPnlPct;
-      const investedValue = Number.isFinite(livePosition?.investedValue) ? livePosition.investedValue : trade.investedValue;
-      const currentValue = Number.isFinite(livePosition?.marketValue)
-        ? livePosition.marketValue
-        : Number.isFinite(trade.currentValue)
-          ? trade.currentValue
-          : Number.isFinite(displayPrice) && Number.isFinite(trade.quantity)
-            ? displayPrice * trade.quantity
-            : null;
-      const pnlClass = Number(pnl) > 0 ? "good" : Number(pnl) < 0 ? "bad" : "neutral";
+      const performance = positionPerformance(trade, livePosition);
+      const { displayPrice, investedValue, currentValue, dayPnl, dayPnlPct, totalPnl, totalPnlPct } = performance;
+      const dayPnlClass = Number(dayPnl) > 0 ? "good" : Number(dayPnl) < 0 ? "bad" : "neutral";
+      const totalPnlClass = Number(totalPnl) > 0 ? "good" : Number(totalPnl) < 0 ? "bad" : "neutral";
       const riskState = livePosition?.riskState || "STALE";
       const rowRiskClass = riskState === "BREACHED" ? "riskBreached" : riskState === "NEAR_STOP" ? "riskNear" : "";
       const quoteLabel = livePosition?.isLive ? "NEAR-LIVE 1M" : "EOD";
@@ -563,7 +542,8 @@ function renderDashboardPositions(payload) {
           <td><strong>${fmt(displayPrice)}</strong><small class="quoteSource">${quoteLabel}</small></td>
           <td>${compact(investedValue)}</td>
           <td><strong>${compact(currentValue)}</strong></td>
-          <td class="${pnlClass}">${compact(pnl)}${Number.isFinite(pnlPct) ? ` (${compact(pnlPct)}%)` : ""}</td>
+          <td class="${dayPnlClass}">${Number.isFinite(dayPnl) ? compact(dayPnl) : "NA"}${Number.isFinite(dayPnlPct) ? ` (${compact(dayPnlPct)}%)` : ""}</td>
+          <td class="${totalPnlClass}">${compact(totalPnl)}${Number.isFinite(totalPnlPct) ? ` (${compact(totalPnlPct)}%)` : ""}</td>
           <td>${fmt(trade.trailingStopPrice || trade.initialStopPrice)}<small class="riskState ${escapeHtml(riskState)}">${escapeHtml(stopRiskText)}</small></td>
         </tr>
       `;
@@ -602,10 +582,12 @@ function sortPositionTrades(trades) {
 
 function positionSortValue(trade, field) {
   const livePosition = findLivePosition(trade);
-  const displayPrice = Number.isFinite(livePosition?.ltp) ? livePosition.ltp : trade.lastPrice;
+  const performance = positionPerformance(trade, livePosition);
+  const displayPrice = performance.displayPrice;
   if (field === "symbol") return String(trade.symbol || "");
-  if (field === "pnl") return Number.isFinite(livePosition?.unrealizedPnl) ? livePosition.unrealizedPnl : trade.unrealizedPnl;
-  if (field === "pnlPct") return Number.isFinite(livePosition?.unrealizedPnlPct) ? livePosition.unrealizedPnlPct : trade.unrealizedPnlPct;
+  if (field === "dayPnl") return performance.dayPnl;
+  if (field === "pnl") return performance.totalPnl;
+  if (field === "pnlPct") return performance.totalPnlPct;
   if (field === "investedValue") return Number.isFinite(livePosition?.investedValue) ? livePosition.investedValue : trade.investedValue;
   if (field === "currentValue") {
     if (Number.isFinite(livePosition?.marketValue)) return livePosition.marketValue;
@@ -645,6 +627,60 @@ function findLivePosition(trade) {
   return positions.find((position) =>
     (yahooSymbol && position.yahooSymbol === yahooSymbol) || (symbol && position.symbol === symbol)
   );
+}
+
+function positionPerformance(trade, suppliedLivePosition = null) {
+  const livePosition = suppliedLivePosition || findLivePosition(trade);
+  const displayPrice = Number.isFinite(livePosition?.ltp) ? livePosition.ltp : Number(trade?.lastPrice);
+  const quantity = Number(trade?.quantity);
+  const unrealizedPnl = Number.isFinite(livePosition?.unrealizedPnl)
+    ? livePosition.unrealizedPnl
+    : Number(trade?.unrealizedPnl) || 0;
+  const partialRealizedPnl = Number(trade?.realizedPnlToDate) || 0;
+  const totalPnl = unrealizedPnl + partialRealizedPnl;
+  const investedValue = Number.isFinite(livePosition?.investedValue)
+    ? livePosition.investedValue
+    : Number(trade?.investedValue);
+  const currentValue = Number.isFinite(livePosition?.marketValue)
+    ? livePosition.marketValue
+    : Number.isFinite(Number(trade?.currentValue))
+      ? Number(trade.currentValue)
+      : Number.isFinite(displayPrice) && Number.isFinite(quantity)
+        ? displayPrice * quantity
+        : null;
+  const totalBasis = Number(trade?.originalInvestedValue) || investedValue;
+  const totalPnlPct = Number.isFinite(totalBasis) && totalBasis > 0 ? totalPnl / totalBasis * 100 : null;
+  const row = findStockRow(trade?.yahooSymbol || trade?.symbol);
+  const fallbackPreviousClose = Number(row?.setupStrength?.pyramidStructure?.previousClose);
+  const previousClose = Number.isFinite(livePosition?.previousClose)
+    ? livePosition.previousClose
+    : Number.isFinite(fallbackPreviousClose) && fallbackPreviousClose > 0
+      ? fallbackPreviousClose
+      : null;
+  const dayPnl = Number.isFinite(livePosition?.dayPnl)
+    ? livePosition.dayPnl
+    : Number.isFinite(displayPrice) && Number.isFinite(previousClose) && Number.isFinite(quantity)
+      ? (displayPrice - previousClose) * quantity
+      : null;
+  const dayPnlPct = Number.isFinite(livePosition?.dayPnlPct)
+    ? livePosition.dayPnlPct
+    : Number.isFinite(displayPrice) && Number.isFinite(previousClose) && previousClose > 0
+      ? (displayPrice / previousClose - 1) * 100
+      : null;
+  return {
+    displayPrice,
+    investedValue,
+    currentValue,
+    previousClose,
+    dayPnl,
+    dayPnlPct,
+    totalPnl,
+    totalPnlPct
+  };
+}
+
+function signedClass(value) {
+  return Number(value) > 0 ? "good" : Number(value) < 0 ? "bad" : "neutral";
 }
 
 function startLiveMtm() {
@@ -788,6 +824,7 @@ function renderDetail(row, trade = null, candidate = null) {
   const institutional = row.institutionalContext || {};
   const gtf = row.gtfContext || {};
   const guide = buildDecisionGuide(row, trade, candidate);
+  const performance = trade ? positionPerformance(trade) : null;
   elements.detailPanel.innerHTML = `
     <div class="detailHeader">
       <div>
@@ -807,6 +844,20 @@ function renderDetail(row, trade = null, candidate = null) {
         <strong>${escapeHtml(guide.label)}</strong>
         <p><b>${escapeHtml(guide.reasonLabel)}:</b> ${escapeHtml(guide.summary)}</p>
       </div>
+      ${performance ? `
+        <div class="decisionPnlStrip" aria-label="Position profit and loss">
+          <div>
+            <span>Today P&amp;L</span>
+            <strong class="${signedClass(performance.dayPnl)}">${Number.isFinite(performance.dayPnl) ? `${compact(performance.dayPnl)} (${compact(performance.dayPnlPct)}%)` : "NA"}</strong>
+            <small>${Number.isFinite(performance.previousClose) ? `Versus previous close ${fmt(performance.previousClose)}` : "Previous close unavailable"}</small>
+          </div>
+          <div>
+            <span>Total P&amp;L Since Buy</span>
+            <strong class="${signedClass(performance.totalPnl)}">${compact(performance.totalPnl)} (${compact(performance.totalPnlPct)}%)</strong>
+            <small>Includes booked partial P&amp;L and remaining unrealized P&amp;L.</small>
+          </div>
+        </div>
+      ` : ""}
       <div class="decisionLevelGrid">
         ${guide.levels.map(decisionLevelHtml).join("")}
       </div>

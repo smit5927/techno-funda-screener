@@ -190,7 +190,8 @@
                 <th>LTP / Close</th>
                 <th>Invested Value</th>
                 <th>Current Value</th>
-                <th>Unrealized P&amp;L</th>
+                <th>Today P&amp;L</th>
+                <th>Total P&amp;L</th>
                 <th>Stop / Risk</th>
               </tr>
             </thead>
@@ -307,8 +308,9 @@
               <select id="positionSortSelect" aria-label="Sort open positions">
                 <option value="default">Portfolio Order</option>
                 <option value="symbol">Stock Name</option>
-                <option value="pnl">P&amp;L Amount</option>
-                <option value="pnlPct">P&amp;L Percentage</option>
+                <option value="dayPnl">Today P&amp;L</option>
+                <option value="pnl">Total P&amp;L Amount</option>
+                <option value="pnlPct">Total P&amp;L Percentage</option>
                 <option value="investedValue">Invested Value</option>
                 <option value="currentValue">Current Value</option>
                 <option value="rank">Rank</option>
@@ -331,7 +333,8 @@
                 <th>LTP / Close</th>
                 <th>Invested Value</th>
                 <th>Current Value</th>
-                <th>Unrealized P&L</th>
+                <th>Today P&amp;L</th>
+                <th>Total P&amp;L</th>
                 <th>Rank</th>
                 <th>Stop / Risk</th>
                 <th>R</th>
@@ -470,6 +473,6 @@
     <script src="vendor/supabase.js"></script>
     <script src="vendor/exceljs.min.js"></script>
     <script src="mobile-config.js"></script>
-    <script src="auth.js?v=20260715-decision-desk" type="module"></script>
+    <script src="auth.js?v=20260715-daily-pnl" type="module"></script>
   </body>
 </html>
