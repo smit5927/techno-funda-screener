@@ -22,4 +22,5 @@ test("visible portfolio accounting excludes hidden trades from another scope", (
   );
   assert.equal(summary.realizedPnl, 380);
   assert.equal(summary.unrealizedPnl, 350);
+  assert.equal(summary.totalEquity - summary.totalCapital, 730);
 });

@@ -38,6 +38,7 @@ const elements = {
   realizedPnl: document.querySelector("#realizedPnl"),
   todayUnrealizedPnl: document.querySelector("#todayUnrealizedPnl"),
   unrealizedPnl: document.querySelector("#unrealizedPnl"),
+  portfolioReturn: document.querySelector("#portfolioReturn"),
   tradeScopeText: document.querySelector("#tradeScopeText"),
   tradeQualityText: document.querySelector("#tradeQualityText"),
   totalCapital: document.querySelector("#totalCapital"),
@@ -436,14 +437,20 @@ function renderSummary(payload) {
     (payload.tradeSummary?.pendingExit || 0) +
     (payload.tradeSummary?.pendingPartialExit || 0);
   elements.closedTradesCount.textContent = payload.tradeSummary?.closed || 0;
-  elements.realizedPnl.textContent = compact(payload.tradeSummary?.realizedPnl || 0);
+  renderSummaryPnl(elements.realizedPnl, Number(payload.tradeSummary?.realizedPnl) || 0, null);
   const dayPerformance = portfolioDayPerformance(payload);
   renderSummaryPnl(elements.todayUnrealizedPnl, dayPerformance.dayPnl, dayPerformance.dayPnlPct);
   const unrealizedPct = payload.portfolioSummary?.unrealizedPnlPct;
-  elements.unrealizedPnl.textContent = `${compact(payload.tradeSummary?.unrealizedPnl || 0)}${Number.isFinite(unrealizedPct) ? ` (${compact(unrealizedPct)}%)` : ""}`;
+  renderSummaryPnl(elements.unrealizedPnl, Number(payload.tradeSummary?.unrealizedPnl) || 0, unrealizedPct);
+  const portfolio = payload.portfolioSummary || {};
+  const portfolioReturn = portfolioReturnPerformance(
+    payload.tradeSummary?.realizedPnl,
+    payload.tradeSummary?.unrealizedPnl,
+    portfolio.totalCapital || payload.tradeSettings?.totalCapital
+  );
+  renderSummaryPnl(elements.portfolioReturn, portfolioReturn.value, portfolioReturn.percentage);
   elements.tradeScopeText.textContent = payload.tradeSettings?.scopeLabel || "All NSE Market";
   elements.tradeQualityText.textContent = payload.tradeSettings?.qualityLabel || "Best only";
-  const portfolio = payload.portfolioSummary || {};
   elements.totalCapital.textContent = compact(portfolio.totalCapital || payload.tradeSettings?.totalCapital || 1000000);
   elements.deployedCapital.textContent = compact(portfolio.deployedCapital || 0);
   elements.availableCash.textContent = compact(portfolio.availableCash || 0);
@@ -746,10 +753,26 @@ function renderSummaryPnl(element, value, percentage, live = false) {
   const text = Number.isFinite(value)
     ? `${compact(value)}${Number.isFinite(percentage) ? ` (${compact(percentage)}%)` : ""}`
     : "NA";
+  const changed = element.textContent !== text;
   element.classList.remove("good", "bad", "neutral");
   element.classList.add(signedClass(value));
   if (live) setLiveValue(element, text);
   else element.textContent = text;
+  if (changed) {
+    element.classList.remove("pnlGainPulse", "pnlLossPulse");
+    void element.offsetWidth;
+    if (Number(value) > 0) element.classList.add("pnlGainPulse");
+    else if (Number(value) < 0) element.classList.add("pnlLossPulse");
+  }
+}
+
+function portfolioReturnPerformance(realizedPnl, unrealizedPnl, totalCapital) {
+  const value = (Number(realizedPnl) || 0) + (Number(unrealizedPnl) || 0);
+  const capital = Number(totalCapital);
+  return {
+    value,
+    percentage: Number.isFinite(capital) && capital > 0 ? value / capital * 100 : null
+  };
 }
 
 function startLiveMtm() {
@@ -797,7 +820,13 @@ function renderLiveMtmSummary() {
   if (!mtm) return;
   const summary = mtm.summary || {};
   renderSummaryPnl(elements.todayUnrealizedPnl, summary.dayPnl, summary.dayPnlPct, true);
-  setLiveValue(elements.unrealizedPnl, `${compact(summary.unrealizedPnl || 0)} (${compact(summary.unrealizedPnlPct || 0)}%)`);
+  renderSummaryPnl(elements.unrealizedPnl, Number(summary.unrealizedPnl) || 0, summary.unrealizedPnlPct, true);
+  const portfolioReturn = portfolioReturnPerformance(
+    state.payload?.tradeSummary?.realizedPnl,
+    summary.unrealizedPnl,
+    state.payload?.portfolioSummary?.totalCapital || state.payload?.tradeSettings?.totalCapital
+  );
+  renderSummaryPnl(elements.portfolioReturn, portfolioReturn.value, portfolioReturn.percentage, true);
   setLiveValue(elements.liveStopRisk, `${compact(summary.downsideToStops || 0)} (${compact(summary.stopRiskPct || 0)}%)`);
   const warningCount = (summary.breachCount || 0) + (summary.nearStopCount || 0);
   const statusClass = summary.breachCount ? "danger" : warningCount ? "warning" : mtm.marketStatus === "OPEN" ? "live" : "closed";
