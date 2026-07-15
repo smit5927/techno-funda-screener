@@ -434,6 +434,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
 
   const nextJournal = {
     updatedAt: new Date().toISOString(),
+    legacyOwnerJournalMigratedAt: journal.legacyOwnerJournalMigratedAt || null,
     portfolioEngineStartedAt: journal.portfolioEngineStartedAt || scan.scannedAt,
     pyramidingStartedAt: journal.pyramidingStartedAt || scan.scannedAt,
     pyramidSwingEngineStartedAt: journal.pyramidSwingEngineStartedAt || scan.scannedAt,

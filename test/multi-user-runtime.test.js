@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { configForUser, marketOnlyState, scanForUser } from "../src/multi-user-runtime.js";
+import { configForUser, journalForUser, marketOnlyState, scanForUser } from "../src/multi-user-runtime.js";
 
 test("multi-user runtime derives a private custom list without changing common market data", () => {
   const scan = {
@@ -64,4 +64,24 @@ test("user capital and risk settings override defaults without mutating shared c
   assert.equal(config.trade.scopeListId, "custom");
   assert.equal(config.trade.riskPerTradePct, 0.5);
   assert.equal(config.trade.pyramidingEnabled, false);
+});
+
+test("empty owner portfolio restores the existing live journal exactly once", () => {
+  const current = { liveModeStartedAt: "2026-07-14T00:00:00.000Z", trades: [] };
+  const legacy = { trades: [{ symbol: "ABC", status: "OPEN" }], candidates: [] };
+  const restored = journalForUser(
+    { role: "admin", journal: current },
+    legacy,
+    "2026-07-15T02:30:00.000Z"
+  );
+  assert.deepEqual(restored.trades, legacy.trades);
+  assert.equal(restored.legacyOwnerJournalMigratedAt, "2026-07-15T02:30:00.000Z");
+  const retained = journalForUser({ role: "admin", journal: restored }, { trades: [] });
+  assert.deepEqual(retained, restored);
+});
+
+test("client portfolio never inherits the owner's legacy journal", () => {
+  const current = { trades: [] };
+  const legacy = { trades: [{ symbol: "OWNER", status: "OPEN" }] };
+  assert.equal(journalForUser({ role: "member", journal: current }, legacy), current);
 });

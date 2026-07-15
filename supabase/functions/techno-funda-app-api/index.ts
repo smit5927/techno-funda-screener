@@ -387,7 +387,7 @@ async function ingestMarketState(body: any) {
 async function runtimeUsers(body: any) {
   await requireInternal(body);
   const [{ data: profiles, error }, { data: settings }, { data: watchlists }, { data: states }, { data: telegram }] = await Promise.all([
-    admin().from("app_profiles").select("user_id, username").eq("status", "active"),
+    admin().from("app_profiles").select("user_id, username, role").eq("status", "active"),
     admin().from("app_user_settings").select("*"),
     admin().from("app_watchlists").select("*"),
     admin().from("app_user_states").select("*"),
@@ -404,6 +404,7 @@ async function runtimeUsers(body: any) {
     users: (profiles || []).map((profile: any) => ({
       userId: profile.user_id,
       username: profile.username,
+      role: profile.role,
       settings: publicSettings(settingsMap.get(profile.user_id) || {}),
       symbols: watchlistMap.get(profile.user_id)?.symbols || [],
       journal: stateMap.get(profile.user_id)?.state?.journal || {},

@@ -1,4 +1,5 @@
 import { appConfig } from "./config.js";
+import { readTrades } from "./storage.js";
 import { sendTelegramSummary } from "./telegram.js";
 import { updateTradeJournal } from "./trade-journal.js";
 
@@ -30,13 +31,14 @@ export async function syncMultiUserRuntime(scan, options = {}) {
   });
   const users = Array.isArray(runtime.users) ? runtime.users : [];
   const outcomes = [];
+  const legacyOwnerJournal = readTrades();
 
   for (const user of users) {
     try {
       const userScan = scanForUser(scan, user.symbols || []);
       const config = configForUser(user.settings || {}, user.telegram || {});
       const journal = await updateTradeJournal(userScan, config, {
-        journal: user.journal || {},
+        journal: journalForUser(user, legacyOwnerJournal, scan.scannedAt),
         persist: false,
         writeSheets: false
       });
@@ -74,6 +76,19 @@ export async function syncMultiUserRuntime(scan, options = {}) {
     processed: outcomes.length,
     failed: outcomes.filter((item) => !item.ok).length,
     outcomes
+  };
+}
+
+export function journalForUser(user = {}, legacyJournal = {}, migratedAt = new Date().toISOString()) {
+  const current = user.journal && typeof user.journal === "object" ? user.journal : {};
+  if (user.role !== "admin" || current.legacyOwnerJournalMigratedAt) return current;
+  if (Array.isArray(current.trades) && current.trades.length > 0) {
+    return { ...current, legacyOwnerJournalMigratedAt: current.updatedAt || migratedAt };
+  }
+  if (!Array.isArray(legacyJournal?.trades) || legacyJournal.trades.length === 0) return current;
+  return {
+    ...structuredClone(legacyJournal),
+    legacyOwnerJournalMigratedAt: migratedAt
   };
 }
 
