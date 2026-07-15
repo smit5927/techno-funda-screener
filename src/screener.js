@@ -96,7 +96,11 @@ export async function runScreener(options = {}) {
       }
     });
 
-    const sorted = applySectorStrength(results, rules).sort(sortResults);
+    const freshnessSafeResults = reconcileResultFreshness(
+      results,
+      previousScan?.lists?.[list.id]?.results || []
+    );
+    const sorted = applySectorStrength(freshnessSafeResults, rules).sort(sortResults);
     scannedLists[list.id] = {
       id: list.id,
       label: list.label,
@@ -167,6 +171,29 @@ export async function runScreener(options = {}) {
   const finalPayload = { ...payload, telegram };
   saveLatestScan(finalPayload);
   return finalPayload;
+}
+
+export function reconcileResultFreshness(currentRows = [], previousRows = []) {
+  const previousBySymbol = new Map(
+    previousRows.filter((row) => row?.symbol).map((row) => [row.symbol, row])
+  );
+  return currentRows.map((current) => {
+    const previous = previousBySymbol.get(current?.symbol);
+    if (!previous?.asOf || !current?.asOf || current.asOf >= previous.asOf) return current;
+    return {
+      ...previous,
+      listId: current.listId,
+      listLabel: current.listLabel,
+      symbol: current.symbol,
+      name: current.name || previous.name,
+      industry: current.industry || previous.industry,
+      dataFreshness: {
+        status: "PRESERVED_NEWER_CLOSE",
+        preservedAsOf: previous.asOf,
+        fetchedAsOf: current.asOf
+      }
+    };
+  });
 }
 
 export async function runExecutionPass(options = {}) {

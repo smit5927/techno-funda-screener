@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { classifyScanFailure, resolvePriceHistory } from "../src/screener.js";
+import { classifyScanFailure, reconcileResultFreshness, resolvePriceHistory } from "../src/screener.js";
 
 test("custom symbol falls back from unavailable NSE history to BSE", async () => {
   const calls = [];
@@ -55,6 +55,26 @@ test("unavailable exchange data is a data gap while transient failures remain er
   assert.equal(unavailable.status, "DATA_GAP");
   assert.equal(unavailable.code, "SYMBOL_UNAVAILABLE");
   assert.equal(classifyScanFailure(new Error("request timed out")).status, "ERROR");
+});
+
+test("an older provider candle cannot overwrite a newer completed close", () => {
+  const previous = [{ symbol: "RAIN", asOf: "2026-07-14", status: "WATCH", dailyShortRs: -0.024 }];
+  const current = [{ symbol: "RAIN", asOf: "2026-07-13", status: "ENTRY", dailyShortRs: 0.038, listId: "custom", listLabel: "My List" }];
+  const [row] = reconcileResultFreshness(current, previous);
+  assert.equal(row.asOf, "2026-07-14");
+  assert.equal(row.status, "WATCH");
+  assert.equal(row.dailyShortRs, -0.024);
+  assert.deepEqual(row.dataFreshness, {
+    status: "PRESERVED_NEWER_CLOSE",
+    preservedAsOf: "2026-07-14",
+    fetchedAsOf: "2026-07-13"
+  });
+});
+
+test("a same-day or newer provider candle replaces the previous row", () => {
+  const previous = [{ symbol: "RAIN", asOf: "2026-07-14", status: "WATCH" }];
+  const current = [{ symbol: "RAIN", asOf: "2026-07-15", status: "ENTRY" }];
+  assert.equal(reconcileResultFreshness(current, previous)[0], current[0]);
 });
 
 function candles(count) {
