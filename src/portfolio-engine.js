@@ -17,6 +17,7 @@ export function portfolioConfig(config = {}) {
     maximumStopPct: positive(trade.maximumStopPct, 8),
     partialExitPct: positive(trade.partialExitPct, 50),
     partialProfitR: positive(trade.partialProfitR, 2),
+    partialWeaknessConfirmationCloses: integer(trade.partialWeaknessConfirmationCloses, 2),
     rotationMinRankAdvantage: positive(trade.rotationMinRankAdvantage, 15),
     rotationMinimumHoldingDays: integer(trade.rotationMinimumHoldingDays, 5),
     rotationConfirmationCloses: integer(trade.rotationConfirmationCloses, 2),
@@ -164,7 +165,6 @@ export function portfolioSummary(trades = [], candidates = [], config = {}) {
   const rules = portfolioConfig(config);
   const active = trades.filter((trade) => ACTIVE_STATUSES.has(trade.status));
   const pendingEntries = trades.filter((trade) => trade.status === "PENDING_ENTRY");
-  const closed = trades.filter((trade) => trade.status === "CLOSED");
   const investedCapital = active.reduce(
     (sum, trade) => sum + (Number(trade.investedValue) || 0),
     0
@@ -177,9 +177,7 @@ export function portfolioSummary(trades = [], candidates = [], config = {}) {
     (sum, trade) => sum + (Number(trade.plannedAllocation) || Number(trade.investedValue) || 0),
     0
   ) + pendingAddCapital;
-  const realizedPnl =
-    closed.reduce((sum, trade) => sum + (Number(trade.pnl) || 0), 0) +
-    active.reduce((sum, trade) => sum + (Number(trade.realizedPnlToDate) || 0), 0);
+  const realizedPnl = totalRealizedPnl(trades);
   const unrealizedPnl = active.reduce(
     (sum, trade) => sum + (Number(trade.unrealizedPnl) || 0),
     0
@@ -256,6 +254,13 @@ export function breakoutContinuationState(row = {}) {
     type: yearly ? "52_WEEK_BREAKOUT" : recent ? "55_DAY_BREAKOUT" : base ? "20_DAY_BASE_BREAKOUT" : null,
     level: yearly ? values.priorYearHigh : recent ? values.priorRecentHigh : base ? values.priorBaseHigh : null
   };
+}
+
+export function totalRealizedPnl(trades = []) {
+  return round(trades.reduce((sum, trade) => {
+    if (trade.status === "CLOSED") return sum + (Number(trade.pnl) || 0);
+    return sum + (Number(trade.realizedPnlToDate) || 0);
+  }, 0));
 }
 
 export function candidateEntryDecision(candidate = {}, row = {}, config = {}, options = {}) {
@@ -618,7 +623,7 @@ export function positionExitDecision(trade, row, config = {}) {
   const trailingStop = nextTrailingStop(trade, row, rules);
   const fullReasons = [];
   if (Number(row.weeklyRs) < 0) {
-    fullReasons.push(`Completed-week RS ${percent(row.weeklyRs)} is below zero.`);
+    fullReasons.push(`Completed-week RS ${formatRs(row.weeklyRs)} is below zero.`);
   }
   if (Number(row.dailyLongRs) < 0 && close < Number(row.dailySupertrend)) {
     fullReasons.push("Daily RS55 is below zero and daily close is below Supertrend.");
@@ -642,32 +647,37 @@ export function positionExitDecision(trade, row, config = {}) {
   }
 
   const weakness = positionWeakness(row);
+  const trendRide = positionTrendRide(row);
+  const confirmedWeakCloses = new Set(trade.rotationReview?.weakCloseDates || []).size;
+  const weaknessConfirmed =
+    weakness.primaryScore >= 2 &&
+    confirmedWeakCloses >= rules.partialWeaknessConfirmationCloses &&
+    !trendRide.protected;
   const initialRisk = Math.max(0, Number(trade.entryPrice) - Number(trade.initialStopPrice));
   const rewardR = initialRisk > 0 ? (close - Number(trade.entryPrice)) / initialRisk : null;
   const partialReasons = [];
   if (
     Number.isFinite(rewardR) &&
     rewardR >= rules.partialProfitR &&
+    (!trendRide.protected || trendRide.exhausted) &&
     !trade.partialExitTags?.includes("PROFIT_LOCK")
   ) {
     partialReasons.push(`Profit reached ${round(rewardR)}R; lock ${rules.partialExitPct}% and trail the balance.`);
   }
-  if (
-    weakness.primaryScore >= 1 && weakness.score >= 2 &&
-    !trade.partialExitTags?.includes("EARLY_WEAKNESS")
-  ) {
-    partialReasons.push(`Early deterioration: ${weakness.reasons.join("; ")}.`);
+  if (weaknessConfirmed && !trade.partialExitTags?.includes("EARLY_WEAKNESS")) {
+    partialReasons.push(
+      `Confirmed deterioration on ${confirmedWeakCloses} completed closes: ${weakness.primaryReasons.join("; ")}.`
+    );
   }
   const entryFundamental = Number(trade.entrySnapshot?.fundamentalScore);
   const currentFundamental = Number(row.fundamentalScore);
-  if (
+  const fundamentalDeteriorated =
     Number.isFinite(entryFundamental) &&
     Number.isFinite(currentFundamental) &&
     entryFundamental - currentFundamental >= 2 &&
-    currentFundamental <= 2 &&
-    !trade.partialExitTags?.includes("FUNDAMENTAL_DETERIORATION")
-  ) {
-    partialReasons.push("Fundamental score materially deteriorated from the entry snapshot.");
+    currentFundamental <= 2;
+  if (fundamentalDeteriorated && weaknessConfirmed) {
+    partialReasons.push("Fundamental deterioration confirms the already-established technical weakness.");
   }
   if (partialReasons.length && Number(trade.quantity) >= 2) {
     return {
@@ -676,14 +686,58 @@ export function positionExitDecision(trade, row, config = {}) {
       trailingStop,
       rewardR: round(rewardR),
       partialPct: rules.partialExitPct,
-      tag: partialReasons[0].startsWith("Profit")
-        ? "PROFIT_LOCK"
-        : partialReasons[0].startsWith("Fundamental")
-          ? "FUNDAMENTAL_DETERIORATION"
-          : "EARLY_WEAKNESS"
+      tag: partialReasons[0].startsWith("Profit") ? "PROFIT_LOCK" : "EARLY_WEAKNESS"
     };
   }
-  return { action: "HOLD", reasons: weakness.reasons, trailingStop, rewardR: round(rewardR) };
+  const holdReasons = [...weakness.reasons];
+  if (trendRide.protected) {
+    holdReasons.push(
+      "TREND RIDE: weekly/daily leadership and price structure remain healthy; trail the stop instead of cutting the winner."
+    );
+  }
+  if (weakness.primaryScore === 1) {
+    holdReasons.push("WAIT/WATCH: one primary weakness is not enough for a partial exit.");
+  } else if (weakness.primaryScore >= 2 && !weaknessConfirmed) {
+    holdReasons.push(
+      `WAIT/WATCH: ${confirmedWeakCloses}/${rules.partialWeaknessConfirmationCloses} completed deterioration closes confirmed.`
+    );
+  }
+  if (weakness.contextReasons.some((reason) => reason.startsWith("GTF"))) {
+    holdReasons.push("GTF is secondary context only and cannot trigger an exit.");
+  }
+  return { action: "HOLD", reasons: holdReasons, trailingStop, rewardR: round(rewardR) };
+}
+
+export function positionTrendRide(row = {}) {
+  const checks = row.setupStrength?.checks || {};
+  const values = row.setupStrength?.values || {};
+  const close = Number(row.close);
+  const atr = Number(values.atr);
+  const smaFast = Number(values.smaFast);
+  const extensionAtr =
+    Number.isFinite(close) && Number.isFinite(smaFast) && Number.isFinite(atr) && atr > 0
+      ? (close - smaFast) / atr
+      : null;
+  const exhausted =
+    Number(row.dailyRsi) >= 75 && Number.isFinite(extensionAtr) && extensionAtr >= 3;
+  const aboveFast = !Number.isFinite(smaFast) || close > smaFast;
+  const smaSlow = Number(values.smaSlow);
+  const aboveSlow = !Number.isFinite(smaSlow) || close > smaSlow;
+  const coreHealthy =
+    Number(row.weeklyRs) > 0 &&
+    Number(row.dailyLongRs) > 0 &&
+    Number(row.dailyRsi) >= 50 &&
+    close > Number(row.dailySupertrend) &&
+    aboveFast &&
+    aboveSlow &&
+    checks.marketRegimeStrong !== false &&
+    row.institutionalContext?.operator?.distribution !== true;
+  return {
+    protected: coreHealthy && !exhausted,
+    coreHealthy,
+    exhausted,
+    extensionAtr: Number.isFinite(extensionAtr) ? round(extensionAtr) : null
+  };
 }
 
 export function positionWeakness(row = {}) {
@@ -698,14 +752,21 @@ export function positionWeakness(row = {}) {
     reasons.push("close below 50-DMA");
   }
   if (!checks.marketRegimeStrong) reasons.push("broad-market regime not strong");
+  if (row.institutionalContext?.operator?.distribution) reasons.push("official NSE delivery distribution");
+  const primaryScore = reasons.length;
+  const primaryReasons = [...reasons];
   if (["B", "C", "WATCH"].includes(String(row.setupGrade || "").toUpperCase())) {
     reasons.push(`setup grade ${row.setupGrade}`);
   }
-  if (row.institutionalContext?.operator?.distribution) reasons.push("official NSE delivery distribution");
-  const primaryScore = reasons.length;
   if (row.gtfContext?.supplyBlocked) reasons.push("GTF opposing supply confirmation");
   if (row.gtfContext?.checks?.roomForTwoR === false) reasons.push("GTF confirms less than 2R room");
-  return { score: reasons.length, primaryScore, reasons };
+  return {
+    score: reasons.length,
+    primaryScore,
+    primaryReasons,
+    contextReasons: reasons.slice(primaryScore),
+    reasons
+  };
 }
 
 export function rotationDecision(candidateRow, trades, rowBySymbol, config = {}, candidate = {}) {
@@ -741,7 +802,7 @@ export function rotationDecision(candidateRow, trades, rowBySymbol, config = {},
     })
     .filter(Boolean)
     .filter((item) =>
-      item.weakness.primaryScore >= 1 && item.weakness.score >= 2 &&
+      item.weakness.primaryScore >= 2 &&
       item.confirmedWeakCloses >= rules.rotationConfirmationCloses &&
       (item.holdingDays >= rules.rotationMinimumHoldingDays || item.weakness.score >= 3)
     )
@@ -820,8 +881,8 @@ function clamp(value, minimum, maximum) {
   return Math.min(maximum, Math.max(minimum, value));
 }
 
-function percent(value) {
-  return Number.isFinite(Number(value)) ? `${round(Number(value) * 100)}%` : "NA";
+function formatRs(value) {
+  return Number.isFinite(Number(value)) ? Number(value).toFixed(2) : "NA";
 }
 
 function round(value) {

@@ -137,6 +137,7 @@ function seedJournal() {
       addOns: [],
       entrySnapshot: { fundamentalScore: 2 },
       rotationReview: {
+        qualificationVersion: 2,
         lastObservedAsOf: "2026-07-09",
         weakCloseDates: ["2026-07-09"]
       }

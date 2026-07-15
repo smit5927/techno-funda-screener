@@ -10,6 +10,7 @@ import {
   portfolioSummary,
   postEntryPyramidState,
   positionExitDecision,
+  positionTrendRide,
   pyramidAddDecision,
   rotationDecision,
   structuralStop
@@ -286,9 +287,79 @@ test("early multi-factor weakness creates a partial exit", () => {
     close: 99,
     dailySupertrend: 95
   });
-  const decision = positionExitDecision(openTrade(), row, { trade: {} });
+  const decision = positionExitDecision(openTrade({
+    rotationReview: {
+      qualificationVersion: 2,
+      weakCloseDates: ["2026-07-09", "2026-07-10"]
+    }
+  }), row, { trade: {} });
   assert.equal(decision.action, "PARTIAL_EXIT");
   assert.equal(decision.partialPct, 50);
+});
+
+test("RAIN-like minor RS21 weakness with WATCH and GTF context stays wait/watch", () => {
+  const row = strongRow({
+    dailyShortRs: -0.02,
+    setupGrade: "WATCH",
+    gtfContext: { checks: { roomForTwoR: false } }
+  });
+  const decision = positionExitDecision(openTrade({
+    rotationReview: {
+      qualificationVersion: 2,
+      weakCloseDates: ["2026-07-09", "2026-07-10"]
+    }
+  }), row, { trade: {} });
+
+  assert.equal(decision.action, "HOLD");
+  assert.match(decision.reasons.join(" "), /one primary weakness is not enough/i);
+  assert.match(decision.reasons.join(" "), /GTF is secondary context only/i);
+  assert.match(decision.reasons.join(" "), /TREND RIDE/i);
+});
+
+test("healthy winner above 2R keeps riding instead of taking an automatic profit partial", () => {
+  const row = strongRow({ close: 120, dailySupertrend: 105 });
+  row.setupStrength.values.smaFast = 108;
+  row.setupStrength.values.smaSlow = 95;
+  row.setupStrength.values.atr = 4;
+  const trade = openTrade({ entryPrice: 100, initialStopPrice: 94 });
+
+  assert.equal(positionTrendRide(row).protected, true);
+  const decision = positionExitDecision(trade, row, { trade: {} });
+  assert.equal(decision.action, "HOLD");
+  assert.match(decision.reasons.join(" "), /TREND RIDE/i);
+});
+
+test("an exhausted 2R winner may use the one-time profit lock", () => {
+  const row = strongRow({ close: 120, dailyRsi: 78, dailySupertrend: 105 });
+  row.setupStrength.values.smaFast = 108;
+  row.setupStrength.values.smaSlow = 95;
+  row.setupStrength.values.atr = 3;
+  const trade = openTrade({ entryPrice: 100, initialStopPrice: 94 });
+
+  assert.equal(positionTrendRide(row).exhausted, true);
+  const decision = positionExitDecision(trade, row, { trade: {} });
+  assert.equal(decision.action, "PARTIAL_EXIT");
+  assert.equal(decision.tag, "PROFIT_LOCK");
+});
+
+test("multi-factor weakness waits for two completed deterioration closes", () => {
+  const row = strongRow({ dailyShortRs: -0.02, dailyRsi: 47 });
+  const decision = positionExitDecision(openTrade({
+    rotationReview: { qualificationVersion: 2, weakCloseDates: ["2026-07-10"] }
+  }), row, { trade: {} });
+
+  assert.equal(decision.action, "HOLD");
+  assert.match(decision.reasons.join(" "), /1\/2 completed deterioration closes/i);
+});
+
+test("fundamental deterioration alone cannot trigger a partial exit", () => {
+  const row = strongRow({ fundamentalScore: 1 });
+  const decision = positionExitDecision(openTrade({
+    entrySnapshot: { fundamentalScore: 4 },
+    rotationReview: { qualificationVersion: 2, weakCloseDates: [] }
+  }), row, { trade: {} });
+
+  assert.equal(decision.action, "HOLD");
 });
 
 test("materially stronger challenger rotates only a weak position", () => {
@@ -433,6 +504,16 @@ test("portfolio summary reserves pending capital and reports cash", () => {
   assert.equal(summary.deployedCapital, 180_000);
   assert.equal(summary.availableCash, 820_000);
   assert.equal(summary.openSlots, 13);
+});
+
+test("portfolio realized P&L includes partial bookings without double-counting closed trades", () => {
+  const trades = [
+    openTrade({ realizedPnlToDate: -125 }),
+    { status: "CLOSED", pnl: 300, realizedPnlToDate: 80 }
+  ];
+  const summary = portfolioSummary(trades, [], { trade: {} });
+
+  assert.equal(summary.realizedPnl, 175);
 });
 
 test("range-bound benchmark caps new deployment without forcing existing exits", () => {

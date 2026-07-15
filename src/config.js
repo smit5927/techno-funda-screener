@@ -96,6 +96,10 @@ export const appConfig = {
     maximumStopPct: numberEnv("TRADE_MAXIMUM_STOP_PCT", 8),
     partialExitPct: numberEnv("TRADE_PARTIAL_EXIT_PCT", 50),
     partialProfitR: numberEnv("TRADE_PARTIAL_PROFIT_R", 2),
+    partialWeaknessConfirmationCloses: Math.max(
+      2,
+      numberEnv("TRADE_PARTIAL_WEAKNESS_CONFIRMATION_CLOSES", 2)
+    ),
     rotationMinRankAdvantage: numberEnv("TRADE_ROTATION_MIN_RANK_ADVANTAGE", 15),
     rotationMinimumHoldingDays: numberEnv("TRADE_ROTATION_MIN_HOLDING_DAYS", 5),
     rotationConfirmationCloses: Math.max(1, numberEnv("TRADE_ROTATION_CONFIRMATION_CLOSES", 2)),

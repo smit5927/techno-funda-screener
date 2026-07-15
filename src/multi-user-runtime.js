@@ -2,6 +2,7 @@ import { appConfig } from "./config.js";
 import { readTrades } from "./storage.js";
 import { sendTelegramSummary } from "./telegram.js";
 import { updateTradeJournal } from "./trade-journal.js";
+import { totalRealizedPnl } from "./portfolio-engine.js";
 
 const APP_API_URL = process.env.TECHNO_FUNDA_APP_API_URL || "";
 const APP_INTERNAL_KEY = process.env.TECHNO_FUNDA_APP_INTERNAL_KEY || "";
@@ -320,7 +321,7 @@ function summarizeTrades(trades = []) {
     pendingEntry: byStatus("PENDING_ENTRY").length,
     pendingExit: byStatus("PENDING_EXIT").length,
     pendingPartialExit: byStatus("PENDING_PARTIAL_EXIT").length,
-    realizedPnl: round(closed.reduce((sum, trade) => sum + (Number(trade.pnl) || 0), 0)),
+    realizedPnl: totalRealizedPnl(trades),
     unrealizedPnl: round(open.reduce((sum, trade) => sum + (Number(trade.unrealizedPnl) || 0), 0))
   };
 }

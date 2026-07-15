@@ -764,9 +764,9 @@ function rowHtml(row, index) {
       <td>${fmt(row.close)}</td>
       <td class="${row.dailyPriceAboveSupertrend ? "good" : "bad"}">${fmt(row.dailySupertrend)}</td>
       <td class="${classForAbove(row.weeklyRsi, 50)}">${fmt(row.weeklyRsi)}</td>
-      <td class="${classForAbove(row.weeklyRs, 0)}">${pct(row.weeklyRs)}</td>
-      <td class="${classForAbove(row.dailyLongRs, 0)}">${pct(row.dailyLongRs)}</td>
-      <td class="${classForAbove(row.dailyShortRs, 0)}">${pct(row.dailyShortRs)}</td>
+      <td class="${classForAbove(row.weeklyRs, 0)}">${rs(row.weeklyRs)}</td>
+      <td class="${classForAbove(row.dailyLongRs, 0)}">${rs(row.dailyLongRs)}</td>
+      <td class="${classForAbove(row.dailyShortRs, 0)}">${rs(row.dailyShortRs)}</td>
       <td class="${classForAbove(row.dailyRsi, 50)}">${fmt(row.dailyRsi)}</td>
       <td>${row.fundamentalScore || 0}/${row.fundamental?.maxScore || 8}</td>
       <td class="${row.gtfContext?.supplyBlocked ? "bad" : row.gtfContext?.score >= 5 ? "good" : ""}">${row.gtfContext?.dataAvailable ? `${fmt(row.gtfContext.score)}/${fmt(row.gtfContext.maxScore)}` : "NA"}</td>
@@ -801,10 +801,10 @@ function renderDetail(row, trade = null) {
     <div class="decisionSnapshot" aria-label="Decision snapshot">
       ${snapshotHtml("Close", fmt(row.close))}
       ${snapshotHtml("Weekly RSI", fmt(row.weeklyRsi), classForAbove(row.weeklyRsi, 50))}
-      ${snapshotHtml("Weekly RS", pct(row.weeklyRs), classForAbove(row.weeklyRs, 0))}
+      ${snapshotHtml("Weekly RS", rs(row.weeklyRs), classForAbove(row.weeklyRs, 0))}
       ${snapshotHtml("Daily RSI", fmt(row.dailyRsi), classForAbove(row.dailyRsi, 50))}
-      ${snapshotHtml("Daily RS55", pct(row.dailyLongRs), classForAbove(row.dailyLongRs, 0))}
-      ${snapshotHtml("Daily RS21", pct(row.dailyShortRs), classForAbove(row.dailyShortRs, 0))}
+      ${snapshotHtml("Daily RS55", rs(row.dailyLongRs), classForAbove(row.dailyLongRs, 0))}
+      ${snapshotHtml("Daily RS21", rs(row.dailyShortRs), classForAbove(row.dailyShortRs, 0))}
       ${snapshotHtml("Setup", `${row.setupGrade || "NA"} ${row.score || 0}`)}
       ${snapshotHtml("GTF", gtf.dataAvailable ? `${fmt(gtf.score)}/${fmt(gtf.maxScore)}` : "NA", gtf.supplyBlocked ? "bad" : gtf.score >= 5 ? "good" : "neutral")}
     </div>
@@ -1526,6 +1526,10 @@ function fmt(value) {
 
 function pct(value) {
   return Number.isFinite(value) ? `${(value * 100).toFixed(1)}%` : "NA";
+}
+
+function rs(value) {
+  return Number.isFinite(value) ? value.toFixed(2) : "NA";
 }
 
 function compact(value) {

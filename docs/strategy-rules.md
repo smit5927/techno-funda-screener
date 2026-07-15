@@ -30,6 +30,8 @@ RS formula:
 (stockClose / stockCloseN) / (benchmarkClose / benchmarkCloseN) - 1
 ```
 
+RS is a dimensionless zero-line oscillator and is displayed directly, for example `0.02` or `-0.02`; it is not labelled or multiplied into a percentage.
+
 ## Compulsory Exit
 
 The upgraded portfolio engine merges the video exit playbooks into a hierarchy:
@@ -38,8 +40,10 @@ The upgraded portfolio engine merges the video exit playbooks into a hierarchy:
 - Full exit when daily RS55 is below zero and daily close is below Supertrend.
 - Full exit when price breaches the ratcheting structural stop built from Supertrend, recent candle lows, and valid Fibonacci support.
 - Full exit when price is below 200-DMA with negative daily RS55.
-- Partial 50% exit when multi-factor video-derived early weakness is confirmed, fundamentals materially deteriorate, or profit reaches 2R.
-- GTF evidence cannot originate a partial or full exit. It may only confirm a primary video-derived weakness signal.
+- Partial 50% early-risk exit requires at least two independent primary technical weaknesses across two distinct completed daily closes. A first or isolated weakness remains `WAIT/WATCH`.
+- Setup grade, GTF room/supply and fundamental deterioration are secondary context. They can strengthen an already-confirmed technical decision but cannot originate a partial or full exit.
+- A separate one-time 2R profit-lock partial remains allowed because it is profit management rather than a deterioration exit.
+- Trend Ride Protection suppresses early-risk and automatic 2R partials while weekly RS, daily RS55, RSI, Supertrend, 50/200-DMA structure, market regime and delivery behavior remain healthy. The ratcheting stop protects the winner. A 2R profit lock is reserved for an exhausted move, currently RSI at least 75 and price at least 3 ATR above the 50-DMA.
 - The remaining quantity trails with Supertrend/recent structure. A trailing stop never moves downward.
 
 All exit decisions use completed candles and execute in the next actual market session at exactly 09:17 IST.
@@ -169,7 +173,7 @@ The default trade quality is `BEST_ONLY`, which opens sheet/Telegram trades only
 - If capital is unavailable, the signal is retained in Waiting Candidates with the exact skip reason.
 - Every waiting candidate is re-underwritten from the latest completed close before freed cash can be used: compulsory ENTRY status, selected grade quality, rank stability, Supertrend/ATR risk distance, delivery behavior, portfolio limits and actual 09:17 execution gap are checked again. A candidate that fails becomes waiting-for-retrace/reconfirmation or expires with an auditable reason; cash may remain idle.
 - Waiting age and price advance from the first signal are warning metrics, not automatic rejection. If the latest system ENTRY remains valid and current structure/execution risk is acceptable, a strong stock that has advanced can still be bought.
-- Management priority is `compulsory full exit > valid partial exit > optional quality rotation > hold`. A genuine full/partial exit executes from its own risk rule and is never delayed because a replacement is unavailable.
+- Management priority is `compulsory full exit > confirmed partial exit > optional quality rotation > wait/watch/hold`. A full exit executes from its own risk rule; a minor first deterioration close is observed instead of being sold hastily.
 - A challenger can replace an existing position only when its rank advantage is material, the current position has at least two weakness factors, the minimum holding rule is satisfied, both weakness and replacement ENTRY have confirmation across two distinct closes, and the broad-market regime supports optional rotation. Sector limits cannot be bypassed.
 - Quality rotation is conditional and atomic at execution: before the weak stock is sold, the linked replacement must pass latest-close underwriting and exact 09:17 price preflight. Only then does the weak position sell and the replacement buy in the same slot using immediately released cash. If replacement preflight fails, the optional rotation is cancelled and the current holding remains; no fictional later-session switch is created.
 - When capital is manually reduced or the legacy book exceeds limits, weaker-ranked positions are queued for controlled next-session rebalance; no historical fill is fabricated.

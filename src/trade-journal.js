@@ -15,7 +15,8 @@ import {
   positionWeakness,
   postEntryPyramidState,
   pyramidAddDecision,
-  rotationDecision
+  rotationDecision,
+  totalRealizedPnl
 } from "./portfolio-engine.js";
 
 const TRADE_SCOPE_LABELS = {
@@ -119,7 +120,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
       if (outcome === "FILLED") events.push({ type: "PYRAMID_ADD_FILLED", trade });
       if (outcome === "SKIPPED") events.push({ type: "PYRAMID_ADD_SKIPPED", trade });
     }
-    cancelInvalidGtfPartialExit(trade, row);
+    cancelInvalidPendingPartialExit(trade, row, config);
     if (trade.status === "PENDING_EXIT" && row) {
       await attemptPendingExit(
         trade,
@@ -471,21 +472,11 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
   };
 }
 
-function cancelInvalidGtfPartialExit(trade, row) {
+function cancelInvalidPendingPartialExit(trade, row, config) {
   if (trade.status !== "PENDING_PARTIAL_EXIT" || !row) return;
-  const reasons = Array.isArray(trade.pendingPartialExitReason)
-    ? trade.pendingPartialExitReason
-    : [];
-  const gtfOnly =
-    trade.pendingPartialExitTag === "EARLY_WEAKNESS" &&
-    reasons.some((reason) => String(reason).includes("GTF opposing supply")) &&
-    reasons.every((reason) =>
-      String(reason).includes("GTF opposing supply") || String(reason).startsWith("Sell ")
-    );
-  const stillBlocked =
-    row.gtfContext?.supplyBlocked === true ||
-    row.gtfContext?.checks?.roomForTwoR === false;
-  if (!gtfOnly || stillBlocked) return;
+  const decision = positionExitDecision({ ...trade, status: "OPEN" }, row, config);
+  const stillValid = decision.action === "PARTIAL_EXIT" && decision.tag === trade.pendingPartialExitTag;
+  if (stillValid) return;
   trade.status = "OPEN";
   trade.pendingPartialExitPct = null;
   trade.pendingPartialExitTag = null;
@@ -494,7 +485,7 @@ function cancelInvalidGtfPartialExit(trade, row) {
   trade.partialExitSignalScanAt = null;
   trade.executionError = null;
   trade.riskActionNote =
-    "Cancelled automatically: the GTF supply level no longer passes the fresh score-7 blocker gate.";
+    "Cancelled automatically: the pending partial exit no longer passes the confirmed trend-deterioration policy.";
 }
 
 export async function writeTradeSheets(journal, config = appConfig) {
@@ -1438,9 +1429,14 @@ function findAnyActiveTrade(trades, row) {
 }
 
 function recordRotationObservation(trade, row, weakness) {
-  if (!row?.asOf || trade.rotationReview?.lastObservedAsOf === row.asOf) return;
-  const qualifies = weakness?.primaryScore >= 1 && weakness?.score >= 2;
-  const priorDates = Array.isArray(trade.rotationReview?.weakCloseDates)
+  const qualificationVersion = 2;
+  const currentVersion = Number(trade.rotationReview?.qualificationVersion) || 0;
+  if (
+    !row?.asOf ||
+    (currentVersion === qualificationVersion && trade.rotationReview?.lastObservedAsOf === row.asOf)
+  ) return;
+  const qualifies = weakness?.primaryScore >= 2;
+  const priorDates = currentVersion === qualificationVersion && Array.isArray(trade.rotationReview?.weakCloseDates)
     ? trade.rotationReview.weakCloseDates
     : [];
   const weakCloseDates = qualifies
@@ -1453,7 +1449,8 @@ function recordRotationObservation(trade, row, weakness) {
     currentQualifies: qualifies,
     currentPrimaryScore: weakness?.primaryScore || 0,
     currentScore: weakness?.score || 0,
-    currentReasons: weakness?.reasons || []
+    currentReasons: weakness?.reasons || [],
+    qualificationVersion
   };
 }
 
@@ -1667,7 +1664,7 @@ async function writeXlsx(journal, filePath) {
   );
   const open = journal.trades.filter((trade) => trade.status === "OPEN");
   const closed = journal.trades.filter((trade) => trade.status === "CLOSED");
-  const realizedPnl = closed.reduce((sum, trade) => sum + (trade.pnl || 0), 0);
+  const realizedPnl = totalRealizedPnl(journal.trades);
   const unrealizedPnl = open.reduce((sum, trade) => sum + (trade.unrealizedPnl || 0), 0);
   const portfolio = journal.portfolioSummary || portfolioSummary(journal.trades, journal.candidates, config);
 

@@ -25,6 +25,7 @@ import { sendTelegramSummary } from "./telegram.js";
 import { tradeSettingsSummary, updateTradeJournal } from "./trade-journal.js";
 import { buildGtfContext } from "./gtf-context.js";
 import { applyAiDecisionReview } from "./ai-decision-review.js";
+import { totalRealizedPnl } from "./portfolio-engine.js";
 
 export async function runScreener(options = {}) {
   const config = options.config || appConfig;
@@ -315,9 +316,7 @@ function summarizeTrades(trades) {
     pendingEntry: pendingEntry.length,
     pendingExit: pendingExit.length,
     pendingPartialExit: pendingPartialExit.length,
-    realizedPnl: Number(
-      closed.reduce((sum, trade) => sum + (Number(trade.pnl) || 0), 0).toFixed(2)
-    ),
+    realizedPnl: totalRealizedPnl(trades),
     unrealizedPnl: Number(
       open.reduce((sum, trade) => sum + (Number(trade.unrealizedPnl) || 0), 0).toFixed(2)
     )
@@ -1419,18 +1418,18 @@ function buildEntryReasons(checks, values) {
   );
   reasons.push(
     checks.weeklyRs
-      ? `Weekly RS ${fmtPct(values.weeklyRs)} is above 0.`
-      : `Weekly RS ${fmtPct(values.weeklyRs)} is not above 0.`
+      ? `Weekly RS ${fmtRs(values.weeklyRs)} is above 0.`
+      : `Weekly RS ${fmtRs(values.weeklyRs)} is not above 0.`
   );
   reasons.push(
     checks.dailyLongRs
-      ? `Daily long RS55 ${fmtPct(values.dailyLongRs)} is above 0.`
-      : `Daily long RS55 ${fmtPct(values.dailyLongRs)} is not above 0.`
+      ? `Daily long RS55 ${fmtRs(values.dailyLongRs)} is above 0.`
+      : `Daily long RS55 ${fmtRs(values.dailyLongRs)} is not above 0.`
   );
   reasons.push(
     checks.dailyShortRs
-      ? `Daily short RS21 ${fmtPct(values.dailyShortRs)} is above 0.`
-      : `Daily short RS21 ${fmtPct(values.dailyShortRs)} is not above 0.`
+      ? `Daily short RS21 ${fmtRs(values.dailyShortRs)} is above 0.`
+      : `Daily short RS21 ${fmtRs(values.dailyShortRs)} is not above 0.`
   );
   reasons.push(
     checks.dailyPriceAboveSupertrend
@@ -1442,7 +1441,7 @@ function buildEntryReasons(checks, values) {
 
 function buildExitReasons(checks, values) {
   const reasons = [];
-  if (checks.weeklyRs) reasons.push(`Weekly RS ${fmtPct(values.weeklyRs)} is below 0 on closed weekly candle.`);
+  if (checks.weeklyRs) reasons.push(`Weekly RS ${fmtRs(values.weeklyRs)} is below 0 on closed weekly candle.`);
   if (reasons.length === 0) reasons.push("No exit condition is triggered.");
   return reasons;
 }
@@ -1538,10 +1537,10 @@ function buildSetupStrengthReasons(setupStrength) {
 function buildWeaknessReasons({ dailyShortRs, dailyLongRs, close, dailySupertrend, setupStrength }) {
   const reasons = [];
   if (Number.isFinite(dailyShortRs) && dailyShortRs < 0) {
-    reasons.push(`Early weakness: daily short RS21 ${fmtPct(dailyShortRs)} is below 0.`);
+    reasons.push(`Early weakness: daily short RS21 ${fmtRs(dailyShortRs)} is below 0.`);
   }
   if (Number.isFinite(dailyLongRs) && dailyLongRs < 0) {
-    reasons.push(`Early weakness: daily long RS55 ${fmtPct(dailyLongRs)} is below 0.`);
+    reasons.push(`Early weakness: daily long RS55 ${fmtRs(dailyLongRs)} is below 0.`);
   }
   if (Number.isFinite(close) && Number.isFinite(dailySupertrend) && close < dailySupertrend) {
     reasons.push(`Early weakness: daily close ${fmt(close)} is below Supertrend ${fmt(dailySupertrend)}.`);
@@ -1674,6 +1673,10 @@ function fmt(value) {
 
 function fmtPct(value) {
   return Number.isFinite(value) ? `${(value * 100).toFixed(1)}%` : "NA";
+}
+
+function fmtRs(value) {
+  return Number.isFinite(value) ? value.toFixed(2) : "NA";
 }
 
 function highestHigh(candles, period, endIndex) {

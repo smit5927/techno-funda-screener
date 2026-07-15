@@ -14,7 +14,7 @@ The 73 raw Learn2Trade videos contain several trading styles: positional equity,
 
 - Multi-timeframe structure: weekly defines relative leadership; daily confirms timing and trend.
 - RS55: roughly a three-month relative return comparison against the benchmark.
-- RS21: shorter relative momentum and early deterioration context.
+- RS21: shorter relative momentum and early deterioration context. It is a dimensionless zero-line value, not a percentage.
 - Breakout confirmation: a strong stock is preferred when price confirms through a prior range/high.
 - Base continuation: a 20-session closing breakout is stronger when the recent base forms a higher low than the preceding base.
 - Retracement entry: a strong RS leader is preferred when it pulls back into Supertrend, 50-DMA, or breakout-retest support, volume contracts on the fall or expands on reclaim, and a bullish candle confirms the turn.
@@ -66,7 +66,8 @@ The 73 raw Learn2Trade videos contain several trading styles: positional equity,
 
 - The six user-defined weekly/daily RS, RSI, and Supertrend checks remain the compulsory entry gate.
 - Breakout, retracement, momentum, candle, volume, DMA, Fibonacci, Bollinger, sector, market, F&O/OI, option-chain, commodity/currency, liquidity, volatility, and fundamental evidence ranks valid entries instead of overriding the gate.
-- Video exit methods are separated into protective structural stops, partial risk/profit exits, confirmed daily trend exits, and the completed-week RS final exit.
+- Video exit methods are separated into protective structural stops, confirmed partial risk/profit exits, confirmed daily trend exits, and the completed-week RS final exit. Early-risk partials require two independent primary weaknesses across two completed closes; grade, GTF and fundamentals remain confirmations only.
+- Healthy leaders receive Trend Ride Protection: strong weekly/daily leadership and intact Supertrend/50/200-DMA structure trail upward instead of taking a routine partial. Profit locking at 2R requires exhaustion evidence rather than profit alone.
 - Position size is risk-derived from a Rs. 10 lakh editable portfolio, 1% per-trade risk, 6% aggregate risk, 10% per-stock exposure, 25% sector exposure, and actual available cash.
 - Video-derived pyramiding is a stateful continuation setup: after the latest entry/add fill, price must advance, form a confirmed daily swing high, pull back 2%-15% without invalidating the original structure, and then freshly close above that swing high. A generic 20-day/55-day/52-week breakout alone cannot add. The setup must remain A+/A, every compulsory entry rule must still pass, weekly RS and daily RS55 must be rising, profit must be at least 1R, official delivery must not be distributing, and the current ratcheted stop must already protect average cost. Averaging down is prohibited.
 - Each add-on is capped at 2.5% of portfolio capital and 0.5% incremental risk. At most two add-ons are allowed, with a 15% total winner exposure cap; the 1% total position-risk, 6% portfolio-risk and 25% sector caps still apply at the actual 09:17 fill.
