@@ -352,34 +352,99 @@ async function downloadTradeSheet(event, format) {
     const payload = await apiGet("state");
     const state = payload.state || {};
     const trades = Array.isArray(state.trades) ? state.trades : [];
+    const tradeRows = trades.map(tradeSheetRow);
     if (format === "csv") {
-      const headers = ["Status", "Symbol", "Signal Date", "Entry Date", "Entry Price", "Quantity", "Exit Date", "Exit Price", "Invested Value", "Current Value", "P&L", "P&L %", "Reason"];
-      const rows = trades.map((trade) => [trade.status, trade.symbol, trade.entrySignalDate, trade.entryDate, trade.entryPrice, trade.quantity, trade.exitDate, trade.exitPrice, trade.investedValue, trade.currentValue, trade.pnl ?? trade.unrealizedPnl, trade.pnlPct ?? trade.unrealizedPnlPct, (trade.signalReason || trade.entryReason || []).join(" | ")]);
+      const headers = tradeSheetColumns().map(({ header }) => header);
+      const rows = tradeRows.map((row) => tradeSheetColumns().map(({ key }) => row[key]));
       saveBlob(csvBlob([headers, ...rows]), "techno-funda-trade-sheet.csv");
       return;
     }
     if (!window.ExcelJS) throw new Error("Excel generator is not ready");
     const workbook = new window.ExcelJS.Workbook();
     workbook.creator = "Techno Funda Institutional System";
+    const summary = workbook.addWorksheet("Summary", { views: [{ state: "frozen", ySplit: 1 }] });
+    summary.columns = [{ header: "Metric", key: "metric", width: 34 }, { header: "Value", key: "value", width: 28 }];
+    tradeSheetSummary(state).forEach(([metric, value]) => summary.addRow({ metric, value }));
+    styleTradeSheet(summary, "B1");
+
     const sheet = workbook.addWorksheet("Trades", { views: [{ state: "frozen", ySplit: 1 }] });
-    sheet.columns = [
-      ["Status", "status", 22], ["Symbol", "symbol", 18], ["Signal Date", "entrySignalDate", 16],
-      ["Entry Date", "entryDate", 16], ["Entry Price", "entryPrice", 14], ["Quantity", "quantity", 12],
-      ["Exit Date", "exitDate", 16], ["Exit Price", "exitPrice", 14], ["P&L", "pnl", 14],
-      ["Unrealized P&L", "unrealizedPnl", 18], ["Stop", "trailingStopPrice", 14], ["Reason", "reason", 70]
-    ].map(([header, key, width]) => ({ header, key, width }));
-    trades.forEach((trade) => sheet.addRow({ ...trade, reason: (trade.signalReason || trade.entryReason || []).join(" | ") }));
-    sheet.getRow(1).font = { bold: true, color: { argb: "FFFFFFFF" } };
-    sheet.getRow(1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF20252B" } };
-    sheet.autoFilter = { from: "A1", to: "L1" };
+    sheet.columns = tradeSheetColumns();
+    tradeRows.forEach((trade) => sheet.addRow(trade));
+    styleTradeSheet(sheet, `${sheet.getColumn(sheet.columnCount).letter}1`);
     const capital = workbook.addWorksheet("Capital History");
     capital.columns = ["Date", "Type", "Amount", "Previous Capital", "New Capital"].map((header) => ({ header, key: header.toLowerCase().replaceAll(" ", "_"), width: 22 }));
     (state.tradeSettings?.capitalHistory || []).forEach((item) => capital.addRow({ date: item.date, type: item.type, amount: item.amount, previous_capital: item.previousCapital, new_capital: item.newCapital }));
+    styleTradeSheet(capital, "E1");
     const buffer = await workbook.xlsx.writeBuffer();
     saveBlob(new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), "techno-funda-trade-sheet.xlsx");
   } catch (error) {
     window.alert(`Trade sheet download failed: ${error.message}`);
   }
+}
+
+function tradeSheetColumns() {
+  return [
+    ["Status", "status", 22], ["Symbol", "symbol", 18], ["List", "listLabel", 20],
+    ["Signal Date", "entrySignalDate", 16], ["Entry Date", "entryDate", 16], ["Entry Time", "entryTime", 14],
+    ["Entry Price", "entryPrice", 14], ["Quantity", "quantity", 12], ["Original Quantity", "originalQuantity", 16],
+    ["Exit Date", "exitDate", 16], ["Exit Price", "exitPrice", 14], ["Invested Value", "investedValue", 17],
+    ["Current Value", "currentValue", 17], ["Last Price", "lastPrice", 14], ["Unrealized P&L", "unrealizedPnl", 18],
+    ["Unrealized P&L %", "unrealizedPnlPct", 18], ["Partial Realized P&L", "partialRealizedPnl", 21],
+    ["Final Realized P&L", "finalRealizedPnl", 20], ["Booked P&L Contribution", "bookedPnlContribution", 23],
+    ["Total Position P&L", "totalPositionPnl", 20], ["Trailing Stop", "trailingStopPrice", 15],
+    ["Management Decision", "managementDecision", 22], ["Reason", "reason", 80]
+  ].map(([header, key, width]) => ({ header, key, width }));
+}
+
+function tradeSheetRow(trade) {
+  const closed = trade.status === "CLOSED";
+  const partialRealizedPnl = Number(trade.realizedPnlToDate || 0);
+  const finalRealizedPnl = closed ? Number(trade.pnl || 0) : null;
+  const bookedPnlContribution = closed ? finalRealizedPnl : partialRealizedPnl;
+  const unrealizedPnl = closed ? 0 : Number(trade.unrealizedPnl || 0);
+  return {
+    ...trade,
+    partialRealizedPnl,
+    finalRealizedPnl,
+    bookedPnlContribution,
+    totalPositionPnl: bookedPnlContribution + unrealizedPnl,
+    managementDecision: trade.latestManagementDecision?.action || "",
+    reason: tradeSheetReason(trade)
+  };
+}
+
+function tradeSheetReason(trade) {
+  const values = [
+    ...(Array.isArray(trade.latestManagementDecision?.reasons) ? trade.latestManagementDecision.reasons : []),
+    ...(Array.isArray(trade.signalReason) ? trade.signalReason : []),
+    ...(Array.isArray(trade.entryReason) ? trade.entryReason : []),
+    ...(Array.isArray(trade.exitReason) ? trade.exitReason : [])
+  ];
+  return [...new Set(values.filter(Boolean).map(String))].join(" | ");
+}
+
+function tradeSheetSummary(state) {
+  const trades = state.tradeSummary || {};
+  const portfolio = state.portfolioSummary || {};
+  const settings = state.tradeSettings || {};
+  return [
+    ["Updated At", state.scannedAt || state.executionPassAt || ""],
+    ["Trade Scope", settings.scopeLabel || settings.scopeListId || ""],
+    ["Trade Quality", settings.qualityLabel || settings.qualityMode || ""],
+    ["Total Capital", portfolio.totalCapital], ["Total Equity", portfolio.totalEquity],
+    ["Invested Capital", portfolio.investedCapital], ["Available Cash", portfolio.availableCash],
+    ["Open Positions", trades.open || 0], ["Pending Entry", trades.pendingEntry || 0],
+    ["Pending Full Exit", trades.pendingExit || 0], ["Pending Partial Exit", trades.pendingPartialExit || 0],
+    ["Closed Trades", trades.closed || 0], ["Realized P&L", trades.realizedPnl || 0],
+    ["Unrealized P&L", trades.unrealizedPnl || 0], ["Unrealized P&L %", portfolio.unrealizedPnlPct || 0],
+    ["Portfolio Risk", portfolio.portfolioRisk], ["Portfolio Risk %", portfolio.portfolioRiskPct]
+  ];
+}
+
+function styleTradeSheet(sheet, filterTo) {
+  sheet.getRow(1).font = { bold: true, color: { argb: "FFFFFFFF" } };
+  sheet.getRow(1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF20252B" } };
+  sheet.autoFilter = { from: "A1", to: filterTo };
 }
 
 function csvBlob(rows) {
