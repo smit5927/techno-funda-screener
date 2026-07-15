@@ -3,6 +3,7 @@ import ExcelJS from "exceljs";
 import { appConfig } from "./config.js";
 import { readTrades, saveTrades } from "./storage.js";
 import { fetchExecutionPrice } from "./yahoo.js";
+import { applyTradeChargeAccounting, chargeSettings } from "./charges.js";
 import {
   buildPositionPlan,
   buildPyramidAddPlan,
@@ -100,6 +101,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
   }
   await migrateLegacyOpeningPrices(trades, config);
   await correctActiveExecutionPrices(trades);
+  for (const trade of trades) applyTradeChargeAccounting(trade, config, trade.lastPrice);
 
   for (const trade of trades) {
     const row = executionRow(
@@ -108,7 +110,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
       scan.marketContext?.asOf
     );
     if (row && ["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status)) {
-      markToMarket(trade, row);
+      markToMarket(trade, row, config);
       trade.currentRank = candidateRank(row);
       trade.currentGrade = row.setupGrade;
       trade.trailingStopPrice = nextTrailingStop(trade, row, config);
@@ -134,7 +136,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
       );
     }
     if (trade.status === "PENDING_PARTIAL_EXIT" && row) {
-      const filled = await fillPartialExit(trade, row);
+      const filled = await fillPartialExit(trade, row, config);
       if (filled) events.push({ type: "PARTIAL_EXIT_FILLED", trade });
     }
   }
@@ -152,7 +154,8 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
         row,
         scan,
         [`Trade universe changed to ${settings.scopeLabel}; this position is outside the active portfolio.`],
-        "SCOPE_REBALANCE"
+        "SCOPE_REBALANCE",
+        config
       );
       events.push({ type: "PORTFOLIO_EXIT_PENDING", trade });
       continue;
@@ -167,7 +170,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
       hierarchy: "FULL_EXIT > PARTIAL_EXIT > QUALITY_ROTATION > HOLD"
     };
     if (decision.action === "FULL_EXIT") {
-      prepareFullExit(trade, row, scan, decision.reasons, "MODEL_EXIT");
+      prepareFullExit(trade, row, scan, decision.reasons, "MODEL_EXIT", config);
       events.push({ type: "EXIT_SIGNAL_PENDING", trade });
     } else if (decision.action === "PARTIAL_EXIT") {
       preparePartialExit(trade, row, scan, decision, config);
@@ -228,7 +231,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
       );
     }
     if (trade.status === "PENDING_PARTIAL_EXIT" && row) {
-      const filled = await fillPartialExit(trade, row);
+      const filled = await fillPartialExit(trade, row, config);
       if (filled) events.push({ type: "PARTIAL_EXIT_FILLED", trade });
     }
   }
@@ -356,7 +359,8 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
           weakRow,
           scan,
           [rotation.reason, `Weakness: ${rotation.weakness.reasons.join("; ")}.`],
-          "QUALITY_ROTATION"
+          "QUALITY_ROTATION",
+          config
         );
         rotation.trade.replacementCandidateSymbol = row.symbol;
         candidate.rotation = {
@@ -431,6 +435,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
     }
   }
 
+  for (const trade of trades) applyTradeChargeAccounting(trade, config, trade.lastPrice);
   const finalPortfolio = portfolioSummary(trades, candidates, config);
 
   const nextJournal = {
@@ -448,6 +453,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
       window: EXECUTION_TIME,
       priceSource: config.trade.executionPriceSource
     },
+    chargeRules: chargeSettings(config),
     signalState: nextSignalState,
     tradeCapitalPerStock: riskRules.totalCapital * riskRules.maxPositionPct / 100,
     portfolioRules: riskRules,
@@ -512,6 +518,11 @@ export function tradeSettingsSummary(config = appConfig) {
     qualityLabel: TRADE_QUALITY_LABELS[qualityMode],
     totalCapital: config.trade?.totalCapital ?? 1000000,
     capitalPerStock: config.trade?.capitalPerStock ?? 100000,
+    chargesEnabled: config.trade?.chargesEnabled === true,
+    brokerageMode: config.trade?.brokerageMode || "FLAT_PER_ORDER",
+    brokerageFlatPerOrder: config.trade?.brokerageFlatPerOrder ?? 20,
+    brokeragePercent: config.trade?.brokeragePercent ?? 0.1,
+    dpChargePerSell: config.trade?.dpChargePerSell ?? 15.34,
     executionWindow: EXECUTION_TIME
   };
 }
@@ -609,7 +620,7 @@ function createPendingEntry(
   };
 }
 
-function prepareFullExit(trade, row, scan, reasons, exitType = "MODEL_EXIT") {
+function prepareFullExit(trade, row, scan, reasons, exitType = "MODEL_EXIT", config = appConfig) {
   cancelPendingAdd(trade, `Cancelled because ${exitType} sell takes priority.`);
   trade.status = "PENDING_EXIT";
   trade.exitType = exitType;
@@ -623,7 +634,7 @@ function prepareFullExit(trade, row, scan, reasons, exitType = "MODEL_EXIT") {
     `Closing exit signal dated ${trade.exitSignalDate}; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays.`
   ];
   trade.exitSnapshot = snapshot(row);
-  markToMarket(trade, row);
+  markToMarket(trade, row, config);
 }
 
 function preparePartialExit(trade, row, scan, decision, config) {
@@ -639,7 +650,7 @@ function preparePartialExit(trade, row, scan, decision, config) {
     `Sell ${trade.pendingPartialExitPct}% on the next actual market session at 09:17 IST and trail the balance.`
   ];
   trade.exitSnapshot = snapshot(row);
-  markToMarket(trade, row);
+  markToMarket(trade, row, config);
 }
 
 function preparePyramidAdd(trade, row, scan, decision) {
@@ -990,7 +1001,7 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
     ];
     trade.pendingAdd = null;
     trade.executionError = null;
-    markToMarket(trade, row);
+    markToMarket(trade, row, config);
     return "FILLED";
   } catch (error) {
     trade.executionError = error.message || String(error);
@@ -1092,7 +1103,7 @@ async function fillEntry(trade, row, config, trades, candidates) {
     trade.executionMethod = fill.source;
     trade.executionWindow = fill.window;
     trade.executionError = null;
-    markToMarket(trade, row);
+    markToMarket(trade, row, config);
     return "FILLED";
   } catch (error) {
     trade.executionError = error.message || String(error);
@@ -1129,6 +1140,7 @@ async function fillExit(trade, row, config = appConfig) {
     trade.lastPriceDate = fill.date;
     trade.unrealizedPnl = null;
     trade.unrealizedPnlPct = null;
+    applyTradeChargeAccounting(trade, config, fill.price);
     return true;
   } catch (error) {
     trade.executionError = error.message || String(error);
@@ -1136,7 +1148,7 @@ async function fillExit(trade, row, config = appConfig) {
   }
 }
 
-function markToMarket(trade, row) {
+function markToMarket(trade, row, config = appConfig) {
   if (!Number.isFinite(row.close)) return;
   trade.lastPrice = round(row.close);
   trade.lastPriceDate = row.asOf;
@@ -1144,6 +1156,7 @@ function markToMarket(trade, row) {
   trade.currentValue = round(row.close * trade.quantity);
   trade.unrealizedPnl = round((row.close - trade.entryPrice) * trade.quantity);
   trade.unrealizedPnlPct = round(((row.close / trade.entryPrice) - 1) * 100);
+  applyTradeChargeAccounting(trade, config, row.close);
 }
 
 async function migrateLegacyOpeningPrices(trades, config) {
@@ -1249,7 +1262,7 @@ function rewriteExecutionReasons(reasons) {
     .replaceAll("09:15-09:20 IST window", "exact 09:17 IST execution time"));
 }
 
-async function fillPartialExit(trade, row) {
+async function fillPartialExit(trade, row, config = appConfig) {
   try {
     const fill = await fetchExecutionPrice(
       trade.yahooSymbol || row.yahooSymbol,
@@ -1299,7 +1312,7 @@ async function fillPartialExit(trade, row) {
     trade.pendingPartialExitPct = null;
     trade.pendingPartialExitTag = null;
     trade.pendingPartialExitReason = [];
-    markToMarket(trade, row);
+    markToMarket(trade, row, config);
     return true;
   } catch (error) {
     trade.executionError = error.message || String(error);
@@ -1582,7 +1595,8 @@ function enforcePortfolioLimits(trades, rowBySymbol, scan, settings, config, eve
         `Portfolio rebalance: only the best ${rules.maxOpenPositions} positions can use total capital Rs ${rules.totalCapital}.`,
         `Current portfolio rank ${item.rank}; stronger positions receive capital priority.`
       ],
-      "CAPITAL_REBALANCE"
+      "CAPITAL_REBALANCE",
+      config
     );
     events.push({ type: "PORTFOLIO_EXIT_PENDING", trade: item.trade });
   }
@@ -1698,6 +1712,15 @@ async function writeXlsx(journal, filePath) {
     { metric: "Realized P&L", value: round(realizedPnl) },
     { metric: "Unrealized P&L", value: round(unrealizedPnl) },
     { metric: "Unrealized P&L %", value: portfolio.unrealizedPnlPct },
+    { metric: "Charges Included", value: journal.chargeRules?.enabled ? "Yes" : "No" },
+    { metric: "Actual Charges", value: portfolio.actualCharges || 0 },
+    { metric: "Realized Charges", value: portfolio.realizedCharges || 0 },
+    { metric: "Open Buy Charges", value: portfolio.openBuyCharges || 0 },
+    { metric: "Estimated Exit Charges", value: portfolio.estimatedExitCharges || 0 },
+    { metric: "Brokerage Model", value: journal.chargeRules?.brokerageMode || "FLAT_PER_ORDER" },
+    { metric: "Fixed Brokerage / Order", value: journal.chargeRules?.brokerageFlatPerOrder ?? 0 },
+    { metric: "Brokerage % Turnover", value: journal.chargeRules?.brokeragePercent ?? 0 },
+    { metric: "DP Charge / Delivery Sell", value: journal.chargeRules?.dpChargePerSell ?? 0 },
     { metric: "Capital Per Stock", value: journal.tradeCapitalPerStock },
     { metric: "Trade Scope", value: journal.tradeSettings?.scopeLabel || "" },
     { metric: "Trade Quality", value: journal.tradeSettings?.qualityLabel || "" },
@@ -1711,6 +1734,7 @@ async function writeXlsx(journal, filePath) {
   addTradeWorksheet(workbook, "Pending Orders", pending);
   addTradeWorksheet(workbook, "Closed Trades", closed);
   addTradeWorksheet(workbook, "All Trades", journal.trades);
+  addTransactionLedgerWorksheet(workbook, journal.trades);
   addCandidateWorksheet(workbook, journal.candidates || []);
   addCandidateDecisionWorksheet(workbook, journal.candidateDecisionLog || []);
   addCapitalLedgerWorksheet(workbook, journal.capitalTransactions || []);
@@ -1722,6 +1746,63 @@ function addTradeWorksheet(workbook, name, trades) {
   const sheet = workbook.addWorksheet(name);
   sheet.columns = tradeColumns();
   sheet.addRows(trades.map(tradeToRow));
+  sheet.views = [{ state: "frozen", ySplit: 1 }];
+  formatSheet(sheet);
+}
+
+function addTransactionLedgerWorksheet(workbook, trades) {
+  const sheet = workbook.addWorksheet("Transactions & Charges");
+  sheet.columns = [
+    { header: "Symbol", key: "Symbol", width: 14 },
+    { header: "Transaction", key: "Transaction", width: 18 },
+    { header: "Side", key: "Side", width: 10 },
+    { header: "Date", key: "Date", width: 14 },
+    { header: "Time", key: "Time", width: 14 },
+    { header: "Price", key: "Price", width: 14 },
+    { header: "Quantity", key: "Quantity", width: 12 },
+    { header: "Turnover", key: "Turnover", width: 16 },
+    { header: "Brokerage", key: "Brokerage", width: 14 },
+    { header: "STT", key: "STT", width: 14 },
+    { header: "Exchange Charges", key: "Exchange Charges", width: 18 },
+    { header: "SEBI Charges", key: "SEBI Charges", width: 14 },
+    { header: "Stamp Duty", key: "Stamp Duty", width: 14 },
+    { header: "IPFT", key: "IPFT", width: 12 },
+    { header: "GST", key: "GST", width: 12 },
+    { header: "DP Charge", key: "DP Charge", width: 14 },
+    { header: "Total Charges", key: "Total Charges", width: 16 },
+    { header: "Gross P&L", key: "Gross P&L", width: 16 },
+    { header: "Allocated Buy Charges", key: "Allocated Buy Charges", width: 22 },
+    { header: "Net P&L", key: "Net P&L", width: 16 }
+  ];
+  const rows = [];
+  for (const trade of trades) {
+    for (const transaction of trade.transactions || []) {
+      const charges = transaction.charges || {};
+      rows.push({
+        Symbol: trade.symbol,
+        Transaction: transaction.type,
+        Side: transaction.side,
+        Date: transaction.date || "",
+        Time: transaction.time || "",
+        Price: transaction.price,
+        Quantity: transaction.quantity,
+        Turnover: transaction.turnover,
+        Brokerage: charges.brokerage || 0,
+        STT: charges.stt || 0,
+        "Exchange Charges": charges.exchangeTransactionCharge || 0,
+        "SEBI Charges": charges.sebiTurnoverCharge || 0,
+        "Stamp Duty": charges.stampDuty || 0,
+        IPFT: charges.ipft || 0,
+        GST: charges.gst || 0,
+        "DP Charge": charges.dpCharge || 0,
+        "Total Charges": charges.total || 0,
+        "Gross P&L": transaction.grossPnl ?? "",
+        "Allocated Buy Charges": transaction.allocatedBuyCharges ?? "",
+        "Net P&L": transaction.netPnl ?? ""
+      });
+    }
+  }
+  sheet.addRows(rows);
   sheet.views = [{ state: "frozen", ySplit: 1 }];
   formatSheet(sheet);
 }
@@ -1759,6 +1840,9 @@ function tradeColumns() {
     { header: "Last Close", key: "Last Close", width: 14 },
     { header: "Unrealized P&L", key: "Unrealized P&L", width: 16 },
     { header: "Unrealized P&L %", key: "Unrealized P&L %", width: 18 },
+    { header: "Gross Unrealized P&L", key: "Gross Unrealized P&L", width: 22 },
+    { header: "Open Buy Charges", key: "Open Buy Charges", width: 18 },
+    { header: "Estimated Exit Charges", key: "Estimated Exit Charges", width: 22 },
     { header: "Exit Signal Date", key: "Exit Signal Date", width: 18 },
     { header: "Exit Date", key: "Exit Date", width: 14 },
     { header: "Exit Time", key: "Exit Time", width: 13 },
@@ -1767,6 +1851,10 @@ function tradeColumns() {
     { header: "Exit Execution Method", key: "Exit Execution Method", width: 30 },
     { header: "Realized P&L", key: "Realized P&L", width: 16 },
     { header: "Realized P&L %", key: "Realized P&L %", width: 18 },
+    { header: "Gross Realized P&L", key: "Gross Realized P&L", width: 21 },
+    { header: "Actual Charges", key: "Actual Charges", width: 16 },
+    { header: "Realized Charges", key: "Realized Charges", width: 18 },
+    { header: "Charges Included", key: "Charges Included", width: 17 },
     { header: "Holding Days", key: "Holding Days", width: 14 },
     { header: "Execution Window", key: "Execution Window", width: 20 },
     { header: "Position Rank", key: "Position Rank", width: 14 },
@@ -1785,6 +1873,7 @@ function tradeColumns() {
     { header: "Add-On Decision", key: "Add-On Decision", width: 60 },
     { header: "Partial Exit Count", key: "Partial Exit Count", width: 18 },
     { header: "Partial Realized P&L", key: "Partial Realized P&L", width: 20 },
+    { header: "Transaction & Charge History", key: "Transaction & Charge History", width: 80 },
     { header: "Exit Type", key: "Exit Type", width: 22 },
     { header: "Replacement Candidate", key: "Replacement Candidate", width: 24 },
     { header: "Rotation Source", key: "Rotation Source", width: 20 },
@@ -1871,6 +1960,9 @@ function tradeToRow(trade) {
     "Last Close": trade.lastPrice ?? "",
     "Unrealized P&L": trade.unrealizedPnl ?? "",
     "Unrealized P&L %": trade.unrealizedPnlPct ?? "",
+    "Gross Unrealized P&L": trade.chargeSummary?.grossUnrealizedPnl ?? trade.unrealizedPnl ?? "",
+    "Open Buy Charges": trade.chargeSummary?.unallocatedBuyCharges ?? 0,
+    "Estimated Exit Charges": trade.chargeSummary?.estimatedExitCharges ?? 0,
     "Exit Signal Date": trade.exitSignalDate || "",
     "Exit Date": trade.exitDate || "",
     "Exit Time": trade.exitTime || "",
@@ -1879,6 +1971,10 @@ function tradeToRow(trade) {
     "Exit Execution Method": trade.exitExecutionMethod || "",
     "Realized P&L": trade.pnl ?? "",
     "Realized P&L %": trade.pnlPct ?? "",
+    "Gross Realized P&L": trade.chargeSummary?.grossRealizedPnl ?? trade.pnl ?? "",
+    "Actual Charges": trade.chargeSummary?.actualCharges ?? 0,
+    "Realized Charges": trade.chargeSummary?.realizedCharges ?? 0,
+    "Charges Included": trade.chargeSummary?.enabled ? "Yes" : "No",
     "Holding Days": trade.holdingDays ?? "",
     "Execution Window": trade.executionWindow || "",
     "Position Rank": trade.positionRank ?? "",
@@ -1901,6 +1997,9 @@ function tradeToRow(trade) {
       : (trade.lastPyramidDecision?.reasons || []).join(" "),
     "Partial Exit Count": trade.partialExits?.length || 0,
     "Partial Realized P&L": trade.realizedPnlToDate ?? 0,
+    "Transaction & Charge History": (trade.transactions || []).map((item) =>
+      `${item.date || "NA"} ${item.time || ""} ${item.type} ${item.side} ${item.quantity} @ ${item.price}; turnover ${item.turnover}; brokerage ${item.charges?.brokerage || 0}; STT ${item.charges?.stt || 0}; exchange ${item.charges?.exchangeTransactionCharge || 0}; SEBI ${item.charges?.sebiTurnoverCharge || 0}; stamp ${item.charges?.stampDuty || 0}; GST ${item.charges?.gst || 0}; DP ${item.charges?.dpCharge || 0}; total ${item.charges?.total || 0}; net P&L ${item.netPnl ?? "NA"}`
+    ).join(" | "),
     "Exit Type": trade.exitType || "",
     "Replacement Candidate": trade.replacementCandidateSymbol || "",
     "Rotation Source": trade.rotationSourceSymbol || "",

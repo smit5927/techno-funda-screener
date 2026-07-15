@@ -193,3 +193,11 @@ The default trade quality is `BEST_ONLY`, which opens sheet/Telegram trades only
 ## Trade Sheet
 
 The workbook contains Summary, Open Positions, Pending Orders, Closed Trades, All Trades, Waiting Candidates, Candidate Decision Log, and Capital Ledger sheets. It stores signal dates separately from exact 09:17 execution dates/prices, latest management hierarchy, waiting-candidate freshness/extension decisions, entry execution rechecks, rotation confirmations/cancellations, risk-sized quantity, initial/blended entry, add-on count and lot history, initial/trailing stop, planned and current risk, position rank, partial exits, replacement candidate, invested value, realized/unrealized P&L and percentage, market exposure/drawdown controls, entry style, setup grade, GTF additional context, institutional score, index/derivatives/options/commodity/operator reasons, concept coverage, retracement/base/breakout evidence, MACD/OBV, fundamentals, sector breadth, volume, ATR, candle context, and candle-low references.
+
+### Brokerage and statutory charge accounting
+
+- Charges can be switched on or off per user from Trade Settings.
+- Brokerage supports either a fixed amount per executed order or a percentage of turnover; the delivery DP charge is independently configurable.
+- When enabled, every entry, pyramid add, partial exit and full exit records turnover, brokerage, STT, NSE transaction charge, SEBI turnover charge, stamp duty, IPFT, GST and DP charge.
+- Booked realized P&L is net of allocated buy charges and actual sell charges. Open unrealized P&L is net of remaining buy charges and the estimated delivery sell charges at the latest price.
+- The workbook includes a Transactions & Charges sheet and keeps gross P&L, net P&L and charge components separate for auditability.

@@ -612,7 +612,14 @@ function normalizeSettings(input: any) {
     max_portfolio_risk_pct: clamp(Number(input.maxPortfolioRiskPct ?? input.max_portfolio_risk_pct) || 6, 0.1, 50),
     max_position_pct: clamp(Number(input.maxPositionPct ?? input.max_position_pct) || 10, 0.1, 100),
     max_sector_exposure_pct: clamp(Number(input.maxSectorExposurePct ?? input.max_sector_exposure_pct) || 25, 0.1, 100),
-    pyramiding_enabled: input.pyramidingEnabled ?? input.pyramiding_enabled ?? true
+    pyramiding_enabled: input.pyramidingEnabled ?? input.pyramiding_enabled ?? true,
+    charges_enabled: input.chargesEnabled ?? input.charges_enabled ?? false,
+    brokerage_mode: String(input.brokerageMode ?? input.brokerage_mode).toUpperCase() === "PERCENT_TURNOVER"
+      ? "PERCENT_TURNOVER"
+      : "FLAT_PER_ORDER",
+    brokerage_flat_per_order: finiteSetting(input.brokerageFlatPerOrder ?? input.brokerage_flat_per_order, 20, 0, 10000),
+    brokerage_percent: finiteSetting(input.brokeragePercent ?? input.brokerage_percent, 0.1, 0, 5),
+    dp_charge_per_sell: finiteSetting(input.dpChargePerSell ?? input.dp_charge_per_sell, 15.34, 0, 10000)
   };
 }
 
@@ -629,6 +636,12 @@ function publicSettings(row: any) {
     maxPositionPct: Number(row.max_position_pct) || 10,
     maxSectorExposurePct: Number(row.max_sector_exposure_pct) || 25,
     pyramidingEnabled: row.pyramiding_enabled !== false,
+    chargesEnabled: row.charges_enabled === true,
+    brokerageMode: row.brokerage_mode || "FLAT_PER_ORDER",
+    brokerageFlatPerOrder: Number(row.brokerage_flat_per_order) || 0,
+    brokeragePercent: Number(row.brokerage_percent) || 0,
+    dpChargePerSell: Number(row.dp_charge_per_sell) || 0,
+    statutoryChargeProfile: "NSE equity delivery: STT 0.1% buy/sell, exchange 0.00307%, SEBI Rs 10/crore, stamp 0.015% buy, GST 18%",
     capitalHistory: Array.isArray(row.capital_history) ? row.capital_history : [],
     updatedAt: row.updated_at || null
   };
@@ -748,6 +761,11 @@ function isUuid(value: string) {
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, Number.isFinite(value) ? value : min));
+}
+
+function finiteSetting(value: any, fallback: number, min: number, max: number) {
+  const number = Number(value);
+  return Number.isFinite(number) ? clamp(number, min, max) : fallback;
 }
 
 async function sha256(value: string) {

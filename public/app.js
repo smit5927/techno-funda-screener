@@ -47,6 +47,7 @@ const elements = {
   portfolioRisk: document.querySelector("#portfolioRisk"),
   liveStopRisk: document.querySelector("#liveStopRisk"),
   liveMtmStatus: document.querySelector("#liveMtmStatus"),
+  chargesStatus: document.querySelector("#chargesStatus"),
   positionsBody: document.querySelector("#positionsBody"),
   positionsEmpty: document.querySelector("#positionsEmpty"),
   dashboardPositionsBody: document.querySelector("#dashboardPositionsBody"),
@@ -95,6 +96,11 @@ const elements = {
   maxPositionInput: document.querySelector("#maxPositionInput"),
   maxSectorExposureInput: document.querySelector("#maxSectorExposureInput"),
   pyramidingEnabledInput: document.querySelector("#pyramidingEnabledInput"),
+  chargesEnabledInput: document.querySelector("#chargesEnabledInput"),
+  brokerageModeSelect: document.querySelector("#brokerageModeSelect"),
+  brokerageFlatInput: document.querySelector("#brokerageFlatInput"),
+  brokeragePercentInput: document.querySelector("#brokeragePercentInput"),
+  dpChargeInput: document.querySelector("#dpChargeInput"),
   saveTradeSettingsButton: document.querySelector("#saveTradeSettingsButton"),
   tradeSettingsStatus: document.querySelector("#tradeSettingsStatus"),
   telegramAccessCodeInput: document.querySelector("#telegramAccessCodeInput"),
@@ -114,6 +120,7 @@ const elements = {
 
 elements.refreshButton.addEventListener("click", refreshPublishedData);
 elements.scanButton.addEventListener("click", () => runScan());
+elements.brokerageModeSelect?.addEventListener("change", updateBrokerageControlState);
 elements.searchInput.addEventListener("input", (event) => {
   state.search = event.target.value.trim().toLowerCase();
   state.displayLimit = 250;
@@ -449,6 +456,7 @@ function renderSummary(payload) {
     portfolio.totalCapital || payload.tradeSettings?.totalCapital
   );
   renderSummaryPnl(elements.portfolioReturn, portfolioReturn.value, portfolioReturn.percentage);
+  renderChargesStatus(payload);
   elements.tradeScopeText.textContent = payload.tradeSettings?.scopeLabel || "All NSE Market";
   elements.tradeQualityText.textContent = payload.tradeSettings?.qualityLabel || "Best only";
   elements.totalCapital.textContent = compact(portfolio.totalCapital || payload.tradeSettings?.totalCapital || 1000000);
@@ -679,9 +687,15 @@ function positionPerformance(trade, suppliedLivePosition = null) {
   const livePosition = suppliedLivePosition || findLivePosition(trade);
   const displayPrice = Number.isFinite(livePosition?.ltp) ? livePosition.ltp : Number(trade?.lastPrice);
   const quantity = Number(trade?.quantity);
-  const unrealizedPnl = Number.isFinite(livePosition?.unrealizedPnl)
+  let unrealizedPnl = Number.isFinite(livePosition?.unrealizedPnl)
     ? livePosition.unrealizedPnl
     : Number(trade?.unrealizedPnl) || 0;
+  if (Number.isFinite(livePosition?.unrealizedPnl) && state.payload?.tradeSettings?.chargesEnabled) {
+    unrealizedPnl -= (Number(trade?.chargeSummary?.unallocatedBuyCharges) || 0) + deliverySellCharges(
+      (Number(livePosition.ltp) || 0) * (Number(trade?.quantity) || 0),
+      state.payload.tradeSettings
+    );
+  }
   const partialRealizedPnl = Number(trade?.realizedPnlToDate) || 0;
   const totalPnl = unrealizedPnl + partialRealizedPnl;
   const investedValue = Number.isFinite(livePosition?.investedValue)
@@ -720,6 +734,10 @@ function positionPerformance(trade, suppliedLivePosition = null) {
     previousClose,
     dayPnl,
     dayPnlPct,
+    unrealizedPnl,
+    unrealizedPnlPct: Number.isFinite(investedValue) && investedValue > 0
+      ? unrealizedPnl / (investedValue + (Number(trade?.chargeSummary?.unallocatedBuyCharges) || 0)) * 100
+      : null,
     totalPnl,
     totalPnlPct
   };
@@ -787,6 +805,20 @@ function portfolioReturnPerformance(realizedPnl, unrealizedPnl, totalCapital) {
   };
 }
 
+function deliverySellCharges(turnover, settings = {}) {
+  const value = Number(turnover);
+  if (!settings.chargesEnabled || !Number.isFinite(value) || value <= 0) return 0;
+  const brokerage = settings.brokerageMode === "PERCENT_TURNOVER"
+    ? value * (Number(settings.brokeragePercent) || 0) / 100
+    : Number(settings.brokerageFlatPerOrder) || 0;
+  const stt = value * 0.1 / 100;
+  const exchange = value * 0.00307 / 100;
+  const sebi = value * 0.0001 / 100;
+  const ipft = value * 0.0000001 / 100;
+  const gst = (brokerage + exchange + sebi + ipft) * 18 / 100;
+  return brokerage + stt + exchange + sebi + ipft + gst + (Number(settings.dpChargePerSell) || 0);
+}
+
 function startLiveMtm() {
   if (!cloudMode) return;
   const hasActivePosition = (state.payload?.trades || []).some((trade) =>
@@ -831,11 +863,23 @@ function renderLiveMtmSummary() {
   const mtm = state.liveMtm;
   if (!mtm) return;
   const summary = mtm.summary || {};
+  const activeTrades = (state.payload?.trades || []).filter((trade) =>
+    ["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status)
+  );
+  const netUnrealized = activeTrades.reduce(
+    (sum, trade) => sum + (Number(positionPerformance(trade).unrealizedPnl) || 0),
+    0
+  );
+  const netBasis = activeTrades.reduce(
+    (sum, trade) => sum + (Number(trade.costBasisWithCharges) || Number(trade.investedValue) || 0),
+    0
+  );
+  const netUnrealizedPct = netBasis > 0 ? netUnrealized / netBasis * 100 : 0;
   renderSummaryPnl(elements.todayUnrealizedPnl, summary.dayPnl, summary.dayPnlPct, true);
-  renderSummaryPnl(elements.unrealizedPnl, Number(summary.unrealizedPnl) || 0, summary.unrealizedPnlPct, true);
+  renderSummaryPnl(elements.unrealizedPnl, netUnrealized, netUnrealizedPct, true);
   const portfolioReturn = portfolioReturnPerformance(
     state.payload?.tradeSummary?.realizedPnl,
-    summary.unrealizedPnl,
+    netUnrealized,
     state.payload?.portfolioSummary?.totalCapital || state.payload?.tradeSettings?.totalCapital
   );
   renderSummaryPnl(elements.portfolioReturn, portfolioReturn.value, portfolioReturn.percentage, true);
@@ -1326,7 +1370,12 @@ async function saveTradeSettings() {
         maxPortfolioRiskPct: Number(elements.maxPortfolioRiskInput.value),
         maxPositionPct: Number(elements.maxPositionInput.value),
         maxSectorExposurePct: Number(elements.maxSectorExposureInput.value),
-        pyramidingEnabled: elements.pyramidingEnabledInput.checked
+        pyramidingEnabled: elements.pyramidingEnabledInput.checked,
+        chargesEnabled: elements.chargesEnabledInput.checked,
+        brokerageMode: elements.brokerageModeSelect.value,
+        brokerageFlatPerOrder: Number(elements.brokerageFlatInput.value),
+        brokeragePercent: Number(elements.brokeragePercentInput.value),
+        dpChargePerSell: Number(elements.dpChargeInput.value)
       })
     });
     const payload = await response.json().catch(() => ({}));
@@ -1428,6 +1477,12 @@ function renderTradeSettings(settings, options = {}) {
   if (elements.pyramidingEnabledInput) {
     elements.pyramidingEnabledInput.checked = settings.pyramidingEnabled !== false;
   }
+  if (elements.chargesEnabledInput) elements.chargesEnabledInput.checked = settings.chargesEnabled === true;
+  if (elements.brokerageModeSelect) elements.brokerageModeSelect.value = settings.brokerageMode || "FLAT_PER_ORDER";
+  if (elements.brokerageFlatInput) elements.brokerageFlatInput.value = String(settings.brokerageFlatPerOrder ?? 20);
+  if (elements.brokeragePercentInput) elements.brokeragePercentInput.value = String(settings.brokeragePercent ?? 0.1);
+  if (elements.dpChargeInput) elements.dpChargeInput.value = String(settings.dpChargePerSell ?? 15.34);
+  updateBrokerageControlState();
   if (updateBadges && elements.tradeScopeText) {
     elements.tradeScopeText.textContent = settings.scopeLabel || "All NSE Market";
   }
@@ -1437,8 +1492,28 @@ function renderTradeSettings(settings, options = {}) {
   if (elements.tradeSettingsStatus) {
     const updated = settings.updatedAt ? ` | saved ${formatDateTime(settings.updatedAt)}` : "";
     elements.tradeSettingsStatus.textContent =
-      `${settings.scopeLabel || "All NSE Market"} | ${settings.qualityLabel || "Best only"} | Capital Rs ${compact(settings.totalCapital || 1000000)} | Risk ${compact(settings.riskPerTradePct || 1)}%/trade${updated}`;
+      `${settings.scopeLabel || "All NSE Market"} | ${settings.qualityLabel || "Best only"} | Capital Rs ${compact(settings.totalCapital || 1000000)} | Risk ${compact(settings.riskPerTradePct || 1)}%/trade | Charges ${settings.chargesEnabled ? "ON" : "OFF"}${updated}`;
   }
+}
+
+function updateBrokerageControlState() {
+  const mode = elements.brokerageModeSelect?.value || "FLAT_PER_ORDER";
+  if (elements.brokerageFlatInput) elements.brokerageFlatInput.disabled = mode !== "FLAT_PER_ORDER";
+  if (elements.brokeragePercentInput) elements.brokeragePercentInput.disabled = mode !== "PERCENT_TURNOVER";
+}
+
+function renderChargesStatus(payload) {
+  if (!elements.chargesStatus) return;
+  const settings = payload?.tradeSettings || {};
+  const portfolio = payload?.portfolioSummary || {};
+  if (!settings.chargesEnabled) {
+    elements.chargesStatus.innerHTML = "<i></i> Gross accounting | Charges OFF";
+    return;
+  }
+  const model = settings.brokerageMode === "PERCENT_TURNOVER"
+    ? `${compact(settings.brokeragePercent || 0)}% brokerage`
+    : `Rs ${compact(settings.brokerageFlatPerOrder || 0)}/order`;
+  elements.chargesStatus.innerHTML = `<i></i> Net accounting | ${escapeHtml(model)} | Paid Rs ${compact(portfolio.actualCharges || 0)} | Exit est. Rs ${compact(portfolio.estimatedExitCharges || 0)}`;
 }
 
 function updateDownloadLinks(payload) {

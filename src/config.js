@@ -111,6 +111,15 @@ export const appConfig = {
     candidateMaxAtrExtension: numberEnv("TRADE_CANDIDATE_MAX_ATR_EXTENSION", 3),
     candidateMaxRankDecay: numberEnv("TRADE_CANDIDATE_MAX_RANK_DECAY", 15),
     pyramidingEnabled: boolEnv("TRADE_PYRAMIDING_ENABLED", true),
+    chargesEnabled: boolEnv("TRADE_CHARGES_ENABLED", false),
+    brokerageMode: choiceEnv(
+      "TRADE_BROKERAGE_MODE",
+      "FLAT_PER_ORDER",
+      ["FLAT_PER_ORDER", "PERCENT_TURNOVER"]
+    ),
+    brokerageFlatPerOrder: Math.max(0, numberEnv("TRADE_BROKERAGE_FLAT_PER_ORDER", 20)),
+    brokeragePercent: Math.max(0, numberEnv("TRADE_BROKERAGE_PERCENT", 0.1)),
+    dpChargePerSell: Math.max(0, numberEnv("TRADE_DP_CHARGE_PER_SELL", 15.34)),
     pyramidMaxAddOns: Math.max(1, numberEnv("TRADE_PYRAMID_MAX_ADD_ONS", 2)),
     pyramidMaxPositionPct: numberEnv("TRADE_PYRAMID_MAX_POSITION_PCT", 15),
     pyramidAddMaxPct: numberEnv("TRADE_PYRAMID_ADD_MAX_PCT", 2.5),

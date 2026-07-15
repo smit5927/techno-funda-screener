@@ -266,7 +266,12 @@ export function configForUser(settings = {}, telegram = {}) {
       maxPortfolioRiskPct: finite(settings.maxPortfolioRiskPct, appConfig.trade.maxPortfolioRiskPct),
       maxPositionPct: finite(settings.maxPositionPct, appConfig.trade.maxPositionPct),
       maxSectorExposurePct: finite(settings.maxSectorExposurePct, appConfig.trade.maxSectorExposurePct),
-      pyramidingEnabled: settings.pyramidingEnabled !== false
+      pyramidingEnabled: settings.pyramidingEnabled !== false,
+      chargesEnabled: settings.chargesEnabled === true,
+      brokerageMode: settings.brokerageMode || appConfig.trade.brokerageMode,
+      brokerageFlatPerOrder: finite(settings.brokerageFlatPerOrder, appConfig.trade.brokerageFlatPerOrder),
+      brokeragePercent: finite(settings.brokeragePercent, appConfig.trade.brokeragePercent),
+      dpChargePerSell: finite(settings.dpChargePerSell, appConfig.trade.dpChargePerSell)
     },
     telegram: {
       ...appConfig.telegram,

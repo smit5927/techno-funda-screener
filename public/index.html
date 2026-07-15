@@ -120,7 +120,7 @@
             <span>Portfolio Performance</span>
             <strong>Booked, live and net return</strong>
           </div>
-          <span class="pnlLiveLabel"><i></i> Live accounting</span>
+          <span id="chargesStatus" class="pnlLiveLabel"><i></i> Gross accounting</span>
         </div>
         <div class="pnlPerformanceGrid">
           <article class="pnlMetric booked">
@@ -306,6 +306,22 @@
           <input id="maxPositionInput" type="number" min="0.1" max="100" step="0.1" inputmode="decimal" placeholder="Position cap %" aria-label="Maximum position allocation percent" />
           <input id="maxSectorExposureInput" type="number" min="0.1" max="100" step="0.1" inputmode="decimal" placeholder="Sector cap %" aria-label="Maximum sector exposure percent" />
           <label class="settingsToggle"><input id="pyramidingEnabledInput" type="checkbox" checked /><span>Pyramiding</span></label>
+        </div>
+        <div class="brokerageSettings">
+          <div class="brokerageSettingsHeader">
+            <div><span>Broker &amp; Statutory Charges</span><small>Equity delivery accounting</small></div>
+            <label class="settingsToggle"><input id="chargesEnabledInput" type="checkbox" /><span>Include charges in P&amp;L</span></label>
+          </div>
+          <div class="brokerageInputs">
+            <label><span>Brokerage model</span><select id="brokerageModeSelect">
+              <option value="FLAT_PER_ORDER">Fixed per executed order</option>
+              <option value="PERCENT_TURNOVER">Percentage of turnover</option>
+            </select></label>
+            <label><span>Fixed brokerage (Rs/order)</span><input id="brokerageFlatInput" type="number" min="0" max="10000" step="0.01" inputmode="decimal" /></label>
+            <label><span>Brokerage (% turnover)</span><input id="brokeragePercentInput" type="number" min="0" max="5" step="0.001" inputmode="decimal" /></label>
+            <label><span>DP charge (Rs/delivery sell)</span><input id="dpChargeInput" type="number" min="0" max="10000" step="0.01" inputmode="decimal" /></label>
+          </div>
+          <p class="statutoryRates">Auto: STT 0.1% buy/sell | NSE transaction 0.00307% | SEBI Rs 10/crore | stamp duty 0.015% buy | GST 18% | IPFT</p>
         </div>
         <div class="customActions">
           <button id="saveTradeSettingsButton" type="button">Save Trade Settings</button>
@@ -527,6 +543,6 @@
     <script src="vendor/supabase.js"></script>
     <script src="vendor/exceljs.min.js"></script>
     <script src="mobile-config.js"></script>
-    <script src="auth.js?v=20260715-performance-panel" type="module"></script>
+    <script src="auth.js?v=20260715-charges-ledger" type="module"></script>
   </body>
 </html>

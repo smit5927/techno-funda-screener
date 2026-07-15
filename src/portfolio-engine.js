@@ -1,3 +1,5 @@
+import { portfolioChargeSummary } from "./charges.js";
+
 const ACTIVE_STATUSES = new Set(["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"]);
 
 export function portfolioConfig(config = {}) {
@@ -182,6 +184,7 @@ export function portfolioSummary(trades = [], candidates = [], config = {}) {
     (sum, trade) => sum + (Number(trade.unrealizedPnl) || 0),
     0
   );
+  const charges = portfolioChargeSummary(trades);
   const portfolioRisk =
     active.reduce((sum, trade) => sum + remainingTradeRisk(trade), 0) +
     pendingEntries.reduce((sum, trade) => sum + (Number(trade.plannedRisk) || 0), 0) +
@@ -189,7 +192,7 @@ export function portfolioSummary(trades = [], candidates = [], config = {}) {
   const riskLimit = rules.totalCapital * rules.maxPortfolioRiskPct / 100;
   const actualCash = Math.max(
     0,
-    rules.totalCapital + realizedPnl - investedCapital - reservedCapital
+    rules.totalCapital + realizedPnl - investedCapital - reservedCapital - charges.openBuyCharges
   );
   const totalEquity = rules.totalCapital + realizedPnl + unrealizedPnl;
   const drawdownPct = Math.max(0, ((rules.totalCapital - totalEquity) / rules.totalCapital) * 100);
@@ -214,11 +217,16 @@ export function portfolioSummary(trades = [], candidates = [], config = {}) {
     totalCapital: round(rules.totalCapital),
     investedCapital: round(investedCapital),
     reservedCapital: round(reservedCapital),
-    deployedCapital: round(investedCapital + reservedCapital),
+    deployedCapital: round(investedCapital + reservedCapital + charges.openBuyCharges),
     availableCash: round(availableCash),
     actualCash: round(actualCash),
     realizedPnl: round(realizedPnl),
     unrealizedPnl: round(unrealizedPnl),
+    chargesEnabled: config.trade?.chargesEnabled === true,
+    actualCharges: round(charges.actualCharges),
+    realizedCharges: round(charges.realizedCharges),
+    openBuyCharges: round(charges.openBuyCharges),
+    estimatedExitCharges: round(charges.estimatedExitCharges),
     totalEquity: round(totalEquity),
     unrealizedPnlPct: investedCapital > 0 ? round(unrealizedPnl / investedCapital * 100) : 0,
     drawdownPct: round(drawdownPct),

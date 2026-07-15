@@ -531,6 +531,16 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .telegramInputs input, .settingsInputs input, .settingsInputs select { width: 100%; padding: 0 10px; background: var(--surface-muted); }
 .settingsToggle { min-height: 42px; display: flex; align-items: center; gap: 9px; padding: 0 11px; border: 1px solid var(--border); background: var(--surface-muted); color: var(--text); }
 .settingsToggle input { width: 18px; height: 18px; accent-color: var(--accent); }
+.brokerageSettings { margin-top: 12px; padding: 14px; border: 1px solid var(--border); background: color-mix(in srgb, var(--surface-muted) 74%, transparent); }
+.brokerageSettingsHeader { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.brokerageSettingsHeader > div { display: grid; gap: 2px; }
+.brokerageSettingsHeader span { font-weight: 800; color: var(--text); }
+.brokerageSettingsHeader small, .statutoryRates { color: var(--muted); }
+.brokerageInputs { display: grid; grid-template-columns: repeat(4, minmax(160px, 1fr)); gap: 10px; margin-top: 12px; }
+.brokerageInputs label { display: grid; gap: 6px; color: var(--muted); font-size: 12px; }
+.brokerageInputs input, .brokerageInputs select { width: 100%; padding: 0 10px; background: var(--surface); }
+.brokerageInputs input:disabled { opacity: .45; }
+.statutoryRates { margin: 10px 0 0; font-size: 12px; line-height: 1.5; }
 #customListStatus, #telegramStatus, #tradeSettingsStatus { color: var(--muted); }
 
 .positionsSection { margin: 14px 0; }
@@ -861,6 +871,7 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
 
 @media (max-width: 1420px) {
   .settingsInputs { grid-template-columns: repeat(3, 1fr); }
+  .brokerageInputs { grid-template-columns: repeat(2, minmax(150px, 1fr)); }
 }
 
 @media (max-width: 900px) {
@@ -937,6 +948,8 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
   .listActions { display: grid; width: 100%; grid-template-columns: repeat(3, minmax(0, 1fr)); align-self: stretch; }
   .listActions button { min-width: 0; padding: 0 4px; font-size: 10px; }
   .uploadRow, .telegramInputs, .settingsInputs { grid-template-columns: 1fr; }
+  .brokerageSettingsHeader { align-items: stretch; flex-direction: column; }
+  .brokerageInputs { grid-template-columns: 1fr; }
   .sectionHeading span { max-width: 54%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .sectionHeading > span:not(.liveMtmStatus) { display: none; }
   .sectionHeading h2 { font-size: 15px; }

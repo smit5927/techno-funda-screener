@@ -404,7 +404,14 @@ function normalizeTradeSettings(input: any) {
     scopeLabel: scope.label,
     qualityMode: quality.id,
     qualityLabel: quality.label,
-    totalCapital: normalizeCapital(input?.totalCapital)
+    totalCapital: normalizeCapital(input?.totalCapital),
+    chargesEnabled: input?.chargesEnabled === true,
+    brokerageMode: String(input?.brokerageMode || "FLAT_PER_ORDER").toUpperCase() === "PERCENT_TURNOVER"
+      ? "PERCENT_TURNOVER"
+      : "FLAT_PER_ORDER",
+    brokerageFlatPerOrder: Math.max(0, Number(input?.brokerageFlatPerOrder ?? 20)),
+    brokeragePercent: Math.max(0, Number(input?.brokeragePercent ?? 0.1)),
+    dpChargePerSell: Math.max(0, Number(input?.dpChargePerSell ?? 15.34))
   };
 }
 
