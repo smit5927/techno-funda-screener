@@ -25,7 +25,7 @@ import { sendTelegramSummary } from "./telegram.js";
 import { tradeSettingsSummary, updateTradeJournal } from "./trade-journal.js";
 import { buildGtfContext } from "./gtf-context.js";
 import { applyAiDecisionReview } from "./ai-decision-review.js";
-import { totalRealizedPnl } from "./portfolio-engine.js";
+import { portfolioSummary, totalRealizedPnl } from "./portfolio-engine.js";
 
 export async function runScreener(options = {}) {
   const config = options.config || appConfig;
@@ -143,7 +143,7 @@ export async function runScreener(options = {}) {
   const journal = await updateTradeJournal(payload, { ...config, marketContext });
   const visibleTrades = journal.visibleTrades || journal.trades;
   payload.tradeSummary = summarizeTrades(visibleTrades);
-  payload.portfolioSummary = journal.portfolioSummary;
+  payload.portfolioSummary = visiblePortfolioSummary(journal, config);
   payload.portfolioRules = journal.portfolioRules;
   payload.waitingCandidates = journal.visibleCandidates || journal.candidates || [];
   payload.candidateDecisionLog = journal.visibleCandidateDecisions || [];
@@ -235,7 +235,7 @@ export async function runExecutionPass(options = {}) {
   });
   const visibleTrades = journal.visibleTrades || journal.trades;
   payload.tradeSummary = summarizeTrades(visibleTrades);
-  payload.portfolioSummary = journal.portfolioSummary;
+  payload.portfolioSummary = visiblePortfolioSummary(journal, config);
   payload.portfolioRules = journal.portfolioRules;
   payload.waitingCandidates = journal.visibleCandidates || journal.candidates || [];
   payload.candidateDecisionLog = journal.visibleCandidateDecisions || [];
@@ -304,8 +304,15 @@ function mergeTradeEvents(previousEvents, currentEvents) {
   return output;
 }
 
-function summarizeTrades(trades) {
+export function visiblePortfolioSummary(journal = {}, config = appConfig) {
+  const visibleTrades = journal.visibleTrades || journal.trades || [];
+  const visibleCandidates = journal.visibleCandidates || journal.candidates || [];
+  return portfolioSummary(visibleTrades, visibleCandidates, config);
+}
+
+export function summarizeTrades(trades) {
   const open = trades.filter((trade) => trade.status === "OPEN");
+  const active = trades.filter((trade) => ["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status));
   const closed = trades.filter((trade) => trade.status === "CLOSED");
   const pendingEntry = trades.filter((trade) => trade.status === "PENDING_ENTRY");
   const pendingExit = trades.filter((trade) => trade.status === "PENDING_EXIT");
@@ -318,7 +325,7 @@ function summarizeTrades(trades) {
     pendingPartialExit: pendingPartialExit.length,
     realizedPnl: totalRealizedPnl(trades),
     unrealizedPnl: Number(
-      open.reduce((sum, trade) => sum + (Number(trade.unrealizedPnl) || 0), 0).toFixed(2)
+      active.reduce((sum, trade) => sum + (Number(trade.unrealizedPnl) || 0), 0).toFixed(2)
     )
   };
 }

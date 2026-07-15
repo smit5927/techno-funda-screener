@@ -315,6 +315,7 @@ function serializableJournal(journal) {
 function summarizeTrades(trades = []) {
   const byStatus = (status) => trades.filter((trade) => trade.status === status);
   const open = byStatus("OPEN");
+  const active = trades.filter((trade) => ["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status));
   const closed = byStatus("CLOSED");
   return {
     open: open.length,
@@ -323,7 +324,7 @@ function summarizeTrades(trades = []) {
     pendingExit: byStatus("PENDING_EXIT").length,
     pendingPartialExit: byStatus("PENDING_PARTIAL_EXIT").length,
     realizedPnl: totalRealizedPnl(trades),
-    unrealizedPnl: round(open.reduce((sum, trade) => sum + (Number(trade.unrealizedPnl) || 0), 0))
+    unrealizedPnl: round(active.reduce((sum, trade) => sum + (Number(trade.unrealizedPnl) || 0), 0))
   };
 }
 

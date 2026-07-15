@@ -31,6 +31,7 @@ test("portfolio summary exposes live today and total unrealized P&L", () => {
   const app = fs.readFileSync(path.join(rootDir, "public", "app.js"), "utf8");
   assert.match(html, /id="todayUnrealizedPnl"/);
   assert.match(html, /Total Unrealized P&amp;L/);
+  assert.match(html, /Booked Realized P&amp;L/);
   assert.match(html, /id="dashboardPositionFilter"/);
   assert.match(html, /id="dashboardPositionSortSelect"/);
   assert.match(html, /id="dashboardPositionSortDirection"/);
