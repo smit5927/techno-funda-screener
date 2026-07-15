@@ -6,7 +6,7 @@ const DEFAULT_CHARGE_SETTINGS = Object.freeze({
   dpChargePerSell: 15.34,
   sttBuyPct: 0.1,
   sttSellPct: 0.1,
-  exchangeTransactionPct: 0.00307,
+  exchangeTransactionPct: 0.0030699,
   sebiTurnoverPct: 0.0001,
   stampDutyBuyPct: 0.015,
   ipftPct: 0.0000001,
@@ -260,4 +260,3 @@ function positive(value) {
 function round(value) {
   return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
 }
-

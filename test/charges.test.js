@@ -25,6 +25,16 @@ test("delivery buy calculates brokerage and all statutory charges without DP", (
   assert.ok(charges.total > 140);
 });
 
+test("NSE cash transaction charge and IPFT total exactly Rs 307 per crore", () => {
+  const charges = calculateDeliveryCharges(
+    { side: "BUY", price: 100, quantity: 100_000 },
+    discountConfig
+  );
+  assert.equal(charges.exchangeTransactionCharge, 306.99);
+  assert.equal(charges.ipft, 0.01);
+  assert.equal(charges.exchangeTransactionCharge + charges.ipft, 307);
+});
+
 test("delivery sell adds DP charge and percentage brokerage is turnover based", () => {
   const charges = calculateDeliveryCharges(
     { side: "SELL", price: 110, quantity: 500 },
@@ -85,4 +95,36 @@ test("open unrealized P&L includes buy charges and estimated delivery sell charg
   assert.ok(trade.unrealizedPnl < 500);
   assert.ok(trade.estimatedExitCharges > 0);
   assert.equal(trade.unrealizedPnl, trade.chargeSummary.netUnrealizedPnl);
+});
+
+test("charge accounting is idempotent across refreshes and rescans", () => {
+  const trade = {
+    status: "OPEN",
+    entryDate: "2026-07-01",
+    entryPrice: 100,
+    initialEntryPrice: 100,
+    initialQuantity: 100,
+    originalQuantity: 100,
+    originalInvestedValue: 10000,
+    quantity: 50,
+    lastPrice: 108,
+    partialExits: [{ date: "2026-07-10", time: "09:17 IST", price: 110, quantity: 50 }],
+    addOns: []
+  };
+
+  applyTradeChargeAccounting(trade, discountConfig, 108);
+  const first = structuredClone({
+    realizedPnlToDate: trade.realizedPnlToDate,
+    unrealizedPnl: trade.unrealizedPnl,
+    chargeSummary: trade.chargeSummary,
+    transactions: trade.transactions
+  });
+  applyTradeChargeAccounting(trade, discountConfig, 108);
+
+  assert.deepEqual({
+    realizedPnlToDate: trade.realizedPnlToDate,
+    unrealizedPnl: trade.unrealizedPnl,
+    chargeSummary: trade.chargeSummary,
+    transactions: trade.transactions
+  }, first);
 });

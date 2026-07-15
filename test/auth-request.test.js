@@ -32,7 +32,8 @@ test("portfolio summary exposes live today and total unrealized P&L", () => {
   const app = fs.readFileSync(path.join(rootDir, "public", "app.js"), "utf8");
   assert.match(html, /id="todayUnrealizedPnl"/);
   assert.match(html, /Total Unrealized P&amp;L/);
-  assert.match(html, /Booked Realized P&amp;L/);
+  assert.match(html, /Booked Realized P&amp;L \(Net\)/);
+  assert.match(html, /id="realizedPnlBreakdown"/);
   assert.match(html, /id="portfolioReturn"/);
   assert.match(html, /Overall Portfolio Return/);
   assert.match(html, /class="pnlPerformanceSection"/);
@@ -44,6 +45,7 @@ test("portfolio summary exposes live today and total unrealized P&L", () => {
   assert.match(app, /summary\.dayPnlPct/);
   assert.match(app, /portfolioReturnPerformance/);
   assert.match(app, /renderSummaryPnl\(elements\.realizedPnl/);
+  assert.match(app, /renderRealizedBreakdown\(payload\)/);
   assert.match(app, /renderSummaryPnl\(elements\.unrealizedPnl/);
   assert.match(app, /pnlGainPulse/);
   assert.match(app, /pnlLossPulse/);

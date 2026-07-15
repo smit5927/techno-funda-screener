@@ -362,6 +362,24 @@ test("fundamental deterioration alone cannot trigger a partial exit", () => {
   assert.equal(decision.action, "HOLD");
 });
 
+test("fundamental deterioration cannot repeat an already-booked technical partial exit", () => {
+  const row = strongRow({
+    dailyShortRs: -0.02,
+    dailyRsi: 47,
+    fundamentalScore: 1
+  });
+  const decision = positionExitDecision(openTrade({
+    partialExitTags: ["EARLY_WEAKNESS"],
+    entrySnapshot: { fundamentalScore: 4 },
+    rotationReview: {
+      qualificationVersion: 2,
+      weakCloseDates: ["2026-07-09", "2026-07-10"]
+    }
+  }), row, { trade: {} });
+
+  assert.equal(decision.action, "HOLD");
+});
+
 test("materially stronger challenger rotates only a weak position", () => {
   const weak = strongRow({
     symbol: "WEAK",
@@ -504,6 +522,18 @@ test("portfolio summary reserves pending capital and reports cash", () => {
   assert.equal(summary.deployedCapital, 180_000);
   assert.equal(summary.availableCash, 820_000);
   assert.equal(summary.openSlots, 13);
+});
+
+test("portfolio summary separates gross booked P&L from realized charges", () => {
+  const trade = openTrade({
+    realizedPnlToDate: -120,
+    chargeSummary: { realizedCharges: 20 }
+  });
+  const summary = portfolioSummary([trade], [], { trade: { chargesEnabled: true } });
+
+  assert.equal(summary.realizedPnl, -120);
+  assert.equal(summary.realizedCharges, 20);
+  assert.equal(summary.grossRealizedPnl, -100);
 });
 
 test("portfolio realized P&L includes partial bookings without double-counting closed trades", () => {

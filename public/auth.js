@@ -251,7 +251,7 @@ async function showApplication(profile) {
   });
   if (!appLoaded) {
     appLoaded = true;
-    await import("./app.js?v=20260715-detail-evidence");
+    await import("./app.js?v=20260715-net-realized-audit");
   }
 }
 

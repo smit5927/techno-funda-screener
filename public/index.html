@@ -125,9 +125,9 @@
         <div class="pnlPerformanceGrid">
           <article class="pnlMetric booked">
             <span class="pnlMetricType">Booked</span>
-            <span>Booked Realized P&amp;L</span>
+            <span>Booked Realized P&amp;L (Net)</span>
             <strong id="realizedPnl" aria-live="polite">0.00</strong>
-            <small>Partial exits + completed exits</small>
+            <small id="realizedPnlBreakdown">Gross 0.00 | realized charges 0.00</small>
           </article>
           <article class="pnlMetric today">
             <span class="pnlMetricType">Today</span>
@@ -543,6 +543,6 @@
     <script src="vendor/supabase.js"></script>
     <script src="vendor/exceljs.min.js"></script>
     <script src="mobile-config.js"></script>
-    <script src="auth.js?v=20260715-detail-evidence" type="module"></script>
+    <script src="auth.js?v=20260715-net-realized-audit" type="module"></script>
   </body>
 </html>

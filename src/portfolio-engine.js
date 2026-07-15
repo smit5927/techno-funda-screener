@@ -185,6 +185,7 @@ export function portfolioSummary(trades = [], candidates = [], config = {}) {
     0
   );
   const charges = portfolioChargeSummary(trades);
+  const grossRealizedPnl = realizedPnl + charges.realizedCharges;
   const portfolioRisk =
     active.reduce((sum, trade) => sum + remainingTradeRisk(trade), 0) +
     pendingEntries.reduce((sum, trade) => sum + (Number(trade.plannedRisk) || 0), 0) +
@@ -221,6 +222,7 @@ export function portfolioSummary(trades = [], candidates = [], config = {}) {
     availableCash: round(availableCash),
     actualCash: round(actualCash),
     realizedPnl: round(realizedPnl),
+    grossRealizedPnl: round(grossRealizedPnl),
     unrealizedPnl: round(unrealizedPnl),
     chargesEnabled: config.trade?.chargesEnabled === true,
     actualCharges: round(charges.actualCharges),
@@ -664,6 +666,7 @@ export function positionExitDecision(trade, row, config = {}) {
   const initialRisk = Math.max(0, Number(trade.entryPrice) - Number(trade.initialStopPrice));
   const rewardR = initialRisk > 0 ? (close - Number(trade.entryPrice)) / initialRisk : null;
   const partialReasons = [];
+  let partialTag = null;
   if (
     Number.isFinite(rewardR) &&
     rewardR >= rules.partialProfitR &&
@@ -671,11 +674,17 @@ export function positionExitDecision(trade, row, config = {}) {
     !trade.partialExitTags?.includes("PROFIT_LOCK")
   ) {
     partialReasons.push(`Profit reached ${round(rewardR)}R; lock ${rules.partialExitPct}% and trail the balance.`);
+    partialTag = "PROFIT_LOCK";
   }
-  if (weaknessConfirmed && !trade.partialExitTags?.includes("EARLY_WEAKNESS")) {
+  if (
+    !partialTag &&
+    weaknessConfirmed &&
+    !trade.partialExitTags?.includes("EARLY_WEAKNESS")
+  ) {
     partialReasons.push(
       `Confirmed deterioration on ${confirmedWeakCloses} completed closes: ${weakness.primaryReasons.join("; ")}.`
     );
+    partialTag = "EARLY_WEAKNESS";
   }
   const entryFundamental = Number(trade.entrySnapshot?.fundamentalScore);
   const currentFundamental = Number(row.fundamentalScore);
@@ -684,17 +693,17 @@ export function positionExitDecision(trade, row, config = {}) {
     Number.isFinite(currentFundamental) &&
     entryFundamental - currentFundamental >= 2 &&
     currentFundamental <= 2;
-  if (fundamentalDeteriorated && weaknessConfirmed) {
+  if (fundamentalDeteriorated && partialTag === "EARLY_WEAKNESS") {
     partialReasons.push("Fundamental deterioration confirms the already-established technical weakness.");
   }
-  if (partialReasons.length && Number(trade.quantity) >= 2) {
+  if (partialTag && partialReasons.length && Number(trade.quantity) >= 2) {
     return {
       action: "PARTIAL_EXIT",
       reasons: partialReasons,
       trailingStop,
       rewardR: round(rewardR),
       partialPct: rules.partialExitPct,
-      tag: partialReasons[0].startsWith("Profit") ? "PROFIT_LOCK" : "EARLY_WEAKNESS"
+      tag: partialTag
     };
   }
   const holdReasons = [...weakness.reasons];

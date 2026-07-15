@@ -37,6 +37,7 @@ const elements = {
   pendingTradesCount: document.querySelector("#pendingTradesCount"),
   closedTradesCount: document.querySelector("#closedTradesCount"),
   realizedPnl: document.querySelector("#realizedPnl"),
+  realizedPnlBreakdown: document.querySelector("#realizedPnlBreakdown"),
   todayUnrealizedPnl: document.querySelector("#todayUnrealizedPnl"),
   unrealizedPnl: document.querySelector("#unrealizedPnl"),
   portfolioReturn: document.querySelector("#portfolioReturn"),
@@ -446,6 +447,7 @@ function renderSummary(payload) {
     (payload.tradeSummary?.pendingPartialExit || 0);
   elements.closedTradesCount.textContent = payload.tradeSummary?.closed || 0;
   renderSummaryPnl(elements.realizedPnl, Number(payload.tradeSummary?.realizedPnl) || 0, null);
+  renderRealizedBreakdown(payload);
   const dayPerformance = portfolioDayPerformance(payload);
   renderSummaryPnl(elements.todayUnrealizedPnl, dayPerformance.dayPnl, dayPerformance.dayPnlPct);
   const unrealizedPct = payload.portfolioSummary?.unrealizedPnlPct;
@@ -795,6 +797,19 @@ function renderSummaryPnl(element, value, percentage, live = false) {
       else if (Number(value) < 0) metric.classList.add("metricPulseLoss");
     }
   }
+}
+
+function renderRealizedBreakdown(payload) {
+  if (!elements.realizedPnlBreakdown) return;
+  const portfolio = payload?.portfolioSummary || {};
+  const net = Number(payload?.tradeSummary?.realizedPnl) || 0;
+  const realizedCharges = Number(portfolio.realizedCharges) || 0;
+  const gross = Number.isFinite(Number(portfolio.grossRealizedPnl))
+    ? Number(portfolio.grossRealizedPnl)
+    : net + realizedCharges;
+  elements.realizedPnlBreakdown.textContent = payload?.tradeSettings?.chargesEnabled
+    ? `Gross ${compact(gross)} | realized charges ${compact(realizedCharges)}`
+    : `Gross ${compact(gross)} | charges OFF`;
 }
 
 function portfolioReturnPerformance(realizedPnl, unrealizedPnl, totalCapital) {
