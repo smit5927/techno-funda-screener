@@ -110,6 +110,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
       scan.marketContext?.asOf
     );
     if (row && ["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status)) {
+      trade.currentSnapshot = snapshot(row);
       markToMarket(trade, row, config);
       trade.currentRank = candidateRank(row);
       trade.currentGrade = row.setupGrade;
@@ -1552,6 +1553,7 @@ function upsertCandidate(candidates, row, scan, settings, existing, seed = null)
   target.entryStyle = row.entryStyle?.label || "";
   target.latestClose = row.close;
   target.latestAsOf = row.asOf;
+  target.latestSnapshot = snapshot(row);
   target.entryCloseDates = Array.from(new Set([...(target.entryCloseDates || []), row.asOf])).slice(-10);
   target.status = target.status || "WAITING_ALLOCATION";
   target.skipReason = target.skipReason || "Waiting for portfolio allocation.";
@@ -2096,7 +2098,13 @@ function formatSheet(sheet) {
 
 function snapshot(row) {
   return {
+    symbol: row.symbol,
+    yahooSymbol: row.yahooSymbol,
+    name: row.name,
     industry: row.industry || "Unknown",
+    listLabel: row.listLabel,
+    status: row.status,
+    signalReason: row.signalReason,
     close: row.close,
     asOf: row.asOf,
     dailyRsi: row.dailyRsi,

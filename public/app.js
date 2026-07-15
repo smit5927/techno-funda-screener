@@ -1,4 +1,5 @@
 import { buildDecisionGuide } from "./decision-guide.js?v=20260715-decision-desk";
+import { buildDetailEvidenceRow } from "./detail-evidence.js?v=20260715-detail-evidence";
 
 const state = {
   payload: null,
@@ -548,7 +549,7 @@ function renderPositions(payload) {
   elements.positionsBody.querySelectorAll("tr").forEach((rowElement) => {
     rowElement.addEventListener("click", () => {
       const trade = trades[Number(rowElement.dataset.positionIndex)];
-      const row = findStockRow(trade?.yahooSymbol || trade?.symbol);
+      const row = detailRowForTrade(trade);
       if (row) renderDetail(row, trade);
     });
   });
@@ -602,7 +603,7 @@ function renderDashboardPositions(payload) {
   elements.dashboardPositionsBody.querySelectorAll("tr").forEach((rowElement) => {
     rowElement.addEventListener("click", () => {
       const trade = trades[Number(rowElement.dataset.dashboardPositionIndex)];
-      const row = findStockRow(trade?.yahooSymbol || trade?.symbol);
+      const row = detailRowForTrade(trade);
       if (row) renderDetail(row, trade);
     });
   });
@@ -970,6 +971,7 @@ function rowHtml(row, index) {
 }
 
 function renderDetail(row, trade = null, candidate = null) {
+  row = buildDetailEvidenceRow(row, trade, candidate);
   const checks = row.fundamental?.checks || {};
   const setup = row.setupStrength || {};
   const setupChecks = setup.checks || {};
@@ -1147,6 +1149,14 @@ function findStockRow(symbol) {
   return null;
 }
 
+function detailRowForTrade(trade) {
+  return findStockRow(trade?.yahooSymbol || trade?.symbol) ||
+    trade?.currentSnapshot ||
+    trade?.exitSnapshot ||
+    trade?.entrySnapshot ||
+    null;
+}
+
 async function loadCustomList() {
   if (cloudMode) {
     elements.customSymbolsInput.value = "";
@@ -1298,7 +1308,7 @@ function renderCandidates(payload) {
   elements.candidatesBody.querySelectorAll("tr").forEach((rowElement) => {
     rowElement.addEventListener("click", () => {
       const candidate = candidates[Number(rowElement.dataset.candidateIndex)];
-      const row = findStockRow(candidate?.yahooSymbol || candidate?.symbol);
+      const row = findStockRow(candidate?.yahooSymbol || candidate?.symbol) || candidate?.latestSnapshot;
       if (row) renderDetail(row, null, candidate);
     });
   });
