@@ -251,7 +251,7 @@ async function showApplication(profile) {
   });
   if (!appLoaded) {
     appLoaded = true;
-    await import("./app.js?v=20260714-url-auth-fix");
+    await import("./app.js?v=20260715-decision-desk");
   }
 }
 

@@ -23,4 +23,5 @@ test("authenticated fetch routing recognizes strings and Request-like objects", 
 test("static website build publishes the authentication helper", () => {
   const buildSource = fs.readFileSync(path.join(rootDir, "src", "build-static-site.js"), "utf8");
   assert.match(buildSource, /"auth-request\.js"/);
+  assert.match(buildSource, /"decision-guide\.js"/);
 });

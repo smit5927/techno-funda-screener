@@ -1,3 +1,5 @@
+import { buildDecisionGuide } from "./decision-guide.js?v=20260715-decision-desk";
+
 const state = {
   payload: null,
   rows: [],
@@ -776,7 +778,7 @@ function rowHtml(row, index) {
   `;
 }
 
-function renderDetail(row, trade = null) {
+function renderDetail(row, trade = null, candidate = null) {
   const checks = row.fundamental?.checks || {};
   const setup = row.setupStrength || {};
   const setupChecks = setup.checks || {};
@@ -785,6 +787,7 @@ function renderDetail(row, trade = null) {
   const coverage = row.conceptCoverage || {};
   const institutional = row.institutionalContext || {};
   const gtf = row.gtfContext || {};
+  const guide = buildDecisionGuide(row, trade, candidate);
   elements.detailPanel.innerHTML = `
     <div class="detailHeader">
       <div>
@@ -798,6 +801,16 @@ function renderDetail(row, trade = null) {
         <button class="detailClose" type="button" title="Close details" aria-label="Close details">&times;</button>
       </div>
     </div>
+    <section class="decisionDesk ${escapeHtml(guide.tone)}" aria-label="Current decision and price levels">
+      <div class="decisionDeskLead">
+        <span>Current Decision</span>
+        <strong>${escapeHtml(guide.label)}</strong>
+        <p><b>${escapeHtml(guide.reasonLabel)}:</b> ${escapeHtml(guide.summary)}</p>
+      </div>
+      <div class="decisionLevelGrid">
+        ${guide.levels.map(decisionLevelHtml).join("")}
+      </div>
+    </section>
     <div class="decisionSnapshot" aria-label="Decision snapshot">
       ${snapshotHtml("Close", fmt(row.close))}
       ${snapshotHtml("Weekly RSI", fmt(row.weeklyRsi), classForAbove(row.weeklyRsi, 50))}
@@ -1062,8 +1075,8 @@ async function saveCloudCustomList(symbols) {
 function renderCandidates(payload) {
   const candidates = payload?.waitingCandidates || [];
   elements.candidatesBody.innerHTML = candidates
-    .map((candidate) => `
-      <tr>
+    .map((candidate, index) => `
+      <tr data-candidate-index="${index}" title="Open candidate decision details">
         <td><span class="pill WATCH">${escapeHtml(candidate.status || "WAITING")}</span></td>
         <td class="symbolCell"><strong>${escapeHtml(candidate.symbol)}</strong><span>${escapeHtml(candidate.industry || "")}</span></td>
         <td>${escapeHtml(candidate.firstSignalDate || "")}</td>
@@ -1076,6 +1089,13 @@ function renderCandidates(payload) {
     `)
     .join("");
   elements.candidatesEmpty.classList.toggle("visible", candidates.length === 0);
+  elements.candidatesBody.querySelectorAll("tr").forEach((rowElement) => {
+    rowElement.addEventListener("click", () => {
+      const candidate = candidates[Number(rowElement.dataset.candidateIndex)];
+      const row = findStockRow(candidate?.yahooSymbol || candidate?.symbol);
+      if (row) renderDetail(row, null, candidate);
+    });
+  });
 }
 
 async function refreshPublishedData() {
@@ -1283,6 +1303,16 @@ function reasonListHtml(reasons = []) {
 function snapshotHtml(label, value, tone = "") {
   const safeTone = ["good", "bad", "neutral"].includes(tone) ? tone : "";
   return `<div><span>${escapeHtml(label)}</span><strong class="${safeTone}">${escapeHtml(value)}</strong></div>`;
+}
+
+function decisionLevelHtml(level) {
+  return `
+    <div class="decisionLevel ${escapeHtml(level.tone || "")}">
+      <span>${escapeHtml(level.label)}</span>
+      <strong>${escapeHtml(level.value)}</strong>
+      <small>${escapeHtml(level.note)}</small>
+    </div>
+  `;
 }
 
 function checkHtml(label, check, asPercent = false) {
