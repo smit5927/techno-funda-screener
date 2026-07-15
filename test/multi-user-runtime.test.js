@@ -1,6 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { configForUser, journalForUser, marketOnlyState, scanForUser } from "../src/multi-user-runtime.js";
+import {
+  configForUser,
+  journalForUser,
+  marketOnlyState,
+  portfolioState,
+  scanForUser
+} from "../src/multi-user-runtime.js";
 
 test("multi-user runtime derives a private custom list without changing common market data", () => {
   const scan = {
@@ -84,4 +90,24 @@ test("client portfolio never inherits the owner's legacy journal", () => {
   const current = { trades: [] };
   const legacy = { trades: [{ symbol: "OWNER", status: "OPEN" }] };
   assert.equal(journalForUser({ role: "member", journal: current }, legacy), current);
+});
+
+test("user portfolio summary uses only the selected visible trade book", () => {
+  const visibleTrade = {
+    status: "OPEN",
+    investedValue: 100_000,
+    unrealizedPnl: 2_000,
+    realizedPnlToDate: -500,
+    industry: "Industrials"
+  };
+  const hiddenTrade = { status: "CLOSED", pnl: 8_000 };
+  const state = portfolioState(
+    { scannedAt: "2026-07-15T04:00:00.000Z" },
+    { visibleTrades: [visibleTrade], trades: [visibleTrade, hiddenTrade], visibleCandidates: [] },
+    { scopeListId: "custom" },
+    { trade: { totalCapital: 1_000_000 } }
+  );
+
+  assert.equal(state.tradeSummary.realizedPnl, -500);
+  assert.equal(state.portfolioSummary.realizedPnl, -500);
 });

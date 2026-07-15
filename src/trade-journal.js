@@ -491,10 +491,12 @@ function cancelInvalidPendingPartialExit(trade, row, config) {
 export async function writeTradeSheets(journal, config = appConfig) {
   fs.mkdirSync(config.dataDir, { recursive: true });
   const settings = journal.tradeSettings || tradeSettingsSummary(config);
+  const visibleTrades = visibleTradesForSettings(journal.trades || [], settings);
   const sheetJournal = {
     ...journal,
     tradeSettings: settings,
-    trades: visibleTradesForSettings(journal.trades || [], settings)
+    trades: visibleTrades,
+    portfolioSummary: portfolioSummary(visibleTrades, journal.candidates || [], config)
   };
   await writeXlsx(sheetJournal, config.tradeSheetPath);
   writeCsv(sheetJournal, config.tradeCsvPath);

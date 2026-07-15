@@ -2,7 +2,7 @@ import { appConfig } from "./config.js";
 import { readTrades } from "./storage.js";
 import { sendTelegramSummary } from "./telegram.js";
 import { updateTradeJournal } from "./trade-journal.js";
-import { totalRealizedPnl } from "./portfolio-engine.js";
+import { portfolioSummary, totalRealizedPnl } from "./portfolio-engine.js";
 
 const APP_API_URL = process.env.TECHNO_FUNDA_APP_API_URL || "";
 const APP_INTERNAL_KEY = process.env.TECHNO_FUNDA_APP_INTERNAL_KEY || "";
@@ -43,7 +43,7 @@ export async function syncMultiUserRuntime(scan, options = {}) {
         persist: false,
         writeSheets: false
       });
-      const state = portfolioState(userScan, journal, user.settings || {});
+      const state = portfolioState(userScan, journal, user.settings || {}, config);
       let telegram = { sent: false, reason: "not configured" };
       if (config.telegram.botToken && config.telegram.chatId) {
         try {
@@ -277,8 +277,9 @@ export function configForUser(settings = {}, telegram = {}) {
   };
 }
 
-function portfolioState(scan, journal, settings) {
+export function portfolioState(scan, journal, settings, config = appConfig) {
   const visibleTrades = journal.visibleTrades || journal.trades || [];
+  const visibleCandidates = journal.visibleCandidates || journal.candidates || [];
   return {
     scannedAt: scan.scannedAt,
     fullScanAt: scan.fullScanAt,
@@ -291,10 +292,10 @@ function portfolioState(scan, journal, settings) {
     institutionalContext: scan.institutionalContext,
     tradeSettings: settings,
     tradeSummary: summarizeTrades(visibleTrades),
-    portfolioSummary: journal.portfolioSummary,
+    portfolioSummary: portfolioSummary(visibleTrades, visibleCandidates, config),
     portfolioRules: journal.portfolioRules,
     trades: visibleTrades,
-    waitingCandidates: journal.visibleCandidates || journal.candidates || [],
+    waitingCandidates: visibleCandidates,
     candidateDecisionLog: journal.visibleCandidateDecisions || [],
     tradeEvents: journal.events || []
   };
