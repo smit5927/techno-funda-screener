@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-15T06:05:34.873Z",
+  "updatedAt": "2026-07-15T06:44:44.927Z",
   "legacyOwnerJournalMigratedAt": null,
   "portfolioEngineStartedAt": "2026-07-11T05:24:12.577Z",
   "pyramidingStartedAt": "2026-07-13T06:00:40.290Z",
@@ -28456,841 +28456,841 @@
     "custom:GRANULES.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SKYGOLD.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:THANGAMAYL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:TBZ.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:CGCL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:RML.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:NEULANDLAB.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:INOXINDIA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:UNIHEALTH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:RADICO.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:TIPSMUSIC.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:ALIVUS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:IKS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:TORNTPHARM.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:BHARATSE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:POCL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:PPAP.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:APOLLOHOSP.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:LUPIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:MARKSANS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:MMP.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SANGAMIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:ANANDRATHI.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:HAPPYFORGE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:VADILALIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:PGIL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SANSERA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:BUTTERFLY.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:CREDITACC.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:GHCLTEXTIL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:VIJIFIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:CEMPRO.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:HESTERBIO.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:OFSS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:RANEHOLDIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SFL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SHILPAMED.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SJS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:MANKIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:RAINBOW.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:AEGISVOPAK.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:INDIGRID.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:JAYBARMARU.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:MINDACORP.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:ADOR.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:GINNIFILA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:GODREJIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:GSMFOILS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:PANACHE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SANGHVIMOV.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:BLISSGVS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:HARSHA.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:INDNIPPON.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:MAYURUNIQ.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:NAM-INDIA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:PRIVISCL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:RPEL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:VIYASH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:LALPATHLAB.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SHRIPISTON.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:INDHOTEL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:KRISHNADEF.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:THELEELA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:NUVAMA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:IMPAL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:PARAS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:RAMCOIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SGFIN.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:STOVEKRAFT.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:UNIVASTU.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:GRWRHITECH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:PIDILITIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:CAPLIPOINT.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:KMEW.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:NINSYS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:WABAG.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:FUSION.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:BETA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:KIMS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:NRL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:KOVAI.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SCHNEIDER.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:RUBICON.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:MARC.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:APTUS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:MINDSPACE.NS": {
       "status": "EXIT",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:KARURVYSYA.NS": {
       "status": "EXIT",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:FIEMIND.NS": {
       "status": "EXIT",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:GRINDWELL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:LMW.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:PREMIERENE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:PGHL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:NH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:CRAFTSMAN.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:FORTIS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:MAHLOG.NS": {
       "status": "EXIT",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:RAIN.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SIS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SKIPPER.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:NRBBEARING.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:ASTERDM.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:KPIL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SANDHAR.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:THYROCARE.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:PRUDENT.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:VIJAYA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:ENDURANCE.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:PRICOLLTD.NS": {
       "status": "EXIT",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:MOTHERSON.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:APCOTEXIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:ASIANPAINT.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:ORIENTBELL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:PRECOT.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SAKAR.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:FINEORG.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:BAJAJ-AUTO.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:KRN.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:NIVABUPA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:INGERRAND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:TATACOMM.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:YATHARTH.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:MGEL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SBCL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:RRKABEL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:EMMVEE.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:CAMS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:CUMMINSIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SOLARINDS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:V2RETAIL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:HAL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:NMDC.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:LLOYDSME.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:ANTHEM.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:JSWSTEEL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:ADANIPOWER.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:VBL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:BHEL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:POLYCAB.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:COALINDIA.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:TENNIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:BRPL.NS": {
@@ -29370,7 +29370,7 @@
     },
     "custom:HEXAGON.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:INVPRECQ.NS": {
@@ -29385,17 +29385,17 @@
     },
     "custom:OBSCP.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SEDEMAC.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:VIGOR.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:CLIOINFO.NS": {
@@ -29491,211 +29491,211 @@
     "custom:SW1.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:YASHHV.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:COVANCE.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:VIKRAMTH.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:CLIOINFO.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:CIL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-13",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:UNIABEXAL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:KMCSHIL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:RAJSEC.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SUDARSHAN.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:INVPRECQ.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:KELENRG.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:NEXUSSURGL.BO": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:BIMETAL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:KPL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:KVFORGE.BO": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:UCIL.BO": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:RASRESOR.BO": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:INDUSFINL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:TAALTECH.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:FREDUN.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:DHABRIYA.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:RRMETAL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SEKURITIND.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:MKTCREAT.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:TERAI.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:GOLKUNDIA.BO": {
       "status": "EXIT",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:EMERALD.BO": {
       "status": "EXIT",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:GSAUTO.BO": {
       "status": "EXIT",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SANCTRN.BO": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:TANFACIND.BO": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:SIMMOND.BO": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:CJGEL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:BENARAS.BO": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     },
     "custom:BRPL.BO": {
       "status": "WATCH",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-15T06:05:34.516Z",
+      "scannedAt": "2026-07-15T06:44:44.567Z",
       "scopeListId": "custom"
     }
   },
@@ -29801,7 +29801,7 @@
       "firstFundamentalScore": 6,
       "firstSeenAt": "2026-07-14T09:43:28.265Z",
       "lastSignalDate": "2026-07-14",
-      "lastSeenAt": "2026-07-15T06:05:34.516Z",
+      "lastSeenAt": "2026-07-15T06:44:44.567Z",
       "rank": 203.83,
       "peakRank": 203.83,
       "grade": "A+",
@@ -29837,7 +29837,7 @@
           "confirmedEntryCloses": 2
         }
       },
-      "lastEvaluatedAt": "2026-07-15T06:05:34.516Z",
+      "lastEvaluatedAt": "2026-07-15T06:44:44.567Z",
       "plannedStopPrice": 8764.5,
       "plannedRisk": 952,
       "plannedAllocation": 62303.5,
@@ -29863,11 +29863,11 @@
       "firstFundamentalScore": 4,
       "firstSeenAt": "2026-07-15T03:47:23.768Z",
       "lastSignalDate": "2026-07-14",
-      "lastSeenAt": "2026-07-15T06:05:34.516Z",
-      "rank": 197.39,
-      "peakRank": 197.39,
+      "lastSeenAt": "2026-07-15T06:44:44.567Z",
+      "rank": 198.89,
+      "peakRank": 198.89,
       "grade": "A+",
-      "score": 32,
+      "score": 33,
       "entryStyle": "Retracement buy near 50-DMA",
       "latestClose": 527.9000244140625,
       "latestAsOf": "2026-07-14",
@@ -29894,13 +29894,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 9.31,
           "atrExtension": 0.95,
-          "currentRank": 197.39,
-          "peakRank": 197.39,
+          "currentRank": 198.89,
+          "peakRank": 198.89,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-15T06:05:34.516Z",
+      "lastEvaluatedAt": "2026-07-15T06:44:44.567Z",
       "plannedStopPrice": 501.1,
       "plannedRisk": 3162.4,
       "plannedAllocation": 62292.2,
@@ -29925,11 +29925,11 @@
       "firstFundamentalScore": 4,
       "firstSeenAt": "2026-07-15T03:47:23.768Z",
       "lastSignalDate": "2026-07-14",
-      "lastSeenAt": "2026-07-15T06:05:34.516Z",
-      "rank": 192.51,
-      "peakRank": 192.51,
+      "lastSeenAt": "2026-07-15T06:44:44.567Z",
+      "rank": 194.01,
+      "peakRank": 194.01,
       "grade": "A+",
-      "score": 30,
+      "score": 31,
       "entryStyle": "Trend continuation buy",
       "latestClose": 23.700000762939453,
       "latestAsOf": "2026-07-14",
@@ -29956,16 +29956,80 @@
           "executionGapPct": null,
           "supertrendDistancePct": 10.89,
           "atrExtension": 2.94,
-          "currentRank": 192.51,
-          "peakRank": 192.51,
+          "currentRank": 194.01,
+          "peakRank": 194.01,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-15T06:05:34.516Z",
+      "lastEvaluatedAt": "2026-07-15T06:44:44.567Z",
       "plannedStopPrice": 22.35,
       "plannedRisk": 3568.05,
       "plannedAllocation": 62639.1,
+      "skipAlertedAt": "2026-07-15T03:47:23.768Z"
+    },
+    {
+      "id": "ASTERDM-2026-07-14-candidate",
+      "symbol": "ASTERDM",
+      "yahooSymbol": "ASTERDM.NS",
+      "name": "ASTERDM",
+      "industry": "Healthcare",
+      "sourceLists": [
+        "All NSE Market",
+        "Default Nifty 500",
+        "My Custom List"
+      ],
+      "listId": "custom",
+      "listLabel": "My List",
+      "tradeScope": "custom",
+      "tradeScopeLabel": "My List",
+      "firstSignalDate": "2026-07-14",
+      "firstSignalClose": 813.2000122070312,
+      "firstSignalRank": 180.46,
+      "firstFundamentalScore": 5,
+      "firstSeenAt": "2026-07-15T03:47:23.768Z",
+      "lastSignalDate": "2026-07-14",
+      "lastSeenAt": "2026-07-15T06:44:44.567Z",
+      "rank": 189.46,
+      "peakRank": 189.46,
+      "grade": "A+",
+      "score": 34,
+      "entryStyle": "Trend continuation buy",
+      "latestClose": 813.2000122070312,
+      "latestAsOf": "2026-07-14",
+      "entryCloseDates": [
+        "2026-07-14"
+      ],
+      "status": "WAITING_CONFIRMATION",
+      "skipReason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1.",
+      "lastDecision": {
+        "actionable": false,
+        "disposition": "WAITING_CONFIRMATION",
+        "reasons": [
+          "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
+        ],
+        "warnings": [
+          "Price is 8.01% above Supertrend; extension is recorded but does not override a valid current ENTRY."
+        ],
+        "metrics": {
+          "signalAgeDays": 0,
+          "firstSignalClose": 813.2,
+          "currentClose": 813.2,
+          "executionPrice": null,
+          "runupPct": 0,
+          "executionGapPct": null,
+          "supertrendDistancePct": 8.01,
+          "atrExtension": 1.96,
+          "currentRank": 189.46,
+          "peakRank": 189.46,
+          "rankDecay": 0,
+          "confirmedEntryCloses": 1
+        }
+      },
+      "lastEvaluatedAt": "2026-07-15T06:44:44.567Z",
+      "plannedStopPrice": 801,
+      "plannedRisk": 939.4,
+      "plannedAllocation": 62616.4,
       "skipAlertedAt": "2026-07-15T03:47:23.768Z"
     },
     {
@@ -29989,7 +30053,7 @@
       "firstFundamentalScore": 6,
       "firstSeenAt": "2026-07-14T10:56:37.603Z",
       "lastSignalDate": "2026-07-14",
-      "lastSeenAt": "2026-07-15T06:05:34.516Z",
+      "lastSeenAt": "2026-07-15T06:44:44.567Z",
       "rank": 188.56,
       "peakRank": 193.73,
       "grade": "A+",
@@ -30026,75 +30090,11 @@
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-15T06:05:34.516Z",
+      "lastEvaluatedAt": "2026-07-15T06:44:44.567Z",
       "plannedStopPrice": 10013.51,
       "plannedRisk": 914.94,
       "plannedAllocation": 60996,
       "skipAlertedAt": "2026-07-14T10:56:37.603Z"
-    },
-    {
-      "id": "ASTERDM-2026-07-14-candidate",
-      "symbol": "ASTERDM",
-      "yahooSymbol": "ASTERDM.NS",
-      "name": "ASTERDM",
-      "industry": "Healthcare",
-      "sourceLists": [
-        "All NSE Market",
-        "Default Nifty 500",
-        "My Custom List"
-      ],
-      "listId": "custom",
-      "listLabel": "My List",
-      "tradeScope": "custom",
-      "tradeScopeLabel": "My List",
-      "firstSignalDate": "2026-07-14",
-      "firstSignalClose": 813.2000122070312,
-      "firstSignalRank": 180.46,
-      "firstFundamentalScore": 5,
-      "firstSeenAt": "2026-07-15T03:47:23.768Z",
-      "lastSignalDate": "2026-07-14",
-      "lastSeenAt": "2026-07-15T06:05:34.516Z",
-      "rank": 187.96,
-      "peakRank": 187.96,
-      "grade": "A+",
-      "score": 33,
-      "entryStyle": "Trend continuation buy",
-      "latestClose": 813.2000122070312,
-      "latestAsOf": "2026-07-14",
-      "entryCloseDates": [
-        "2026-07-14"
-      ],
-      "status": "WAITING_CONFIRMATION",
-      "skipReason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1.",
-      "lastDecision": {
-        "actionable": false,
-        "disposition": "WAITING_CONFIRMATION",
-        "reasons": [
-          "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
-        ],
-        "warnings": [
-          "Price is 8.01% above Supertrend; extension is recorded but does not override a valid current ENTRY."
-        ],
-        "metrics": {
-          "signalAgeDays": 0,
-          "firstSignalClose": 813.2,
-          "currentClose": 813.2,
-          "executionPrice": null,
-          "runupPct": 0,
-          "executionGapPct": null,
-          "supertrendDistancePct": 8.01,
-          "atrExtension": 1.96,
-          "currentRank": 187.96,
-          "peakRank": 187.96,
-          "rankDecay": 0,
-          "confirmedEntryCloses": 1
-        }
-      },
-      "lastEvaluatedAt": "2026-07-15T06:05:34.516Z",
-      "plannedStopPrice": 801,
-      "plannedRisk": 939.4,
-      "plannedAllocation": 62616.4,
-      "skipAlertedAt": "2026-07-15T03:47:23.768Z"
     },
     {
       "id": "HAL-2026-07-14-candidate",
@@ -30117,7 +30117,7 @@
       "firstFundamentalScore": 6,
       "firstSeenAt": "2026-07-15T04:00:49.945Z",
       "lastSignalDate": "2026-07-14",
-      "lastSeenAt": "2026-07-15T06:05:34.516Z",
+      "lastSeenAt": "2026-07-15T06:44:44.567Z",
       "rank": 186.14,
       "peakRank": 186.81,
       "grade": "A+",
@@ -30152,7 +30152,7 @@
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-15T06:05:34.516Z",
+      "lastEvaluatedAt": "2026-07-15T06:44:44.567Z",
       "plannedStopPrice": 4375.76,
       "plannedRisk": 932.96,
       "plannedAllocation": 62193.6,
@@ -30179,11 +30179,11 @@
       "firstFundamentalScore": 3,
       "firstSeenAt": "2026-07-15T03:47:23.768Z",
       "lastSignalDate": "2026-07-14",
-      "lastSeenAt": "2026-07-15T06:05:34.516Z",
-      "rank": 181.48,
-      "peakRank": 181.48,
+      "lastSeenAt": "2026-07-15T06:44:44.567Z",
+      "rank": 182.98,
+      "peakRank": 182.98,
       "grade": "A+",
-      "score": 31,
+      "score": 32,
       "entryStyle": "Trend continuation buy",
       "latestClose": 806.7000122070312,
       "latestAsOf": "2026-07-14",
@@ -30208,13 +30208,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 3.05,
           "atrExtension": 1.14,
-          "currentRank": 181.48,
-          "peakRank": 181.48,
+          "currentRank": 182.98,
+          "peakRank": 182.98,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-15T06:05:34.516Z",
+      "lastEvaluatedAt": "2026-07-15T06:44:44.567Z",
       "plannedStopPrice": 794.6,
       "plannedRisk": 931.7,
       "plannedAllocation": 62115.9,
@@ -30239,7 +30239,7 @@
       "firstFundamentalScore": 2,
       "firstSeenAt": "2026-07-14T09:43:28.265Z",
       "lastSignalDate": "2026-07-13",
-      "lastSeenAt": "2026-07-15T06:05:34.516Z",
+      "lastSeenAt": "2026-07-15T06:44:44.567Z",
       "rank": 177.33,
       "peakRank": 177.33,
       "grade": "A+",
@@ -30276,7 +30276,7 @@
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-15T06:05:34.516Z",
+      "lastEvaluatedAt": "2026-07-15T06:44:44.567Z",
       "plannedStopPrice": 176.13,
       "plannedRisk": 1183.11,
       "plannedAllocation": 62652.48,
@@ -30302,7 +30302,7 @@
       "firstFundamentalScore": 2,
       "firstSeenAt": "2026-07-15T04:00:49.945Z",
       "lastSignalDate": "2026-07-14",
-      "lastSeenAt": "2026-07-15T06:05:34.516Z",
+      "lastSeenAt": "2026-07-15T06:44:44.567Z",
       "rank": 175.03,
       "peakRank": 175.03,
       "grade": "A+",
@@ -30339,7 +30339,7 @@
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-15T06:05:34.516Z",
+      "lastEvaluatedAt": "2026-07-15T06:44:44.567Z",
       "plannedStopPrice": 724.25,
       "plannedRisk": 1268.4,
       "plannedAllocation": 62105.4,
@@ -30365,11 +30365,11 @@
       "firstFundamentalScore": 4,
       "firstSeenAt": "2026-07-14T09:43:28.265Z",
       "lastSignalDate": "2026-07-14",
-      "lastSeenAt": "2026-07-15T06:05:34.516Z",
-      "rank": 171.71,
+      "lastSeenAt": "2026-07-15T06:44:44.567Z",
+      "rank": 173.21,
       "peakRank": 173.68,
       "grade": "A+",
-      "score": 29,
+      "score": 30,
       "entryStyle": "Trend continuation buy",
       "latestClose": 16122,
       "latestAsOf": "2026-07-14",
@@ -30393,13 +30393,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 4.47,
           "atrExtension": 1.46,
-          "currentRank": 171.71,
+          "currentRank": 173.21,
           "peakRank": 173.68,
-          "rankDecay": 1.97,
+          "rankDecay": 0.47,
           "confirmedEntryCloses": 2
         }
       },
-      "lastEvaluatedAt": "2026-07-15T06:05:34.516Z",
+      "lastEvaluatedAt": "2026-07-15T06:44:44.567Z",
       "plannedStopPrice": 15848.82,
       "plannedRisk": 819.54,
       "plannedAllocation": 48366,
@@ -31162,7 +31162,7 @@
     },
     {
       "id": "APCOTEXIND-2026-07-14-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-15T06:05:34.516Z",
+      "evaluatedAt": "2026-07-15T06:44:44.567Z",
       "asOf": "2026-07-14",
       "symbol": "APCOTEXIND",
       "industry": "My List",
@@ -31171,7 +31171,7 @@
       "outcome": "ROTATION_DEFERRED",
       "disposition": "WAITING_CONFIRMATION",
       "grade": "A+",
-      "rank": 197.39,
+      "rank": 198.89,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 527.9,
@@ -31181,8 +31181,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 9.31,
         "atrExtension": 0.95,
-        "currentRank": 197.39,
-        "peakRank": 197.39,
+        "currentRank": 198.89,
+        "peakRank": 198.89,
         "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
@@ -31190,7 +31190,7 @@
     },
     {
       "id": "CJGEL-2026-07-14-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-15T06:05:34.516Z",
+      "evaluatedAt": "2026-07-15T06:44:44.567Z",
       "asOf": "2026-07-14",
       "symbol": "CJGEL",
       "industry": "My List",
@@ -31199,7 +31199,7 @@
       "outcome": "ROTATION_DEFERRED",
       "disposition": "WAITING_CONFIRMATION",
       "grade": "A+",
-      "rank": 192.51,
+      "rank": 194.01,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 23.7,
@@ -31209,8 +31209,36 @@
         "executionGapPct": null,
         "supertrendDistancePct": 10.89,
         "atrExtension": 2.94,
-        "currentRank": 192.51,
-        "peakRank": 192.51,
+        "currentRank": 194.01,
+        "peakRank": 194.01,
+        "rankDecay": 0,
+        "confirmedEntryCloses": 1
+      },
+      "reason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
+    },
+    {
+      "id": "ASTERDM-2026-07-14-ROTATION_DEFERRED-WAITING_CONFIRMATION",
+      "evaluatedAt": "2026-07-15T06:44:44.567Z",
+      "asOf": "2026-07-14",
+      "symbol": "ASTERDM",
+      "industry": "Healthcare",
+      "firstSignalDate": "2026-07-14",
+      "firstSignalClose": 813.2000122070312,
+      "outcome": "ROTATION_DEFERRED",
+      "disposition": "WAITING_CONFIRMATION",
+      "grade": "A+",
+      "rank": 189.46,
+      "metrics": {
+        "signalAgeDays": 0,
+        "firstSignalClose": 813.2,
+        "currentClose": 813.2,
+        "executionPrice": null,
+        "runupPct": 0,
+        "executionGapPct": null,
+        "supertrendDistancePct": 8.01,
+        "atrExtension": 1.96,
+        "currentRank": 189.46,
+        "peakRank": 189.46,
         "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
@@ -31218,7 +31246,7 @@
     },
     {
       "id": "BAJAJ-AUTO-2026-07-14-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-15T06:05:34.516Z",
+      "evaluatedAt": "2026-07-15T06:44:44.567Z",
       "asOf": "2026-07-14",
       "symbol": "BAJAJ-AUTO",
       "industry": "Automobile and Auto Components",
@@ -31245,36 +31273,8 @@
       "reason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
     },
     {
-      "id": "ASTERDM-2026-07-14-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-15T06:05:34.516Z",
-      "asOf": "2026-07-14",
-      "symbol": "ASTERDM",
-      "industry": "Healthcare",
-      "firstSignalDate": "2026-07-14",
-      "firstSignalClose": 813.2000122070312,
-      "outcome": "ROTATION_DEFERRED",
-      "disposition": "WAITING_CONFIRMATION",
-      "grade": "A+",
-      "rank": 187.96,
-      "metrics": {
-        "signalAgeDays": 0,
-        "firstSignalClose": 813.2,
-        "currentClose": 813.2,
-        "executionPrice": null,
-        "runupPct": 0,
-        "executionGapPct": null,
-        "supertrendDistancePct": 8.01,
-        "atrExtension": 1.96,
-        "currentRank": 187.96,
-        "peakRank": 187.96,
-        "rankDecay": 0,
-        "confirmedEntryCloses": 1
-      },
-      "reason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
-    },
-    {
       "id": "HAL-2026-07-14-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-15T06:05:34.516Z",
+      "evaluatedAt": "2026-07-15T06:44:44.567Z",
       "asOf": "2026-07-14",
       "symbol": "HAL",
       "industry": "Capital Goods",
@@ -31302,7 +31302,7 @@
     },
     {
       "id": "KIMS-2026-07-14-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-15T06:05:34.516Z",
+      "evaluatedAt": "2026-07-15T06:44:44.567Z",
       "asOf": "2026-07-14",
       "symbol": "KIMS",
       "industry": "Healthcare",
@@ -31311,7 +31311,7 @@
       "outcome": "ROTATION_DEFERRED",
       "disposition": "WAITING_CONFIRMATION",
       "grade": "A+",
-      "rank": 181.48,
+      "rank": 182.98,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 806.7,
@@ -31321,8 +31321,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 3.05,
         "atrExtension": 1.14,
-        "currentRank": 181.48,
-        "peakRank": 181.48,
+        "currentRank": 182.98,
+        "peakRank": 182.98,
         "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
@@ -31330,7 +31330,7 @@
     },
     {
       "id": "INDIGRID-2026-07-13-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-15T06:05:34.516Z",
+      "evaluatedAt": "2026-07-15T06:44:44.567Z",
       "asOf": "2026-07-13",
       "symbol": "INDIGRID",
       "industry": "My List",
@@ -31358,7 +31358,7 @@
     },
     {
       "id": "SBCL-2026-07-14-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-15T06:05:34.516Z",
+      "evaluatedAt": "2026-07-15T06:44:44.567Z",
       "asOf": "2026-07-14",
       "symbol": "SBCL",
       "industry": "My List",
@@ -38266,7 +38266,7 @@
       "realizedPnlToDate": 0,
       "initialStopPrice": 1842.85,
       "trailingStopPrice": 1957,
-      "currentRank": 190.22,
+      "currentRank": 191.72,
       "currentGrade": "A+",
       "currentWeakness": {
         "score": 0,
