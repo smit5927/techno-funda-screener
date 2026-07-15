@@ -84,12 +84,8 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
     });
   }
   const rows = uniqueScannedRows(scan, settings.scopeListId);
-  const scopeRowBySymbol = new Map(
-    rows.map((row) => [row.yahooSymbol || row.symbol, row])
-  );
-  const rowBySymbol = new Map(
-    allScannedRows(scan).map((row) => [row.yahooSymbol || row.symbol, row])
-  );
+  const scopeRowBySymbol = indexRowsByInstrument(rows);
+  const rowBySymbol = indexRowsByInstrument(allScannedRows(scan));
 
   migrateTradeMetadata(trades);
   if (portfolioUpgrade) {
@@ -1415,6 +1411,23 @@ function allScannedRows(scan) {
   return [...grouped.values()];
 }
 
+function indexRowsByInstrument(rows = []) {
+  const index = new Map();
+  for (const row of rows) {
+    for (const key of [row.yahooSymbol, row.symbol].filter(Boolean)) {
+      if (!index.has(key)) index.set(key, row);
+    }
+  }
+  for (const row of rows) {
+    const base = normalizedInstrumentSymbol(row.symbol || row.yahooSymbol);
+    if (!base) continue;
+    for (const alias of [base, `${base}.NS`, `${base}.BO`]) {
+      if (!index.has(alias)) index.set(alias, row);
+    }
+  }
+  return index;
+}
+
 function uniqueScannedRows(scan, scopeListId) {
   const scannedIds = new Set(scan.scannedListIds || Object.keys(scan.lists || {}));
   const primary = scan.lists?.[scopeListId];
@@ -1720,8 +1733,19 @@ function inferTradeScope(trade) {
 }
 
 function sameInstrument(trade, row) {
-  if (trade.yahooSymbol && row.yahooSymbol) return trade.yahooSymbol === row.yahooSymbol;
-  return trade.symbol === row.symbol;
+  if (trade.yahooSymbol && row.yahooSymbol && trade.yahooSymbol === row.yahooSymbol) return true;
+  const tradeSymbol = normalizedInstrumentSymbol(trade.symbol || trade.yahooSymbol);
+  const rowSymbol = normalizedInstrumentSymbol(row.symbol || row.yahooSymbol);
+  return Boolean(tradeSymbol && rowSymbol && tradeSymbol === rowSymbol);
+}
+
+function normalizedInstrumentSymbol(value) {
+  return String(value || "")
+    .trim()
+    .toUpperCase()
+    .replace(/^NSE:/, "")
+    .replace(/\.(NS|BO)$/i, "")
+    .replace(/[^A-Z0-9&_-]/g, "");
 }
 
 function calculateQuantity(price, config) {
