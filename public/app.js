@@ -16,7 +16,8 @@ const state = {
   lastPositionPrices: new Map(),
   hasAnimatedCounts: false,
   positionSort: new URLSearchParams(window.location.search).get("sort") || localStorage.getItem("tfPositionSort") || "default",
-  positionSortDirection: new URLSearchParams(window.location.search).get("direction") || localStorage.getItem("tfPositionSortDirection") || "desc"
+  positionSortDirection: new URLSearchParams(window.location.search).get("direction") || localStorage.getItem("tfPositionSortDirection") || "desc",
+  dashboardPositionFilter: localStorage.getItem("tfDashboardPositionFilter") || "ALL"
 };
 
 const staticMode = Boolean(window.TF_STATIC_MODE);
@@ -35,6 +36,7 @@ const elements = {
   pendingTradesCount: document.querySelector("#pendingTradesCount"),
   closedTradesCount: document.querySelector("#closedTradesCount"),
   realizedPnl: document.querySelector("#realizedPnl"),
+  todayUnrealizedPnl: document.querySelector("#todayUnrealizedPnl"),
   unrealizedPnl: document.querySelector("#unrealizedPnl"),
   tradeScopeText: document.querySelector("#tradeScopeText"),
   tradeQualityText: document.querySelector("#tradeQualityText"),
@@ -49,6 +51,9 @@ const elements = {
   dashboardPositionsBody: document.querySelector("#dashboardPositionsBody"),
   dashboardPositionsEmpty: document.querySelector("#dashboardPositionsEmpty"),
   openPositionsViewButton: document.querySelector("#openPositionsViewButton"),
+  dashboardPositionFilter: document.querySelector("#dashboardPositionFilter"),
+  dashboardPositionSortSelect: document.querySelector("#dashboardPositionSortSelect"),
+  dashboardPositionSortDirection: document.querySelector("#dashboardPositionSortDirection"),
   positionSortSelect: document.querySelector("#positionSortSelect"),
   positionSortDirection: document.querySelector("#positionSortDirection"),
   candidatesBody: document.querySelector("#candidatesBody"),
@@ -133,12 +138,34 @@ elements.positionSortSelect.addEventListener("change", (event) => {
   persistPositionSort();
   updatePositionSortDirection();
   renderPositions(state.payload);
+  renderDashboardPositions(state.payload);
 });
 elements.positionSortDirection.addEventListener("click", () => {
   state.positionSortDirection = state.positionSortDirection === "desc" ? "asc" : "desc";
   persistPositionSort();
   updatePositionSortDirection();
   renderPositions(state.payload);
+  renderDashboardPositions(state.payload);
+});
+elements.dashboardPositionFilter.addEventListener("change", (event) => {
+  state.dashboardPositionFilter = event.target.value;
+  localStorage.setItem("tfDashboardPositionFilter", state.dashboardPositionFilter);
+  renderDashboardPositions(state.payload);
+});
+elements.dashboardPositionSortSelect.addEventListener("change", (event) => {
+  state.positionSort = event.target.value;
+  state.positionSortDirection = state.positionSort === "symbol" ? "asc" : "desc";
+  persistPositionSort();
+  updatePositionSortDirection();
+  renderPositions(state.payload);
+  renderDashboardPositions(state.payload);
+});
+elements.dashboardPositionSortDirection.addEventListener("click", () => {
+  state.positionSortDirection = state.positionSortDirection === "desc" ? "asc" : "desc";
+  persistPositionSort();
+  updatePositionSortDirection();
+  renderPositions(state.payload);
+  renderDashboardPositions(state.payload);
 });
 elements.editListButton.addEventListener("click", async () => {
   elements.customListPanel.hidden = !elements.customListPanel.hidden;
@@ -203,7 +230,8 @@ configureMode();
 setMainView(state.currentView, { persist: false, scroll: false, animate: false });
 if (![...elements.positionSortSelect.options].some((option) => option.value === state.positionSort)) state.positionSort = "default";
 if (!["asc", "desc"].includes(state.positionSortDirection)) state.positionSortDirection = "desc";
-elements.positionSortSelect.value = state.positionSort;
+if (![...elements.dashboardPositionFilter.options].some((option) => option.value === state.dashboardPositionFilter)) state.dashboardPositionFilter = "ALL";
+elements.dashboardPositionFilter.value = state.dashboardPositionFilter;
 updatePositionSortDirection();
 await loadResults();
 
@@ -409,6 +437,8 @@ function renderSummary(payload) {
     (payload.tradeSummary?.pendingPartialExit || 0);
   elements.closedTradesCount.textContent = payload.tradeSummary?.closed || 0;
   elements.realizedPnl.textContent = compact(payload.tradeSummary?.realizedPnl || 0);
+  const dayPerformance = portfolioDayPerformance(payload);
+  renderSummaryPnl(elements.todayUnrealizedPnl, dayPerformance.dayPnl, dayPerformance.dayPnlPct);
   const unrealizedPct = payload.portfolioSummary?.unrealizedPnlPct;
   elements.unrealizedPnl.textContent = `${compact(payload.tradeSummary?.unrealizedPnl || 0)}${Number.isFinite(unrealizedPct) ? ` (${compact(unrealizedPct)}%)` : ""}`;
   elements.tradeScopeText.textContent = payload.tradeSettings?.scopeLabel || "All NSE Market";
@@ -517,9 +547,13 @@ function aiReviewMeta(review) {
 }
 
 function renderDashboardPositions(payload) {
-  const trades = (payload?.trades || []).filter((trade) =>
+  const activeTrades = (payload?.trades || []).filter((trade) =>
     ["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status)
   );
+  const filteredTrades = state.dashboardPositionFilter === "ALL"
+    ? activeTrades
+    : activeTrades.filter((trade) => trade.status === state.dashboardPositionFilter);
+  const trades = sortPositionTrades(filteredTrades);
   elements.dashboardPositionsBody.innerHTML = trades
     .map((trade, index) => {
       const livePosition = findLivePosition(trade);
@@ -601,14 +635,19 @@ function positionSortValue(trade, field) {
 
 function updatePositionSortDirection() {
   const isDefault = state.positionSort === "default";
-  elements.positionSortDirection.disabled = isDefault;
+  elements.positionSortSelect.value = state.positionSort;
+  elements.dashboardPositionSortSelect.value = state.positionSort;
+  const directionButtons = [elements.positionSortDirection, elements.dashboardPositionSortDirection];
+  directionButtons.forEach((button) => { button.disabled = isDefault; });
+  let label = "High to Low";
   if (isDefault) {
-    elements.positionSortDirection.textContent = "Portfolio Order";
+    label = "Portfolio Order";
   } else if (state.positionSort === "symbol") {
-    elements.positionSortDirection.textContent = state.positionSortDirection === "asc" ? "A to Z" : "Z to A";
+    label = state.positionSortDirection === "asc" ? "A to Z" : "Z to A";
   } else {
-    elements.positionSortDirection.textContent = state.positionSortDirection === "asc" ? "Low to High" : "High to Low";
+    label = state.positionSortDirection === "asc" ? "Low to High" : "High to Low";
   }
+  directionButtons.forEach((button) => { button.textContent = label; });
 }
 
 function persistPositionSort() {
@@ -683,6 +722,36 @@ function signedClass(value) {
   return Number(value) > 0 ? "good" : Number(value) < 0 ? "bad" : "neutral";
 }
 
+function portfolioDayPerformance(payload) {
+  let dayPnl = 0;
+  let previousMarketValue = 0;
+  let pricedPositions = 0;
+  for (const trade of payload?.trades || []) {
+    if (!["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status)) continue;
+    const performance = positionPerformance(trade);
+    if (!Number.isFinite(performance.dayPnl) || !Number.isFinite(performance.previousClose)) continue;
+    const quantity = Number(trade.quantity);
+    dayPnl += performance.dayPnl;
+    previousMarketValue += performance.previousClose * quantity;
+    pricedPositions += 1;
+  }
+  return {
+    dayPnl: pricedPositions ? dayPnl : null,
+    dayPnlPct: pricedPositions && previousMarketValue > 0 ? dayPnl / previousMarketValue * 100 : null
+  };
+}
+
+function renderSummaryPnl(element, value, percentage, live = false) {
+  if (!element) return;
+  const text = Number.isFinite(value)
+    ? `${compact(value)}${Number.isFinite(percentage) ? ` (${compact(percentage)}%)` : ""}`
+    : "NA";
+  element.classList.remove("good", "bad", "neutral");
+  element.classList.add(signedClass(value));
+  if (live) setLiveValue(element, text);
+  else element.textContent = text;
+}
+
 function startLiveMtm() {
   if (!cloudMode) return;
   const hasActivePosition = (state.payload?.trades || []).some((trade) =>
@@ -727,6 +796,7 @@ function renderLiveMtmSummary() {
   const mtm = state.liveMtm;
   if (!mtm) return;
   const summary = mtm.summary || {};
+  renderSummaryPnl(elements.todayUnrealizedPnl, summary.dayPnl, summary.dayPnlPct, true);
   setLiveValue(elements.unrealizedPnl, `${compact(summary.unrealizedPnl || 0)} (${compact(summary.unrealizedPnlPct || 0)}%)`);
   setLiveValue(elements.liveStopRisk, `${compact(summary.downsideToStops || 0)} (${compact(summary.stopRiskPct || 0)}%)`);
   const warningCount = (summary.breachCount || 0) + (summary.nearStopCount || 0);

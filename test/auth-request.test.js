@@ -25,3 +25,16 @@ test("static website build publishes the authentication helper", () => {
   assert.match(buildSource, /"auth-request\.js"/);
   assert.match(buildSource, /"decision-guide\.js"/);
 });
+
+test("portfolio summary exposes live today and total unrealized P&L", () => {
+  const html = fs.readFileSync(path.join(rootDir, "public", "index.html"), "utf8");
+  const app = fs.readFileSync(path.join(rootDir, "public", "app.js"), "utf8");
+  assert.match(html, /id="todayUnrealizedPnl"/);
+  assert.match(html, /Total Unrealized P&amp;L/);
+  assert.match(html, /id="dashboardPositionFilter"/);
+  assert.match(html, /id="dashboardPositionSortSelect"/);
+  assert.match(html, /id="dashboardPositionSortDirection"/);
+  assert.match(app, /summary\.dayPnl/);
+  assert.match(app, /summary\.dayPnlPct/);
+  assert.match(app, /tfDashboardPositionFilter/);
+});

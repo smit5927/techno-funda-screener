@@ -132,7 +132,11 @@
           <strong id="realizedPnl">0.00</strong>
         </div>
         <div>
-          <span>Unrealized P&L</span>
+          <span>Today's Unrealized P&amp;L</span>
+          <strong id="todayUnrealizedPnl">0.00</strong>
+        </div>
+        <div>
+          <span>Total Unrealized P&amp;L</span>
           <strong id="unrealizedPnl">0.00</strong>
         </div>
         <div>
@@ -178,6 +182,32 @@
             <a id="dashboardCsvDownloadLink" class="tradeSheetAction" href="/api/trades/download.csv">Download CSV</a>
             <button id="openPositionsViewButton" type="button">Full Positions</button>
           </div>
+        </div>
+        <div class="dashboardPositionTools" aria-label="Dashboard position filters and sorting">
+          <label class="sortControl">
+            <span>Status</span>
+            <select id="dashboardPositionFilter" aria-label="Filter dashboard positions by status">
+              <option value="ALL">All Active</option>
+              <option value="OPEN">Open</option>
+              <option value="PENDING_EXIT">Exit Pending</option>
+              <option value="PENDING_PARTIAL_EXIT">Partial Exit Pending</option>
+            </select>
+          </label>
+          <label class="sortControl">
+            <span>Sort</span>
+            <select id="dashboardPositionSortSelect" aria-label="Sort dashboard positions">
+              <option value="default">Portfolio Order</option>
+              <option value="symbol">Stock Name</option>
+              <option value="dayPnl">Today P&amp;L</option>
+              <option value="pnl">Total P&amp;L Amount</option>
+              <option value="pnlPct">Total P&amp;L Percentage</option>
+              <option value="investedValue">Invested Value</option>
+              <option value="currentValue">Current Value</option>
+              <option value="rank">Rank</option>
+              <option value="risk">Stop Distance</option>
+            </select>
+          </label>
+          <button id="dashboardPositionSortDirection" class="sortDirection" type="button" title="Reverse dashboard sort direction">High to Low</button>
         </div>
         <div class="tableShell dashboardPositionsShell">
           <table class="dashboardPositionsTable">
@@ -473,6 +503,6 @@
     <script src="vendor/supabase.js"></script>
     <script src="vendor/exceljs.min.js"></script>
     <script src="mobile-config.js"></script>
-    <script src="auth.js?v=20260715-daily-pnl" type="module"></script>
+    <script src="auth.js?v=20260715-summary-daily-pnl" type="module"></script>
   </body>
 </html>
