@@ -19,10 +19,14 @@ export function portfolioConfig(config = {}) {
     maximumStopPct: positive(trade.maximumStopPct, 8),
     partialExitPct: positive(trade.partialExitPct, 50),
     partialProfitR: positive(trade.partialProfitR, 2),
-    partialWeaknessConfirmationCloses: integer(trade.partialWeaknessConfirmationCloses, 2),
+    partialWeaknessConfirmationCloses: integer(trade.partialWeaknessConfirmationCloses, 3),
+    minimumManagementCloses: integer(trade.minimumManagementCloses, 5),
+    severeWeaknessConfirmationCloses: integer(trade.severeWeaknessConfirmationCloses, 2),
+    trailingStopConfirmationCloses: integer(trade.trailingStopConfirmationCloses, 2),
     rotationMinRankAdvantage: positive(trade.rotationMinRankAdvantage, 15),
     rotationMinimumHoldingDays: integer(trade.rotationMinimumHoldingDays, 5),
-    rotationConfirmationCloses: integer(trade.rotationConfirmationCloses, 2),
+    rotationConfirmationCloses: integer(trade.rotationConfirmationCloses, 3),
+    rotationCooldownCloses: integer(trade.rotationCooldownCloses, 3),
     rotationCandidateConfirmationCloses: integer(trade.rotationCandidateConfirmationCloses, 2),
     candidateMaxWaitDays: integer(trade.candidateMaxWaitDays, 30),
     candidateMaxRunupPct: positive(trade.candidateMaxRunupPct, 8),
@@ -612,6 +616,20 @@ export function nextTrailingStop(trade, row, config = {}) {
   const rules = portfolioConfig(config);
   const close = Number(row?.close);
   if (!Number.isFinite(close) || close <= 0) return trade.trailingStopPrice || trade.initialStopPrice;
+  const currentStop = Math.max(
+    Number(trade.initialStopPrice) || 0,
+    Number(trade.trailingStopPrice) || 0
+  );
+  const holdingCloses = completedHoldingCloses(trade, row);
+  const initialRisk = Number(trade.entryPrice) - Number(trade.initialStopPrice);
+  const rewardR = initialRisk > 0 ? (close - Number(trade.entryPrice)) / initialRisk : null;
+  if (
+    holdingCloses < rules.minimumManagementCloses ||
+    !Number.isFinite(rewardR) ||
+    rewardR < 1
+  ) {
+    return currentStop || structuralStop(row, close, rules);
+  }
   const values = row.setupStrength?.values || {};
   const candidates = [
     trade.initialStopPrice,
@@ -620,33 +638,40 @@ export function nextTrailingStop(trade, row, config = {}) {
     values.fourCandleLow,
     values.fibonacciSupportNearby ? values.fibonacciNearestPrice : null
   ].filter((value) => Number.isFinite(value) && value > 0 && value < close);
-  if (!candidates.length) return structuralStop(row, close, rules);
+  if (!candidates.length) return currentStop || structuralStop(row, close, rules);
   const raw = Math.max(...candidates);
-  return round(Math.min(raw, close * (1 - rules.minimumStopPct / 100)));
+  return round(Math.max(currentStop, Math.min(raw, close * (1 - rules.minimumStopPct / 100))));
 }
 
 export function positionExitDecision(trade, row, config = {}) {
   if (!row || trade.status !== "OPEN") return { action: "HOLD", reasons: [] };
   const rules = portfolioConfig(config);
-  const values = row.setupStrength?.values || {};
   const close = Number(row.close);
   const trailingStop = nextTrailingStop(trade, row, rules);
+  const initialStop = Number(trade.initialStopPrice);
+  const holdingCloses = completedHoldingCloses(trade, row);
+  const managementReady = holdingCloses >= rules.minimumManagementCloses;
   const fullReasons = [];
   if (Number(row.weeklyRs) < 0) {
     fullReasons.push(`Completed-week RS ${formatRs(row.weeklyRs)} is below zero.`);
   }
-  if (Number(row.dailyLongRs) < 0 && close < Number(row.dailySupertrend)) {
-    fullReasons.push("Daily RS55 is below zero and daily close is below Supertrend.");
+  if (Number(row.dailyLongRs) < 0) {
+    fullReasons.push("Completed-close daily long RS55 is below zero.");
   }
+  if (Number.isFinite(initialStop) && close <= initialStop) {
+    fullReasons.push(`Daily close ${round(close)} breached original structural stop ${round(initialStop)}.`);
+  }
+  const trailingStopRaised = Number.isFinite(trailingStop) && trailingStop > initialStop;
+  const trailingBreachCloses = confirmedTrailingStopBreachCloses(trade, row, trailingStop);
   if (
-    Number.isFinite(values.smaSlow) &&
-    close < values.smaSlow &&
-    Number(row.dailyLongRs) < 0
+    managementReady &&
+    trailingStopRaised &&
+    close <= trailingStop &&
+    trailingBreachCloses >= rules.trailingStopConfirmationCloses
   ) {
-    fullReasons.push("Price is below 200-DMA with negative daily RS55.");
-  }
-  if (Number.isFinite(trailingStop) && close <= trailingStop) {
-    fullReasons.push(`Daily close ${round(close)} breached trailing structural stop ${trailingStop}.`);
+    fullReasons.push(
+      `Daily close breached raised trailing stop ${trailingStop} on ${trailingBreachCloses} confirmed closes.`
+    );
   }
   if (fullReasons.length) {
     return { action: "FULL_EXIT", reasons: fullReasons, trailingStop };
@@ -659,10 +684,16 @@ export function positionExitDecision(trade, row, config = {}) {
   const weakness = positionWeakness(row);
   const trendRide = positionTrendRide(row);
   const confirmedWeakCloses = new Set(trade.rotationReview?.weakCloseDates || []).size;
+  const severeWeaknessConfirmed =
+    weakness.primaryScore >= 3 &&
+    confirmedWeakCloses >= rules.severeWeaknessConfirmationCloses;
   const weaknessConfirmed =
     weakness.primaryScore >= 2 &&
-    confirmedWeakCloses >= rules.partialWeaknessConfirmationCloses &&
-    !trendRide.protected;
+    !trendRide.protected &&
+    (
+      (managementReady && confirmedWeakCloses >= rules.partialWeaknessConfirmationCloses) ||
+      severeWeaknessConfirmed
+    );
   const initialRisk = Math.max(0, Number(trade.entryPrice) - Number(trade.initialStopPrice));
   const rewardR = initialRisk > 0 ? (close - Number(trade.entryPrice)) / initialRisk : null;
   const partialReasons = [];
@@ -670,6 +701,7 @@ export function positionExitDecision(trade, row, config = {}) {
   if (
     Number.isFinite(rewardR) &&
     rewardR >= rules.partialProfitR &&
+    managementReady &&
     (!trendRide.protected || trendRide.exhausted) &&
     !trade.partialExitTags?.includes("PROFIT_LOCK")
   ) {
@@ -707,6 +739,11 @@ export function positionExitDecision(trade, row, config = {}) {
     };
   }
   const holdReasons = [...weakness.reasons];
+  if (!managementReady) {
+    holdReasons.push(
+      `ENTRY RETEST GRACE: ${holdingCloses}/${rules.minimumManagementCloses} completed closes observed; normal pullback is tolerated while weekly RS, daily RS55 and original stop remain valid.`
+    );
+  }
   if (trendRide.protected) {
     holdReasons.push(
       "TREND RIDE: weekly/daily leadership and price structure remain healthy; trail the stop instead of cutting the winner."
@@ -760,28 +797,30 @@ export function positionTrendRide(row = {}) {
 export function positionWeakness(row = {}) {
   const checks = row.setupStrength?.checks || {};
   const values = row.setupStrength?.values || {};
-  const reasons = [];
-  if (Number(row.dailyShortRs) < 0) reasons.push("daily RS21 below zero");
-  if (Number(row.dailyLongRs) < 0) reasons.push("daily RS55 below zero");
-  if (Number(row.dailyRsi) < 50) reasons.push("daily RSI below 50");
-  if (Number(row.close) < Number(row.dailySupertrend)) reasons.push("close below Supertrend");
+  const primaryReasons = [];
+  if (Number(row.dailyShortRs) < 0) primaryReasons.push("daily RS21 below zero");
+  if (Number(row.dailyLongRs) < 0) primaryReasons.push("daily RS55 below zero");
+  if (Number(row.dailyRsi) < 50) primaryReasons.push("daily RSI below 50");
+  if (Number(row.close) < Number(row.dailySupertrend)) primaryReasons.push("close below Supertrend");
   if (Number.isFinite(values.smaFast) && Number(row.close) < values.smaFast) {
-    reasons.push("close below 50-DMA");
+    primaryReasons.push("close below 50-DMA");
   }
-  if (!checks.marketRegimeStrong) reasons.push("broad-market regime not strong");
-  if (row.institutionalContext?.operator?.distribution) reasons.push("official NSE delivery distribution");
-  const primaryScore = reasons.length;
-  const primaryReasons = [...reasons];
+  const contextReasons = [];
+  if (checks.marketRegimeStrong === false) contextReasons.push("broad-market regime not strong");
+  if (row.institutionalContext?.operator?.distribution === true) {
+    contextReasons.push("official NSE delivery distribution");
+  }
   if (["B", "C", "WATCH"].includes(String(row.setupGrade || "").toUpperCase())) {
-    reasons.push(`setup grade ${row.setupGrade}`);
+    contextReasons.push(`setup grade ${row.setupGrade}`);
   }
-  if (row.gtfContext?.supplyBlocked) reasons.push("GTF opposing supply confirmation");
-  if (row.gtfContext?.checks?.roomForTwoR === false) reasons.push("GTF confirms less than 2R room");
+  if (row.gtfContext?.supplyBlocked) contextReasons.push("GTF opposing supply confirmation");
+  if (row.gtfContext?.checks?.roomForTwoR === false) contextReasons.push("GTF confirms less than 2R room");
+  const reasons = [...primaryReasons, ...contextReasons];
   return {
     score: reasons.length,
-    primaryScore,
+    primaryScore: primaryReasons.length,
     primaryReasons,
-    contextReasons: reasons.slice(primaryScore),
+    contextReasons,
     reasons
   };
 }
@@ -807,22 +846,17 @@ export function rotationDecision(candidateRow, trades, rowBySymbol, config = {},
       const row = rowBySymbol.get(trade.yahooSymbol || trade.symbol);
       if (!row) return null;
       if (trade.lastRiskActionSignalDate === row.asOf) return null;
-      const weakness = positionWeakness(row);
+      const sourceDecision = rotationSourceDecision(trade, row, config);
       return {
         trade,
         row,
         rank: candidateRank(row),
-        weakness,
-        holdingDays: calendarDays(trade.entryDate, row.asOf),
-        confirmedWeakCloses: new Set(trade.rotationReview?.weakCloseDates || []).size
+        weakness: sourceDecision.weakness,
+        sourceDecision
       };
     })
     .filter(Boolean)
-    .filter((item) =>
-      item.weakness.primaryScore >= 2 &&
-      item.confirmedWeakCloses >= rules.rotationConfirmationCloses &&
-      (item.holdingDays >= rules.rotationMinimumHoldingDays || item.weakness.score >= 3)
-    )
+    .filter((item) => item.sourceDecision.eligible)
     .sort((a, b) => a.rank - b.rank);
   const weakest = eligible[0];
   if (!weakest) {
@@ -854,12 +888,86 @@ export function rotationDecision(candidateRow, trades, rowBySymbol, config = {},
   };
 }
 
+export function rotationSourceDecision(trade = {}, row = {}, config = {}) {
+  const rules = portfolioConfig(config);
+  const weakness = positionWeakness(row);
+  const trendRide = positionTrendRide(row);
+  const holdingCloses = completedHoldingCloses(trade, row);
+  const confirmedWeakCloses = new Set(trade.rotationReview?.weakCloseDates || []).size;
+  const cooldownCloses = trade.lastPartialExitDate
+    ? completedClosesSince(trade.lastPartialExitDate, trade, row)
+    : rules.rotationCooldownCloses;
+  const reasons = [];
+
+  if (holdingCloses < rules.minimumManagementCloses) {
+    reasons.push(`Position has only ${holdingCloses}/${rules.minimumManagementCloses} completed management closes.`);
+  }
+  if (weakness.primaryScore < 3) {
+    reasons.push(`Only ${weakness.primaryScore}/3 stock-specific weakness signals are active.`);
+  }
+  if (confirmedWeakCloses < rules.rotationConfirmationCloses) {
+    reasons.push(
+      `Weakness has only ${confirmedWeakCloses}/${rules.rotationConfirmationCloses} distinct confirmed closes.`
+    );
+  }
+  if (cooldownCloses < rules.rotationCooldownCloses) {
+    reasons.push(
+      `Only ${cooldownCloses}/${rules.rotationCooldownCloses} completed closes have passed since the last partial exit.`
+    );
+  }
+  if (trendRide.protected) reasons.push("Trend-ride protection remains active.");
+
+  return {
+    eligible: reasons.length === 0,
+    reasons,
+    weakness,
+    trendRide,
+    holdingCloses,
+    confirmedWeakCloses,
+    cooldownCloses
+  };
+}
+
 function remainingTradeRisk(trade) {
   const entry = Number(trade.entryPrice);
   const stop = Number(trade.trailingStopPrice || trade.initialStopPrice);
   const quantity = Number(trade.quantity);
   if (![entry, stop, quantity].every(Number.isFinite)) return 0;
   return Math.max(0, entry - stop) * Math.max(0, quantity);
+}
+
+function completedHoldingCloses(trade = {}, row = {}) {
+  const entryDate = dateOnly(trade.entryDate || trade.entrySignalDate);
+  const asOf = dateOnly(row.asOf);
+  if (!entryDate || !asOf || asOf < entryDate) return 0;
+  const dates = new Set(
+    (trade.managementCloseDates || [])
+      .map(dateOnly)
+      .filter((date) => date && date >= entryDate && date <= asOf)
+  );
+  dates.add(asOf);
+  return dates.size;
+}
+
+function completedClosesSince(referenceDate, trade = {}, row = {}) {
+  const reference = dateOnly(referenceDate);
+  const asOf = dateOnly(row.asOf);
+  if (!reference || !asOf || asOf <= reference) return 0;
+  const dates = new Set(
+    (trade.managementCloseDates || [])
+      .map(dateOnly)
+      .filter((date) => date && date > reference && date <= asOf)
+  );
+  dates.add(asOf);
+  return dates.size;
+}
+
+function confirmedTrailingStopBreachCloses(trade = {}, row = {}, trailingStop) {
+  const close = Number(row.close);
+  if (!Number.isFinite(close) || !Number.isFinite(trailingStop) || close > trailingStop) return 0;
+  const dates = new Set((trade.trailingStopBreachDates || []).map(dateOnly).filter(Boolean));
+  if (row.asOf) dates.add(dateOnly(row.asOf));
+  return dates.size;
 }
 
 function calendarDays(start, end) {

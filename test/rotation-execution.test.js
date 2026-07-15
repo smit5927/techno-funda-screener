@@ -84,6 +84,50 @@ test("rotation does not sell the weak holding when replacement fails the 09:17 t
   }
 });
 
+test("a stale pending quality rotation is cancelled before its 09:17 sell", async () => {
+  const temp = fs.mkdtempSync(path.join(os.tmpdir(), "techno-funda-stale-rotation-"));
+  const original = {
+    dataDir: appConfig.dataDir,
+    tradesPath: appConfig.tradesPath,
+    tradeSheetPath: appConfig.tradeSheetPath,
+    tradeCsvPath: appConfig.tradeCsvPath
+  };
+  Object.assign(appConfig, {
+    dataDir: temp,
+    tradesPath: path.join(temp, "trades.json"),
+    tradeSheetPath: path.join(temp, "trades.xlsx"),
+    tradeCsvPath: path.join(temp, "trades.csv")
+  });
+
+  try {
+    const seeded = seedJournal();
+    const weak = seeded.trades[0];
+    weak.status = "PENDING_EXIT";
+    weak.exitType = "QUALITY_ROTATION";
+    weak.exitSignalDate = "2026-07-10";
+    weak.exitReason = ["Legacy optional rotation signal."];
+    weak.replacementCandidateSymbol = "STRONG";
+    seeded.candidates[0].rotation = { sourceTradeId: weak.id };
+    fs.writeFileSync(appConfig.tradesPath, `${JSON.stringify(seeded, null, 2)}\n`);
+
+    const config = testConfig();
+    config.trade.minimumManagementCloses = 5;
+    config.trade.rotationConfirmationCloses = 3;
+    config.trade.rotationCooldownCloses = 3;
+    const journal = await updateTradeJournal(scanFixture(), config);
+    const restored = journal.trades.find((trade) => trade.symbol === "WEAK");
+
+    assert.equal(restored.status, "OPEN");
+    assert.equal(restored.exitType, null);
+    assert.equal(restored.replacementCandidateSymbol, null);
+    assert.equal(restored.cancelledExitSignals.length, 1);
+    assert.match(restored.riskActionNote, /rotation cancelled before execution/i);
+  } finally {
+    Object.assign(appConfig, original);
+    fs.rmSync(temp, { recursive: true, force: true });
+  }
+});
+
 function seedJournal() {
   return {
     updatedAt: "2026-07-10T04:00:00.000Z",
@@ -174,6 +218,9 @@ function testConfig({ strongPrice = 100 } = {}) {
       maxSectorExposurePct: 100,
       rotationMinRankAdvantage: 1,
       rotationMinimumHoldingDays: 0,
+      minimumManagementCloses: 1,
+      rotationConfirmationCloses: 1,
+      rotationCooldownCloses: 1,
       pyramidingEnabled: false,
       scopeListId: "all-market",
       qualityMode: "BEST_ONLY",
@@ -201,12 +248,12 @@ function weakRow() {
     asOf: "2026-07-10",
     status: "WATCH",
     close: 990,
-    dailyRsi: 55,
+    dailyRsi: 45,
     weeklyRsi: 55,
     weeklyRs: 0.01,
     dailyLongRs: 0.01,
-    dailyShortRs: 0.01,
-    dailySupertrend: 800,
+    dailyShortRs: -0.01,
+    dailySupertrend: 995,
     setupGrade: "B",
     setupStrengthScore: 1,
     fundamentalScore: 1,

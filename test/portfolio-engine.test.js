@@ -289,8 +289,8 @@ test("early multi-factor weakness creates a partial exit", () => {
   });
   const decision = positionExitDecision(openTrade({
     rotationReview: {
-      qualificationVersion: 2,
-      weakCloseDates: ["2026-07-09", "2026-07-10"]
+      qualificationVersion: 3,
+      weakCloseDates: ["2026-07-08", "2026-07-09", "2026-07-10"]
     }
   }), row, { trade: {} });
   assert.equal(decision.action, "PARTIAL_EXIT");
@@ -342,14 +342,14 @@ test("an exhausted 2R winner may use the one-time profit lock", () => {
   assert.equal(decision.tag, "PROFIT_LOCK");
 });
 
-test("multi-factor weakness waits for two completed deterioration closes", () => {
+test("multi-factor weakness waits for three completed deterioration closes", () => {
   const row = strongRow({ dailyShortRs: -0.02, dailyRsi: 47 });
   const decision = positionExitDecision(openTrade({
-    rotationReview: { qualificationVersion: 2, weakCloseDates: ["2026-07-10"] }
+    rotationReview: { qualificationVersion: 3, weakCloseDates: ["2026-07-10"] }
   }), row, { trade: {} });
 
   assert.equal(decision.action, "HOLD");
-  assert.match(decision.reasons.join(" "), /1\/2 completed deterioration closes/i);
+  assert.match(decision.reasons.join(" "), /1\/3 completed deterioration closes/i);
 });
 
 test("fundamental deterioration alone cannot trigger a partial exit", () => {
@@ -372,8 +372,8 @@ test("fundamental deterioration cannot repeat an already-booked technical partia
     partialExitTags: ["EARLY_WEAKNESS"],
     entrySnapshot: { fundamentalScore: 4 },
     rotationReview: {
-      qualificationVersion: 2,
-      weakCloseDates: ["2026-07-09", "2026-07-10"]
+      qualificationVersion: 3,
+      weakCloseDates: ["2026-07-08", "2026-07-09", "2026-07-10"]
     }
   }), row, { trade: {} });
 
@@ -396,7 +396,10 @@ test("materially stronger challenger rotates only a weak position", () => {
     symbol: "WEAK",
     yahooSymbol: "WEAK.NS",
     entryDate: "2026-06-20",
-    rotationReview: { weakCloseDates: ["2026-07-09", "2026-07-10"] }
+    rotationReview: {
+      qualificationVersion: 3,
+      weakCloseDates: ["2026-07-08", "2026-07-09", "2026-07-10"]
+    }
   });
   const rows = new Map([["WEAK.NS", weak]]);
   const candidate = {
@@ -565,6 +568,89 @@ test("GTF confirmation alone cannot originate a partial or full exit", () => {
   assert.equal(decision.action, "HOLD");
 });
 
+test("a normal post-breakout retest gets management grace without hiding a large loss", () => {
+  const row = strongRow({
+    asOf: "2026-07-13",
+    close: 97,
+    dailyShortRs: -0.01,
+    dailyRsi: 48,
+    dailySupertrend: 94
+  });
+  const trade = openTrade({
+    entryDate: "2026-07-10",
+    managementCloseDates: [],
+    rotationReview: {
+      qualificationVersion: 3,
+      weakCloseDates: ["2026-07-13"]
+    }
+  });
+
+  const decision = positionExitDecision(trade, row, { trade: {} });
+  assert.equal(decision.action, "HOLD");
+  assert.match(decision.reasons.join(" "), /ENTRY RETEST GRACE: 1\/5/i);
+});
+
+test("severe multi-factor damage can reduce risk during entry grace", () => {
+  const row = strongRow({
+    asOf: "2026-07-14",
+    close: 95,
+    dailyShortRs: -0.02,
+    dailyRsi: 47,
+    dailySupertrend: 97
+  });
+  const trade = openTrade({
+    entryDate: "2026-07-13",
+    managementCloseDates: ["2026-07-13", "2026-07-14"],
+    rotationReview: {
+      qualificationVersion: 3,
+      weakCloseDates: ["2026-07-13", "2026-07-14"]
+    }
+  });
+
+  const decision = positionExitDecision(trade, row, { trade: {} });
+  assert.equal(decision.action, "PARTIAL_EXIT");
+  assert.equal(decision.tag, "EARLY_WEAKNESS");
+});
+
+test("original structural stop exits immediately even during entry grace", () => {
+  const row = strongRow({ asOf: "2026-07-13", close: 93.5 });
+  const decision = positionExitDecision(openTrade({
+    entryDate: "2026-07-10",
+    managementCloseDates: []
+  }), row, { trade: {} });
+
+  assert.equal(decision.action, "FULL_EXIT");
+  assert.match(decision.reasons.join(" "), /original structural stop/i);
+});
+
+test("daily long RS55 failure exits immediately even during entry grace", () => {
+  const row = strongRow({ asOf: "2026-07-13", dailyLongRs: -0.01 });
+  const decision = positionExitDecision(openTrade({
+    entryDate: "2026-07-10",
+    managementCloseDates: []
+  }), row, { trade: {} });
+
+  assert.equal(decision.action, "FULL_EXIT");
+  assert.match(decision.reasons.join(" "), /RS55 is below zero/i);
+});
+
+test("a raised trailing stop needs two confirmed closes before full exit", () => {
+  const row = strongRow({ asOf: "2026-07-10", close: 104, dailySupertrend: 100 });
+  const trade = openTrade({
+    trailingStopPrice: 105,
+    trailingStopBreachDates: ["2026-07-10"]
+  });
+  const first = positionExitDecision(trade, row, { trade: {} });
+  assert.equal(first.action, "HOLD");
+
+  const second = positionExitDecision({
+    ...trade,
+    trailingStopBreachDates: ["2026-07-09", "2026-07-10"]
+  }, row, { trade: {} });
+  assert.equal(second.action, "FULL_EXIT");
+  assert.match(second.reasons.join(" "), /raised trailing stop/i);
+});
+
 test("structural stop remains inside configured risk band", () => {
   const stop = structuralStop(strongRow({ dailySupertrend: 50 }), 100, { trade: {} });
   assert.equal(stop, 93);
@@ -634,6 +720,14 @@ function openTrade(overrides = {}) {
     trailingStopPrice: 94,
     partialExitTags: [],
     partialExits: [],
+    managementCloseDates: [
+      "2026-07-03",
+      "2026-07-06",
+      "2026-07-07",
+      "2026-07-08",
+      "2026-07-09"
+    ],
+    trailingStopBreachDates: [],
     realizedPnlToDate: 0,
     entrySnapshot: { fundamentalScore: 4 },
     ...overrides

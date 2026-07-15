@@ -16,6 +16,7 @@ import {
   positionWeakness,
   postEntryPyramidState,
   pyramidAddDecision,
+  rotationSourceDecision,
   rotationDecision,
   totalRealizedPnl
 } from "./portfolio-engine.js";
@@ -124,6 +125,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
       if (outcome === "SKIPPED") events.push({ type: "PYRAMID_ADD_SKIPPED", trade });
     }
     cancelInvalidPendingPartialExit(trade, row, config);
+    cancelInvalidPendingQualityRotation(trade, row, candidates, config);
     if (trade.status === "PENDING_EXIT" && row) {
       await attemptPendingExit(
         trade,
@@ -495,6 +497,43 @@ function cancelInvalidPendingPartialExit(trade, row, config) {
     "Cancelled automatically: the pending partial exit no longer passes the confirmed trend-deterioration policy.";
 }
 
+function cancelInvalidPendingQualityRotation(trade, row, candidates, config) {
+  if (trade.status !== "PENDING_EXIT" || trade.exitType !== "QUALITY_ROTATION" || !row) return;
+  const decision = rotationSourceDecision(trade, row, config);
+  if (decision.eligible) return;
+  trade.cancelledExitSignals = Array.isArray(trade.cancelledExitSignals)
+    ? trade.cancelledExitSignals
+    : [];
+  trade.cancelledExitSignals.push({
+    cancelledAsOf: row.asOf,
+    exitType: trade.exitType,
+    exitSignalDate: trade.exitSignalDate,
+    replacementCandidateSymbol: trade.replacementCandidateSymbol,
+    originalReasons: trade.exitReason || [],
+    cancellationReasons: decision.reasons
+  });
+  const linkedCandidate = candidates.find((candidate) =>
+    candidate.rotation?.sourceTradeId === trade.id ||
+    candidate.symbol === trade.replacementCandidateSymbol
+  );
+  if (linkedCandidate) {
+    linkedCandidate.rotation = null;
+    linkedCandidate.status = "WAITING_RECONFIRMATION";
+    linkedCandidate.skipReason =
+      `Rotation cancelled before execution: ${decision.reasons.join(" ")}`;
+  }
+  trade.status = "OPEN";
+  trade.exitType = null;
+  trade.exitSignalDate = null;
+  trade.exitSignalScanAt = null;
+  trade.exitReason = [];
+  trade.exitSnapshot = null;
+  trade.replacementCandidateSymbol = null;
+  trade.executionError = null;
+  trade.riskActionNote =
+    `Optional rotation cancelled before execution: ${decision.reasons.join(" ")}`;
+}
+
 export async function writeTradeSheets(journal, config = appConfig) {
   fs.mkdirSync(config.dataDir, { recursive: true });
   const settings = journal.tradeSettings || tradeSettingsSummary(config);
@@ -594,6 +633,9 @@ function createPendingEntry(
     pendingAdd: null,
     partialExits: [],
     partialExitTags: [],
+    managementCloseDates: [],
+    trailingStopBreachDates: [],
+    cancelledExitSignals: [],
     realizedPnlToDate: 0,
     entryReason: [
       ...(row.signalReason || row.entryReason || []),
@@ -1334,6 +1376,9 @@ function migrateTradeMetadata(trades) {
     trade.originalInvestedValue = trade.originalInvestedValue || trade.investedValue || null;
     trade.partialExits = Array.isArray(trade.partialExits) ? trade.partialExits : [];
     trade.partialExitTags = Array.isArray(trade.partialExitTags) ? trade.partialExitTags : [];
+    trade.managementCloseDates = Array.isArray(trade.managementCloseDates) ? trade.managementCloseDates : [];
+    trade.trailingStopBreachDates = Array.isArray(trade.trailingStopBreachDates) ? trade.trailingStopBreachDates : [];
+    trade.cancelledExitSignals = Array.isArray(trade.cancelledExitSignals) ? trade.cancelledExitSignals : [];
     trade.addOns = Array.isArray(trade.addOns) ? trade.addOns : [];
     trade.addOnSkips = Array.isArray(trade.addOnSkips) ? trade.addOnSkips : [];
     trade.initialEntryPrice = trade.initialEntryPrice || trade.entryPrice || null;
@@ -1445,10 +1490,24 @@ function findAnyActiveTrade(trades, row) {
 }
 
 function recordRotationObservation(trade, row, weakness) {
-  const qualificationVersion = 2;
+  if (!row?.asOf) return;
+  const entryDate = String(trade.entryDate || trade.entrySignalDate || "").slice(0, 10);
+  if (!entryDate || row.asOf >= entryDate) {
+    trade.managementCloseDates = Array.from(new Set([
+      ...(trade.managementCloseDates || []),
+      row.asOf
+    ])).slice(-30);
+  }
+  const raisedTrailingStop =
+    Number(trade.trailingStopPrice) > Number(trade.initialStopPrice) &&
+    Number(row.close) <= Number(trade.trailingStopPrice);
+  trade.trailingStopBreachDates = raisedTrailingStop
+    ? Array.from(new Set([...(trade.trailingStopBreachDates || []), row.asOf])).slice(-5)
+    : [];
+
+  const qualificationVersion = 3;
   const currentVersion = Number(trade.rotationReview?.qualificationVersion) || 0;
   if (
-    !row?.asOf ||
     (currentVersion === qualificationVersion && trade.rotationReview?.lastObservedAsOf === row.asOf)
   ) return;
   const qualifies = weakness?.primaryScore >= 2;

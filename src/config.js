@@ -98,11 +98,15 @@ export const appConfig = {
     partialProfitR: numberEnv("TRADE_PARTIAL_PROFIT_R", 2),
     partialWeaknessConfirmationCloses: Math.max(
       2,
-      numberEnv("TRADE_PARTIAL_WEAKNESS_CONFIRMATION_CLOSES", 2)
+      numberEnv("TRADE_PARTIAL_WEAKNESS_CONFIRMATION_CLOSES", 3)
     ),
+    minimumManagementCloses: Math.max(2, numberEnv("TRADE_MINIMUM_MANAGEMENT_CLOSES", 5)),
+    severeWeaknessConfirmationCloses: Math.max(2, numberEnv("TRADE_SEVERE_WEAKNESS_CONFIRMATION_CLOSES", 2)),
+    trailingStopConfirmationCloses: Math.max(1, numberEnv("TRADE_TRAILING_STOP_CONFIRMATION_CLOSES", 2)),
     rotationMinRankAdvantage: numberEnv("TRADE_ROTATION_MIN_RANK_ADVANTAGE", 15),
     rotationMinimumHoldingDays: numberEnv("TRADE_ROTATION_MIN_HOLDING_DAYS", 5),
-    rotationConfirmationCloses: Math.max(1, numberEnv("TRADE_ROTATION_CONFIRMATION_CLOSES", 2)),
+    rotationConfirmationCloses: Math.max(2, numberEnv("TRADE_ROTATION_CONFIRMATION_CLOSES", 3)),
+    rotationCooldownCloses: Math.max(1, numberEnv("TRADE_ROTATION_COOLDOWN_CLOSES", 3)),
     rotationCandidateConfirmationCloses: Math.max(1, numberEnv("TRADE_ROTATION_CANDIDATE_CONFIRMATION_CLOSES", 2)),
     candidateMaxWaitDays: Math.max(1, numberEnv("TRADE_CANDIDATE_MAX_WAIT_DAYS", 30)),
     candidateMaxRunupPct: numberEnv("TRADE_CANDIDATE_MAX_RUNUP_PCT", 8),
