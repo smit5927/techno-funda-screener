@@ -13,7 +13,7 @@ import {
 } from "./indicators.js";
 import { createFundamentalsService, emptyFundamentals } from "./fundamentals.js";
 import { loadWatchlist } from "./watchlist.js";
-import { aggregateDailyToCompletedWeeks, fetchCandles } from "./yahoo.js";
+import { aggregateDailyToCompletedWeeks, fetchBenchmarkCandles, fetchCandles } from "./yahoo.js";
 import {
   buildInstitutionalContext,
   buildInstitutionalReasons,
@@ -34,7 +34,7 @@ export async function runScreener(options = {}) {
   const listFilter = options.listId || "all";
   const lists = config.lists.filter((list) => listFilter === "all" || list.id === listFilter);
 
-  const benchmarkDaily = await fetchCandles(
+  const benchmarkDaily = await fetchBenchmarkCandles(
     config.benchmarkSymbol,
     "1d",
     config.priceHistoryYears || 5

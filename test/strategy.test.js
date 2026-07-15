@@ -16,8 +16,36 @@ import {
 } from "../src/trade-journal.js";
 import {
   aggregateDailyToCompletedWeeks,
+  backfillNifty500Benchmark,
+  parseNifty500ArchiveCandle,
   selectNextTradingSessionExecutionCandle
 } from "../src/yahoo.js";
+
+test("official NSE archive fills a missing NIFTY 500 completed close", async () => {
+  const yahoo = [candle("2026-07-13", 23300, 23400, 23200, 23347.05, 1)];
+  const official = candle("2026-07-14", 23235.25, 23287.45, 23167.85, 23199.45, 1);
+  const merged = await backfillNifty500Benchmark(yahoo, {
+    now: new Date("2026-07-15T03:00:00Z"),
+    archiveLoader: async (date) => date === "2026-07-14" ? official : null
+  });
+
+  assert.equal(merged.length, 2);
+  assert.equal(merged.at(-1).date, "2026-07-14");
+  assert.equal(merged.at(-1).close, 23199.45);
+});
+
+test("NSE index archive parser selects the NIFTY 500 row", () => {
+  const csv = [
+    "Index Name,Index Date,Open Index Value,High Index Value,Low Index Value,Closing Index Value,Volume",
+    "Nifty 50,14-07-2026,24068,24157.1,24023.7,24052.05,355829008",
+    "Nifty 500,14-07-2026,23235.25,23287.45,23167.85,23199.45,2142190771"
+  ].join("\n");
+  const parsed = parseNifty500ArchiveCandle(csv);
+
+  assert.equal(parsed.date, "2026-07-14");
+  assert.equal(parsed.close, 23199.45);
+  assert.equal(parsed.source, "NSE index closing archive");
+});
 
 test("daily candles aggregate only into completed weeks", () => {
   const candles = [

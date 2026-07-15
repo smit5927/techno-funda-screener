@@ -1,5 +1,9 @@
+import { parseCsv } from "./csv.js";
+
 const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
+const NIFTY_500_YAHOO_SYMBOL = "^CRSLDX";
+const NSE_INDEX_ARCHIVE_BASE = "https://archives.nseindia.com/content/indices";
 
 const FUNDAMENTAL_TYPES = [
   "annualNetIncome",
@@ -51,6 +55,71 @@ export async function fetchCandles(symbol, interval, yearsBack) {
     .sort((a, b) => a.time - b.time);
 
   return dropIncompleteCandles(candles, interval);
+}
+
+export async function fetchBenchmarkCandles(symbol, interval, yearsBack, options = {}) {
+  const candles = await fetchCandles(symbol, interval, yearsBack);
+  if (interval !== "1d" || String(symbol).toUpperCase() !== NIFTY_500_YAHOO_SYMBOL) {
+    return candles;
+  }
+  return backfillNifty500Benchmark(candles, options);
+}
+
+export async function backfillNifty500Benchmark(candles, options = {}) {
+  const now = options.now || new Date();
+  const latestDate = candles[candles.length - 1]?.date;
+  const targetDate = latestCompletedDailyDate(now);
+  if (!latestDate || !targetDate || latestDate >= targetDate) return candles;
+
+  const dates = calendarDatesBetween(latestDate, targetDate, 14);
+  const loader = options.archiveLoader || fetchNifty500ArchiveCandle;
+  const archiveCandles = (await Promise.all(dates.map((date) => loader(date))))
+    .filter(Boolean);
+  return mergeCandleDates(candles, archiveCandles);
+}
+
+export async function fetchNifty500ArchiveCandle(date, options = {}) {
+  const compactDate = String(date).split("-").reverse().join("");
+  const url = `${NSE_INDEX_ARCHIVE_BASE}/ind_close_all_${compactDate}.csv`;
+  const fetcher = options.fetcher || fetch;
+  const response = await fetcher(url, {
+    headers: {
+      "User-Agent": "Mozilla/5.0",
+      "Accept-Language": "en-US,en;q=0.9",
+      Referer: "https://www.nseindia.com/all-reports"
+    }
+  });
+  if (response.status === 404) return null;
+  if (!response.ok) throw new Error(`NSE index archive failed ${response.status} ${response.statusText}`);
+  return parseNifty500ArchiveCandle(await response.text(), date);
+}
+
+export function parseNifty500ArchiveCandle(text, fallbackDate = "") {
+  const row = parseCsv(text).find((item) =>
+    String(item.index_name || "").trim().toLowerCase() === "nifty 500"
+  );
+  if (!row) return null;
+  const date = dmyToYmd(row.index_date) || fallbackDate;
+  const close = numberOrNull(row.closing_index_value);
+  if (!date || !Number.isFinite(close)) return null;
+  return {
+    date,
+    time: new Date(`${date}T03:45:00Z`).getTime(),
+    open: numberOrNull(row.open_index_value),
+    high: numberOrNull(row.high_index_value),
+    low: numberOrNull(row.low_index_value),
+    close,
+    volume: numberOrNull(row.volume),
+    source: "NSE index closing archive"
+  };
+}
+
+export function mergeCandleDates(primary = [], fallback = []) {
+  const byDate = new Map(primary.map((candle) => [candle.date, candle]));
+  for (const candle of fallback) {
+    if (candle?.date && Number.isFinite(candle.close)) byDate.set(candle.date, candle);
+  }
+  return [...byDate.values()].sort((a, b) => a.time - b.time);
 }
 
 export async function fetchExecutionPrice(symbol, afterDate) {
@@ -187,7 +256,9 @@ export async function fetchFundamentalTimeSeries(symbol) {
 }
 
 function numberOrNull(value) {
-  return Number.isFinite(value) ? Number(value) : null;
+  if (value === null || value === undefined || value === "") return null;
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
 }
 
 function toYmd(date) {
@@ -271,6 +342,28 @@ function istParts(date) {
 function isAfterDailyClose(parts) {
   if (parts.weekday === 0 || parts.weekday === 6) return true;
   return parts.minutes >= 16 * 60;
+}
+
+function latestCompletedDailyDate(now) {
+  const parts = istParts(now);
+  const date = new Date(Date.UTC(parts.year, parts.month - 1, parts.day, 12));
+  if (!isAfterDailyClose(parts)) date.setUTCDate(date.getUTCDate() - 1);
+  return date.toISOString().slice(0, 10);
+}
+
+function calendarDatesBetween(startExclusive, endInclusive, maxDays) {
+  const start = new Date(`${startExclusive}T12:00:00Z`);
+  const end = new Date(`${endInclusive}T12:00:00Z`);
+  const output = [];
+  for (let time = start.getTime() + DAY_MS; time <= end.getTime(); time += DAY_MS) {
+    output.push(new Date(time).toISOString().slice(0, 10));
+  }
+  return output.slice(-maxDays);
+}
+
+function dmyToYmd(value) {
+  const match = String(value || "").trim().match(/^(\d{2})-(\d{2})-(\d{4})$/);
+  return match ? `${match[3]}-${match[2]}-${match[1]}` : "";
 }
 
 function isAfterWeeklyClose(parts) {
