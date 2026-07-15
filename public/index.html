@@ -114,6 +114,42 @@
         </button>
       </section>
 
+      <section class="pnlPerformanceSection" aria-label="Portfolio performance">
+        <div class="pnlPerformanceHeader">
+          <div>
+            <span>Portfolio Performance</span>
+            <strong>Booked, live and net return</strong>
+          </div>
+          <span class="pnlLiveLabel"><i></i> Live accounting</span>
+        </div>
+        <div class="pnlPerformanceGrid">
+          <article class="pnlMetric booked">
+            <span class="pnlMetricType">Booked</span>
+            <span>Booked Realized P&amp;L</span>
+            <strong id="realizedPnl" aria-live="polite">0.00</strong>
+            <small>Partial exits + completed exits</small>
+          </article>
+          <article class="pnlMetric today">
+            <span class="pnlMetricType">Today</span>
+            <span>Today's Unrealized P&amp;L</span>
+            <strong id="todayUnrealizedPnl" aria-live="polite">0.00</strong>
+            <small>Current LTP versus previous close</small>
+          </article>
+          <article class="pnlMetric openBook">
+            <span class="pnlMetricType">Open Book</span>
+            <span>Total Unrealized P&amp;L</span>
+            <strong id="unrealizedPnl" aria-live="polite">0.00</strong>
+            <small>Remaining open quantity only</small>
+          </article>
+          <article class="pnlMetric overall">
+            <span class="pnlMetricType">Net</span>
+            <span>Overall Portfolio Return</span>
+            <strong id="portfolioReturn" title="Booked Realized P&amp;L + Total Unrealized P&amp;L" aria-live="polite">0.00</strong>
+            <small>Realized + unrealized</small>
+          </article>
+        </div>
+      </section>
+
       <section class="tradeBand" aria-label="Trade summary">
         <div>
           <span>Open Trades</span>
@@ -126,22 +162,6 @@
         <div>
           <span>Closed Trades</span>
           <strong id="closedTradesCount">0</strong>
-        </div>
-        <div>
-          <span>Booked Realized P&amp;L</span>
-          <strong id="realizedPnl" aria-live="polite">0.00</strong>
-        </div>
-        <div>
-          <span>Today's Unrealized P&amp;L</span>
-          <strong id="todayUnrealizedPnl" aria-live="polite">0.00</strong>
-        </div>
-        <div>
-          <span>Total Unrealized P&amp;L</span>
-          <strong id="unrealizedPnl" aria-live="polite">0.00</strong>
-        </div>
-        <div>
-          <span>Overall Portfolio Return</span>
-          <strong id="portfolioReturn" title="Booked Realized P&amp;L + Total Unrealized P&amp;L" aria-live="polite">0.00</strong>
         </div>
         <div>
           <span>Trade Scope</span>
@@ -507,6 +527,6 @@
     <script src="vendor/supabase.js"></script>
     <script src="vendor/exceljs.min.js"></script>
     <script src="mobile-config.js"></script>
-    <script src="auth.js?v=20260715-accounting-v3" type="module"></script>
+    <script src="auth.js?v=20260715-performance-panel" type="module"></script>
   </body>
 </html>

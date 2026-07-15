@@ -754,8 +754,14 @@ function renderSummaryPnl(element, value, percentage, live = false) {
     ? `${compact(value)}${Number.isFinite(percentage) ? ` (${compact(percentage)}%)` : ""}`
     : "NA";
   const changed = element.textContent !== text;
+  const valueClass = signedClass(value);
   element.classList.remove("good", "bad", "neutral");
-  element.classList.add(signedClass(value));
+  element.classList.add(valueClass);
+  const metric = element.closest(".pnlMetric");
+  if (metric) {
+    metric.classList.remove("gain", "loss", "neutral");
+    metric.classList.add(valueClass === "good" ? "gain" : valueClass === "bad" ? "loss" : "neutral");
+  }
   if (live) setLiveValue(element, text);
   else element.textContent = text;
   if (changed) {
@@ -763,6 +769,12 @@ function renderSummaryPnl(element, value, percentage, live = false) {
     void element.offsetWidth;
     if (Number(value) > 0) element.classList.add("pnlGainPulse");
     else if (Number(value) < 0) element.classList.add("pnlLossPulse");
+    if (metric) {
+      metric.classList.remove("metricPulseGain", "metricPulseLoss");
+      void metric.offsetWidth;
+      if (Number(value) > 0) metric.classList.add("metricPulseGain");
+      else if (Number(value) < 0) metric.classList.add("metricPulseLoss");
+    }
   }
 }
 

@@ -298,10 +298,65 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .metric.watch strong { color: var(--blue); }
 .metric.dataGap strong { color: var(--amber); }
 
+.pnlPerformanceSection { margin: 12px 0 9px; }
+.pnlPerformanceHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 7px;
+  padding: 0 2px;
+}
+.pnlPerformanceHeader > div > span {
+  display: block;
+  color: var(--brand-bright);
+  font-size: 10px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+.pnlPerformanceHeader > div > strong { display: block; margin-top: 2px; color: var(--text); font-size: 16px; }
+.pnlLiveLabel { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font-size: 10px; font-weight: 800; text-transform: uppercase; }
+.pnlLiveLabel i { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 4px var(--green-soft); animation: livePulse 1.8s ease-out infinite; }
+.pnlPerformanceGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.pnlMetric {
+  position: relative;
+  min-width: 0;
+  min-height: 116px;
+  padding: 14px 14px 12px;
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(255, 255, 255, .035), var(--surface-raised) 62%);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease, transform .2s ease;
+  animation: performanceMetricIn .45s cubic-bezier(.2, .8, .2, 1) both;
+}
+.pnlMetric:nth-child(2) { animation-delay: .04s; }
+.pnlMetric:nth-child(3) { animation-delay: .08s; }
+.pnlMetric:nth-child(4) { animation-delay: .12s; }
+.pnlMetric::before { content: ""; position: absolute; inset: 0 0 auto; height: 3px; background: var(--line-strong); transition: background-color .2s ease, box-shadow .2s ease; }
+.pnlMetric::after { content: ""; position: absolute; inset: auto 12px 0; height: 1px; opacity: .45; background: linear-gradient(90deg, transparent, currentColor, transparent); }
+.pnlMetric > span:not(.pnlMetricType) { display: block; margin-top: 9px; color: var(--muted-strong); font-size: 11px; font-weight: 800; text-transform: uppercase; }
+.pnlMetricType { display: inline-flex; min-height: 20px; align-items: center; padding: 0 7px; border: 1px solid var(--line-soft); border-radius: 4px; color: var(--muted); font-size: 9px; font-weight: 850; text-transform: uppercase; }
+.pnlMetric strong { display: block; margin-top: 6px; overflow-wrap: anywhere; color: var(--text); font-size: 23px; line-height: 1.08; }
+.pnlMetric small { display: block; margin-top: 7px; color: var(--muted); font-size: 10px; line-height: 1.3; }
+.pnlMetric.overall { background: linear-gradient(145deg, rgba(255, 118, 26, .11), var(--surface-raised) 64%); border-color: rgba(255, 153, 67, .35); }
+.pnlMetric.gain { border-color: rgba(40, 211, 154, .32); background: linear-gradient(145deg, rgba(40, 211, 154, .095), var(--surface-raised) 64%); }
+.pnlMetric.loss { border-color: rgba(255, 92, 108, .34); background: linear-gradient(145deg, rgba(255, 92, 108, .09), var(--surface-raised) 64%); }
+.pnlMetric.gain::before { background: var(--green); box-shadow: 0 0 16px rgba(40, 211, 154, .34); }
+.pnlMetric.loss::before { background: var(--red); box-shadow: 0 0 16px rgba(255, 92, 108, .34); }
+.pnlMetric.gain strong { color: var(--green); }
+.pnlMetric.loss strong { color: var(--red); }
+.pnlMetric.neutral strong { color: var(--muted); }
+.pnlMetric strong.pnlGainPulse { animation: pnlGainPulse .7s cubic-bezier(.2, .8, .2, 1); }
+.pnlMetric strong.pnlLossPulse { animation: pnlLossPulse .7s cubic-bezier(.2, .8, .2, 1); }
+.pnlMetric.metricPulseGain { animation: pnlPanelGain .8s cubic-bezier(.2, .8, .2, 1); }
+.pnlMetric.metricPulseLoss { animation: pnlPanelLoss .8s cubic-bezier(.2, .8, .2, 1); }
+
 .tradeBand {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   margin: 9px 0;
   overflow: hidden;
   background: linear-gradient(105deg, rgba(255, 118, 26, .085), rgba(16, 21, 25, .97) 30%, rgba(101, 181, 255, .05));
@@ -324,9 +379,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   padding: 10px 11px;
   border-right: 1px solid var(--line-soft);
 }
-.tradeBand > div:nth-child(7n) { border-right: 0; }
-.tradeBand > div:nth-child(-n + 7) { border-bottom: 1px solid var(--line-soft); }
-.tradeBand > div:nth-child(5), .tradeBand > div:nth-child(6), .tradeBand > div:nth-child(7), .tradeBand > div:nth-child(12), .tradeBand > div:nth-child(13), .tradeBand > div:nth-child(14) {
+.tradeBand > div:nth-child(5n) { border-right: 0; }
+.tradeBand > div:nth-child(-n + 5) { border-bottom: 1px solid var(--line-soft); }
+.tradeBand > div:nth-child(n + 6) {
   background: rgba(255, 255, 255, .012);
 }
 .tradeBand strong {
@@ -778,7 +833,8 @@ body.detailOpen { overflow: hidden; }
 .check strong { display: block; margin: 4px 0 2px; font-size: 13px; }
 
 body.appReady .summaryGrid { animation: enterUp .36s ease-out both; }
-body.appReady .tradeBand { animation: enterUp .36s .05s ease-out both; }
+body.appReady .pnlPerformanceSection { animation: enterUp .36s .05s ease-out both; }
+body.appReady .tradeBand { animation: enterUp .36s .1s ease-out both; }
 body.appReady .listBand { animation: enterUp .36s .1s ease-out both; }
 body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
 
@@ -791,6 +847,9 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
 @keyframes rowReveal { from { opacity: 0; transform: translateX(-5px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes pnlGainPulse { 0% { opacity: .45; text-shadow: 0 0 0 rgba(40, 211, 154, 0); transform: translateY(2px); } 45% { opacity: 1; text-shadow: 0 0 15px rgba(40, 211, 154, .5); transform: translateY(0); } 100% { text-shadow: 0 0 0 rgba(40, 211, 154, 0); } }
 @keyframes pnlLossPulse { 0% { opacity: .45; text-shadow: 0 0 0 rgba(255, 92, 108, 0); transform: translateY(2px); } 45% { opacity: 1; text-shadow: 0 0 15px rgba(255, 92, 108, .5); transform: translateY(0); } 100% { text-shadow: 0 0 0 rgba(255, 92, 108, 0); } }
+@keyframes performanceMetricIn { from { opacity: 0; transform: translateY(10px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes pnlPanelGain { 0% { transform: translateY(2px); box-shadow: 0 0 0 rgba(40, 211, 154, 0); } 45% { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(40, 211, 154, .18); } 100% { transform: translateY(0); box-shadow: var(--shadow-sm); } }
+@keyframes pnlPanelLoss { 0% { transform: translateY(2px); box-shadow: 0 0 0 rgba(255, 92, 108, 0); } 45% { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(255, 92, 108, .18); } 100% { transform: translateY(0); box-shadow: var(--shadow-sm); } }
 @keyframes ambientShift { from { background-position: 0% 0%, 100% 100%, 0 0, 0 0; } to { background-position: 22% 12%, 78% 82%, 0 0, 0 0; } }
 @keyframes marketSweep { to { background-position: -200% 0; } }
 @keyframes panelOpen { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
@@ -833,10 +892,15 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
   .summaryGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .metric { min-height: 66px; padding: 9px 11px; }
   .metric strong { font-size: 23px; }
+  .pnlPerformanceHeader { align-items: center; }
+  .pnlPerformanceGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .pnlMetric { min-height: 112px; padding: 12px 10px 10px; }
+  .pnlMetric strong { font-size: 18px; }
+  .pnlMetric small { font-size: 9px; }
   .tradeBand { grid-template-columns: repeat(2, 1fr); }
-  .tradeBand > div { min-height: 55px; }
+  .tradeBand > div { min-height: 55px; border-right: 1px solid var(--line-soft); }
   .tradeBand > div:nth-child(2n) { border-right: 0; }
-  .tradeBand > div:nth-child(-n + 12) { border-bottom: 1px solid var(--line-soft); }
+  .tradeBand > div:nth-child(-n + 8) { border-bottom: 1px solid var(--line-soft); }
   .tradeBand strong { font-size: 14px; }
   #excelDownloadLink { grid-column: 1; }
   #csvDownloadLink { grid-column: 2; }

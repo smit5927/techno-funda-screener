@@ -251,7 +251,7 @@ async function showApplication(profile) {
   });
   if (!appLoaded) {
     appLoaded = true;
-    await import("./app.js?v=20260715-accounting-v3");
+    await import("./app.js?v=20260715-performance-panel");
   }
 }
 
