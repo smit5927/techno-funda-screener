@@ -1,8 +1,10 @@
+import { tradeActionAllocation, tradeActionAllocationText } from "./alert-allocation.js";
+
 const MAX_ALERTS = 500;
 const ALERT_RETENTION_DAYS = 30;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-export function updateAlertHistory(existing = [], events = [], occurredAt = new Date().toISOString()) {
+export function updateAlertHistory(existing = [], events = [], occurredAt = new Date().toISOString(), context = {}) {
   const referenceTime = normalizedTime(occurredAt);
   const cutoffTime = referenceTime - ALERT_RETENTION_DAYS * DAY_MS;
   const output = Array.isArray(existing)
@@ -10,7 +12,7 @@ export function updateAlertHistory(existing = [], events = [], occurredAt = new 
     : [];
   const seen = new Set(output.map((item) => item.id));
   for (const event of events || []) {
-    const alert = alertFromTradeEvent(event, occurredAt);
+    const alert = alertFromTradeEvent(event, occurredAt, context);
     if (!alert || seen.has(alert.id)) continue;
     seen.add(alert.id);
     output.push(alert);
@@ -20,7 +22,7 @@ export function updateAlertHistory(existing = [], events = [], occurredAt = new 
     .slice(0, MAX_ALERTS);
 }
 
-export function alertFromTradeEvent(event = {}, occurredAt = new Date().toISOString()) {
+export function alertFromTradeEvent(event = {}, occurredAt = new Date().toISOString(), context = {}) {
   const type = String(event.type || "").trim().toUpperCase();
   const trade = event.trade || {};
   const candidate = event.candidate || {};
@@ -30,7 +32,9 @@ export function alertFromTradeEvent(event = {}, occurredAt = new Date().toISOStr
   if (!type || !definition || !symbol) return null;
   const eventDate = relevantDate(type, trade, action, occurredAt);
   const reasons = alertReasons(type, event, trade, candidate, action);
-  const details = alertDetails(type, trade, candidate, action);
+  const allocation = tradeActionAllocation(event, context.currentPortfolioValue);
+  const allocationSummary = tradeActionAllocationText(allocation);
+  const details = alertDetails(type, trade, candidate, action, allocation);
   const identity = [
     type,
     trade.id || candidate.id || "",
@@ -55,6 +59,7 @@ export function alertFromTradeEvent(event = {}, occurredAt = new Date().toISOStr
     actionDate: eventDate,
     summary: reasons[0] || definition.fallback,
     reasons,
+    allocationSummary: allocationSummary || null,
     details
   };
 }
@@ -103,10 +108,14 @@ function alertReasons(type, event, trade, candidate, action) {
   return uniqueText(values).slice(0, 10);
 }
 
-function alertDetails(type, trade, candidate, action) {
+function alertDetails(type, trade, candidate, action, allocation) {
   const partial = trade.partialExits?.at(-1) || {};
   const add = trade.addOns?.at(-1) || trade.pendingAdd || {};
   const details = {
+    actionSide: allocation?.side || null,
+    actionQuantity: allocation?.quantity ?? null,
+    actionValue: allocation?.value ?? null,
+    actionPortfolioPct: allocation?.portfolioPct ?? null,
     status: trade.status || candidate.status || action.status || "",
     price: numeric(
       type === "PARTIAL_EXIT_FILLED" ? partial.price

@@ -1684,7 +1684,7 @@ function renderAlerts(payload) {
   const visible = alerts.filter((alert) => {
     if (state.alertFilter !== "ALL" && alert.category !== state.alertFilter) return false;
     if (!state.alertSearch) return true;
-    return [alert.symbol, alert.name, alert.title, alert.summary, ...(alert.reasons || [])]
+    return [alert.symbol, alert.name, alert.title, alert.summary, alert.allocationSummary, ...(alert.reasons || [])]
       .some((value) => String(value || "").toLowerCase().includes(state.alertSearch));
   });
   elements.alertsEmpty.classList.toggle("visible", visible.length === 0);
@@ -1709,9 +1709,12 @@ function renderAlerts(payload) {
 }
 
 function alertCardHtml(alert, readIds, index) {
-  const reasons = (alert.reasons || []).slice(1, 4);
+  const reasons = (alert.reasons || []).filter((reason) => reason !== alert.summary).slice(0, 3);
+  const allocation = alert.allocationSummary
+    ? `<div class="alertAllocation"><span>ORDER SIZE</span><strong>${escapeHtml(alert.allocationSummary)}</strong></div>`
+    : "";
   const details = Object.entries(alert.details || {})
-    .filter(([, value]) => value !== null && value !== "")
+    .filter(([key, value]) => !key.startsWith("action") && value !== null && value !== "")
     .slice(0, 7)
     .map(([key, value]) => `<span>${escapeHtml(alertDetailLabel(key))}: ${escapeHtml(alertDetailValue(key, value))}</span>`)
     .join("");
@@ -1721,6 +1724,7 @@ function alertCardHtml(alert, readIds, index) {
       <div class="alertCardMeta"><span class="alertCategory">${escapeHtml(alert.category || "EVENT")}</span><time>${escapeHtml(formatDateTime(alert.occurredAt))}</time></div>
       <div class="alertCardBody">
         <div class="alertCardTitle"><strong>${escapeHtml(alert.symbol || "NA")}</strong><span>${escapeHtml(alert.title || alert.type || "Alert")}</span></div>
+        ${allocation}
         <p>${escapeHtml(alert.summary || "Portfolio event recorded.")}</p>
         ${reasons.length ? `<ul class="alertReasonList">${reasons.map((reason) => `<li>${escapeHtml(reason)}</li>`).join("")}</ul>` : ""}
         ${details ? `<div class="alertDetailChips">${details}</div>` : ""}
@@ -1735,7 +1739,8 @@ function alertDetailLabel(key) {
 
 function alertDetailValue(key, value) {
   if (typeof value !== "number") return String(value);
-  if (/price|pnl|amount|stop/i.test(key)) return `Rs ${compact(value)}`;
+  if (/price|pnl|amount|stop|value/i.test(key)) return `Rs ${compact(value)}`;
+  if (/pct/i.test(key)) return `${compact(value)}%`;
   return compact(value);
 }
 
@@ -1866,7 +1871,8 @@ async function processAlertNotifications(alerts) {
   const registration = await navigator.serviceWorker.ready;
   for (const alert of newAlerts.slice(0, 8).reverse()) {
     await registration.showNotification(`${alert.symbol}: ${alert.title}`, {
-      body: String(alert.summary || alert.reasons?.[0] || "Portfolio action recorded").slice(0, 180),
+      body: [alert.allocationSummary, alert.summary || alert.reasons?.[0] || "Portfolio action recorded"]
+        .filter(Boolean).join(" | ").slice(0, 180),
       icon: "app-icon.svg",
       badge: "app-icon.svg",
       tag: alert.id,

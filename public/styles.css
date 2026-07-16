@@ -293,6 +293,20 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .alertCardTitle { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; }
 .alertCardTitle strong { color: var(--text); font-size: 16px; }
 .alertCardTitle span { color: var(--brand-bright); font-size: 14px; font-weight: 850; }
+.alertAllocation {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px 10px;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 153, 67, .42);
+  border-radius: 5px;
+  background: linear-gradient(90deg, rgba(255, 118, 26, .16), rgba(255, 189, 77, .06));
+  box-shadow: inset 3px 0 0 var(--brand-bright);
+}
+.alertAllocation span { color: var(--brand-bright); font-size: 9px; font-weight: 900; letter-spacing: 0; }
+.alertAllocation strong { color: var(--text); font-size: 13px; line-height: 1.4; }
 .alertCardBody > p { margin: 6px 0 0; color: var(--text-soft); font-size: 12px; line-height: 1.5; }
 .alertReasonList { margin: 7px 0 0; padding-left: 17px; color: var(--muted-strong); font-size: 11px; line-height: 1.45; }
 .alertDetailChips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 9px; }

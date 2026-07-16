@@ -252,7 +252,7 @@ async function showApplication(profile) {
   });
   if (!appLoaded) {
     appLoaded = true;
-    await import("./app.js?v=20260716-capital-withdrawal");
+    await import("./app.js?v=20260716-alert-order-sizing");
   }
 }
 

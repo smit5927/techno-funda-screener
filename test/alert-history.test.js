@@ -26,6 +26,40 @@ test("trade events become reason-first alerts for every required portfolio actio
   }
 });
 
+test("trade action alerts include quantity, value and current cash-plus-holdings percentage", () => {
+  const pendingEntry = alertFromTradeEvent({
+    type: "ENTRY_SIGNAL_PENDING",
+    trade: {
+      id: "ABC-entry",
+      symbol: "ABC",
+      plannedQuantity: 100,
+      plannedAllocation: 99_500,
+      entryReason: ["Leadership confirmed."]
+    }
+  }, "2026-07-16T03:00:00.000Z", { currentPortfolioValue: 1_100_000 });
+  assert.equal(pendingEntry.details.actionSide, "BUY");
+  assert.equal(pendingEntry.details.actionQuantity, 100);
+  assert.equal(pendingEntry.details.actionValue, 99_500);
+  assert.equal(pendingEntry.details.actionPortfolioPct, 9.05);
+  assert.match(pendingEntry.allocationSummary, /APPROX BUY: Qty 100.*9\.05% of current portfolio value \(cash \+ holdings\)/);
+
+  const partialExit = alertFromTradeEvent({
+    type: "PARTIAL_EXIT_PENDING",
+    trade: {
+      id: "ABC-partial",
+      symbol: "ABC",
+      quantity: 101,
+      pendingPartialExitPct: 50,
+      lastPrice: 120,
+      pendingPartialExitReason: ["Confirmed deterioration."]
+    }
+  }, "2026-07-16T03:00:00.000Z", { currentPortfolioValue: 1_000_000 });
+  assert.equal(partialExit.details.actionSide, "PARTIAL SELL");
+  assert.equal(partialExit.details.actionQuantity, 50);
+  assert.equal(partialExit.details.actionValue, 6_000);
+  assert.equal(partialExit.details.actionPortfolioPct, 0.6);
+});
+
 test("dividend alert carries entitlement details while accounting stays in realized P&L", () => {
   const alert = alertFromTradeEvent({
     type: "DIVIDEND_CREDIT",

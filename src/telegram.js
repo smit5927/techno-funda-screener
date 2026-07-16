@@ -1,3 +1,5 @@
+import { tradeActionAllocation, tradeActionAllocationText } from "./alert-allocation.js";
+
 export function isTelegramConfigured(config) {
   return Boolean(config.telegram.botToken && config.telegram.chatId);
 }
@@ -13,7 +15,7 @@ export async function sendTelegramSummary(scan, config) {
     return { sent: false, reason: "no new entry/exit trade events" };
   }
 
-  const text = buildMessage(scan, events);
+  const text = telegramHtml(buildMessage(scan, events));
   const chunks = splitTelegramMessage(text);
 
   for (const chunk of chunks) {
@@ -25,6 +27,7 @@ export async function sendTelegramSummary(scan, config) {
         body: JSON.stringify({
           chat_id: config.telegram.chatId,
           text: chunk,
+          parse_mode: "HTML",
           disable_web_page_preview: true
         })
       }
@@ -56,7 +59,11 @@ function buildMessage(scan, events) {
 
   addListSummary(lines, scan);
   if (events.length === 0) lines.push("", "No new entry/exit trade events after go-live baseline.");
-  else addTradeEvents(lines, events);
+  else addTradeEvents(
+    lines,
+    events,
+    scan.portfolioSummary?.totalEquity || scan.portfolioSummary?.totalCapital
+  );
 
   return lines.join("\n");
 }
@@ -70,7 +77,7 @@ function addListSummary(lines, scan) {
   }
 }
 
-function addTradeEvents(lines, events) {
+function addTradeEvents(lines, events, currentPortfolioValue) {
   if (events.length === 0) return;
   lines.push("", "TRADE SHEET UPDATES");
   for (const event of events) {
@@ -182,7 +189,19 @@ function addTradeEvents(lines, events) {
       );
       lines.push(`   No automatic cash/quantity assumption posted: ${action.reviewReason || "Broker entitlement confirmation required."}`);
     }
+    const allocation = tradeActionAllocation(event, currentPortfolioValue);
+    const allocationText = tradeActionAllocationText(allocation);
+    if (allocationText) lines.push(`   [[B]]${allocationText}[[/B]]`);
   }
+}
+
+function telegramHtml(text) {
+  return String(text)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll("[[B]]", "<b>")
+    .replaceAll("[[/B]]", "</b>");
 }
 
 function conceptCoverageText(trade) {
