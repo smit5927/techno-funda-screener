@@ -485,7 +485,7 @@ CROMPTON,Crompton Greaves Consumer Electricals Limited,Consumer Durables,EQ,INE2
 CROWN,Crown Lifters Limited,NSE Equity,EQ,INE491V01019,true
 CSBBANK,CSB Bank Limited,NSE Equity,EQ,INE679A01013,true
 CSLFINANCE,CSL Finance Limited,NSE Equity,EQ,INE718F01018,true
-CSM,CSM Technologies Limited,NSE Equity,BE,INE0ZK601013,true
+CSM,CSM Technologies Limited,NSE Equity,EQ,INE0ZK601013,true
 CTE,Cambridge Technology Enterprises Limited,NSE Equity,EQ,INE627H01017,true
 CUB,City Union Bank Limited,Financial Services,EQ,INE491A01021,true
 CUBEXTUB,Cubex Tubings Limited,NSE Equity,EQ,INE144D01012,true
@@ -716,7 +716,6 @@ GANECOS,Ganesha Ecosphere Limited,NSE Equity,EQ,INE845D01014,true
 GANESHBE,Ganesh Benzoplast Limited,NSE Equity,EQ,INE388A01029,true
 GANESHCP,Ganesh Consumer Products Limited,NSE Equity,EQ,INE652V01016,true
 GANESHHOU,GANESH HOUSING LIMITED,NSE Equity,EQ,INE460C01014,true
-GANGAFO-RE,Ganga Forging Ltd-RE,NSE Equity,BE,INE691Z20015,true
 GANGAFORGE,Ganga Forging Limited,NSE Equity,BE,INE691Z01023,true
 GANGESSECU,Ganges Securities Limited,NSE Equity,EQ,INE335W01016,true
 GARFIBRES,Garware Technical Fibres Limited,NSE Equity,EQ,INE276A01018,true
@@ -826,7 +825,7 @@ GTPL,GTPL Hathway Limited,NSE Equity,EQ,INE869I01013,true
 GUFICBIO,Gufic Biosciences Limited,NSE Equity,EQ,INE742B01025,true
 GUJALKALI,Gujarat Alkalies and Chemicals Limited,NSE Equity,EQ,INE186A01019,true
 GUJAPOLLO,Gujarat Apollo Industries Limited,NSE Equity,EQ,INE826C01016,true
-GUJENERGY,GUJARAT ENERGY LIMITED,NSE Equity,BE,INE844O01030,true
+GUJENERGY,GUJARAT ENERGY LIMITED,NSE Equity,EQ,INE844O01030,true
 GUJRAFFIA,Gujarat Raffia Industries Limited,NSE Equity,EQ,INE610B01024,true
 GUJTHEM,Gujarat Themis Biosyn Limited,NSE Equity,EQ,INE942C01045,true
 GULFOILLUB,Gulf Oil Lubricants India Limited,NSE Equity,EQ,INE635Q01029,true
@@ -874,7 +873,7 @@ HERANBA,Heranba Industries Limited,NSE Equity,EQ,INE694N01015,true
 HERITGFOOD,Heritage Foods Limited,NSE Equity,EQ,INE978A01027,true
 HEROMOTOCO,Hero MotoCorp Limited,Automobile and Auto Components,EQ,INE158A01026,true
 HESTERBIO,Hester Biosciences Limited,NSE Equity,EQ,INE782E01017,true
-HEXAGON,Hexagon Nutrition Limited,NSE Equity,EQ,INE0JUI01012,true
+HEXAGON,Hexagon Nutrition Limited,NSE Equity,BE,INE0JUI01012,true
 HEXATRADEX,Hexa Tradex Limited,NSE Equity,EQ,INE750M01017,true
 HEXT,Hexaware Technologies Limited,Information Technology,EQ,INE093A01041,true
 HFCL,HFCL Limited,Telecommunication,EQ,INE548A01028,true
@@ -1208,6 +1207,7 @@ LANDMARK,Landmark Cars Limited,NSE Equity,EQ,INE559R01029,true
 LANDSMILL,Landsmill Green Limited,NSE Equity,EQ,INE688J01023,true
 LAOPALA,La Opala RG Limited,NSE Equity,EQ,INE059D01020,true
 LASA,Lasa Supergenerics Limited,NSE Equity,EQ,INE670X01014,true
+LASERPOWER,Laser Power & Infra Limited,NSE Equity,EQ,INE17IR01028,true
 LATENTVIEW,Latent View Analytics Limited,Information Technology,EQ,INE0I7C01011,true
 LATTEYS,Latteys Industries Limited,NSE Equity,BE,INE262Z01023,true
 LAURUSLABS,Laurus Labs Limited,Healthcare,EQ,INE947Q01028,true
@@ -1551,7 +1551,7 @@ PAKKA,PAKKA LIMITED,NSE Equity,EQ,INE551D01018,true
 PALASHSECU,Palash Securities Limited,NSE Equity,EQ,INE471W01019,true
 PALREDTEC,Palred Technologies Limited,NSE Equity,BE,INE218G01033,true
 PANACEABIO,Panacea Biotec Limited,NSE Equity,EQ,INE922B01023,true
-PANACHE,Panache Digilife Limited,NSE Equity,EQ,INE895W01019,true
+PANACHE,Panache Digilife Limited,NSE Equity,BE,INE895W01019,true
 PANAMAPET,Panama Petrochem Limited,NSE Equity,EQ,INE305C01029,true
 PANSARI,Pansari Developers Limited,NSE Equity,EQ,INE697V01011,true
 PAR,Par Drugs And Chemicals Limited,NSE Equity,EQ,INE04LG01015,true
@@ -1583,7 +1583,7 @@ PERSISTENT,Persistent Systems Limited,Information Technology,EQ,INE262H01021,tru
 PETRONET,Petronet LNG Limited,Oil Gas & Consumable Fuels,EQ,INE347G01014,true
 PFC,Power Finance Corporation Limited,Financial Services,EQ,INE134E01011,true
 PFIZER,Pfizer Limited,Healthcare,EQ,INE182A01018,true
-PFOCUS,Prime Focus Limited,NSE Equity,BE,INE367G01038,true
+PFOCUS,Prime Focus Limited,NSE Equity,EQ,INE367G01038,true
 PFS,PTC India Financial Services Limited,NSE Equity,EQ,INE560K01014,true
 PGEL,PG Electroplast Limited,Consumer Durables,EQ,INE457L01029,true
 PGHH,Procter & Gamble Hygiene and Health Care Limited,NSE Equity,EQ,INE179A01014,true
@@ -2032,7 +2032,6 @@ SUDARSCHEM,Sudarshan Chemical Industries Limited,NSE Equity,EQ,INE659A01023,true
 SUDEEPPHRM,Sudeep Pharma Limited,NSE Equity,EQ,INE0QPI01025,true
 SUKHJITS,Sukhjit Starch & Chemicals Limited,NSE Equity,EQ,INE450E01029,true
 SULA,Sula Vineyards Limited,NSE Equity,EQ,INE142Q01026,true
-SUMEET-RE,Sumeet Industries Limited-RE,NSE Equity,BE,INE235C20010,true
 SUMEETINDS,Sumeet Industries Limited,NSE Equity,EQ,INE235C01036,true
 SUMICHEM,Sumitomo Chemical India Limited,Chemicals,EQ,INE258G01013,true
 SUMIT,Sumit Woods Limited,NSE Equity,BE,INE748Z01013,true
