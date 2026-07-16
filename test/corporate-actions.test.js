@@ -119,3 +119,38 @@ test("entry on the ex-date is not entitled to that corporate action", () => {
   const dividend = parseCorporateAction({ symbol: "ABC", exDate: "03-Jul-2026", subject: "Dividend - Rs 5 Per Share" });
   assert.equal(applyCorporateActionToTrade(trade, dividend).applied, false);
 });
+
+test("ex-date morning exit preserves dividend entitlement in realized P&L", async () => {
+  const trade = openTrade({
+    status: "PENDING_EXIT",
+    exitSignalDate: "2026-07-15",
+    exitReason: ["Full exit confirmed on the prior close."]
+  });
+  const outcome = await updateOpenPositionCorporateActions(
+    [trade],
+    {
+      scannedAt: "2026-07-16T03:00:00.000Z",
+      marketContext: { asOf: "2026-07-15" }
+    },
+    { corporateActions: { enabled: true, lookbackDays: 400 } },
+    { actions: [{ symbol: "ABC", exDate: "16-Jul-2026", subject: "Dividend - Rs 5 Per Share" }] }
+  );
+
+  assert.equal(outcome.appliedCount, 1);
+  assert.equal(outcome.events[0].type, "DIVIDEND_CREDIT");
+  assert.equal(trade.corporateActions[0].exDate, "2026-07-16");
+  assert.equal(trade.corporateActions[0].entitledQuantity, 100);
+  assert.equal(trade.corporateActions[0].amount, 500);
+
+  trade.status = "CLOSED";
+  trade.exitDate = "2026-07-16";
+  trade.exitTime = "09:17 IST";
+  trade.exitPrice = 98;
+  trade.lastPrice = 98;
+  applyTradeChargeAccounting(trade, { trade: { chargesEnabled: false } }, 98);
+
+  assert.equal(trade.tradeRealizedPnlToDate, -200);
+  assert.equal(trade.dividendRealizedPnl, 500);
+  assert.equal(trade.realizedPnlToDate, 300);
+  assert.equal(trade.pnl, 300);
+});

@@ -11,7 +11,8 @@ export async function updateOpenPositionCorporateActions(
 ) {
   const settings = corporateActionSettings(config);
   const active = trades.filter((trade) => ACTIVE_STATUSES.has(trade?.status) && trade.entryDate);
-  const asOf = isoDate(scan.marketContext?.asOf || scan.scannedAt || new Date());
+  // Entitlement starts on the calendar ex-date, even before that day's market close exists.
+  const asOf = isoDate(scan.scannedAt || scan.marketContext?.asOf || new Date());
   if (!settings.enabled || !active.length || !asOf) {
     return statusResult({ enabled: settings.enabled, asOf, reason: active.length ? "disabled" : "no open positions" });
   }
