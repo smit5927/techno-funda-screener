@@ -1,4 +1,4 @@
-const CACHE = "techno-funda-shell-v15";
+const CACHE = "techno-funda-shell-v16-alerts";
 const SHELL = [
   "./",
   "./styles.css",
@@ -30,4 +30,17 @@ self.addEventListener("fetch", (event) => {
     caches.open(CACHE).then((cache) => cache.put(event.request, copy));
     return response;
   }).catch(() => caches.match(event.request)));
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const target = new URL(event.notification.data?.url || "./?view=alerts", self.location.href).href;
+  event.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(async (windows) => {
+    const existing = windows.find((client) => new URL(client.url).origin === self.location.origin);
+    if (existing) {
+      await existing.navigate(target);
+      return existing.focus();
+    }
+    return self.clients.openWindow(target);
+  }));
 });

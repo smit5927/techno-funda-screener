@@ -206,6 +206,95 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .mainNavTab:hover { border-color: transparent; background: rgba(255, 118, 26, .065); color: var(--text); }
 .mainNavTab.active { background: linear-gradient(180deg, rgba(255, 118, 26, .1), transparent); color: #fff; }
 .mainNavTab.active::after { right: 12px; left: 12px; }
+.alertsNavTab { gap: 7px; }
+.alertsUnreadBadge {
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--red);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 19px;
+  text-align: center;
+  box-shadow: 0 0 0 3px rgba(255, 92, 108, .12);
+}
+
+.alertsWorkspace { min-height: 540px; }
+.alertsHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 0 14px;
+  border-bottom: 1px solid var(--line);
+}
+.alertsHeader > div:first-child > span { color: var(--brand-bright); font-size: 10px; font-weight: 850; }
+.alertsHeader h2 { margin: 3px 0 0; color: var(--text); font-size: 24px; }
+.alertsHeader p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
+.alertsHeaderActions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
+.alertsHeaderActions button { min-height: 38px; }
+.alertsHeaderActions .primaryAlertAction { border-color: rgba(255, 153, 67, .55); background: var(--brand); color: #090b0d; }
+.alertsHeaderActions .dangerAction { border-color: rgba(255, 92, 108, .4); color: var(--red); }
+.alertsStatusBand {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 12px 0 8px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface-raised);
+}
+.alertsStatusBand > div { min-width: 0; padding: 12px 14px; border-right: 1px solid var(--line); }
+.alertsStatusBand > div:last-child { border-right: 0; }
+.alertsStatusBand span { display: block; color: var(--muted); font-size: 9px; font-weight: 850; text-transform: uppercase; }
+.alertsStatusBand strong { display: block; margin-top: 4px; overflow-wrap: anywhere; color: var(--text); font-size: 16px; }
+.alertsToolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0 11px; }
+.alertFilterTabs { display: flex; min-width: 0; overflow-x: auto; gap: 5px; scrollbar-width: none; }
+.alertFilterTabs::-webkit-scrollbar { display: none; }
+.alertFilter { min-height: 35px; white-space: nowrap; }
+.alertFilter.active { border-color: rgba(255, 153, 67, .5); background: rgba(255, 118, 26, .13); color: var(--brand-bright); }
+#alertsSearchInput { width: min(310px, 35vw); min-height: 38px; }
+.alertsList { display: grid; gap: 8px; padding-bottom: 22px; }
+.alertCard {
+  position: relative;
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr) auto;
+  gap: 14px;
+  min-width: 0;
+  padding: 14px 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: linear-gradient(120deg, rgba(255, 255, 255, .025), var(--surface-raised));
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform .18s ease, border-color .18s ease, background-color .18s ease;
+  animation: alertCardIn .32s cubic-bezier(.2, .8, .2, 1) both;
+}
+.alertCard:hover { transform: translateY(-1px); border-color: var(--line-strong); }
+.alertCard.unread { border-left: 3px solid var(--brand-bright); background: linear-gradient(120deg, rgba(255, 118, 26, .09), var(--surface-raised) 45%); }
+.alertCard.selected { border-color: var(--brand-bright); box-shadow: 0 0 0 2px rgba(255, 118, 26, .12), var(--shadow-md); }
+.alertCard.danger { border-left-color: var(--red); }
+.alertCard.success { border-left-color: var(--green); }
+.alertCard.warning { border-left-color: var(--amber); }
+.alertCardMeta { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.alertCategory { padding: 4px 7px; border-radius: 4px; background: rgba(101, 181, 255, .12); color: var(--blue); font-size: 9px; font-weight: 900; }
+.alertCard.danger .alertCategory { background: rgba(255, 92, 108, .12); color: var(--red); }
+.alertCard.success .alertCategory { background: rgba(40, 211, 154, .11); color: var(--green); }
+.alertCard.warning .alertCategory { background: rgba(255, 189, 77, .11); color: var(--amber); }
+.alertCardMeta time { color: var(--muted); font-size: 10px; line-height: 1.35; }
+.alertCardBody { min-width: 0; }
+.alertCardTitle { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; }
+.alertCardTitle strong { color: var(--text); font-size: 16px; }
+.alertCardTitle span { color: var(--brand-bright); font-size: 14px; font-weight: 850; }
+.alertCardBody > p { margin: 6px 0 0; color: var(--text-soft); font-size: 12px; line-height: 1.5; }
+.alertReasonList { margin: 7px 0 0; padding-left: 17px; color: var(--muted-strong); font-size: 11px; line-height: 1.45; }
+.alertDetailChips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 9px; }
+.alertDetailChips span { padding: 4px 6px; border: 1px solid var(--line-soft); border-radius: 4px; color: var(--muted-strong); font-size: 10px; }
+.alertCardAction { align-self: center; color: var(--muted); font-size: 11px; font-weight: 800; white-space: nowrap; }
+@keyframes alertCardIn { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
 .navDownloads { display: flex; align-items: center; gap: 6px; flex: 0 0 auto; }
 .downloadLabel { color: var(--muted); font-size: 10px; font-weight: 800; text-transform: uppercase; }
 .navDownloads a {
@@ -317,7 +406,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .pnlPerformanceHeader > div > strong { display: block; margin-top: 2px; color: var(--text); font-size: 16px; }
 .pnlLiveLabel { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font-size: 10px; font-weight: 800; text-transform: uppercase; }
 .pnlLiveLabel i { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 4px var(--green-soft); animation: livePulse 1.8s ease-out infinite; }
-.pnlPerformanceGrid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.pnlPerformanceGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
 .pnlMetric {
   position: relative;
   min-width: 0;
@@ -335,7 +424,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .pnlMetric:nth-child(3) { animation-delay: .08s; }
 .pnlMetric:nth-child(4) { animation-delay: .12s; }
 .pnlMetric:nth-child(5) { animation-delay: .16s; }
-.pnlMetric.dividend { background: linear-gradient(145deg, rgba(101, 181, 255, .09), var(--surface-raised) 64%); border-color: rgba(101, 181, 255, .28); }
 .pnlMetric::before { content: ""; position: absolute; inset: 0 0 auto; height: 3px; background: var(--line-strong); transition: background-color .2s ease, box-shadow .2s ease; }
 .pnlMetric::after { content: ""; position: absolute; inset: auto 12px 0; height: 1px; opacity: .45; background: linear-gradient(90deg, transparent, currentColor, transparent); }
 .pnlMetric > span:not(.pnlMetricType) { display: block; margin-top: 9px; color: var(--muted-strong); font-size: 11px; font-weight: 800; text-transform: uppercase; }
@@ -910,6 +998,17 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
   .pnlMetric { min-height: 112px; padding: 12px 10px 10px; }
   .pnlMetric strong { font-size: 18px; }
   .pnlMetric small { font-size: 9px; }
+  .alertsHeader { align-items: stretch; flex-direction: column; }
+  .alertsHeaderActions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .alertsHeaderActions .primaryAlertAction { grid-column: 1 / -1; }
+  .alertsStatusBand { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .alertsStatusBand > div:nth-child(2) { border-right: 0; }
+  .alertsStatusBand > div:nth-child(-n + 2) { border-bottom: 1px solid var(--line); }
+  .alertsToolbar { align-items: stretch; flex-direction: column; }
+  #alertsSearchInput { width: 100%; }
+  .alertCard { grid-template-columns: 1fr; gap: 8px; padding: 12px; }
+  .alertCardMeta { flex-direction: row; justify-content: space-between; }
+  .alertCardAction { display: none; }
   .tradeBand { grid-template-columns: repeat(2, 1fr); }
   .tradeBand > div { min-height: 55px; border-right: 1px solid var(--line-soft); }
   .tradeBand > div:nth-child(2n) { border-right: 0; }

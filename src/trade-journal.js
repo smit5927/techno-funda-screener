@@ -5,6 +5,7 @@ import { readTrades, saveTrades } from "./storage.js";
 import { fetchExecutionPrice } from "./yahoo.js";
 import { applyTradeChargeAccounting, chargeSettings } from "./charges.js";
 import { updateOpenPositionCorporateActions } from "./corporate-actions.js";
+import { updateAlertHistory } from "./alert-history.js";
 import {
   buildPositionPlan,
   buildPyramidAddPlan,
@@ -444,6 +445,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
 
   for (const trade of trades) applyTradeChargeAccounting(trade, config, trade.lastPrice);
   const finalPortfolio = portfolioSummary(trades, candidates, config);
+  const alertHistory = updateAlertHistory(journal.alertHistory, events, scan.scannedAt);
 
   const nextJournal = {
     updatedAt: new Date().toISOString(),
@@ -472,6 +474,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
     capitalTransactions,
     candidates: candidates.sort((a, b) => b.rank - a.rank),
     candidateDecisionLog: candidateDecisionLog.slice(-250),
+    alertHistory,
     tradeSettings: settings,
     trades: trades.sort(sortTrades)
   };

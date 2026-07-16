@@ -103,6 +103,7 @@ export function marketOnlyState(scan = {}) {
     waitingCandidates,
     candidateDecisionLog,
     tradeEvents,
+    alertHistory,
     telegram,
     ...market
   } = scan;
@@ -311,6 +312,7 @@ export function portfolioState(scan, journal, settings, config = appConfig) {
     trades: visibleTrades,
     waitingCandidates: visibleCandidates,
     candidateDecisionLog: journal.visibleCandidateDecisions || [],
+    alertHistory: journal.alertHistory || [],
     tradeEvents: journal.events || []
   };
 }

@@ -71,6 +71,7 @@
       <div class="mainNavInner">
         <div class="mainNavTabs" role="tablist" aria-label="Workspace views">
           <button class="mainNavTab active" data-view="dashboard" type="button" role="tab" aria-selected="true">Dashboard</button>
+          <button id="alertsNavButton" class="mainNavTab alertsNavTab" data-view="alerts" type="button" role="tab" aria-selected="false">Alerts <span id="alertsUnreadBadge" class="alertsUnreadBadge" hidden>0</span></button>
           <button class="mainNavTab" data-view="positions" type="button" role="tab" aria-selected="false">Open Positions</button>
           <button class="mainNavTab" data-view="candidates" type="button" role="tab" aria-selected="false">Candidates</button>
           <button class="mainNavTab" data-view="screener" type="button" role="tab" aria-selected="false">Screener</button>
@@ -128,12 +129,6 @@
             <span>Booked Realized P&amp;L (Net)</span>
             <strong id="realizedPnl" aria-live="polite">0.00</strong>
             <small id="realizedPnlBreakdown">Gross 0.00 | realized charges 0.00</small>
-          </article>
-          <article class="pnlMetric dividend">
-            <span class="pnlMetricType">Income</span>
-            <span>Dividend Realized P&amp;L</span>
-            <strong id="dividendRealizedPnl" aria-live="polite">0.00</strong>
-            <small>Eligible open-position dividends</small>
           </article>
           <article class="pnlMetric today">
             <span class="pnlMetricType">Today</span>
@@ -261,6 +256,40 @@
         </div>
       </section>
       </div>
+
+      <section class="viewPanel alertsWorkspace" data-view-panel="alerts" hidden aria-label="Portfolio alerts">
+        <div class="alertsHeader">
+          <div>
+            <span>PORTFOLIO EVENT LEDGER</span>
+            <h2>Alerts Center</h2>
+            <p>08:30 IST morning scan: entry, exit, risk reduction, winner adds and corporate actions with decision reasons.</p>
+          </div>
+          <div class="alertsHeaderActions">
+            <button id="enableNotificationsButton" class="primaryAlertAction" type="button">Enable Notifications</button>
+            <button id="markAlertsReadButton" type="button">Mark All Read</button>
+            <button id="clearAlertsButton" class="dangerAction" type="button">Clear History</button>
+          </div>
+        </div>
+        <div class="alertsStatusBand">
+          <div><span>Total Alerts</span><strong id="alertsTotalCount">0</strong></div>
+          <div><span>Unread</span><strong id="alertsUnreadCount">0</strong></div>
+          <div><span>Notification Status</span><strong id="notificationPermissionStatus">Not enabled</strong></div>
+          <div><span>Last Alert</span><strong id="alertsLastAt">NA</strong></div>
+        </div>
+        <div class="alertsToolbar">
+          <div class="alertFilterTabs" role="tablist" aria-label="Alert categories">
+            <button class="alertFilter active" data-alert-filter="ALL" type="button">All</button>
+            <button class="alertFilter" data-alert-filter="ENTRY" type="button">Entry</button>
+            <button class="alertFilter" data-alert-filter="EXIT" type="button">Exit</button>
+            <button class="alertFilter" data-alert-filter="PARTIAL_EXIT" type="button">Partial Exit</button>
+            <button class="alertFilter" data-alert-filter="PYRAMID" type="button">Pyramiding</button>
+            <button class="alertFilter" data-alert-filter="CORPORATE" type="button">Corporate</button>
+          </div>
+          <input id="alertsSearchInput" type="search" placeholder="Search symbol, action or reason" aria-label="Search alerts" />
+        </div>
+        <div id="alertsList" class="alertsList" aria-live="polite"></div>
+        <div id="alertsEmpty" class="emptyState visible">No portfolio alerts yet</div>
+      </section>
 
       <div class="viewPanel" data-view-panel="settings" hidden>
         <section class="settingsMenu" aria-label="Settings categories">
@@ -550,6 +579,6 @@
     <script src="vendor/supabase.js"></script>
     <script src="vendor/exceljs.min.js"></script>
     <script src="mobile-config.js"></script>
-    <script src="auth.js?v=20260715-net-realized-audit" type="module"></script>
+    <script src="auth.js?v=20260716-alert-center" type="module"></script>
   </body>
 </html>

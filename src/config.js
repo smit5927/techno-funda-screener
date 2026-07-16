@@ -152,7 +152,7 @@ export const appConfig = {
   },
   schedule: {
     enabled: boolEnv("SCHEDULE_ENABLED", true),
-    cron: process.env.SCAN_CRON || "0 8 * * 1-5",
+    cron: process.env.SCAN_CRON || "30 8 * * 1-5",
     timezone: process.env.SCAN_TIMEZONE || "Asia/Kolkata"
   },
   telegram: {

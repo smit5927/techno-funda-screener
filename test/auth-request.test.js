@@ -34,8 +34,7 @@ test("portfolio summary exposes live today and total unrealized P&L", () => {
   assert.match(html, /Total Unrealized P&amp;L/);
   assert.match(html, /Booked Realized P&amp;L \(Net\)/);
   assert.match(html, /Techno Funda PMS/);
-  assert.match(html, /id="dividendRealizedPnl"/);
-  assert.match(html, /Dividend Realized P&amp;L/);
+  assert.doesNotMatch(html, /id="dividendRealizedPnl"/);
   assert.match(html, /id="realizedPnlBreakdown"/);
   assert.match(html, /id="portfolioReturn"/);
   assert.match(html, /Overall Portfolio Return/);
@@ -48,7 +47,6 @@ test("portfolio summary exposes live today and total unrealized P&L", () => {
   assert.match(app, /summary\.dayPnlPct/);
   assert.match(app, /portfolioReturnPerformance/);
   assert.match(app, /renderSummaryPnl\(elements\.realizedPnl/);
-  assert.match(app, /renderSummaryPnl\(elements\.dividendRealizedPnl/);
   assert.match(app, /renderRealizedBreakdown\(payload\)/);
   assert.match(app, /renderSummaryPnl\(elements\.unrealizedPnl/);
   assert.match(app, /pnlGainPulse/);
@@ -56,4 +54,18 @@ test("portfolio summary exposes live today and total unrealized P&L", () => {
   assert.match(app, /metricPulseGain/);
   assert.match(app, /metricPulseLoss/);
   assert.match(app, /tfDashboardPositionFilter/);
+});
+
+test("alert center supports durable history, account clear and notification deep links", () => {
+  const html = fs.readFileSync(path.join(rootDir, "public", "index.html"), "utf8");
+  const app = fs.readFileSync(path.join(rootDir, "public", "app.js"), "utf8");
+  const worker = fs.readFileSync(path.join(rootDir, "public", "service-worker.js"), "utf8");
+  const api = fs.readFileSync(path.join(rootDir, "supabase", "functions", "techno-funda-app-api", "index.ts"), "utf8");
+  assert.match(html, /id="alertsNavButton"/);
+  assert.match(html, /id="clearAlertsButton"/);
+  assert.match(app, /clear-alert-history/);
+  assert.match(app, /processAlertNotifications/);
+  assert.match(worker, /notificationclick/);
+  assert.match(worker, /view=alerts/);
+  assert.match(api, /ALERT_HISTORY_CLEARED/);
 });

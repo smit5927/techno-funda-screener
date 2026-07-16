@@ -18,7 +18,11 @@ const state = {
   hasAnimatedCounts: false,
   positionSort: new URLSearchParams(window.location.search).get("sort") || localStorage.getItem("tfPositionSort") || "default",
   positionSortDirection: new URLSearchParams(window.location.search).get("direction") || localStorage.getItem("tfPositionSortDirection") || "desc",
-  dashboardPositionFilter: localStorage.getItem("tfDashboardPositionFilter") || "ALL"
+  dashboardPositionFilter: localStorage.getItem("tfDashboardPositionFilter") || "ALL",
+  alertFilter: "ALL",
+  alertSearch: "",
+  selectedAlertId: new URLSearchParams(window.location.search).get("alert") || "",
+  alertPollTimer: null
 };
 
 const staticMode = Boolean(window.TF_STATIC_MODE);
@@ -38,7 +42,6 @@ const elements = {
   closedTradesCount: document.querySelector("#closedTradesCount"),
   realizedPnl: document.querySelector("#realizedPnl"),
   realizedPnlBreakdown: document.querySelector("#realizedPnlBreakdown"),
-  dividendRealizedPnl: document.querySelector("#dividendRealizedPnl"),
   todayUnrealizedPnl: document.querySelector("#todayUnrealizedPnl"),
   unrealizedPnl: document.querySelector("#unrealizedPnl"),
   portfolioReturn: document.querySelector("#portfolioReturn"),
@@ -119,7 +122,18 @@ const elements = {
   dashboardExcelDownloadLink: document.querySelector("#dashboardExcelDownloadLink"),
   dashboardCsvDownloadLink: document.querySelector("#dashboardCsvDownloadLink"),
   detailPanel: document.querySelector("#detailPanel"),
-  detailBackdrop: document.querySelector("#detailBackdrop")
+  detailBackdrop: document.querySelector("#detailBackdrop"),
+  alertsUnreadBadge: document.querySelector("#alertsUnreadBadge"),
+  alertsTotalCount: document.querySelector("#alertsTotalCount"),
+  alertsUnreadCount: document.querySelector("#alertsUnreadCount"),
+  notificationPermissionStatus: document.querySelector("#notificationPermissionStatus"),
+  alertsLastAt: document.querySelector("#alertsLastAt"),
+  alertsSearchInput: document.querySelector("#alertsSearchInput"),
+  alertsList: document.querySelector("#alertsList"),
+  alertsEmpty: document.querySelector("#alertsEmpty"),
+  enableNotificationsButton: document.querySelector("#enableNotificationsButton"),
+  markAlertsReadButton: document.querySelector("#markAlertsReadButton"),
+  clearAlertsButton: document.querySelector("#clearAlertsButton")
 };
 
 elements.refreshButton.addEventListener("click", refreshPublishedData);
@@ -207,6 +221,20 @@ elements.importCustomFileButton.addEventListener("click", importCustomFile);
 elements.saveTradeSettingsButton.addEventListener("click", saveTradeSettings);
 elements.saveTelegramButton.addEventListener("click", saveTelegramSettings);
 elements.detailBackdrop.addEventListener("click", closeDetail);
+elements.alertsSearchInput?.addEventListener("input", (event) => {
+  state.alertSearch = event.target.value.trim().toLowerCase();
+  renderAlerts(state.payload);
+});
+document.querySelectorAll(".alertFilter").forEach((button) => {
+  button.addEventListener("click", () => {
+    state.alertFilter = button.dataset.alertFilter || "ALL";
+    document.querySelectorAll(".alertFilter").forEach((item) => item.classList.toggle("active", item === button));
+    renderAlerts(state.payload);
+  });
+});
+elements.enableNotificationsButton?.addEventListener("click", enableBrowserNotifications);
+elements.markAlertsReadButton?.addEventListener("click", markAllAlertsRead);
+elements.clearAlertsButton?.addEventListener("click", clearAlertHistory);
 
 document.querySelectorAll(".listTab").forEach((button) => {
   button.addEventListener("click", () => {
@@ -248,7 +276,7 @@ updatePositionSortDirection();
 await loadResults();
 
 function setMainView(view, options = {}) {
-  const allowedViews = ["dashboard", "positions", "candidates", "screener", "settings", "admin"];
+  const allowedViews = ["dashboard", "alerts", "positions", "candidates", "screener", "settings", "admin"];
   const nextView = allowedViews.includes(view) ? view : "dashboard";
   const previousView = state.currentView;
   const applyView = () => {
@@ -402,8 +430,11 @@ function applyPayload(payload) {
   renderPositions(state.payload);
   renderCandidates(state.payload);
   renderCandidateDecisions(state.payload);
+  renderAlerts(state.payload);
+  processAlertNotifications(state.payload.alertHistory || []);
   renderRows();
   startLiveMtm();
+  startAlertPolling();
   if (!document.body.classList.contains("appReady")) {
     requestAnimationFrame(() => document.body.classList.add("appReady"));
   }
@@ -449,7 +480,6 @@ function renderSummary(payload) {
     (payload.tradeSummary?.pendingPartialExit || 0);
   elements.closedTradesCount.textContent = payload.tradeSummary?.closed || 0;
   renderSummaryPnl(elements.realizedPnl, Number(payload.tradeSummary?.realizedPnl) || 0, null);
-  renderSummaryPnl(elements.dividendRealizedPnl, Number(payload.tradeSummary?.dividendRealizedPnl) || 0, null);
   renderRealizedBreakdown(payload);
   const dayPerformance = portfolioDayPerformance(payload);
   renderSummaryPnl(elements.todayUnrealizedPnl, dayPerformance.dayPnl, dayPerformance.dayPnlPct);
@@ -1566,6 +1596,222 @@ function updateDownloadLinks(payload) {
   elements.topCsvDownloadLink.href = csvHref;
   elements.dashboardExcelDownloadLink.href = excelHref;
   elements.dashboardCsvDownloadLink.href = csvHref;
+}
+
+function alertStorageKey(kind) {
+  try {
+    const profile = JSON.parse(localStorage.getItem("techno-funda-profile") || "null");
+    return `tfAlerts:${kind}:${profile?.userId || profile?.username || "local"}`;
+  } catch {
+    return `tfAlerts:${kind}:local`;
+  }
+}
+
+function readAlertIdSet(kind) {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(alertStorageKey(kind)) || "[]"));
+  } catch {
+    return new Set();
+  }
+}
+
+function writeAlertIdSet(kind, ids) {
+  localStorage.setItem(alertStorageKey(kind), JSON.stringify([...ids].slice(-500)));
+}
+
+function renderAlerts(payload) {
+  if (!elements.alertsList) return;
+  const alerts = Array.isArray(payload?.alertHistory) ? payload.alertHistory : [];
+  const readIds = readAlertIdSet("read");
+  const unread = alerts.filter((alert) => !readIds.has(alert.id));
+  elements.alertsTotalCount.textContent = String(alerts.length);
+  elements.alertsUnreadCount.textContent = String(unread.length);
+  elements.alertsUnreadBadge.textContent = unread.length > 99 ? "99+" : String(unread.length);
+  elements.alertsUnreadBadge.hidden = unread.length === 0;
+  elements.alertsLastAt.textContent = alerts[0]?.occurredAt ? formatDateTime(alerts[0].occurredAt) : "NA";
+  updateNotificationStatus();
+
+  const visible = alerts.filter((alert) => {
+    if (state.alertFilter !== "ALL" && alert.category !== state.alertFilter) return false;
+    if (!state.alertSearch) return true;
+    return [alert.symbol, alert.name, alert.title, alert.summary, ...(alert.reasons || [])]
+      .some((value) => String(value || "").toLowerCase().includes(state.alertSearch));
+  });
+  elements.alertsEmpty.classList.toggle("visible", visible.length === 0);
+  elements.alertsEmpty.textContent = alerts.length ? "No alerts match this filter" : "No portfolio alerts yet";
+  elements.alertsList.innerHTML = visible.map((alert, index) => alertCardHtml(alert, readIds, index)).join("");
+  elements.alertsList.querySelectorAll(".alertCard").forEach((card) => {
+    card.addEventListener("click", () => selectAlert(card.dataset.alertId));
+    card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        selectAlert(card.dataset.alertId);
+      }
+    });
+  });
+  if (state.selectedAlertId) {
+    requestAnimationFrame(() => {
+      const selected = [...elements.alertsList.querySelectorAll(".alertCard")]
+        .find((card) => card.dataset.alertId === state.selectedAlertId);
+      selected?.scrollIntoView({ block: "center", behavior: "smooth" });
+    });
+  }
+}
+
+function alertCardHtml(alert, readIds, index) {
+  const reasons = (alert.reasons || []).slice(1, 4);
+  const details = Object.entries(alert.details || {})
+    .filter(([, value]) => value !== null && value !== "")
+    .slice(0, 7)
+    .map(([key, value]) => `<span>${escapeHtml(alertDetailLabel(key))}: ${escapeHtml(alertDetailValue(key, value))}</span>`)
+    .join("");
+  return `
+    <article class="alertCard ${escapeHtml(alert.severity || "info")} ${readIds.has(alert.id) ? "" : "unread"} ${state.selectedAlertId === alert.id ? "selected" : ""}"
+      data-alert-id="${escapeHtml(alert.id)}" tabindex="0" style="animation-delay:${Math.min(index, 12) * 22}ms">
+      <div class="alertCardMeta"><span class="alertCategory">${escapeHtml(alert.category || "EVENT")}</span><time>${escapeHtml(formatDateTime(alert.occurredAt))}</time></div>
+      <div class="alertCardBody">
+        <div class="alertCardTitle"><strong>${escapeHtml(alert.symbol || "NA")}</strong><span>${escapeHtml(alert.title || alert.type || "Alert")}</span></div>
+        <p>${escapeHtml(alert.summary || "Portfolio event recorded.")}</p>
+        ${reasons.length ? `<ul class="alertReasonList">${reasons.map((reason) => `<li>${escapeHtml(reason)}</li>`).join("")}</ul>` : ""}
+        ${details ? `<div class="alertDetailChips">${details}</div>` : ""}
+      </div>
+      <span class="alertCardAction">${readIds.has(alert.id) ? "Reviewed" : "Open alert"}</span>
+    </article>`;
+}
+
+function alertDetailLabel(key) {
+  return String(key).replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^./, (letter) => letter.toUpperCase());
+}
+
+function alertDetailValue(key, value) {
+  if (typeof value !== "number") return String(value);
+  if (/price|pnl|amount|stop/i.test(key)) return `Rs ${compact(value)}`;
+  return compact(value);
+}
+
+function selectAlert(alertId) {
+  if (!alertId) return;
+  state.selectedAlertId = alertId;
+  const readIds = readAlertIdSet("read");
+  readIds.add(alertId);
+  writeAlertIdSet("read", readIds);
+  const url = new URL(window.location.href);
+  url.searchParams.set("view", "alerts");
+  url.searchParams.set("alert", alertId);
+  window.history.replaceState({}, "", url);
+  renderAlerts(state.payload);
+}
+
+function markAllAlertsRead() {
+  const ids = new Set((state.payload?.alertHistory || []).map((alert) => alert.id));
+  writeAlertIdSet("read", ids);
+  renderAlerts(state.payload);
+}
+
+async function clearAlertHistory() {
+  const alerts = state.payload?.alertHistory || [];
+  if (!alerts.length) return;
+  if (!window.confirm("Clear all alert history for this account? This cannot be undone.")) return;
+  elements.clearAlertsButton.disabled = true;
+  try {
+    if (cloudMode && window.TF_AUTH_MODE) {
+      const response = await fetch(cloudApiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "clear-alert-history" })
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result.error) throw new Error(result.error || "Alert history clear failed");
+    }
+    state.payload.alertHistory = [];
+    localStorage.removeItem(alertStorageKey("read"));
+    localStorage.removeItem(alertStorageKey("notified"));
+    state.selectedAlertId = "";
+    const url = new URL(window.location.href);
+    url.searchParams.delete("alert");
+    window.history.replaceState({}, "", url);
+    renderAlerts(state.payload);
+  } catch (error) {
+    window.alert(`Alert history could not be cleared: ${error.message}`);
+  } finally {
+    elements.clearAlertsButton.disabled = false;
+  }
+}
+
+function updateNotificationStatus() {
+  if (!elements.notificationPermissionStatus) return;
+  const supported = "Notification" in window && "serviceWorker" in navigator;
+  const permission = supported ? Notification.permission : "unsupported";
+  const enabled = localStorage.getItem(alertStorageKey("enabled")) === "true";
+  elements.notificationPermissionStatus.textContent = permission === "granted" && enabled
+    ? "Enabled"
+    : permission === "denied" ? "Blocked in browser" : permission === "unsupported" ? "Not supported" : "Not enabled";
+  elements.enableNotificationsButton.textContent = permission === "granted" && enabled ? "Notifications Enabled" : "Enable Notifications";
+  elements.enableNotificationsButton.disabled = permission === "denied" || permission === "unsupported";
+}
+
+async function enableBrowserNotifications() {
+  if (!("Notification" in window) || !("serviceWorker" in navigator)) return;
+  const permission = await Notification.requestPermission();
+  if (permission === "granted") {
+    localStorage.setItem(alertStorageKey("enabled"), "true");
+    writeAlertIdSet("notified", new Set((state.payload?.alertHistory || []).map((alert) => alert.id)));
+    const registration = await navigator.serviceWorker.ready;
+    await registration.showNotification("Techno Funda PMS alerts enabled", {
+      body: "New portfolio actions will open directly in Alerts Center.",
+      icon: "app-icon.svg",
+      tag: "tf-alerts-enabled",
+      data: { url: "./?view=alerts" }
+    });
+  }
+  updateNotificationStatus();
+}
+
+async function processAlertNotifications(alerts) {
+  if (!Array.isArray(alerts)) return;
+  const notifiedKey = alertStorageKey("notified");
+  const initialized = localStorage.getItem(notifiedKey) !== null;
+  const notified = readAlertIdSet("notified");
+  if (!initialized) {
+    alerts.forEach((alert) => notified.add(alert.id));
+    writeAlertIdSet("notified", notified);
+    return;
+  }
+  const enabled = localStorage.getItem(alertStorageKey("enabled")) === "true";
+  const newAlerts = alerts.filter((alert) => !notified.has(alert.id));
+  newAlerts.forEach((alert) => notified.add(alert.id));
+  writeAlertIdSet("notified", notified);
+  if (!("Notification" in window) || !enabled || Notification.permission !== "granted" || !newAlerts.length) return;
+  const registration = await navigator.serviceWorker.ready;
+  for (const alert of newAlerts.slice(0, 8).reverse()) {
+    await registration.showNotification(`${alert.symbol}: ${alert.title}`, {
+      body: String(alert.summary || alert.reasons?.[0] || "Portfolio action recorded").slice(0, 180),
+      icon: "app-icon.svg",
+      badge: "app-icon.svg",
+      tag: alert.id,
+      data: { url: `./?view=alerts&alert=${encodeURIComponent(alert.id)}` }
+    });
+  }
+}
+
+function startAlertPolling() {
+  if (!cloudMode || !window.TF_AUTH_MODE || state.alertPollTimer) return;
+  state.alertPollTimer = window.setInterval(refreshAlertHistory, 60_000);
+}
+
+async function refreshAlertHistory() {
+  if (document.hidden || !navigator.onLine) return;
+  try {
+    const response = await fetch(cloudApiUrl, { cache: "no-store" });
+    const result = await response.json();
+    if (!response.ok || !result.state) return;
+    const alerts = result.state.alertHistory || [];
+    state.payload.alertHistory = alerts;
+    renderAlerts(state.payload);
+    await processAlertNotifications(alerts);
+  } catch {
+    // The next poll or manual Update will retry without disrupting the dashboard.
+  }
 }
 
 function reasonListHtml(reasons = []) {

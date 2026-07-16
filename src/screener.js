@@ -155,6 +155,7 @@ export async function runScreener(options = {}) {
   payload.corporateActionStatus = journal.corporateActionStatus;
   payload.waitingCandidates = journal.visibleCandidates || journal.candidates || [];
   payload.candidateDecisionLog = journal.visibleCandidateDecisions || [];
+  payload.alertHistory = journal.alertHistory || [];
   payload.trades = visibleTrades;
   payload.tradeEvents = mergeTradeEvents(
     shouldRetryTradeEvents(previousScan, options, config, payload.scannedAt)
@@ -303,6 +304,7 @@ export async function runExecutionPass(options = {}) {
   payload.corporateActionStatus = journal.corporateActionStatus;
   payload.waitingCandidates = journal.visibleCandidates || journal.candidates || [];
   payload.candidateDecisionLog = journal.visibleCandidateDecisions || [];
+  payload.alertHistory = journal.alertHistory || [];
   payload.trades = visibleTrades;
   payload.tradeEvents = mergeTradeEvents(
     shouldRetryTradeEvents(previousScan, options, config, checkedAt)

@@ -1,0 +1,66 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { alertFromTradeEvent, updateAlertHistory } from "../src/alert-history.js";
+
+test("trade events become reason-first alerts for every required portfolio action", () => {
+  const baseTrade = {
+    id: "ABC-2026-07-16",
+    symbol: "ABC",
+    entrySignalDate: "2026-07-15",
+    entryReason: ["Weekly and daily leadership confirmed."],
+    quantity: 100,
+    entryPrice: 100,
+    trailingStopPrice: 94
+  };
+  const cases = [
+    ["ENTRY_SIGNAL_PENDING", "ENTRY"],
+    ["EXIT_SIGNAL_PENDING", "EXIT"],
+    ["PARTIAL_EXIT_PENDING", "PARTIAL_EXIT"],
+    ["PYRAMID_ADD_PENDING", "PYRAMID"]
+  ];
+  for (const [type, category] of cases) {
+    const alert = alertFromTradeEvent({ type, trade: baseTrade }, "2026-07-16T03:00:00.000Z");
+    assert.equal(alert.category, category);
+    assert.equal(alert.symbol, "ABC");
+    assert.ok(alert.summary);
+  }
+});
+
+test("dividend alert carries entitlement details while accounting stays in realized P&L", () => {
+  const alert = alertFromTradeEvent({
+    type: "DIVIDEND_CREDIT",
+    trade: { id: "ABC-1", symbol: "ABC" },
+    corporateAction: {
+      id: "ABC-DIV-1",
+      type: "DIVIDEND",
+      exDate: "2026-07-16",
+      purpose: "Dividend Rs 2 per share",
+      entitledQuantity: 100,
+      dividendPerShare: 2,
+      amount: 200
+    }
+  }, "2026-07-16T03:00:00.000Z");
+  assert.equal(alert.category, "CORPORATE");
+  assert.equal(alert.details.dividendAmount, 200);
+  assert.equal(alert.details.entitledQuantity, 100);
+});
+
+test("alert history is duplicate-proof, newest-first and capped", () => {
+  const event = {
+    type: "ENTRY_TRADE_OPENED",
+    trade: { id: "ABC-1", symbol: "ABC", entryDate: "2026-07-16", entryPrice: 100, quantity: 100 }
+  };
+  const once = updateAlertHistory([], [event], "2026-07-16T03:47:00.000Z");
+  const twice = updateAlertHistory(once, [event], "2026-07-16T03:48:00.000Z");
+  assert.equal(twice.length, 1);
+
+  const existing = Array.from({ length: 500 }, (_, index) => ({
+    id: `existing-${index}`,
+    type: "ENTRY_TRADE_OPENED",
+    symbol: `S${index}`,
+    occurredAt: new Date(Date.UTC(2026, 6, 1, 0, index)).toISOString()
+  }));
+  const capped = updateAlertHistory(existing, [event], "2026-07-16T03:47:00.000Z");
+  assert.equal(capped.length, 500);
+  assert.equal(capped[0].symbol, "ABC");
+});

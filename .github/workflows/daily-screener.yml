@@ -13,8 +13,8 @@ on:
       - "config/universe.csv"
       - "config/custom-list.csv"
   schedule:
-    # 08:00 IST: publish prior close entry/exit candidates before the market opens.
-    - cron: "30 2 * * 1-5"
+    # 08:30 IST: publish prior-close portfolio actions and alerts before the market opens.
+    - cron: "0 3 * * 1-5"
     # Staggered lightweight retries tolerate delays in GitHub's free scheduled runners.
     - cron: "51 3 * * 1-5" # 09:21 IST
     - cron: "59 3 * * 1-5" # 09:29 IST
@@ -39,7 +39,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     env:
-      EXECUTION_ONLY: ${{ github.event_name == 'schedule' && github.event.schedule != '30 2 * * 1-5' }}
+      EXECUTION_ONLY: ${{ github.event_name == 'schedule' && github.event.schedule != '0 3 * * 1-5' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

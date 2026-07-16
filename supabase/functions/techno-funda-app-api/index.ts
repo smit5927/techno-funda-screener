@@ -58,6 +58,7 @@ async function handlePost(request: Request) {
   if (action === "save-custom-list") return json(await saveCustomList(context, body));
   if (action === "save-trade-settings") return json(await saveTradeSettings(context, body));
   if (action === "save-telegram-config") return json(await saveTelegram(context, body));
+  if (action === "clear-alert-history") return json(await clearAlertHistory(context));
   if (action === "admin-create-user") {
     requireAdmin(context);
     return json(await createMember(context, body));
@@ -767,6 +768,32 @@ function isUuid(value: string) {
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, Number.isFinite(value) ? value : min));
+}
+
+async function clearAlertHistory(context: any) {
+  const { data, error } = await admin()
+    .from("app_user_states")
+    .select("state, strategy_version, scan_at")
+    .eq("user_id", context.user.id)
+    .maybeSingle();
+  if (error) throw error;
+  const state = data?.state && typeof data.state === "object" ? data.state : {};
+  const previousCount = Array.isArray(state.alertHistory) ? state.alertHistory.length : 0;
+  const journal = state.journal && typeof state.journal === "object"
+    ? { ...state.journal, alertHistory: [] }
+    : state.journal;
+  const nextState = { ...state, alertHistory: [], ...(journal ? { journal } : {}) };
+  const { error: updateError } = await admin()
+    .from("app_user_states")
+    .upsert({
+      user_id: context.user.id,
+      strategy_version: String(data?.strategy_version || "alert-clear"),
+      scan_at: data?.scan_at || state.scannedAt || new Date().toISOString(),
+      state: nextState
+    });
+  if (updateError) throw updateError;
+  await audit(context.user.id, context.user.id, "ALERT_HISTORY_CLEARED", { previousCount });
+  return { ok: true, cleared: previousCount };
 }
 
 function finiteSetting(value: any, fallback: number, min: number, max: number) {
