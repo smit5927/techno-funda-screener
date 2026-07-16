@@ -237,6 +237,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .alertsHeaderActions button { min-height: 38px; }
 .alertsHeaderActions .primaryAlertAction { border-color: rgba(255, 153, 67, .55); background: var(--brand); color: #090b0d; }
 .alertsHeaderActions .dangerAction { border-color: rgba(255, 92, 108, .4); color: var(--red); }
+.alertsActionStatus { flex-basis: 100%; min-height: 18px; color: var(--muted); font-size: 11px; text-align: right; }
+.alertsActionStatus.good { color: var(--green); }
+.alertsActionStatus.bad { color: var(--red); }
 .alertsStatusBand {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -257,6 +260,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .alertFilter.active { border-color: rgba(255, 153, 67, .5); background: rgba(255, 118, 26, .13); color: var(--brand-bright); }
 #alertsSearchInput { width: min(310px, 35vw); min-height: 38px; }
 .alertsList { display: grid; gap: 8px; padding-bottom: 22px; }
+#alertsEmpty { position: static; inset: auto; min-height: 220px; pointer-events: none; }
 .alertCard {
   position: relative;
   display: grid;
@@ -1001,6 +1005,7 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
   .alertsHeader { align-items: stretch; flex-direction: column; }
   .alertsHeaderActions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .alertsHeaderActions .primaryAlertAction { grid-column: 1 / -1; }
+  .alertsActionStatus { grid-column: 1 / -1; text-align: left; }
   .alertsStatusBand { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .alertsStatusBand > div:nth-child(2) { border-right: 0; }
   .alertsStatusBand > div:nth-child(-n + 2) { border-bottom: 1px solid var(--line); }

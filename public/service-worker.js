@@ -1,4 +1,4 @@
-const CACHE = "techno-funda-shell-v16-alerts";
+const CACHE = "techno-funda-shell-v17-alert-buttons";
 const SHELL = [
   "./",
   "./styles.css",

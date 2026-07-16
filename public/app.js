@@ -132,6 +132,7 @@ const elements = {
   alertsSearchInput: document.querySelector("#alertsSearchInput"),
   alertsList: document.querySelector("#alertsList"),
   alertsEmpty: document.querySelector("#alertsEmpty"),
+  alertsActionStatus: document.querySelector("#alertsActionStatus"),
   enableNotificationsButton: document.querySelector("#enableNotificationsButton"),
   markAlertsReadButton: document.querySelector("#markAlertsReadButton"),
   clearAlertsButton: document.querySelector("#clearAlertsButton")
@@ -231,6 +232,7 @@ document.querySelectorAll(".alertFilter").forEach((button) => {
     state.alertFilter = button.dataset.alertFilter || "ALL";
     document.querySelectorAll(".alertFilter").forEach((item) => item.classList.toggle("active", item === button));
     renderAlerts(state.payload);
+    setAlertActionStatus(`${button.textContent.trim()} alerts selected.`);
   });
 });
 elements.enableNotificationsButton?.addEventListener("click", enableBrowserNotifications);
@@ -1708,14 +1710,23 @@ function selectAlert(alertId) {
 }
 
 function markAllAlertsRead() {
-  const ids = new Set((state.payload?.alertHistory || []).map((alert) => alert.id));
+  const alerts = state.payload?.alertHistory || [];
+  if (!alerts.length) {
+    setAlertActionStatus("No alerts are available to mark as read.");
+    return;
+  }
+  const ids = new Set(alerts.map((alert) => alert.id));
   writeAlertIdSet("read", ids);
   renderAlerts(state.payload);
+  setAlertActionStatus(`${alerts.length} alerts marked as read.`, "good");
 }
 
 async function clearAlertHistory() {
   const alerts = state.payload?.alertHistory || [];
-  if (!alerts.length) return;
+  if (!alerts.length) {
+    setAlertActionStatus("Alert history is already empty.");
+    return;
+  }
   if (!window.confirm("Clear all alert history for this account? This cannot be undone.")) return;
   elements.clearAlertsButton.disabled = true;
   try {
@@ -1736,8 +1747,9 @@ async function clearAlertHistory() {
     url.searchParams.delete("alert");
     window.history.replaceState({}, "", url);
     renderAlerts(state.payload);
+    setAlertActionStatus(`${alerts.length} alerts cleared permanently.`, "good");
   } catch (error) {
-    window.alert(`Alert history could not be cleared: ${error.message}`);
+    setAlertActionStatus(`Alert history could not be cleared: ${error.message}`, "bad");
   } finally {
     elements.clearAlertsButton.disabled = false;
   }
@@ -1752,24 +1764,45 @@ function updateNotificationStatus() {
     ? "Enabled"
     : permission === "denied" ? "Blocked in browser" : permission === "unsupported" ? "Not supported" : "Not enabled";
   elements.enableNotificationsButton.textContent = permission === "granted" && enabled ? "Notifications Enabled" : "Enable Notifications";
-  elements.enableNotificationsButton.disabled = permission === "denied" || permission === "unsupported";
+  elements.enableNotificationsButton.disabled = false;
 }
 
 async function enableBrowserNotifications() {
-  if (!("Notification" in window) || !("serviceWorker" in navigator)) return;
-  const permission = await Notification.requestPermission();
-  if (permission === "granted") {
-    localStorage.setItem(alertStorageKey("enabled"), "true");
-    writeAlertIdSet("notified", new Set((state.payload?.alertHistory || []).map((alert) => alert.id)));
-    const registration = await navigator.serviceWorker.ready;
-    await registration.showNotification("Techno Funda PMS alerts enabled", {
-      body: "New portfolio actions will open directly in Alerts Center.",
-      icon: "app-icon.svg",
-      tag: "tf-alerts-enabled",
-      data: { url: "./?view=alerts" }
-    });
+  if (!("Notification" in window) || !("serviceWorker" in navigator)) {
+    setAlertActionStatus("This browser does not support website notifications.", "bad");
+    return;
+  }
+  if (Notification.permission === "denied") {
+    setAlertActionStatus("Notifications are blocked. Allow them in Chrome site settings, then try again.", "bad");
+    return;
+  }
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission === "granted") {
+      localStorage.setItem(alertStorageKey("enabled"), "true");
+      writeAlertIdSet("notified", new Set((state.payload?.alertHistory || []).map((alert) => alert.id)));
+      const registration = await navigator.serviceWorker.ready;
+      await registration.showNotification("Techno Funda PMS alerts enabled", {
+        body: "New portfolio actions will open directly in Alerts Center.",
+        icon: "app-icon.svg",
+        tag: "tf-alerts-enabled",
+        data: { url: "./?view=alerts" }
+      });
+      setAlertActionStatus("Website notifications enabled on this device.", "good");
+    } else {
+      setAlertActionStatus("Notification permission was not enabled.", "bad");
+    }
+  } catch (error) {
+    setAlertActionStatus(`Notifications could not be enabled: ${error.message}`, "bad");
   }
   updateNotificationStatus();
+}
+
+function setAlertActionStatus(message, tone = "") {
+  if (!elements.alertsActionStatus) return;
+  elements.alertsActionStatus.textContent = message || "";
+  elements.alertsActionStatus.classList.remove("good", "bad");
+  if (tone) elements.alertsActionStatus.classList.add(tone);
 }
 
 async function processAlertNotifications(alerts) {

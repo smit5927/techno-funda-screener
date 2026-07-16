@@ -66,8 +66,13 @@ test("alert center supports durable history, account clear and notification deep
   const api = fs.readFileSync(path.join(rootDir, "supabase", "functions", "techno-funda-app-api", "index.ts"), "utf8");
   assert.match(html, /id="alertsNavButton"/);
   assert.match(html, /id="clearAlertsButton"/);
+  assert.match(html, /id="alertsActionStatus"/);
   assert.match(app, /clear-alert-history/);
   assert.match(app, /processAlertNotifications/);
+  assert.match(app, /Alert history is already empty/);
+  assert.match(app, /No alerts are available to mark as read/);
+  assert.match(app, /Notifications are blocked/);
+  assert.match(fs.readFileSync(path.join(rootDir, "public", "styles.css"), "utf8"), /#alertsEmpty \{ position: static;/);
   assert.match(worker, /notificationclick/);
   assert.match(worker, /view=alerts/);
   assert.match(api, /ALERT_HISTORY_CLEARED/);
