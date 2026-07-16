@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-16T08:11:15.282Z",
+  "updatedAt": "2026-07-16T08:15:31.809Z",
   "legacyOwnerJournalMigratedAt": null,
   "portfolioEngineStartedAt": "2026-07-11T05:24:12.577Z",
   "pyramidingStartedAt": "2026-07-13T06:00:40.290Z",
@@ -32,7 +32,7 @@
     "enabled": true,
     "source": "NSE Corporate Actions",
     "sourceUrl": "https://www.nseindia.com/companies-listing/corporate-filings-actions",
-    "fetchedAt": "2026-07-16T08:11:15.263Z",
+    "fetchedAt": "2026-07-16T08:15:31.790Z",
     "asOf": "2026-07-15",
     "fromDate": "2025-06-10",
     "dataAvailable": true,
@@ -28485,841 +28485,841 @@
     "custom:GRANULES.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SKYGOLD.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:THANGAMAYL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:TBZ.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:CGCL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:RML.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:NEULANDLAB.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:INOXINDIA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:UNIHEALTH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:RADICO.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:TIPSMUSIC.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:ALIVUS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:IKS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:TORNTPHARM.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:BHARATSE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:POCL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:PPAP.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:APOLLOHOSP.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:LUPIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:MARKSANS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:MMP.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SANGAMIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:ANANDRATHI.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:HAPPYFORGE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:VADILALIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:PGIL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SANSERA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:BUTTERFLY.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:CREDITACC.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:GHCLTEXTIL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:VIJIFIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:CEMPRO.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:HESTERBIO.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:OFSS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:RANEHOLDIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SFL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SHILPAMED.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SJS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:MANKIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:RAINBOW.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:AEGISVOPAK.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:INDIGRID.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:JAYBARMARU.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:MINDACORP.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:ADOR.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:GINNIFILA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:GODREJIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:GSMFOILS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:PANACHE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SANGHVIMOV.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:BLISSGVS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:HARSHA.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:INDNIPPON.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:MAYURUNIQ.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:NAM-INDIA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:PRIVISCL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:RPEL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:VIYASH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:LALPATHLAB.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SHRIPISTON.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:INDHOTEL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:KRISHNADEF.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:THELEELA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:NUVAMA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:IMPAL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:PARAS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:RAMCOIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SGFIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:STOVEKRAFT.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:UNIVASTU.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:GRWRHITECH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:PIDILITIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:CAPLIPOINT.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:KMEW.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:NINSYS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:WABAG.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:FUSION.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:BETA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:KIMS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:NRL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:KOVAI.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SCHNEIDER.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:RUBICON.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:MARC.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:APTUS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:MINDSPACE.NS": {
       "status": "EXIT",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:KARURVYSYA.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:FIEMIND.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:GRINDWELL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:LMW.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:PREMIERENE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:PGHL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:NH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:CRAFTSMAN.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:FORTIS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:MAHLOG.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:RAIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SIS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SKIPPER.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:NRBBEARING.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:ASTERDM.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:KPIL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SANDHAR.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:THYROCARE.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:PRUDENT.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:VIJAYA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:ENDURANCE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:PRICOLLTD.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:MOTHERSON.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:APCOTEXIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:ASIANPAINT.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:ORIENTBELL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:PRECOT.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SAKAR.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:FINEORG.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:BAJAJ-AUTO.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:KRN.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:NIVABUPA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:INGERRAND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:TATACOMM.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:YATHARTH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:MGEL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SBCL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:RRKABEL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:EMMVEE.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:CAMS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:CUMMINSIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SOLARINDS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:V2RETAIL.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:HAL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:NMDC.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:LLOYDSME.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:ANTHEM.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:JSWSTEEL.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:ADANIPOWER.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:VBL.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:BHEL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:POLYCAB.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:COALINDIA.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:TENNIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:BRPL.NS": {
@@ -29399,7 +29399,7 @@
     },
     "custom:HEXAGON.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:INVPRECQ.NS": {
@@ -29414,17 +29414,17 @@
     },
     "custom:OBSCP.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SEDEMAC.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:VIGOR.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:CLIOINFO.NS": {
@@ -29520,211 +29520,211 @@
     "custom:SW1.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:YASHHV.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:COVANCE.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:VIKRAMTH.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:CLIOINFO.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:CIL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:UNIABEXAL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:KMCSHIL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:RAJSEC.BO": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SUDARSHAN.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:INVPRECQ.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:KELENRG.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:NEXUSSURGL.BO": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:BIMETAL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:KPL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:KVFORGE.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:UCIL.BO": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:RASRESOR.BO": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:INDUSFINL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:TAALTECH.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:FREDUN.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:DHABRIYA.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:RRMETAL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SEKURITIND.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:MKTCREAT.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:TERAI.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:GOLKUNDIA.BO": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:EMERALD.BO": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:GSAUTO.BO": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SANCTRN.BO": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:TANFACIND.BO": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:SIMMOND.BO": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:CJGEL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:BENARAS.BO": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     },
     "custom:BRPL.BO": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T08:11:13.432Z",
+      "scannedAt": "2026-07-16T08:15:30.047Z",
       "scopeListId": "custom"
     }
   },
@@ -29843,11 +29843,11 @@
       "firstFundamentalScore": 7,
       "firstSeenAt": "2026-07-15T10:40:23.503Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T08:11:13.432Z",
-      "rank": 237.84,
-      "peakRank": 237.84,
+      "lastSeenAt": "2026-07-16T08:15:30.047Z",
+      "rank": 239.34,
+      "peakRank": 239.34,
       "grade": "A+",
-      "score": 43,
+      "score": 44,
       "entryStyle": "Breakout buy",
       "latestClose": 1866.0999755859375,
       "latestAsOf": "2026-07-15",
@@ -29910,7 +29910,11 @@
           "Institutional concept coverage: 21/31 applicable video-derived buckets are strong.",
           "AI evidence review (+2): Strong fundamentals with significant growth in income.",
           "AI risk flag: strong fundamentals.",
-          "AI risk flag: high growth."
+          "AI risk flag: high growth.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 21/31 applicable video-derived buckets are strong.",
+          "AI evidence review (+2): Exceptional fundamentals and strong growth potential.",
+          "AI risk flag: exceptionalfundamentals."
         ],
         "close": 1866.0999755859375,
         "asOf": "2026-07-15",
@@ -30171,7 +30175,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 30,
+        "setupStrengthScore": 31,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -30412,7 +30416,7 @@
           },
           "cacheHit": true
         },
-        "score": 43
+        "score": 44
       },
       "entryCloseDates": [
         "2026-07-15"
@@ -30437,13 +30441,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 10.22,
           "atrExtension": 1.86,
-          "currentRank": 237.84,
-          "peakRank": 237.84,
+          "currentRank": 239.34,
+          "peakRank": 239.34,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-16T08:11:13.432Z",
+      "lastEvaluatedAt": "2026-07-16T08:15:30.047Z",
       "plannedStopPrice": 1776.1,
       "plannedRisk": 2970,
       "plannedAllocation": 61581.3,
@@ -30470,11 +30474,11 @@
       "firstFundamentalScore": 6,
       "firstSeenAt": "2026-07-15T10:40:23.503Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T08:11:13.432Z",
-      "rank": 229.49,
-      "peakRank": 229.49,
+      "lastSeenAt": "2026-07-16T08:15:30.047Z",
+      "rank": 230.99,
+      "peakRank": 230.99,
       "grade": "A+",
-      "score": 40,
+      "score": 41,
       "entryStyle": "Trend continuation buy",
       "latestClose": 417.95001220703125,
       "latestAsOf": "2026-07-15",
@@ -30515,6 +30519,8 @@
           "Institutional concept coverage: 21/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 21/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 22/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 22/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -30791,7 +30797,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 28,
+        "setupStrengthScore": 29,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -31016,7 +31022,7 @@
           },
           "cacheHit": true
         },
-        "score": 40
+        "score": 41
       },
       "entryCloseDates": [
         "2026-07-15"
@@ -31041,13 +31047,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 11.34,
           "atrExtension": 1.26,
-          "currentRank": 229.49,
-          "peakRank": 229.49,
+          "currentRank": 230.99,
+          "peakRank": 230.99,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-16T08:11:13.432Z",
+      "lastEvaluatedAt": "2026-07-16T08:15:30.047Z",
       "plannedStopPrice": 389.6,
       "plannedRisk": 4224.15,
       "plannedAllocation": 62274.55,
@@ -31073,11 +31079,11 @@
       "firstFundamentalScore": 4,
       "firstSeenAt": "2026-07-15T10:40:23.503Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T08:11:13.432Z",
-      "rank": 219.56,
-      "peakRank": 219.56,
+      "lastSeenAt": "2026-07-16T08:15:30.047Z",
+      "rank": 221.06,
+      "peakRank": 221.06,
       "grade": "A+",
-      "score": 35,
+      "score": 36,
       "entryStyle": "Momentum continuation buy",
       "latestClose": 625.6500244140625,
       "latestAsOf": "2026-07-15",
@@ -31121,6 +31127,8 @@
           "Institutional concept coverage: 19/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 20/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 20/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -31397,7 +31405,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 25,
+        "setupStrengthScore": 26,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -31641,7 +31649,7 @@
           },
           "cacheHit": true
         },
-        "score": 35
+        "score": 36
       },
       "entryCloseDates": [
         "2026-07-15"
@@ -31664,13 +31672,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 3.84,
           "atrExtension": 0.77,
-          "currentRank": 219.56,
-          "peakRank": 219.56,
+          "currentRank": 221.06,
+          "peakRank": 221.06,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-16T08:11:13.432Z",
+      "lastEvaluatedAt": "2026-07-16T08:15:30.047Z",
       "plannedStopPrice": 616.27,
       "plannedRisk": 938,
       "plannedAllocation": 62565,
@@ -31697,11 +31705,11 @@
       "firstFundamentalScore": 6,
       "firstSeenAt": "2026-07-14T09:43:28.265Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T08:11:13.432Z",
-      "rank": 215.1,
-      "peakRank": 215.1,
+      "lastSeenAt": "2026-07-16T08:15:30.047Z",
+      "rank": 216.6,
+      "peakRank": 216.6,
       "grade": "A+",
-      "score": 39,
+      "score": 40,
       "entryStyle": "Trend continuation buy",
       "latestClose": 8934,
       "latestAsOf": "2026-07-15",
@@ -31728,13 +31736,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 4.49,
           "atrExtension": 3.64,
-          "currentRank": 215.1,
-          "peakRank": 215.1,
+          "currentRank": 216.6,
+          "peakRank": 216.6,
           "rankDecay": 0,
           "confirmedEntryCloses": 3
         }
       },
-      "lastEvaluatedAt": "2026-07-16T08:11:13.432Z",
+      "lastEvaluatedAt": "2026-07-16T08:15:30.047Z",
       "plannedStopPrice": 8739,
       "plannedRisk": 1365,
       "plannedAllocation": 62538,
@@ -31777,6 +31785,8 @@
           "Institutional concept coverage: 19/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 20/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 20/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -32053,7 +32063,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 27,
+        "setupStrengthScore": 28,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -32312,7 +32322,7 @@
           },
           "cacheHit": true
         },
-        "score": 39
+        "score": 40
       },
       "rotation": null
     },
@@ -32335,11 +32345,11 @@
       "firstFundamentalScore": 4,
       "firstSeenAt": "2026-07-15T03:47:23.768Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T08:11:13.432Z",
-      "rank": 213.62,
-      "peakRank": 213.62,
+      "lastSeenAt": "2026-07-16T08:15:30.047Z",
+      "rank": 215.12,
+      "peakRank": 215.12,
       "grade": "A+",
-      "score": 35,
+      "score": 36,
       "entryStyle": "Retracement buy near 55D high retest",
       "latestClose": 24.399999618530273,
       "latestAsOf": "2026-07-15",
@@ -32369,13 +32379,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 13.44,
           "atrExtension": 3.2,
-          "currentRank": 213.62,
-          "peakRank": 213.62,
+          "currentRank": 215.12,
+          "peakRank": 215.12,
           "rankDecay": 0,
           "confirmedEntryCloses": 2
         }
       },
-      "lastEvaluatedAt": "2026-07-16T08:11:13.432Z",
+      "lastEvaluatedAt": "2026-07-16T08:15:30.047Z",
       "plannedStopPrice": 22.45,
       "plannedRisk": 5007.6,
       "plannedAllocation": 62659.2,
@@ -32418,6 +32428,8 @@
           "Institutional concept coverage: 16/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -32694,7 +32706,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 25,
+        "setupStrengthScore": 26,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -32896,7 +32908,7 @@
           },
           "cacheHit": true
         },
-        "score": 35
+        "score": 36
       },
       "rotation": null
     },
@@ -32921,11 +32933,11 @@
       "firstFundamentalScore": 5,
       "firstSeenAt": "2026-07-15T03:47:23.768Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T08:11:13.432Z",
-      "rank": 213.55,
-      "peakRank": 213.55,
+      "lastSeenAt": "2026-07-16T08:15:30.047Z",
+      "rank": 215.05,
+      "peakRank": 215.05,
       "grade": "A+",
-      "score": 39,
+      "score": 40,
       "entryStyle": "Breakout buy",
       "latestClose": 824.5999755859375,
       "latestAsOf": "2026-07-15",
@@ -32951,13 +32963,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 8.92,
           "atrExtension": 2.41,
-          "currentRank": 213.55,
-          "peakRank": 213.55,
+          "currentRank": 215.05,
+          "peakRank": 215.05,
           "rankDecay": 0,
           "confirmedEntryCloses": 2
         }
       },
-      "lastEvaluatedAt": "2026-07-16T08:11:13.432Z",
+      "lastEvaluatedAt": "2026-07-16T08:15:30.047Z",
       "plannedStopPrice": 805.05,
       "plannedRisk": 1466.25,
       "plannedAllocation": 61845,
@@ -33000,6 +33012,8 @@
           "Institutional concept coverage: 18/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 18/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -33276,7 +33290,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 28,
+        "setupStrengthScore": 29,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -33517,7 +33531,7 @@
           },
           "cacheHit": true
         },
-        "score": 39
+        "score": 40
       }
     },
     {
@@ -33541,11 +33555,11 @@
       "firstFundamentalScore": 5,
       "firstSeenAt": "2026-07-15T10:40:23.503Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T08:11:13.432Z",
-      "rank": 213.4,
-      "peakRank": 213.4,
+      "lastSeenAt": "2026-07-16T08:15:30.047Z",
+      "rank": 214.9,
+      "peakRank": 214.9,
       "grade": "A+",
-      "score": 41,
+      "score": 42,
       "entryStyle": "Retracement buy near 55D high retest",
       "latestClose": 2746.199951171875,
       "latestAsOf": "2026-07-15",
@@ -33589,6 +33603,8 @@
           "Institutional concept coverage: 20/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 20/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 21/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 21/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -33865,7 +33881,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 30,
+        "setupStrengthScore": 31,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -34122,7 +34138,7 @@
           },
           "cacheHit": true
         },
-        "score": 41
+        "score": 42
       },
       "entryCloseDates": [
         "2026-07-15"
@@ -34147,13 +34163,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 8.51,
           "atrExtension": 1.44,
-          "currentRank": 213.4,
-          "peakRank": 213.4,
+          "currentRank": 214.9,
+          "peakRank": 214.9,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-16T08:11:13.432Z",
+      "lastEvaluatedAt": "2026-07-16T08:15:30.047Z",
       "plannedStopPrice": 2621,
       "plannedRisk": 2754.4,
       "plannedAllocation": 60416.4,
@@ -34179,11 +34195,11 @@
       "firstFundamentalScore": 2,
       "firstSeenAt": "2026-07-15T10:40:23.503Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T08:11:13.432Z",
-      "rank": 213.01,
-      "peakRank": 213.01,
+      "lastSeenAt": "2026-07-16T08:15:30.047Z",
+      "rank": 214.51,
+      "peakRank": 214.51,
       "grade": "A+",
-      "score": 35,
+      "score": 36,
       "entryStyle": "Retracement buy near Fibonacci 38.2%",
       "latestClose": 5986,
       "latestAsOf": "2026-07-15",
@@ -34226,6 +34242,8 @@
           "Institutional concept coverage: 17/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 18/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 18/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -34502,7 +34520,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 27,
+        "setupStrengthScore": 28,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -34728,7 +34746,7 @@
           },
           "cacheHit": true
         },
-        "score": 35
+        "score": 36
       },
       "entryCloseDates": [
         "2026-07-15"
@@ -34751,13 +34769,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 5.95,
           "atrExtension": 1.88,
-          "currentRank": 213.01,
-          "peakRank": 213.01,
+          "currentRank": 214.51,
+          "peakRank": 214.51,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-16T08:11:13.432Z",
+      "lastEvaluatedAt": "2026-07-16T08:15:30.047Z",
       "plannedStopPrice": 5896.21,
       "plannedRisk": 897.9,
       "plannedAllocation": 59860,
@@ -34783,11 +34801,11 @@
       "firstFundamentalScore": 3,
       "firstSeenAt": "2026-07-15T10:40:23.503Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T08:11:13.432Z",
-      "rank": 193.82,
-      "peakRank": 193.82,
+      "lastSeenAt": "2026-07-16T08:15:30.047Z",
+      "rank": 195.32,
+      "peakRank": 195.32,
       "grade": "A+",
-      "score": 33,
+      "score": 34,
       "entryStyle": "Retracement buy near Fibonacci 38.2%",
       "latestClose": 5118.5,
       "latestAsOf": "2026-07-15",
@@ -34833,6 +34851,8 @@
           "Institutional concept coverage: 18/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 18/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -35109,7 +35129,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 24,
+        "setupStrengthScore": 25,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -35352,7 +35372,7 @@
           },
           "cacheHit": true
         },
-        "score": 33
+        "score": 34
       },
       "entryCloseDates": [
         "2026-07-15"
@@ -35375,17 +35395,637 @@
           "executionGapPct": null,
           "supertrendDistancePct": 5.93,
           "atrExtension": 1.76,
-          "currentRank": 193.82,
-          "peakRank": 193.82,
+          "currentRank": 195.32,
+          "peakRank": 195.32,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-16T08:11:13.432Z",
+      "lastEvaluatedAt": "2026-07-16T08:15:30.047Z",
       "plannedStopPrice": 5031.53,
       "plannedRisk": 1043.64,
       "plannedAllocation": 61422,
       "skipAlertedAt": "2026-07-15T10:40:23.503Z"
+    },
+    {
+      "id": "KIMS-2026-07-14-candidate",
+      "symbol": "KIMS",
+      "yahooSymbol": "KIMS.NS",
+      "name": "KIMS",
+      "industry": "Healthcare",
+      "sourceLists": [
+        "All NSE Market",
+        "Default Nifty 500",
+        "My Custom List"
+      ],
+      "listId": "custom",
+      "listLabel": "My List",
+      "tradeScope": "custom",
+      "tradeScopeLabel": "My List",
+      "firstSignalDate": "2026-07-14",
+      "firstSignalClose": 806.7000122070312,
+      "firstSignalRank": 173.98,
+      "firstFundamentalScore": 3,
+      "firstSeenAt": "2026-07-15T03:47:23.768Z",
+      "lastSignalDate": "2026-07-15",
+      "lastSeenAt": "2026-07-16T08:15:30.047Z",
+      "rank": 191.6,
+      "peakRank": 191.6,
+      "grade": "A+",
+      "score": 35,
+      "entryStyle": "Trend continuation buy",
+      "latestClose": 807.9500122070312,
+      "latestAsOf": "2026-07-15",
+      "entryCloseDates": [
+        "2026-07-14",
+        "2026-07-15"
+      ],
+      "status": "WAITING_CAPITAL",
+      "skipReason": "Maximum open-position limit reached.",
+      "lastDecision": {
+        "actionable": true,
+        "disposition": "ACTIONABLE",
+        "reasons": [],
+        "warnings": [],
+        "metrics": {
+          "signalAgeDays": 1,
+          "firstSignalClose": 806.7,
+          "currentClose": 807.95,
+          "executionPrice": null,
+          "runupPct": 0.15,
+          "executionGapPct": null,
+          "supertrendDistancePct": 3.2,
+          "atrExtension": 1.12,
+          "currentRank": 191.6,
+          "peakRank": 191.6,
+          "rankDecay": 0,
+          "confirmedEntryCloses": 2
+        }
+      },
+      "lastEvaluatedAt": "2026-07-16T08:15:30.047Z",
+      "plannedStopPrice": 795.05,
+      "plannedRisk": 993.3,
+      "plannedAllocation": 62212.15,
+      "skipAlertedAt": "2026-07-15T03:47:23.768Z",
+      "latestSnapshot": {
+        "symbol": "KIMS",
+        "yahooSymbol": "KIMS.NS",
+        "name": "KIMS",
+        "industry": "Healthcare",
+        "listLabel": "My Custom List",
+        "status": "ENTRY",
+        "signalReason": [
+          "Weekly RSI 62.84 is above 50.",
+          "Daily RSI 53.17 is above 50.",
+          "Weekly RS 0.18 is above 0.",
+          "Daily long RS55 0.19 is above 0.",
+          "Daily short RS21 0.03 is above 0.",
+          "Daily close 807.95 is above Supertrend(10, 3) 782.11.",
+          "Entry style: Trend continuation buy.",
+          "Price action strength: close is within 15% of 52-week high 858.00.",
+          "Momentum confirmation: MACD is not fully confirmed; OBV is rising.",
+          "Retracement watch: pullback depth 5.83% is valid, but support/reclaim/volume/risk confirmation is incomplete.",
+          "Bollinger context: bandwidth 7.26% indicates a range-bound/compressed phase.",
+          "RS trend strength: daily RS55 is rising.",
+          "Trend strength: close is above 50-DMA and 200-DMA, with fast DMA above slow DMA.",
+          "Risk reference: close is 3.20% above daily Supertrend.",
+          "Volatility is controlled: ATR(14) is 2.85% of price.",
+          "Liquidity strength: 20-day average turnover is Rs 449713170.33.",
+          "Market regime supports longs: NIFTY 500 bullish/healthy.",
+          "GTF 50-SMA slope: daily up, weekly up.",
+          "No active daily/weekly/higher-timeframe GTF supply blocker was detected above price.",
+          "Index context: NIFTY 500 proxy is BULLISH; broad index support is positive.",
+          "Derivatives context: Not present in NSE F&O lot-size master; treat as cash-equity only.",
+          "Options context: NSE option-chain snapshot unavailable; mark this as data gap, not as bearish.",
+          "Commodity/currency context: 2/5 commodity/currency proxies are bullish; 2 bearish.",
+          "Operator/delivery context: Delivery neutral: traded quantity 0.45x, delivery 0.26x, delivery percentage 37.36%.",
+          "Institutional confluence score 2/5 (Institutional C).",
+          "Execution plan: buy on the next actual market session using the exact 09:17 one-minute candle open; weekends and exchange holidays are skipped.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 15/30 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 15/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong."
+        ],
+        "close": 807.9500122070312,
+        "asOf": "2026-07-15",
+        "weeklyAsOf": "2026-07-06",
+        "dailyRsi": 53.16685423500393,
+        "weeklyRsi": 62.83742691094231,
+        "weeklyRs": 0.1840362678790175,
+        "dailyLongRs": 0.1939942431857935,
+        "dailyShortRs": 0.025735926609954163,
+        "dailySupertrend": 782.113564724649,
+        "weeklyClose": 814.9000244140625,
+        "weeklyEma13": 767.6899929220814,
+        "weeklyPriceAboveEma13": true,
+        "weeklyEma13Rising": true,
+        "weeklyEma13Reclaim": false,
+        "weeklyEma13BelowCloses": 0,
+        "dailyPriceAboveSupertrend": true,
+        "entryStyle": {
+          "type": "TREND_CONTINUATION",
+          "label": "Trend continuation buy"
+        },
+        "setupStrength": {
+          "score": 12,
+          "checks": {
+            "recentHighBreakout": false,
+            "baseBreakout": false,
+            "higherLowStructure": true,
+            "yearHighBreakout": false,
+            "nearYearHigh": true,
+            "volumeExpansion": false,
+            "weeklyRsRising": false,
+            "dailyLongRsRising": true,
+            "dailyShortRsRising": true,
+            "closeAboveSmaFast": true,
+            "closeAboveSmaSlow": true,
+            "smaFastAboveSlow": true,
+            "favorableRiskToSupertrend": true,
+            "controlledVolatility": true,
+            "liquidEnough": true,
+            "bullishCandleConfirmation": false,
+            "bullishEngulfing": false,
+            "hammer": false,
+            "macdBullish": false,
+            "obvRising": true,
+            "retracementBuyZone": false,
+            "fibonacciSupportNearby": false,
+            "bollingerTrendSupport": false,
+            "bollingerRangeBound": true,
+            "marketRegimeStrong": true,
+            "weeklyCloseAboveEma13": true,
+            "weeklyEma13Rising": true,
+            "weeklyEma13Reclaim": false
+          },
+          "pyramidStructure": {
+            "pivotBars": 2,
+            "lookback": 160,
+            "latestDate": "2026-07-15",
+            "latestClose": 807.9500122070312,
+            "previousDate": "2026-07-14",
+            "previousClose": 806.7000122070312,
+            "points": [
+              {
+                "date": "2026-03-25",
+                "type": "HIGH",
+                "price": 652.9000244140625
+              },
+              {
+                "date": "2026-03-30",
+                "type": "LOW",
+                "price": 610.7999877929688
+              },
+              {
+                "date": "2026-04-08",
+                "type": "HIGH",
+                "price": 683.9500122070312
+              },
+              {
+                "date": "2026-04-13",
+                "type": "LOW",
+                "price": 645.0499877929688
+              },
+              {
+                "date": "2026-04-20",
+                "type": "HIGH",
+                "price": 691.9000244140625
+              },
+              {
+                "date": "2026-04-23",
+                "type": "LOW",
+                "price": 644.2999877929688
+              },
+              {
+                "date": "2026-04-27",
+                "type": "HIGH",
+                "price": 679.4000244140625
+              },
+              {
+                "date": "2026-05-11",
+                "type": "HIGH",
+                "price": 791.1500244140625
+              },
+              {
+                "date": "2026-05-14",
+                "type": "HIGH",
+                "price": 790.5999755859375
+              },
+              {
+                "date": "2026-05-18",
+                "type": "LOW",
+                "price": 714
+              },
+              {
+                "date": "2026-05-22",
+                "type": "HIGH",
+                "price": 775
+              },
+              {
+                "date": "2026-05-25",
+                "type": "LOW",
+                "price": 744.0499877929688
+              },
+              {
+                "date": "2026-05-27",
+                "type": "HIGH",
+                "price": 789.9000244140625
+              },
+              {
+                "date": "2026-06-04",
+                "type": "LOW",
+                "price": 725.4000244140625
+              },
+              {
+                "date": "2026-06-08",
+                "type": "HIGH",
+                "price": 811
+              },
+              {
+                "date": "2026-06-10",
+                "type": "LOW",
+                "price": 760.0999755859375
+              },
+              {
+                "date": "2026-06-15",
+                "type": "HIGH",
+                "price": 800
+              },
+              {
+                "date": "2026-06-16",
+                "type": "LOW",
+                "price": 763.5999755859375
+              },
+              {
+                "date": "2026-06-19",
+                "type": "HIGH",
+                "price": 818
+              },
+              {
+                "date": "2026-06-19",
+                "type": "LOW",
+                "price": 781.0499877929688
+              },
+              {
+                "date": "2026-06-25",
+                "type": "LOW",
+                "price": 788.5999755859375
+              },
+              {
+                "date": "2026-07-06",
+                "type": "HIGH",
+                "price": 858
+              },
+              {
+                "date": "2026-07-08",
+                "type": "LOW",
+                "price": 790
+              },
+              {
+                "date": "2026-07-09",
+                "type": "HIGH",
+                "price": 831
+              }
+            ]
+          },
+          "values": {
+            "priorRecentHigh": 858,
+            "priorBaseHigh": 858,
+            "recentBaseLow": 790,
+            "previousBaseLow": 781.0499877929688,
+            "macd": 9.472426315773532,
+            "macdSignal": 13.413831747419062,
+            "macdHistogram": -3.9414054316455296,
+            "priorYearHigh": 858,
+            "volumeAverage": 649639.12,
+            "volumeRatio": 0.40536967662907986,
+            "smaFast": 782.2150012207031,
+            "smaSlow": 697.7855004882813,
+            "atr": 23.040276418164478,
+            "atrPct": 2.851695781924263,
+            "averageTurnover": 449713170.3263672,
+            "previousLow": 795.0499877929688,
+            "twoCandleLow": 795.0499877929688,
+            "fourCandleLow": 795.0499877929688,
+            "riskToSupertrendPct": 3.197777967947088,
+            "riskToPreviousLowPct": 1.5966364526468952,
+            "retracementPullbackDepthPct": 5.833331910602419,
+            "retracementSupportSource": "50-DMA",
+            "retracementSupportReference": 782.2150012207031,
+            "retracementSupportDistancePct": 3.185223169442036,
+            "retracementPullbackVolumeRatio": 0.8950005966389463,
+            "retracementCurrentVolumeRatio": 0.40536967662907986,
+            "retracementCloseLocationPct": 16.104086343344157,
+            "retracementPullbackDepthOk": true,
+            "retracementSupportProximityOk": true,
+            "retracementVolumePatternOk": true,
+            "retracementReclaimCandleOk": false,
+            "retracementRiskOk": true,
+            "retracementTrendHoldOk": true,
+            "retracementPatternLabel": "Pullback present, waiting for support/reclaim confirmation",
+            "retracementLookback": 5,
+            "retracementMinPullbackPct": 2,
+            "retracementMaxPullbackPct": 15,
+            "retracementSupportProximityPct": 5,
+            "retracementBreakoutRetestPct": 3,
+            "retracementDryVolumeMaxRatio": 0.9,
+            "retracementReclaimVolumeMinRatio": 1.1,
+            "retracementMaxRiskPct": 8,
+            "fibonacciSwingHigh": 858,
+            "fibonacciSwingLow": 658,
+            "fibonacciNearestLevel": "38.2%",
+            "fibonacciNearestPrice": 781.6,
+            "fibonacciDistancePct": 3.2613418910722447,
+            "fibonacciSupportNearby": false,
+            "bollingerMiddle": 810.7550048828125,
+            "bollingerUpper": 840.1958200889368,
+            "bollingerLower": 781.3141896766882,
+            "bollingerPercentB": 0.4523621771995336,
+            "bollingerBandwidthPct": 7.262567613845245,
+            "bollingerRangeBound": true,
+            "recentHighPeriod": 55,
+            "baseBreakoutPeriod": 20,
+            "yearHighPeriod": 252,
+            "nearYearHighPct": 15,
+            "volumeAveragePeriod": 50,
+            "volumeExpansionMultiple": 1.5,
+            "riskToSupertrendMaxPct": 7,
+            "smaFastPeriod": 50,
+            "smaSlowPeriod": 200,
+            "atrPeriod": 14,
+            "maxAtrPct": 8,
+            "minimumAverageTurnover": 10000000,
+            "candlePattern": "No bullish confirmation pattern",
+            "marketRegimeLabel": "NIFTY 500 bullish/healthy",
+            "weeklyClose": 814.9000244140625,
+            "weeklyEma13": 767.6899929220814,
+            "weeklyEma13Previous": 759.8216543400846,
+            "weeklyEma13DistancePct": 6.149621843093741,
+            "weeklyEma13BelowCloses": 0,
+            "weeklyEma13Period": 13
+          }
+        },
+        "setupStrengthScore": 26,
+        "setupGrade": "A+",
+        "sectorStrength": {
+          "industry": "My List",
+          "total": 175,
+          "strong": 122,
+          "entry": 119,
+          "breadthPct": 69.71428571428572,
+          "ok": true,
+          "minPct": 50,
+          "minStocks": 5
+        },
+        "sectorStrengthScore": 1,
+        "institutionalContext": {
+          "score": 2,
+          "maxScore": 5,
+          "grade": "Institutional C",
+          "dataGaps": 1,
+          "index": {
+            "dataAvailable": true,
+            "supportsLongs": true,
+            "primaryBias": "BULLISH",
+            "sectorProxy": "NIFTY 500",
+            "sectorProxyBias": "BULLISH",
+            "reason": "NIFTY 500 proxy is BULLISH; broad index support is positive."
+          },
+          "derivatives": {
+            "dataAvailable": true,
+            "fnoEligible": false,
+            "oiAvailable": false,
+            "oiChangePct": null,
+            "oiVolume": null,
+            "optionValue": null,
+            "futureValue": null,
+            "participation": false,
+            "lotSize": null,
+            "underlying": "",
+            "reason": "Not present in NSE F&O lot-size master; treat as cash-equity only."
+          },
+          "options": {
+            "dataAvailable": false,
+            "supportsLongs": false,
+            "symbol": "NIFTY",
+            "pcr": null,
+            "maxPutOiStrike": null,
+            "maxCallOiStrike": null,
+            "bias": "UNKNOWN",
+            "reason": "NSE option-chain snapshot unavailable; mark this as data gap, not as bearish."
+          },
+          "commodity": {
+            "dataAvailable": true,
+            "supportsSector": true,
+            "exposure": "Broad macro",
+            "proxy": "",
+            "proxyBias": "UNKNOWN",
+            "reason": "2/5 commodity/currency proxies are bullish; 2 bearish."
+          },
+          "operator": {
+            "dataAvailable": true,
+            "asOf": "2026-07-15",
+            "tradedQuantityRatio": 0.45300066697923075,
+            "deliveryQuantityRatio": 0.25860224690515704,
+            "deliveryPct": 37.36,
+            "averagePrice": 814.77,
+            "priceChangePct": 0.15495227469939366,
+            "closeAboveAveragePrice": false,
+            "participation": false,
+            "accumulation": false,
+            "distribution": false,
+            "reason": "Delivery neutral: traded quantity 0.45x, delivery 0.26x, delivery percentage 37.36%."
+          }
+        },
+        "institutionalScore": 2,
+        "gtfContext": {
+          "dataAvailable": true,
+          "score": 3,
+          "maxScore": 10,
+          "grade": "GTF C",
+          "rankAdjustment": 4.5,
+          "preferredEntryStyle": "GTF_CLEAR_RUNWAY",
+          "structuralStop": null,
+          "dailyTrend": "up",
+          "weeklyTrend": "up",
+          "dailyDemand": {
+            "timeframe": "daily",
+            "side": "demand",
+            "pattern": "DBR",
+            "proximal": 805.45,
+            "distal": 788.6,
+            "entry": 806.26,
+            "stopLoss": 785.45,
+            "score": 4,
+            "freshnessTests": 5,
+            "achievementR": 3.12,
+            "baseWickRatio": 0.45,
+            "departureQuality": "significant_gap",
+            "legoutDate": "2026-06-30",
+            "active": true,
+            "distancePct": 0.31
+          },
+          "weeklyDemand": null,
+          "higherTimeframeDemand": null,
+          "reactingFromHtf": {
+            "active": false,
+            "sourceStatus": "PROXY_UNVALIDATED",
+            "role": "SECONDARY_CONFLUENCE_ONLY",
+            "managementClass": null,
+            "managementPlan": null,
+            "zone": null,
+            "overlapWithExecutionDemand": false,
+            "recentTouchAndReclaim": false,
+            "reason": "No fresh score-7 M/Q/HY/Y demand overlap or recent reclaim was detected."
+          },
+          "opposingSupply": null,
+          "rewardRisk": null,
+          "unlimitedRewardRoom": true,
+          "supplyDistancePct": null,
+          "supplyBlocked": false,
+          "demandRetest": false,
+          "checks": {
+            "dailyDemandQualified": false,
+            "weeklyDemandQualified": false,
+            "dailyDemandFresh": false,
+            "weeklyDemandFresh": false,
+            "demandRetest": false,
+            "reactingFromHtf": false,
+            "dailyTrendUp": true,
+            "weeklyTrendNotDown": true,
+            "roomForTwoR": true,
+            "supplyBlocked": false
+          },
+          "reasons": [
+            "GTF 50-SMA slope: daily up, weekly up.",
+            "No active daily/weekly/higher-timeframe GTF supply blocker was detected above price."
+          ]
+        },
+        "gtfScore": 1,
+        "conceptCoverage": {
+          "passed": 16,
+          "applicable": 31,
+          "weak": 13,
+          "dataGaps": 2,
+          "excluded": 6,
+          "passLabels": [
+            "Compulsory multi-timeframe engine",
+            "Relative strength leadership",
+            "RSI momentum",
+            "Supertrend trend filter",
+            "Weekly EMA13 trend health/reclaim",
+            "Breakout or 52-week high zone",
+            "Sector breadth",
+            "50/200 DMA trend structure",
+            "Volatility and liquidity control",
+            "Risk reference discipline",
+            "Market regime",
+            "Index regime confirmation",
+            "Commodity/currency macro context",
+            "Fundamental improvement",
+            "Exit rule discipline",
+            "09:17 execution discipline"
+          ],
+          "weakLabels": [
+            "RS trend follow-through",
+            "Price-action base and higher-low structure",
+            "Retracement/pullback buy setup",
+            "GTF demand/supply confluence",
+            "GTF reacting from higher timeframe (secondary proxy)",
+            "Fibonacci retracement support",
+            "Bollinger trend/range context",
+            "Volume participation",
+            "MACD and OBV confirmation",
+            "Operator delivery confirmation",
+            "Candle IPC confirmation",
+            "Derivative/F&O eligibility",
+            "Derivative OI participation"
+          ],
+          "dataGapLabels": [
+            "Index option-chain positioning",
+            "News/event context"
+          ],
+          "excludedLabels": [
+            "Intraday tick scalping",
+            "Broker-only live Greeks/order-book depth",
+            "Pair-trading spread execution",
+            "Short-selling execution",
+            "Options premium/straddle/strangle execution",
+            "Manual charting/terminal workflow"
+          ],
+          "summary": "16/31 applicable video-derived buckets strong; 2 data gaps; 6 non-EOD playbooks excluded."
+        },
+        "fundamentalScore": 3,
+        "fundamental": {
+          "available": true,
+          "score": 3,
+          "maxScore": 8,
+          "currentPe": 135.140962,
+          "ebitdaMargin": 0.2036106458217011,
+          "checks": {
+            "netIncomeYoYUp": {
+              "ok": false,
+              "latest": 2414000000,
+              "previous": 3845000000
+            },
+            "operatingIncomeYoYUp": {
+              "ok": false,
+              "latest": 5188000000,
+              "previous": 6056000000
+            },
+            "revenueQuarterYoYUp": {
+              "ok": true,
+              "latest": 10746000000,
+              "previous": 7969000000
+            },
+            "epsQuarterYoYUp": {
+              "ok": null,
+              "latest": null,
+              "previous": null
+            },
+            "ebitdaQuarterYoYUp": {
+              "ok": true,
+              "latest": 2188000000,
+              "previous": 2025000000
+            },
+            "ebitdaMarginQoQUp": {
+              "ok": false,
+              "latest": 0.2036106458217011,
+              "previous": 0.20457051217800942
+            },
+            "ebitdaMarginYoYUp": {
+              "ok": false,
+              "latest": 0.2036106458217011,
+              "previous": 0.2541096749905885
+            },
+            "peRising": {
+              "ok": true,
+              "latest": 66.55566863537331,
+              "previous": 53.14193627142137
+            }
+          },
+          "cacheHit": true
+        },
+        "score": 35
+      }
     },
     {
       "id": "BAJAJ-AUTO-2026-07-14-candidate",
@@ -35408,7 +36048,7 @@
       "firstFundamentalScore": 6,
       "firstSeenAt": "2026-07-14T10:56:37.603Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T08:11:13.432Z",
+      "lastSeenAt": "2026-07-16T08:15:30.047Z",
       "rank": 191.35,
       "peakRank": 193.73,
       "grade": "A+",
@@ -35442,7 +36082,7 @@
           "confirmedEntryCloses": 2
         }
       },
-      "lastEvaluatedAt": "2026-07-16T08:11:13.432Z",
+      "lastEvaluatedAt": "2026-07-16T08:15:30.047Z",
       "plannedStopPrice": 9610.62,
       "plannedRisk": 4274.28,
       "plannedAllocation": 61938,
@@ -35479,7 +36119,7 @@
           "GTF 50-SMA slope: daily up, weekly up.",
           "Opposing daily supply 11537.9-11680.",
           "Index context: NIFTY 500 proxy is BULLISH; broad index support is positive.",
-          "Derivatives context: F&O listed with lot size 75; OI participation 0.56%, volume 24785.00.",
+          "Derivatives context: F&O listed with lot size 75; OI participation 0.66%, volume 25042.00.",
           "Options context: NSE option-chain snapshot unavailable; mark this as data gap, not as bearish.",
           "Commodity/currency context: 2/5 commodity/currency proxies are bullish; 2 bearish.",
           "Operator/delivery context: Delivery neutral: traded quantity 0.87x, delivery 0.76x, delivery percentage 51.80%.",
@@ -35777,14 +36417,14 @@
             "dataAvailable": true,
             "fnoEligible": true,
             "oiAvailable": true,
-            "oiChangePct": 0.56,
-            "oiVolume": 24785,
-            "optionValue": 17104802016,
-            "futureValue": 23526.76112,
+            "oiChangePct": 0.66,
+            "oiVolume": 25042,
+            "optionValue": 17278429893,
+            "futureValue": 23852.36738,
             "participation": true,
             "lotSize": 75,
             "underlying": "BAJAJ AUTO LIMITED",
-            "reason": "F&O listed with lot size 75; OI participation 0.56%, volume 24785.00."
+            "reason": "F&O listed with lot size 75; OI participation 0.66%, volume 25042.00."
           },
           "options": {
             "dataAvailable": false,
@@ -36008,624 +36648,6 @@
       }
     },
     {
-      "id": "KIMS-2026-07-14-candidate",
-      "symbol": "KIMS",
-      "yahooSymbol": "KIMS.NS",
-      "name": "KIMS",
-      "industry": "Healthcare",
-      "sourceLists": [
-        "All NSE Market",
-        "Default Nifty 500",
-        "My Custom List"
-      ],
-      "listId": "custom",
-      "listLabel": "My List",
-      "tradeScope": "custom",
-      "tradeScopeLabel": "My List",
-      "firstSignalDate": "2026-07-14",
-      "firstSignalClose": 806.7000122070312,
-      "firstSignalRank": 173.98,
-      "firstFundamentalScore": 3,
-      "firstSeenAt": "2026-07-15T03:47:23.768Z",
-      "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T08:11:13.432Z",
-      "rank": 190.1,
-      "peakRank": 190.1,
-      "grade": "A+",
-      "score": 34,
-      "entryStyle": "Trend continuation buy",
-      "latestClose": 807.9500122070312,
-      "latestAsOf": "2026-07-15",
-      "entryCloseDates": [
-        "2026-07-14",
-        "2026-07-15"
-      ],
-      "status": "WAITING_CAPITAL",
-      "skipReason": "Maximum open-position limit reached.",
-      "lastDecision": {
-        "actionable": true,
-        "disposition": "ACTIONABLE",
-        "reasons": [],
-        "warnings": [],
-        "metrics": {
-          "signalAgeDays": 1,
-          "firstSignalClose": 806.7,
-          "currentClose": 807.95,
-          "executionPrice": null,
-          "runupPct": 0.15,
-          "executionGapPct": null,
-          "supertrendDistancePct": 3.2,
-          "atrExtension": 1.12,
-          "currentRank": 190.1,
-          "peakRank": 190.1,
-          "rankDecay": 0,
-          "confirmedEntryCloses": 2
-        }
-      },
-      "lastEvaluatedAt": "2026-07-16T08:11:13.432Z",
-      "plannedStopPrice": 795.05,
-      "plannedRisk": 993.3,
-      "plannedAllocation": 62212.15,
-      "skipAlertedAt": "2026-07-15T03:47:23.768Z",
-      "latestSnapshot": {
-        "symbol": "KIMS",
-        "yahooSymbol": "KIMS.NS",
-        "name": "KIMS",
-        "industry": "Healthcare",
-        "listLabel": "My Custom List",
-        "status": "ENTRY",
-        "signalReason": [
-          "Weekly RSI 62.84 is above 50.",
-          "Daily RSI 53.17 is above 50.",
-          "Weekly RS 0.18 is above 0.",
-          "Daily long RS55 0.19 is above 0.",
-          "Daily short RS21 0.03 is above 0.",
-          "Daily close 807.95 is above Supertrend(10, 3) 782.11.",
-          "Entry style: Trend continuation buy.",
-          "Price action strength: close is within 15% of 52-week high 858.00.",
-          "Momentum confirmation: MACD is not fully confirmed; OBV is rising.",
-          "Retracement watch: pullback depth 5.83% is valid, but support/reclaim/volume/risk confirmation is incomplete.",
-          "Bollinger context: bandwidth 7.26% indicates a range-bound/compressed phase.",
-          "RS trend strength: daily RS55 is rising.",
-          "Trend strength: close is above 50-DMA and 200-DMA, with fast DMA above slow DMA.",
-          "Risk reference: close is 3.20% above daily Supertrend.",
-          "Volatility is controlled: ATR(14) is 2.85% of price.",
-          "Liquidity strength: 20-day average turnover is Rs 449713170.33.",
-          "Market regime supports longs: NIFTY 500 bullish/healthy.",
-          "GTF 50-SMA slope: daily up, weekly up.",
-          "No active daily/weekly/higher-timeframe GTF supply blocker was detected above price.",
-          "Index context: NIFTY 500 proxy is BULLISH; broad index support is positive.",
-          "Derivatives context: Not present in NSE F&O lot-size master; treat as cash-equity only.",
-          "Options context: NSE option-chain snapshot unavailable; mark this as data gap, not as bearish.",
-          "Commodity/currency context: 2/5 commodity/currency proxies are bullish; 2 bearish.",
-          "Operator/delivery context: Delivery neutral: traded quantity 0.45x, delivery 0.26x, delivery percentage 37.36%.",
-          "Institutional confluence score 2/5 (Institutional C).",
-          "Execution plan: buy on the next actual market session using the exact 09:17 one-minute candle open; weekends and exchange holidays are skipped.",
-          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
-          "Institutional concept coverage: 15/30 applicable video-derived buckets are strong.",
-          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
-          "Institutional concept coverage: 15/31 applicable video-derived buckets are strong.",
-          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
-          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
-          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
-          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
-          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
-          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
-          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
-          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
-          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
-          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
-          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
-          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
-          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
-          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
-          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
-          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong."
-        ],
-        "close": 807.9500122070312,
-        "asOf": "2026-07-15",
-        "weeklyAsOf": "2026-07-06",
-        "dailyRsi": 53.16685423500393,
-        "weeklyRsi": 62.83742691094231,
-        "weeklyRs": 0.1840362678790175,
-        "dailyLongRs": 0.1939942431857935,
-        "dailyShortRs": 0.025735926609954163,
-        "dailySupertrend": 782.113564724649,
-        "weeklyClose": 814.9000244140625,
-        "weeklyEma13": 767.6899929220814,
-        "weeklyPriceAboveEma13": true,
-        "weeklyEma13Rising": true,
-        "weeklyEma13Reclaim": false,
-        "weeklyEma13BelowCloses": 0,
-        "dailyPriceAboveSupertrend": true,
-        "entryStyle": {
-          "type": "TREND_CONTINUATION",
-          "label": "Trend continuation buy"
-        },
-        "setupStrength": {
-          "score": 12,
-          "checks": {
-            "recentHighBreakout": false,
-            "baseBreakout": false,
-            "higherLowStructure": true,
-            "yearHighBreakout": false,
-            "nearYearHigh": true,
-            "volumeExpansion": false,
-            "weeklyRsRising": false,
-            "dailyLongRsRising": true,
-            "dailyShortRsRising": true,
-            "closeAboveSmaFast": true,
-            "closeAboveSmaSlow": true,
-            "smaFastAboveSlow": true,
-            "favorableRiskToSupertrend": true,
-            "controlledVolatility": true,
-            "liquidEnough": true,
-            "bullishCandleConfirmation": false,
-            "bullishEngulfing": false,
-            "hammer": false,
-            "macdBullish": false,
-            "obvRising": true,
-            "retracementBuyZone": false,
-            "fibonacciSupportNearby": false,
-            "bollingerTrendSupport": false,
-            "bollingerRangeBound": true,
-            "marketRegimeStrong": true,
-            "weeklyCloseAboveEma13": true,
-            "weeklyEma13Rising": true,
-            "weeklyEma13Reclaim": false
-          },
-          "pyramidStructure": {
-            "pivotBars": 2,
-            "lookback": 160,
-            "latestDate": "2026-07-15",
-            "latestClose": 807.9500122070312,
-            "previousDate": "2026-07-14",
-            "previousClose": 806.7000122070312,
-            "points": [
-              {
-                "date": "2026-03-25",
-                "type": "HIGH",
-                "price": 652.9000244140625
-              },
-              {
-                "date": "2026-03-30",
-                "type": "LOW",
-                "price": 610.7999877929688
-              },
-              {
-                "date": "2026-04-08",
-                "type": "HIGH",
-                "price": 683.9500122070312
-              },
-              {
-                "date": "2026-04-13",
-                "type": "LOW",
-                "price": 645.0499877929688
-              },
-              {
-                "date": "2026-04-20",
-                "type": "HIGH",
-                "price": 691.9000244140625
-              },
-              {
-                "date": "2026-04-23",
-                "type": "LOW",
-                "price": 644.2999877929688
-              },
-              {
-                "date": "2026-04-27",
-                "type": "HIGH",
-                "price": 679.4000244140625
-              },
-              {
-                "date": "2026-05-11",
-                "type": "HIGH",
-                "price": 791.1500244140625
-              },
-              {
-                "date": "2026-05-14",
-                "type": "HIGH",
-                "price": 790.5999755859375
-              },
-              {
-                "date": "2026-05-18",
-                "type": "LOW",
-                "price": 714
-              },
-              {
-                "date": "2026-05-22",
-                "type": "HIGH",
-                "price": 775
-              },
-              {
-                "date": "2026-05-25",
-                "type": "LOW",
-                "price": 744.0499877929688
-              },
-              {
-                "date": "2026-05-27",
-                "type": "HIGH",
-                "price": 789.9000244140625
-              },
-              {
-                "date": "2026-06-04",
-                "type": "LOW",
-                "price": 725.4000244140625
-              },
-              {
-                "date": "2026-06-08",
-                "type": "HIGH",
-                "price": 811
-              },
-              {
-                "date": "2026-06-10",
-                "type": "LOW",
-                "price": 760.0999755859375
-              },
-              {
-                "date": "2026-06-15",
-                "type": "HIGH",
-                "price": 800
-              },
-              {
-                "date": "2026-06-16",
-                "type": "LOW",
-                "price": 763.5999755859375
-              },
-              {
-                "date": "2026-06-19",
-                "type": "HIGH",
-                "price": 818
-              },
-              {
-                "date": "2026-06-19",
-                "type": "LOW",
-                "price": 781.0499877929688
-              },
-              {
-                "date": "2026-06-25",
-                "type": "LOW",
-                "price": 788.5999755859375
-              },
-              {
-                "date": "2026-07-06",
-                "type": "HIGH",
-                "price": 858
-              },
-              {
-                "date": "2026-07-08",
-                "type": "LOW",
-                "price": 790
-              },
-              {
-                "date": "2026-07-09",
-                "type": "HIGH",
-                "price": 831
-              }
-            ]
-          },
-          "values": {
-            "priorRecentHigh": 858,
-            "priorBaseHigh": 858,
-            "recentBaseLow": 790,
-            "previousBaseLow": 781.0499877929688,
-            "macd": 9.472426315773532,
-            "macdSignal": 13.413831747419062,
-            "macdHistogram": -3.9414054316455296,
-            "priorYearHigh": 858,
-            "volumeAverage": 649639.12,
-            "volumeRatio": 0.40536967662907986,
-            "smaFast": 782.2150012207031,
-            "smaSlow": 697.7855004882813,
-            "atr": 23.040276418164478,
-            "atrPct": 2.851695781924263,
-            "averageTurnover": 449713170.3263672,
-            "previousLow": 795.0499877929688,
-            "twoCandleLow": 795.0499877929688,
-            "fourCandleLow": 795.0499877929688,
-            "riskToSupertrendPct": 3.197777967947088,
-            "riskToPreviousLowPct": 1.5966364526468952,
-            "retracementPullbackDepthPct": 5.833331910602419,
-            "retracementSupportSource": "50-DMA",
-            "retracementSupportReference": 782.2150012207031,
-            "retracementSupportDistancePct": 3.185223169442036,
-            "retracementPullbackVolumeRatio": 0.8950005966389463,
-            "retracementCurrentVolumeRatio": 0.40536967662907986,
-            "retracementCloseLocationPct": 16.104086343344157,
-            "retracementPullbackDepthOk": true,
-            "retracementSupportProximityOk": true,
-            "retracementVolumePatternOk": true,
-            "retracementReclaimCandleOk": false,
-            "retracementRiskOk": true,
-            "retracementTrendHoldOk": true,
-            "retracementPatternLabel": "Pullback present, waiting for support/reclaim confirmation",
-            "retracementLookback": 5,
-            "retracementMinPullbackPct": 2,
-            "retracementMaxPullbackPct": 15,
-            "retracementSupportProximityPct": 5,
-            "retracementBreakoutRetestPct": 3,
-            "retracementDryVolumeMaxRatio": 0.9,
-            "retracementReclaimVolumeMinRatio": 1.1,
-            "retracementMaxRiskPct": 8,
-            "fibonacciSwingHigh": 858,
-            "fibonacciSwingLow": 658,
-            "fibonacciNearestLevel": "38.2%",
-            "fibonacciNearestPrice": 781.6,
-            "fibonacciDistancePct": 3.2613418910722447,
-            "fibonacciSupportNearby": false,
-            "bollingerMiddle": 810.7550048828125,
-            "bollingerUpper": 840.1958200889368,
-            "bollingerLower": 781.3141896766882,
-            "bollingerPercentB": 0.4523621771995336,
-            "bollingerBandwidthPct": 7.262567613845245,
-            "bollingerRangeBound": true,
-            "recentHighPeriod": 55,
-            "baseBreakoutPeriod": 20,
-            "yearHighPeriod": 252,
-            "nearYearHighPct": 15,
-            "volumeAveragePeriod": 50,
-            "volumeExpansionMultiple": 1.5,
-            "riskToSupertrendMaxPct": 7,
-            "smaFastPeriod": 50,
-            "smaSlowPeriod": 200,
-            "atrPeriod": 14,
-            "maxAtrPct": 8,
-            "minimumAverageTurnover": 10000000,
-            "candlePattern": "No bullish confirmation pattern",
-            "marketRegimeLabel": "NIFTY 500 bullish/healthy",
-            "weeklyClose": 814.9000244140625,
-            "weeklyEma13": 767.6899929220814,
-            "weeklyEma13Previous": 759.8216543400846,
-            "weeklyEma13DistancePct": 6.149621843093741,
-            "weeklyEma13BelowCloses": 0,
-            "weeklyEma13Period": 13
-          }
-        },
-        "setupStrengthScore": 25,
-        "setupGrade": "A+",
-        "sectorStrength": {
-          "industry": "My List",
-          "total": 175,
-          "strong": 122,
-          "entry": 119,
-          "breadthPct": 69.71428571428572,
-          "ok": true,
-          "minPct": 50,
-          "minStocks": 5
-        },
-        "sectorStrengthScore": 1,
-        "institutionalContext": {
-          "score": 2,
-          "maxScore": 5,
-          "grade": "Institutional C",
-          "dataGaps": 1,
-          "index": {
-            "dataAvailable": true,
-            "supportsLongs": true,
-            "primaryBias": "BULLISH",
-            "sectorProxy": "NIFTY 500",
-            "sectorProxyBias": "BULLISH",
-            "reason": "NIFTY 500 proxy is BULLISH; broad index support is positive."
-          },
-          "derivatives": {
-            "dataAvailable": true,
-            "fnoEligible": false,
-            "oiAvailable": false,
-            "oiChangePct": null,
-            "oiVolume": null,
-            "optionValue": null,
-            "futureValue": null,
-            "participation": false,
-            "lotSize": null,
-            "underlying": "",
-            "reason": "Not present in NSE F&O lot-size master; treat as cash-equity only."
-          },
-          "options": {
-            "dataAvailable": false,
-            "supportsLongs": false,
-            "symbol": "NIFTY",
-            "pcr": null,
-            "maxPutOiStrike": null,
-            "maxCallOiStrike": null,
-            "bias": "UNKNOWN",
-            "reason": "NSE option-chain snapshot unavailable; mark this as data gap, not as bearish."
-          },
-          "commodity": {
-            "dataAvailable": true,
-            "supportsSector": true,
-            "exposure": "Broad macro",
-            "proxy": "",
-            "proxyBias": "UNKNOWN",
-            "reason": "2/5 commodity/currency proxies are bullish; 2 bearish."
-          },
-          "operator": {
-            "dataAvailable": true,
-            "asOf": "2026-07-15",
-            "tradedQuantityRatio": 0.45300066697923075,
-            "deliveryQuantityRatio": 0.25860224690515704,
-            "deliveryPct": 37.36,
-            "averagePrice": 814.77,
-            "priceChangePct": 0.15495227469939366,
-            "closeAboveAveragePrice": false,
-            "participation": false,
-            "accumulation": false,
-            "distribution": false,
-            "reason": "Delivery neutral: traded quantity 0.45x, delivery 0.26x, delivery percentage 37.36%."
-          }
-        },
-        "institutionalScore": 2,
-        "gtfContext": {
-          "dataAvailable": true,
-          "score": 3,
-          "maxScore": 10,
-          "grade": "GTF C",
-          "rankAdjustment": 4.5,
-          "preferredEntryStyle": "GTF_CLEAR_RUNWAY",
-          "structuralStop": null,
-          "dailyTrend": "up",
-          "weeklyTrend": "up",
-          "dailyDemand": {
-            "timeframe": "daily",
-            "side": "demand",
-            "pattern": "DBR",
-            "proximal": 805.45,
-            "distal": 788.6,
-            "entry": 806.26,
-            "stopLoss": 785.45,
-            "score": 4,
-            "freshnessTests": 5,
-            "achievementR": 3.12,
-            "baseWickRatio": 0.45,
-            "departureQuality": "significant_gap",
-            "legoutDate": "2026-06-30",
-            "active": true,
-            "distancePct": 0.31
-          },
-          "weeklyDemand": null,
-          "higherTimeframeDemand": null,
-          "reactingFromHtf": {
-            "active": false,
-            "sourceStatus": "PROXY_UNVALIDATED",
-            "role": "SECONDARY_CONFLUENCE_ONLY",
-            "managementClass": null,
-            "managementPlan": null,
-            "zone": null,
-            "overlapWithExecutionDemand": false,
-            "recentTouchAndReclaim": false,
-            "reason": "No fresh score-7 M/Q/HY/Y demand overlap or recent reclaim was detected."
-          },
-          "opposingSupply": null,
-          "rewardRisk": null,
-          "unlimitedRewardRoom": true,
-          "supplyDistancePct": null,
-          "supplyBlocked": false,
-          "demandRetest": false,
-          "checks": {
-            "dailyDemandQualified": false,
-            "weeklyDemandQualified": false,
-            "dailyDemandFresh": false,
-            "weeklyDemandFresh": false,
-            "demandRetest": false,
-            "reactingFromHtf": false,
-            "dailyTrendUp": true,
-            "weeklyTrendNotDown": true,
-            "roomForTwoR": true,
-            "supplyBlocked": false
-          },
-          "reasons": [
-            "GTF 50-SMA slope: daily up, weekly up.",
-            "No active daily/weekly/higher-timeframe GTF supply blocker was detected above price."
-          ]
-        },
-        "gtfScore": 1,
-        "conceptCoverage": {
-          "passed": 16,
-          "applicable": 31,
-          "weak": 13,
-          "dataGaps": 2,
-          "excluded": 6,
-          "passLabels": [
-            "Compulsory multi-timeframe engine",
-            "Relative strength leadership",
-            "RSI momentum",
-            "Supertrend trend filter",
-            "Weekly EMA13 trend health/reclaim",
-            "Breakout or 52-week high zone",
-            "Sector breadth",
-            "50/200 DMA trend structure",
-            "Volatility and liquidity control",
-            "Risk reference discipline",
-            "Market regime",
-            "Index regime confirmation",
-            "Commodity/currency macro context",
-            "Fundamental improvement",
-            "Exit rule discipline",
-            "09:17 execution discipline"
-          ],
-          "weakLabels": [
-            "RS trend follow-through",
-            "Price-action base and higher-low structure",
-            "Retracement/pullback buy setup",
-            "GTF demand/supply confluence",
-            "GTF reacting from higher timeframe (secondary proxy)",
-            "Fibonacci retracement support",
-            "Bollinger trend/range context",
-            "Volume participation",
-            "MACD and OBV confirmation",
-            "Operator delivery confirmation",
-            "Candle IPC confirmation",
-            "Derivative/F&O eligibility",
-            "Derivative OI participation"
-          ],
-          "dataGapLabels": [
-            "Index option-chain positioning",
-            "News/event context"
-          ],
-          "excludedLabels": [
-            "Intraday tick scalping",
-            "Broker-only live Greeks/order-book depth",
-            "Pair-trading spread execution",
-            "Short-selling execution",
-            "Options premium/straddle/strangle execution",
-            "Manual charting/terminal workflow"
-          ],
-          "summary": "16/31 applicable video-derived buckets strong; 2 data gaps; 6 non-EOD playbooks excluded."
-        },
-        "fundamentalScore": 3,
-        "fundamental": {
-          "available": true,
-          "score": 3,
-          "maxScore": 8,
-          "currentPe": 135.140962,
-          "ebitdaMargin": 0.2036106458217011,
-          "checks": {
-            "netIncomeYoYUp": {
-              "ok": false,
-              "latest": 2414000000,
-              "previous": 3845000000
-            },
-            "operatingIncomeYoYUp": {
-              "ok": false,
-              "latest": 5188000000,
-              "previous": 6056000000
-            },
-            "revenueQuarterYoYUp": {
-              "ok": true,
-              "latest": 10746000000,
-              "previous": 7969000000
-            },
-            "epsQuarterYoYUp": {
-              "ok": null,
-              "latest": null,
-              "previous": null
-            },
-            "ebitdaQuarterYoYUp": {
-              "ok": true,
-              "latest": 2188000000,
-              "previous": 2025000000
-            },
-            "ebitdaMarginQoQUp": {
-              "ok": false,
-              "latest": 0.2036106458217011,
-              "previous": 0.20457051217800942
-            },
-            "ebitdaMarginYoYUp": {
-              "ok": false,
-              "latest": 0.2036106458217011,
-              "previous": 0.2541096749905885
-            },
-            "peRising": {
-              "ok": true,
-              "latest": 66.55566863537331,
-              "previous": 53.14193627142137
-            }
-          },
-          "cacheHit": true
-        },
-        "score": 34
-      }
-    },
-    {
       "id": "LMW-2026-07-13-candidate",
       "symbol": "LMW",
       "yahooSymbol": "LMW.NS",
@@ -36645,11 +36667,11 @@
       "firstFundamentalScore": 4,
       "firstSeenAt": "2026-07-14T09:43:28.265Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T08:11:13.432Z",
-      "rank": 189.56,
-      "peakRank": 189.56,
+      "lastSeenAt": "2026-07-16T08:15:30.047Z",
+      "rank": 191.06,
+      "peakRank": 191.06,
       "grade": "A+",
-      "score": 34,
+      "score": 35,
       "entryStyle": "Retracement buy near 50-DMA",
       "latestClose": 16364,
       "latestAsOf": "2026-07-15",
@@ -36674,13 +36696,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 5.89,
           "atrExtension": 1.91,
-          "currentRank": 189.56,
-          "peakRank": 189.56,
+          "currentRank": 191.06,
+          "peakRank": 191.06,
           "rankDecay": 0,
           "confirmedEntryCloses": 3
         }
       },
-      "lastEvaluatedAt": "2026-07-16T08:11:13.432Z",
+      "lastEvaluatedAt": "2026-07-16T08:15:30.047Z",
       "plannedStopPrice": 16002,
       "plannedRisk": 1086,
       "plannedAllocation": 49092,
@@ -36725,6 +36747,8 @@
           "Institutional concept coverage: 18/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 18/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -37001,7 +37025,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 24,
+        "setupStrengthScore": 25,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -37260,7 +37284,7 @@
           },
           "cacheHit": true
         },
-        "score": 34
+        "score": 35
       }
     },
     {
@@ -37282,7 +37306,7 @@
       "firstFundamentalScore": 2,
       "firstSeenAt": "2026-07-14T09:43:28.265Z",
       "lastSignalDate": "2026-07-14",
-      "lastSeenAt": "2026-07-16T08:11:13.432Z",
+      "lastSeenAt": "2026-07-16T08:15:30.047Z",
       "rank": 188.19,
       "peakRank": 188.19,
       "grade": "A+",
@@ -37316,7 +37340,7 @@
           "confirmedEntryCloses": 2
         }
       },
-      "lastEvaluatedAt": "2026-07-16T08:11:13.432Z",
+      "lastEvaluatedAt": "2026-07-16T08:15:30.047Z",
       "plannedStopPrice": 175.16,
       "plannedRisk": 939.84,
       "plannedAllocation": 62596.16,
@@ -37880,11 +37904,11 @@
       "firstFundamentalScore": 4,
       "firstSeenAt": "2026-07-15T10:40:23.503Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T08:11:13.432Z",
-      "rank": 183.09,
-      "peakRank": 183.09,
+      "lastSeenAt": "2026-07-16T08:15:30.047Z",
+      "rank": 184.59,
+      "peakRank": 184.59,
       "grade": "A+",
-      "score": 32,
+      "score": 33,
       "entryStyle": "Trend continuation buy",
       "latestClose": 156.60000610351562,
       "latestAsOf": "2026-07-15",
@@ -37923,6 +37947,8 @@
           "Institutional concept coverage: 14/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 14/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 15/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 15/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -38199,7 +38225,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 22,
+        "setupStrengthScore": 23,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -38401,7 +38427,7 @@
           },
           "cacheHit": true
         },
-        "score": 32
+        "score": 33
       },
       "entryCloseDates": [
         "2026-07-15"
@@ -38427,13 +38453,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 10.95,
           "atrExtension": 1.26,
-          "currentRank": 183.09,
-          "peakRank": 183.09,
+          "currentRank": 184.59,
+          "peakRank": 184.59,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-16T08:11:13.432Z",
+      "lastEvaluatedAt": "2026-07-16T08:15:30.047Z",
       "plannedStopPrice": 150.3,
       "plannedRisk": 2520,
       "plannedAllocation": 62640,
@@ -38459,11 +38485,11 @@
       "firstFundamentalScore": 2,
       "firstSeenAt": "2026-07-15T10:40:23.503Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T08:11:13.432Z",
-      "rank": 179.13,
-      "peakRank": 179.13,
+      "lastSeenAt": "2026-07-16T08:15:30.047Z",
+      "rank": 180.63,
+      "peakRank": 180.63,
       "grade": "A+",
-      "score": 31,
+      "score": 32,
       "entryStyle": "Trend continuation buy",
       "latestClose": 841.2999877929688,
       "latestAsOf": "2026-07-15",
@@ -38504,6 +38530,8 @@
           "Institutional concept coverage: 15/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 15/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -38780,7 +38808,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 23,
+        "setupStrengthScore": 24,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -39006,7 +39034,7 @@
           },
           "cacheHit": true
         },
-        "score": 31
+        "score": 32
       },
       "entryCloseDates": [
         "2026-07-15"
@@ -39029,13 +39057,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 5.21,
           "atrExtension": 0.33,
-          "currentRank": 179.13,
-          "peakRank": 179.13,
+          "currentRank": 180.63,
+          "peakRank": 180.63,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-16T08:11:13.432Z",
+      "lastEvaluatedAt": "2026-07-16T08:15:30.047Z",
       "plannedStopPrice": 806.35,
       "plannedRisk": 2586.3,
       "plannedAllocation": 62256.2,
@@ -40106,7 +40134,7 @@
     },
     {
       "id": "LLOYDSME-2026-07-15-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-16T08:11:13.432Z",
+      "evaluatedAt": "2026-07-16T08:15:30.047Z",
       "asOf": "2026-07-15",
       "symbol": "LLOYDSME",
       "industry": "Metals & Mining",
@@ -40115,7 +40143,7 @@
       "outcome": "ROTATION_DEFERRED",
       "disposition": "WAITING_CONFIRMATION",
       "grade": "A+",
-      "rank": 237.84,
+      "rank": 239.34,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 1866.1,
@@ -40125,8 +40153,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 10.22,
         "atrExtension": 1.86,
-        "currentRank": 237.84,
-        "peakRank": 237.84,
+        "currentRank": 239.34,
+        "peakRank": 239.34,
         "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
@@ -40134,7 +40162,7 @@
     },
     {
       "id": "BHEL-2026-07-15-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-16T08:11:13.432Z",
+      "evaluatedAt": "2026-07-16T08:15:30.047Z",
       "asOf": "2026-07-15",
       "symbol": "BHEL",
       "industry": "Capital Goods",
@@ -40143,7 +40171,7 @@
       "outcome": "ROTATION_DEFERRED",
       "disposition": "WAITING_CONFIRMATION",
       "grade": "A+",
-      "rank": 229.49,
+      "rank": 230.99,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 417.95,
@@ -40153,8 +40181,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 11.34,
         "atrExtension": 1.26,
-        "currentRank": 229.49,
-        "peakRank": 229.49,
+        "currentRank": 230.99,
+        "peakRank": 230.99,
         "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
@@ -40162,7 +40190,7 @@
     },
     {
       "id": "SGFIN-2026-07-15-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-16T08:11:13.432Z",
+      "evaluatedAt": "2026-07-16T08:15:30.047Z",
       "asOf": "2026-07-15",
       "symbol": "SGFIN",
       "industry": "My List",
@@ -40171,7 +40199,7 @@
       "outcome": "ROTATION_DEFERRED",
       "disposition": "WAITING_CONFIRMATION",
       "grade": "A+",
-      "rank": 219.56,
+      "rank": 221.06,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 625.65,
@@ -40181,8 +40209,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 3.84,
         "atrExtension": 0.77,
-        "currentRank": 219.56,
-        "peakRank": 219.56,
+        "currentRank": 221.06,
+        "peakRank": 221.06,
         "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
@@ -40190,7 +40218,7 @@
     },
     {
       "id": "CJGEL-2026-07-15-DEFERRED-WAITING_RECONFIRMATION",
-      "evaluatedAt": "2026-07-16T08:11:13.432Z",
+      "evaluatedAt": "2026-07-16T08:15:30.047Z",
       "asOf": "2026-07-15",
       "symbol": "CJGEL",
       "industry": "My List",
@@ -40199,7 +40227,7 @@
       "outcome": "DEFERRED",
       "disposition": "WAITING_RECONFIRMATION",
       "grade": "A+",
-      "rank": 213.62,
+      "rank": 215.12,
       "metrics": {
         "signalAgeDays": 1,
         "firstSignalClose": 23.7,
@@ -40209,8 +40237,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 13.44,
         "atrExtension": 3.2,
-        "currentRank": 213.62,
-        "peakRank": 213.62,
+        "currentRank": 215.12,
+        "peakRank": 215.12,
         "rankDecay": 0,
         "confirmedEntryCloses": 2
       },
@@ -40218,7 +40246,7 @@
     },
     {
       "id": "ENDURANCE-2026-07-15-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-16T08:11:13.432Z",
+      "evaluatedAt": "2026-07-16T08:15:30.047Z",
       "asOf": "2026-07-15",
       "symbol": "ENDURANCE",
       "industry": "Automobile and Auto Components",
@@ -40227,7 +40255,7 @@
       "outcome": "ROTATION_DEFERRED",
       "disposition": "WAITING_CONFIRMATION",
       "grade": "A+",
-      "rank": 213.4,
+      "rank": 214.9,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 2746.2,
@@ -40237,8 +40265,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 8.51,
         "atrExtension": 1.44,
-        "currentRank": 213.4,
-        "peakRank": 213.4,
+        "currentRank": 214.9,
+        "peakRank": 214.9,
         "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
@@ -40246,7 +40274,7 @@
     },
     {
       "id": "KOVAI-2026-07-15-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-16T08:11:13.432Z",
+      "evaluatedAt": "2026-07-16T08:15:30.047Z",
       "asOf": "2026-07-15",
       "symbol": "KOVAI",
       "industry": "My List",
@@ -40255,7 +40283,7 @@
       "outcome": "ROTATION_DEFERRED",
       "disposition": "WAITING_CONFIRMATION",
       "grade": "A+",
-      "rank": 213.01,
+      "rank": 214.51,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 5986,
@@ -40265,8 +40293,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 5.95,
         "atrExtension": 1.88,
-        "currentRank": 213.01,
-        "peakRank": 213.01,
+        "currentRank": 214.51,
+        "peakRank": 214.51,
         "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
@@ -40274,7 +40302,7 @@
     },
     {
       "id": "FINEORG-2026-07-15-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-16T08:11:13.432Z",
+      "evaluatedAt": "2026-07-16T08:15:30.047Z",
       "asOf": "2026-07-15",
       "symbol": "FINEORG",
       "industry": "My List",
@@ -40283,7 +40311,7 @@
       "outcome": "ROTATION_DEFERRED",
       "disposition": "WAITING_CONFIRMATION",
       "grade": "A+",
-      "rank": 193.82,
+      "rank": 195.32,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 5118.5,
@@ -40293,8 +40321,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 5.93,
         "atrExtension": 1.76,
-        "currentRank": 193.82,
-        "peakRank": 193.82,
+        "currentRank": 195.32,
+        "peakRank": 195.32,
         "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
@@ -40302,7 +40330,7 @@
     },
     {
       "id": "KVFORGE-2026-07-15-DEFERRED-WAITING_RECONFIRMATION",
-      "evaluatedAt": "2026-07-16T08:11:13.432Z",
+      "evaluatedAt": "2026-07-16T08:15:30.047Z",
       "asOf": "2026-07-15",
       "symbol": "KVFORGE",
       "industry": "My List",
@@ -40311,7 +40339,7 @@
       "outcome": "DEFERRED",
       "disposition": "WAITING_RECONFIRMATION",
       "grade": "A+",
-      "rank": 183.09,
+      "rank": 184.59,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 156.6,
@@ -40321,8 +40349,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 10.95,
         "atrExtension": 1.26,
-        "currentRank": 183.09,
-        "peakRank": 183.09,
+        "currentRank": 184.59,
+        "peakRank": 184.59,
         "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
@@ -40330,7 +40358,7 @@
     },
     {
       "id": "YATHARTH-2026-07-15-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-16T08:11:13.432Z",
+      "evaluatedAt": "2026-07-16T08:15:30.047Z",
       "asOf": "2026-07-15",
       "symbol": "YATHARTH",
       "industry": "My List",
@@ -40339,7 +40367,7 @@
       "outcome": "ROTATION_DEFERRED",
       "disposition": "WAITING_CONFIRMATION",
       "grade": "A+",
-      "rank": 179.13,
+      "rank": 180.63,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 841.3,
@@ -40349,8 +40377,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 5.21,
         "atrExtension": 0.33,
-        "currentRank": 179.13,
-        "peakRank": 179.13,
+        "currentRank": 180.63,
+        "peakRank": 180.63,
         "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
@@ -41122,6 +41150,7 @@
           "Execution plan: buy on the next actual market session using the exact 09:17 one-minute candle open; weekends and exchange holidays are skipped.",
           "Institutional concept coverage: 15/30 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 15/31 applicable video-derived buckets are strong.",
+          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
@@ -43444,6 +43473,7 @@
           "Execution plan: buy on the next actual market session using the exact 09:17 one-minute candle open; weekends and exchange holidays are skipped.",
           "Institutional concept coverage: 16/30 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
+          "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
@@ -53306,6 +53336,7 @@
           "Institutional concept coverage: 18/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 18/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 18/31 applicable video-derived buckets are strong.",
+          "Institutional concept coverage: 18/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 18/31 applicable video-derived buckets are strong."
         ],
         "close": 6867,
@@ -54092,7 +54123,7 @@
       "realizedPnlToDate": 0,
       "initialStopPrice": 1842.85,
       "trailingStopPrice": 1968,
-      "currentRank": 196.97,
+      "currentRank": 198.47,
       "currentGrade": "A+",
       "currentWeakness": {
         "score": 0,
@@ -54252,6 +54283,8 @@
           "Institutional concept coverage: 16/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: Healthcare has 35/49 stocks (71.43%) passing daily strength.",
           "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: Healthcare has 35/49 stocks (71.43%) passing daily strength.",
+          "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: Healthcare has 35/49 stocks (71.43%) passing daily strength.",
           "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: Healthcare has 35/49 stocks (71.43%) passing daily strength.",
@@ -54528,7 +54561,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 25,
+        "setupStrengthScore": 26,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "Healthcare",
@@ -54769,7 +54802,7 @@
           },
           "cacheHit": true
         },
-        "score": 36
+        "score": 37
       },
       "managementCloseDates": [
         "2026-07-15"
@@ -55049,7 +55082,7 @@
       "realizedPnlToDate": 0,
       "initialStopPrice": 1285.88,
       "trailingStopPrice": 1324.8,
-      "currentRank": 210.54,
+      "currentRank": 212.04,
       "currentGrade": "A+",
       "currentWeakness": {
         "score": 0,
@@ -55211,6 +55244,8 @@
           "Institutional concept coverage: 16/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: Healthcare has 35/49 stocks (71.43%) passing daily strength.",
           "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: Healthcare has 35/49 stocks (71.43%) passing daily strength.",
+          "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: Healthcare has 35/49 stocks (71.43%) passing daily strength.",
           "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: Healthcare has 35/49 stocks (71.43%) passing daily strength.",
@@ -55487,7 +55522,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 25,
+        "setupStrengthScore": 26,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "Healthcare",
@@ -55744,7 +55779,7 @@
           },
           "cacheHit": true
         },
-        "score": 37
+        "score": 38
       },
       "managementCloseDates": [
         "2026-07-15"
@@ -56182,6 +56217,7 @@
           "Execution plan: buy on the next actual market session using the exact 09:17 one-minute candle open; weekends and exchange holidays are skipped.",
           "Institutional concept coverage: 14/30 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 14/31 applicable video-derived buckets are strong.",
+          "Institutional concept coverage: 15/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 15/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 15/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 15/31 applicable video-derived buckets are strong.",
