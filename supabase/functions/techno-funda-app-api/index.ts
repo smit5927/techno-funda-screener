@@ -2,6 +2,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.110.4";
 import { calculatePositionMtm, summarizeLivePositions } from "./live-mtm.js";
 import { sessionActivationUpdates, sessionIsRejected } from "./session-policy.js";
+import { resolveCapitalChange } from "./capital-policy.js";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -282,25 +283,30 @@ async function saveCustomList(context: any, body: any) {
 }
 
 async function saveTradeSettings(context: any, body: any) {
-  const current = await readSettings(context.user.id);
-  const requested = normalizeSettings({ ...publicSettings(current), ...body });
+  const [current, stateResult] = await Promise.all([
+    readSettings(context.user.id),
+    admin().from("app_user_states").select("state").eq("user_id", context.user.id).maybeSingle()
+  ]);
+  if (stateResult.error) throw stateResult.error;
   const previousCapital = Number(current.total_capital || 1000000);
-  const addCapital = Math.max(0, Number(body.addCapital) || 0);
-  const requestedCapital = Number(body.totalCapital);
-  const totalCapital = addCapital > 0
-    ? previousCapital + addCapital
-    : Number.isFinite(requestedCapital) ? requestedCapital : previousCapital;
-  requested.total_capital = clamp(totalCapital, 10000, 1000000000);
   const history = Array.isArray(current.capital_history) ? current.capital_history.slice(-99) : [];
-  if (requested.total_capital !== previousCapital) {
-    history.push({
-      date: new Date().toISOString(),
-      type: addCapital > 0 ? "CAPITAL_ADDED" : "CAPITAL_SET",
-      amount: Math.abs(requested.total_capital - previousCapital),
-      previousCapital,
-      newCapital: requested.total_capital
-    });
-  }
+  const userState = stateResult.data?.state || {};
+  const stateTrades = Array.isArray(userState.trades)
+    ? userState.trades
+    : Array.isArray(userState.journal?.trades) ? userState.journal.trades : [];
+  const capitalChange = resolveCapitalChange({
+    previousCapital,
+    requestedCapital: body.totalCapital,
+    addCapital: body.addCapital,
+    removeCapital: body.removeCapital,
+    portfolioSummary: userState.portfolioSummary,
+    hasActivePositions: stateTrades.some((trade: any) =>
+      ["OPEN", "PENDING_ENTRY", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(String(trade?.status || ""))
+    ),
+    capitalHistory: history
+  });
+  const requested = normalizeSettings({ ...publicSettings(current), ...body, totalCapital: capitalChange.totalCapital });
+  if (capitalChange.event) history.push(capitalChange.event);
   requested.capital_history = history;
   const { data, error } = await admin()
     .from("app_user_settings")
@@ -309,8 +315,11 @@ async function saveTradeSettings(context: any, body: any) {
     .select("*")
     .single();
   if (error) throw error;
-  await audit(context.user.id, context.user.id, "TRADE_SETTINGS_SAVED", publicSettings(data));
-  return { ok: true, tradeSettings: publicSettings(data) };
+  await audit(context.user.id, context.user.id, "TRADE_SETTINGS_SAVED", {
+    settings: publicSettings(data),
+    capitalChange: capitalChange.type ? capitalChange : null
+  });
+  return { ok: true, tradeSettings: publicSettings(data), capitalChange };
 }
 
 async function saveTelegram(context: any, body: any) {
@@ -355,16 +364,18 @@ async function userPayload(context: any) {
   const market = await decodeMarketPayload(marketResult.data?.payload || {});
   const userState = stateResult.data?.state || {};
   const lists = withCustomList(market.lists || {}, symbols);
+  const tradeSettings = publicSettings(settings);
   const state = {
     ...market,
     ...userState,
     lists,
-    tradeSettings: publicSettings(settings)
+    portfolioSummary: reconcilePortfolioCapital(userState.portfolioSummary, tradeSettings.totalCapital),
+    tradeSettings
   };
   return {
     state,
     profile: publicProfile(context.profile),
-    tradeSettings: publicSettings(settings),
+    tradeSettings,
     customList: { count: symbols.length },
     telegram: publicTelegram(telegram)
   };
@@ -392,6 +403,46 @@ async function ingestMarketState(body: any) {
   const { error } = await admin().from("app_market_state").upsert(row);
   if (error) throw error;
   return { ok: true, scanAt: row.scan_at };
+}
+
+function reconcilePortfolioCapital(summary: any, configuredCapital: number) {
+  if (!summary || !Number.isFinite(Number(configuredCapital))) return summary;
+  const previousCapital = Number(summary.totalCapital) || configuredCapital;
+  const totalCapital = Number(configuredCapital);
+  const delta = totalCapital - previousCapital;
+  if (Math.abs(delta) < 0.005) return summary;
+  const invested = Number(summary.investedCapital) || 0;
+  const reserved = Number(summary.reservedCapital) || 0;
+  const actualCash = Math.max(0, (Number(summary.actualCash) || 0) + delta);
+  const exposureCapPct = Number(summary.effectiveExposureCapPct);
+  const exposureLimit = Number.isFinite(exposureCapPct)
+    ? totalCapital * exposureCapPct / 100
+    : totalCapital;
+  const availableCash = Math.min(actualCash, Math.max(0, exposureLimit - invested - reserved));
+  const totalEquity = (Number(summary.totalEquity) || previousCapital) + delta;
+  const portfolioRisk = Number(summary.portfolioRisk) || 0;
+  const maxRiskPct = previousCapital > 0 && Number(summary.riskLimit) > 0
+    ? Number(summary.riskLimit) / previousCapital * 100
+    : 0;
+  const riskLimit = totalCapital * maxRiskPct / 100;
+  return {
+    ...summary,
+    totalCapital: roundMoney(totalCapital),
+    actualCash: roundMoney(actualCash),
+    availableCash: roundMoney(availableCash),
+    exposureLimit: roundMoney(exposureLimit),
+    totalEquity: roundMoney(totalEquity),
+    drawdownPct: totalCapital > 0 ? roundMoney(Math.max(0, (totalCapital - totalEquity) / totalCapital * 100)) : 0,
+    portfolioRiskPct: totalCapital > 0 ? roundMoney(portfolioRisk / totalCapital * 100) : 0,
+    riskLimit: roundMoney(riskLimit),
+    availableRisk: roundMoney(Math.max(0, riskLimit - portfolioRisk)),
+    capitalUtilizationPct: totalCapital > 0 ? roundMoney((invested + reserved) / totalCapital * 100) : 0,
+    overallocatedCapital: roundMoney(Math.max(0, invested + reserved - totalCapital))
+  };
+}
+
+function roundMoney(value: number) {
+  return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
 }
 
 async function decodeMarketPayload(payload: any) {

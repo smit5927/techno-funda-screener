@@ -1,4 +1,4 @@
-const CACHE = "techno-funda-shell-v19-all-india-market";
+const CACHE = "techno-funda-shell-v20-capital-withdrawal";
 const SHELL = [
   "./",
   "./styles.css",

@@ -46,6 +46,7 @@ const elements = {
   todayUnrealizedPnl: document.querySelector("#todayUnrealizedPnl"),
   unrealizedPnl: document.querySelector("#unrealizedPnl"),
   portfolioReturn: document.querySelector("#portfolioReturn"),
+  portfolioReturnBasis: document.querySelector("#portfolioReturnBasis"),
   tradeScopeText: document.querySelector("#tradeScopeText"),
   tradeQualityText: document.querySelector("#tradeQualityText"),
   totalCapital: document.querySelector("#totalCapital"),
@@ -97,6 +98,7 @@ const elements = {
   tradeQualitySelect: document.querySelector("#tradeQualitySelect"),
   totalCapitalInput: document.querySelector("#totalCapitalInput"),
   addCapitalInput: document.querySelector("#addCapitalInput"),
+  removeCapitalInput: document.querySelector("#removeCapitalInput"),
   minimumInitialAllocationInput: document.querySelector("#minimumInitialAllocationInput"),
   maxOpenPositionsInput: document.querySelector("#maxOpenPositionsInput"),
   riskPerTradeInput: document.querySelector("#riskPerTradeInput"),
@@ -492,9 +494,11 @@ function renderSummary(payload) {
   const portfolioReturn = portfolioReturnPerformance(
     payload.tradeSummary?.realizedPnl,
     payload.tradeSummary?.unrealizedPnl,
-    portfolio.totalCapital || payload.tradeSettings?.totalCapital
+    portfolio.totalCapital || payload.tradeSettings?.totalCapital,
+    payload.tradeSettings?.capitalHistory
   );
   renderSummaryPnl(elements.portfolioReturn, portfolioReturn.value, portfolioReturn.percentage);
+  renderPortfolioReturnBasis(portfolioReturn);
   renderChargesStatus(payload);
   elements.tradeScopeText.textContent = payload.tradeSettings?.scopeLabel || "All Indian Market";
   elements.tradeQualityText.textContent = payload.tradeSettings?.qualityLabel || "Best only";
@@ -502,6 +506,14 @@ function renderSummary(payload) {
   elements.deployedCapital.textContent = compact(portfolio.deployedCapital || 0);
   elements.availableCash.textContent = compact(portfolio.availableCash || 0);
   elements.availableCash.title = `Deployable cash; actual cash ${compact(portfolio.actualCash || portfolio.availableCash || 0)}. Market ${portfolio.marketRiskMode || "NA"}, exposure cap ${compact(portfolio.effectiveExposureCapPct ?? 100)}%.`;
+  if (elements.removeCapitalInput) {
+    const withdrawalLimit = Math.max(0, Math.min(
+      Number(portfolio.availableCash) || 0,
+      (Number(portfolio.totalCapital || payload.tradeSettings?.totalCapital) || 0) - 10000
+    ));
+    elements.removeCapitalInput.max = String(withdrawalLimit);
+    elements.removeCapitalInput.title = `Maximum removable free cash now: Rs ${compact(withdrawalLimit)}`;
+  }
   elements.portfolioRisk.textContent = `${compact(portfolio.portfolioRisk || 0)} (${compact(portfolio.portfolioRiskPct || 0)}%)`;
   const listLabel = state.currentList === "all" ? "All Lists" : listPayload?.label || state.currentList;
   const benchmarkLabel = payload.benchmarkLabel || payload.rules?.benchmarkLabel || payload.benchmark;
@@ -856,13 +868,29 @@ function renderRealizedBreakdown(payload) {
     : `Gross Trading P&L ${compact(grossTrading)} | Dividend Income ${compact(dividend)}`;
 }
 
-function portfolioReturnPerformance(realizedPnl, unrealizedPnl, totalCapital) {
+function portfolioReturnPerformance(realizedPnl, unrealizedPnl, totalCapital, capitalHistory = []) {
   const value = (Number(realizedPnl) || 0) + (Number(unrealizedPnl) || 0);
   const capital = Number(totalCapital);
+  const latestFlow = [...(Array.isArray(capitalHistory) ? capitalHistory : [])]
+    .reverse()
+    .find((item) => Number(item?.unitsAfterFlow) > 0);
+  const currentEquity = capital + value;
+  const flowAdjustedPercentage = latestFlow && Number.isFinite(currentEquity)
+    ? currentEquity / Number(latestFlow.unitsAfterFlow) - 100
+    : Number.isFinite(capital) && capital > 0 ? value / capital * 100 : null;
   return {
     value,
-    percentage: Number.isFinite(capital) && capital > 0 ? value / capital * 100 : null
+    percentage: Number.isFinite(capital) && capital > 0 ? value / capital * 100 : null,
+    flowAdjustedPercentage
   };
+}
+
+function renderPortfolioReturnBasis(performance) {
+  if (!elements.portfolioReturnBasis) return;
+  const navReturn = Number(performance?.flowAdjustedPercentage);
+  elements.portfolioReturnBasis.textContent = Number.isFinite(navReturn)
+    ? `Total capital (free + utilized) | Flow-adjusted NAV ${compact(navReturn)}%`
+    : "On total capital: free + utilized";
 }
 
 function deliverySellCharges(turnover, settings = {}) {
@@ -940,9 +968,11 @@ function renderLiveMtmSummary() {
   const portfolioReturn = portfolioReturnPerformance(
     state.payload?.tradeSummary?.realizedPnl,
     netUnrealized,
-    state.payload?.portfolioSummary?.totalCapital || state.payload?.tradeSettings?.totalCapital
+    state.payload?.portfolioSummary?.totalCapital || state.payload?.tradeSettings?.totalCapital,
+    state.payload?.tradeSettings?.capitalHistory
   );
   renderSummaryPnl(elements.portfolioReturn, portfolioReturn.value, portfolioReturn.percentage, true);
+  renderPortfolioReturnBasis(portfolioReturn);
   setLiveValue(elements.liveStopRisk, `${compact(summary.downsideToStops || 0)} (${compact(summary.stopRiskPct || 0)}%)`);
   const warningCount = (summary.breachCount || 0) + (summary.nearStopCount || 0);
   const statusClass = summary.breachCount ? "danger" : warningCount ? "warning" : mtm.marketStatus === "OPEN" ? "live" : "closed";
@@ -1422,6 +1452,11 @@ async function saveTradeSettings() {
   elements.saveTradeSettingsButton.disabled = true;
   elements.tradeSettingsStatus.textContent = "Saving trade settings...";
   try {
+    const addCapital = Number(elements.addCapitalInput.value || 0);
+    const removeCapital = Number(elements.removeCapitalInput.value || 0);
+    if (addCapital > 0 && removeCapital > 0) {
+      throw new Error("Add Capital and Remove Capital cannot be used together. Enter only one amount.");
+    }
     const response = await fetch(cloudApiUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -1431,7 +1466,8 @@ async function saveTradeSettings() {
         scopeListId: elements.tradeScopeSelect.value,
         qualityMode: elements.tradeQualitySelect.value,
         totalCapital: Number(elements.totalCapitalInput.value),
-        addCapital: Number(elements.addCapitalInput.value || 0),
+        addCapital,
+        removeCapital,
         minimumInitialAllocation: Number(elements.minimumInitialAllocationInput.value),
         maxOpenPositions: Number(elements.maxOpenPositionsInput.value),
         riskPerTradePct: Number(elements.riskPerTradeInput.value),
@@ -1451,9 +1487,23 @@ async function saveTradeSettings() {
     localStorage.setItem("tfAccessCode", accessCode);
     syncAccessCodeInputs(accessCode);
     state.cloudTradeSettings = payload.tradeSettings || state.cloudTradeSettings;
+    if (state.payload && payload.tradeSettings) {
+      state.payload.tradeSettings = payload.tradeSettings;
+      state.payload.portfolioSummary = reconcilePortfolioCapital(
+        state.payload.portfolioSummary,
+        payload.tradeSettings.totalCapital
+      );
+      renderSummary(state.payload);
+    }
     elements.addCapitalInput.value = "";
+    elements.removeCapitalInput.value = "";
     renderTradeSettings(payload.tradeSettings, { updateBadges: false });
-    elements.tradeSettingsStatus.textContent = "Saved in cloud. Next scheduled scan will use this selection.";
+    const change = payload.capitalChange;
+    elements.tradeSettingsStatus.textContent = change?.type === "CAPITAL_REMOVED"
+      ? `Rs ${compact(change.amount)} removed from free cash. New capital Rs ${compact(change.newCapital)}.`
+      : change?.type === "CAPITAL_ADDED"
+        ? `Rs ${compact(change.amount)} added. New capital Rs ${compact(change.newCapital)}.`
+        : "Saved in cloud. Next scheduled scan will use this selection.";
   } catch (error) {
     elements.tradeSettingsStatus.textContent = `Trade settings save failed: ${error.message}`;
   } finally {
@@ -1900,6 +1950,39 @@ function checkHtml(label, check, asPercent = false) {
       <span>${latest} vs ${previous}</span>
     </div>
   `;
+}
+
+function reconcilePortfolioCapital(summary, configuredCapital) {
+  if (!summary || !Number.isFinite(Number(configuredCapital))) return summary;
+  const previousCapital = Number(summary.totalCapital) || Number(configuredCapital);
+  const totalCapital = Number(configuredCapital);
+  const delta = totalCapital - previousCapital;
+  if (Math.abs(delta) < 0.005) return summary;
+  const invested = Number(summary.investedCapital) || 0;
+  const reserved = Number(summary.reservedCapital) || 0;
+  const actualCash = Math.max(0, (Number(summary.actualCash) || 0) + delta);
+  const exposureCapPct = Number(summary.effectiveExposureCapPct);
+  const exposureLimit = Number.isFinite(exposureCapPct) ? totalCapital * exposureCapPct / 100 : totalCapital;
+  const portfolioRisk = Number(summary.portfolioRisk) || 0;
+  const maxRiskPct = previousCapital > 0 && Number(summary.riskLimit) > 0
+    ? Number(summary.riskLimit) / previousCapital * 100
+    : 0;
+  const riskLimit = totalCapital * maxRiskPct / 100;
+  const totalEquity = (Number(summary.totalEquity) || previousCapital) + delta;
+  return {
+    ...summary,
+    totalCapital,
+    actualCash,
+    availableCash: Math.min(actualCash, Math.max(0, exposureLimit - invested - reserved)),
+    exposureLimit,
+    totalEquity,
+    drawdownPct: totalCapital > 0 ? Math.max(0, (totalCapital - totalEquity) / totalCapital * 100) : 0,
+    portfolioRiskPct: totalCapital > 0 ? portfolioRisk / totalCapital * 100 : 0,
+    riskLimit,
+    availableRisk: Math.max(0, riskLimit - portfolioRisk),
+    capitalUtilizationPct: totalCapital > 0 ? (invested + reserved) / totalCapital * 100 : 0,
+    overallocatedCapital: Math.max(0, invested + reserved - totalCapital)
+  };
 }
 
 function fundamentalEvidenceHtml(row = {}) {

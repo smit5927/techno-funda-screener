@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { calculatePositionMtm, summarizeLivePositions } from "./live-mtm.js";
+import { resolveCapitalChange } from "./capital-policy.js";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -106,28 +107,28 @@ Deno.serve(async (request: Request) => {
         return json({ error: "Invalid access code" }, 401);
       }
 
-      const existingSettings = await readValue("trade_settings", {});
-      const requestedCapital = Number(body.totalCapital);
-      const baseCapital =
-        Number.isFinite(requestedCapital) && requestedCapital >= 10000
-          ? requestedCapital
-          : Number(existingSettings.totalCapital) || 1000000;
-      const addCapital = Math.max(0, Number(body.addCapital) || 0);
-      const totalCapital = normalizeCapital(baseCapital + addCapital);
+      const [existingSettings, latestState] = await Promise.all([
+        readValue("trade_settings", {}),
+        readValue("latest_state", {})
+      ]);
       const capitalHistory = Array.isArray(existingSettings.capitalHistory)
         ? existingSettings.capitalHistory.slice(-49)
         : [];
-      if (addCapital > 0 || totalCapital !== Number(existingSettings.totalCapital || 1000000)) {
-        capitalHistory.push({
-          date: new Date().toISOString(),
-          type: addCapital > 0 ? "CAPITAL_ADDED" : "CAPITAL_SET",
-          amount: addCapital > 0 ? addCapital : Math.abs(totalCapital - Number(existingSettings.totalCapital || 1000000)),
-          previousCapital: Number(existingSettings.totalCapital) || 1000000,
-          newCapital: totalCapital
-        });
-      }
+      const stateTrades = Array.isArray(latestState?.trades) ? latestState.trades : [];
+      const capitalChange = resolveCapitalChange({
+        previousCapital: Number(existingSettings.totalCapital) || 1000000,
+        requestedCapital: body.totalCapital,
+        addCapital: body.addCapital,
+        removeCapital: body.removeCapital,
+        portfolioSummary: latestState?.portfolioSummary,
+        hasActivePositions: stateTrades.some((trade: any) =>
+          ["OPEN", "PENDING_ENTRY", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(String(trade?.status || ""))
+        ),
+        capitalHistory
+      });
+      if (capitalChange.event) capitalHistory.push(capitalChange.event);
       const settings = {
-        ...normalizeTradeSettings({ ...existingSettings, ...body, totalCapital }),
+        ...normalizeTradeSettings({ ...existingSettings, ...body, totalCapital: capitalChange.totalCapital }),
         capitalHistory,
         updatedAt: new Date().toISOString(),
         source: "website"
@@ -135,7 +136,8 @@ Deno.serve(async (request: Request) => {
       await upsertValue("trade_settings", settings);
       return json({
         ok: true,
-        tradeSettings: publicTradeSettings(settings)
+        tradeSettings: publicTradeSettings(settings),
+        capitalChange
       });
     }
 
@@ -192,7 +194,7 @@ Deno.serve(async (request: Request) => {
     return json({ error: `Unknown action: ${action}` }, 400);
   } catch (error) {
     console.error(error);
-    return json({ error: error?.message || String(error) }, 500);
+    return json({ error: error?.message || String(error) }, Number(error?.status) || 500);
   }
 });
 

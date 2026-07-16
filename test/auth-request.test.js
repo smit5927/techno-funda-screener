@@ -37,6 +37,8 @@ test("portfolio summary exposes live today and total unrealized P&L", () => {
   assert.doesNotMatch(html, /id="dividendRealizedPnl"/);
   assert.match(html, /id="realizedPnlBreakdown"/);
   assert.match(html, /id="portfolioReturn"/);
+  assert.match(html, /id="portfolioReturnBasis"/);
+  assert.match(html, /id="removeCapitalInput"/);
   assert.match(html, /Overall Portfolio Return/);
   assert.match(html, /class="pnlPerformanceSection"/);
   assert.match(html, /class="pnlPerformanceGrid"/);
@@ -46,6 +48,8 @@ test("portfolio summary exposes live today and total unrealized P&L", () => {
   assert.match(app, /summary\.dayPnl/);
   assert.match(app, /summary\.dayPnlPct/);
   assert.match(app, /portfolioReturnPerformance/);
+  assert.match(app, /removeCapital/);
+  assert.match(app, /Flow-adjusted NAV/);
   assert.match(app, /renderSummaryPnl\(elements\.realizedPnl/);
   assert.match(app, /renderRealizedBreakdown\(payload\)/);
   assert.match(app, /Gross Trading P&L/);
