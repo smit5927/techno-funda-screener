@@ -41,13 +41,13 @@ export async function sendTelegramSummary(scan, config) {
 
 function buildMessage(scan, events) {
   const lines = [
-    "Techno Funda Screener",
+    "Techno Funda PMS",
     `Scan: ${scan.scannedAt}`,
     `New trade alerts: ${events.length}`,
     `Market snapshot: Total ${scan.summary.total} | Entry candidates ${scan.summary.entry} | Exit candidates ${scan.summary.exit} | Watch ${scan.summary.watch}`,
     `Trade sheet: ${scan.tradeSettings?.scopeLabel || "All NSE Market"} | ${scan.tradeSettings?.qualityLabel || "Best only (A+/A)"}`,
     `Positions open ${scan.tradeSummary?.open ?? 0} | Pending buy ${scan.tradeSummary?.pendingEntry ?? 0} | Pending winner add ${scan.portfolioSummary?.pendingAdds ?? 0} | Pending sell ${scan.tradeSummary?.pendingExit ?? 0}`,
-    `P&L realized ${fmt(scan.tradeSummary?.realizedPnl)} | unrealized ${fmt(scan.tradeSummary?.unrealizedPnl)} (${fmt(scan.portfolioSummary?.unrealizedPnlPct)}%)`,
+    `P&L realized ${fmt(scan.tradeSummary?.realizedPnl)} (trading ${fmt(scan.tradeSummary?.tradeRealizedPnl)}, dividend ${fmt(scan.tradeSummary?.dividendRealizedPnl)}) | unrealized ${fmt(scan.tradeSummary?.unrealizedPnl)} (${fmt(scan.portfolioSummary?.unrealizedPnlPct)}%)`,
     `Portfolio capital ${fmt(scan.portfolioSummary?.totalCapital)} | deployed ${fmt(scan.portfolioSummary?.deployedCapital)} | cash ${fmt(scan.portfolioSummary?.availableCash)} | risk ${fmt(scan.portfolioSummary?.portfolioRisk)} (${fmt(scan.portfolioSummary?.portfolioRiskPct)}%)`,
     `Portfolio slots ${scan.portfolioSummary?.openPositions ?? 0}/${scan.portfolioSummary?.maxOpenPositions ?? 15} | waiting ranked entries ${scan.portfolioSummary?.waitingCandidates ?? 0}`,
     `Market risk ${scan.portfolioSummary?.marketRiskMode || "NA"} | exposure cap ${fmt(scan.portfolioSummary?.effectiveExposureCapPct)}% | drawdown ${fmt(scan.portfolioSummary?.drawdownPct)}%`,
@@ -160,6 +160,27 @@ function addTradeEvents(lines, events) {
       lines.push(
         `WINNER ADD SKIPPED ${trade.symbol} | no buy executed | ${trade.executionError || trade.lastPyramidDecision?.reasons?.join(" ") || "Risk constraint"}`
       );
+    }
+    if (event.type === "DIVIDEND_CREDIT") {
+      const action = event.corporateAction || {};
+      lines.push(
+        `DIVIDEND ENTITLEMENT ${trade.symbol} | ex-date ${action.exDate || "NA"} | qty ${action.entitledQuantity ?? "NA"} x Rs ${fmt(action.dividendPerShare)} | dividend realized Rs ${fmt(action.amount)}`
+      );
+      lines.push(`   NSE purpose: ${action.purpose || "NA"}`);
+    }
+    if (event.type === "CORPORATE_ACTION_ADJUSTED") {
+      const action = event.corporateAction || {};
+      lines.push(
+        `${action.type || "CORPORATE ACTION"} ADJUSTED ${trade.symbol} | ex-date ${action.exDate || "NA"} | quantity ${action.quantityBefore ?? "NA"} -> ${action.quantityAfter ?? "NA"} | factor ${fmt(action.factor)}x | adjusted average Rs ${fmt(trade.entryPrice)}`
+      );
+      lines.push(`   NSE purpose: ${action.purpose || "NA"}`);
+    }
+    if (event.type === "CORPORATE_ACTION_REVIEW") {
+      const action = event.corporateAction || {};
+      lines.push(
+        `CORPORATE ACTION REVIEW ${trade.symbol} | ex-date ${action.exDate || "NA"} | ${action.purpose || "NA"}`
+      );
+      lines.push(`   No automatic cash/quantity assumption posted: ${action.reviewReason || "Broker entitlement confirmation required."}`);
     }
   }
 }

@@ -1,4 +1,4 @@
-# Techno Funda Screener
+# Techno Funda PMS
 
 Daily-close based screener for all NSE equities, Nifty 500, and a custom uploaded list, with Telegram alerts, next-morning execution, automatic trade journal, and Excel export.
 
@@ -142,7 +142,7 @@ TECHNO_FUNDA_INTERNAL_KEY
 
 5. Open `Settings > Pages`.
 6. Set build/deploy source to GitHub Actions.
-7. Open `Actions > Daily Techno Funda Screener > Run workflow` once.
+7. Open `Actions > Daily Techno Funda PMS > Run workflow` once.
 8. After it finishes, open the GitHub Pages URL on mobile.
 
 ### Website Custom Excel Upload

@@ -4,6 +4,7 @@ import { appConfig } from "./config.js";
 import { readTrades, saveTrades } from "./storage.js";
 import { fetchExecutionPrice } from "./yahoo.js";
 import { applyTradeChargeAccounting, chargeSettings } from "./charges.js";
+import { updateOpenPositionCorporateActions } from "./corporate-actions.js";
 import {
   buildPositionPlan,
   buildPyramidAddPlan,
@@ -98,6 +99,13 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
   }
   await migrateLegacyOpeningPrices(trades, config);
   await correctActiveExecutionPrices(trades);
+  const corporateActionStatus = await updateOpenPositionCorporateActions(
+    trades,
+    scan,
+    config,
+    options.corporateActions || {}
+  );
+  events.push(...(corporateActionStatus.events || []));
   for (const trade of trades) applyTradeChargeAccounting(trade, config, trade.lastPrice);
 
   for (const trade of trades) {
@@ -453,6 +461,10 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
       priceSource: config.trade.executionPriceSource
     },
     chargeRules: chargeSettings(config),
+    corporateActionStatus: {
+      ...corporateActionStatus,
+      events: undefined
+    },
     signalState: nextSignalState,
     tradeCapitalPerStock: riskRules.totalCapital * riskRules.maxPositionPct / 100,
     portfolioRules: riskRules,
@@ -1372,6 +1384,7 @@ function migrateTradeMetadata(trades) {
     trade.originalQuantity = trade.originalQuantity || trade.quantity || null;
     trade.originalInvestedValue = trade.originalInvestedValue || trade.investedValue || null;
     trade.partialExits = Array.isArray(trade.partialExits) ? trade.partialExits : [];
+    trade.corporateActions = Array.isArray(trade.corporateActions) ? trade.corporateActions : [];
     trade.partialExitTags = Array.isArray(trade.partialExitTags) ? trade.partialExitTags : [];
     trade.managementCloseDates = Array.isArray(trade.managementCloseDates) ? trade.managementCloseDates : [];
     trade.trailingStopBreachDates = Array.isArray(trade.trailingStopBreachDates) ? trade.trailingStopBreachDates : [];
@@ -1381,6 +1394,10 @@ function migrateTradeMetadata(trades) {
     trade.initialEntryPrice = trade.initialEntryPrice || trade.entryPrice || null;
     trade.initialQuantity = trade.initialQuantity || trade.originalQuantity || trade.quantity || null;
     trade.realizedPnlToDate = Number(trade.realizedPnlToDate) || 0;
+    trade.tradeRealizedPnlToDate = Number.isFinite(Number(trade.tradeRealizedPnlToDate))
+      ? Number(trade.tradeRealizedPnlToDate)
+      : trade.realizedPnlToDate - (Number(trade.dividendRealizedPnl) || 0);
+    trade.dividendRealizedPnl = Number(trade.dividendRealizedPnl) || 0;
     trade.entryReason = rewriteExecutionReasons(trade.entryReason);
     trade.exitReason = rewriteExecutionReasons(trade.exitReason);
     if (trade.entrySnapshot) {
@@ -1758,7 +1775,7 @@ function calculateQuantity(price, config) {
 
 async function writeXlsx(journal, filePath) {
   const workbook = new ExcelJS.Workbook();
-  workbook.creator = "Techno Funda Screener";
+  workbook.creator = "Techno Funda PMS";
   workbook.created = new Date();
 
   const pending = journal.trades.filter(
@@ -1767,6 +1784,7 @@ async function writeXlsx(journal, filePath) {
   const open = journal.trades.filter((trade) => trade.status === "OPEN");
   const closed = journal.trades.filter((trade) => trade.status === "CLOSED");
   const realizedPnl = totalRealizedPnl(journal.trades);
+  const dividendPnl = journal.trades.reduce((sum, trade) => sum + (Number(trade.dividendRealizedPnl) || 0), 0);
   const unrealizedPnl = open.reduce((sum, trade) => sum + (trade.unrealizedPnl || 0), 0);
   const portfolio = journal.portfolioSummary || portfolioSummary(journal.trades, journal.candidates, config);
 
@@ -1796,6 +1814,8 @@ async function writeXlsx(journal, filePath) {
     { metric: "Open Positions", value: open.length },
     { metric: "Closed Trades", value: closed.length },
     { metric: "Realized P&L", value: round(realizedPnl) },
+    { metric: "Trading Realized P&L", value: round(realizedPnl - dividendPnl) },
+    { metric: "Dividend Realized P&L", value: round(dividendPnl) },
     { metric: "Unrealized P&L", value: round(unrealizedPnl) },
     { metric: "Unrealized P&L %", value: portfolio.unrealizedPnlPct },
     { metric: "Charges Included", value: journal.chargeRules?.enabled ? "Yes" : "No" },
@@ -1821,6 +1841,7 @@ async function writeXlsx(journal, filePath) {
   addTradeWorksheet(workbook, "Closed Trades", closed);
   addTradeWorksheet(workbook, "All Trades", journal.trades);
   addTransactionLedgerWorksheet(workbook, journal.trades);
+  addCorporateActionWorksheet(workbook, journal.trades);
   addCandidateWorksheet(workbook, journal.candidates || []);
   addCandidateDecisionWorksheet(workbook, journal.candidateDecisionLog || []);
   addCapitalLedgerWorksheet(workbook, journal.capitalTransactions || []);
@@ -1885,6 +1906,52 @@ function addTransactionLedgerWorksheet(workbook, trades) {
         "Gross P&L": transaction.grossPnl ?? "",
         "Allocated Buy Charges": transaction.allocatedBuyCharges ?? "",
         "Net P&L": transaction.netPnl ?? ""
+      });
+    }
+  }
+  sheet.addRows(rows);
+  sheet.views = [{ state: "frozen", ySplit: 1 }];
+  formatSheet(sheet);
+}
+
+function addCorporateActionWorksheet(workbook, trades) {
+  const sheet = workbook.addWorksheet("Corporate Actions");
+  sheet.columns = [
+    { header: "Symbol", key: "Symbol", width: 15 },
+    { header: "Type", key: "Type", width: 18 },
+    { header: "Status", key: "Status", width: 28 },
+    { header: "Ex Date", key: "Ex Date", width: 14 },
+    { header: "Record Date", key: "Record Date", width: 14 },
+    { header: "Purpose", key: "Purpose", width: 70 },
+    { header: "Entitled Quantity", key: "Entitled Quantity", width: 20 },
+    { header: "Quantity Before", key: "Quantity Before", width: 18 },
+    { header: "Quantity After", key: "Quantity After", width: 18 },
+    { header: "Factor", key: "Factor", width: 12 },
+    { header: "Dividend Per Share", key: "Dividend Per Share", width: 22 },
+    { header: "Dividend Realized P&L", key: "Dividend Realized P&L", width: 24 },
+    { header: "Fractional Entitlement", key: "Fractional Entitlement", width: 23 },
+    { header: "Review / Accounting Note", key: "Review / Accounting Note", width: 70 },
+    { header: "Source", key: "Source", width: 24 }
+  ];
+  const rows = [];
+  for (const trade of trades) {
+    for (const action of trade.corporateActions || []) {
+      rows.push({
+        Symbol: trade.symbol,
+        Type: action.type,
+        Status: action.status,
+        "Ex Date": action.exDate || "",
+        "Record Date": action.recordDate || "",
+        Purpose: action.purpose || "",
+        "Entitled Quantity": action.entitledQuantity ?? "",
+        "Quantity Before": action.quantityBefore ?? "",
+        "Quantity After": action.quantityAfter ?? "",
+        Factor: action.factor ?? "",
+        "Dividend Per Share": action.dividendPerShare ?? "",
+        "Dividend Realized P&L": action.amount ?? "",
+        "Fractional Entitlement": action.fractionalEntitlement ?? "",
+        "Review / Accounting Note": action.reviewReason || action.accountingNote || "",
+        Source: action.source || "NSE Corporate Actions"
       });
     }
   }
@@ -1962,6 +2029,10 @@ function tradeColumns() {
     { header: "Add-On Decision", key: "Add-On Decision", width: 60 },
     { header: "Partial Exit Count", key: "Partial Exit Count", width: 18 },
     { header: "Partial Realized P&L", key: "Partial Realized P&L", width: 20 },
+    { header: "Trading Realized P&L", key: "Trading Realized P&L", width: 22 },
+    { header: "Dividend Realized P&L", key: "Dividend Realized P&L", width: 23 },
+    { header: "Corporate Action Count", key: "Corporate Action Count", width: 22 },
+    { header: "Corporate Action History", key: "Corporate Action History", width: 80 },
     { header: "Transaction & Charge History", key: "Transaction & Charge History", width: 80 },
     { header: "Exit Type", key: "Exit Type", width: 22 },
     { header: "Replacement Candidate", key: "Replacement Candidate", width: 24 },
@@ -2093,7 +2164,13 @@ function tradeToRow(trade) {
       ? (trade.pendingAdd.reason || []).join(" ")
       : (trade.lastPyramidDecision?.reasons || []).join(" "),
     "Partial Exit Count": trade.partialExits?.length || 0,
-    "Partial Realized P&L": trade.realizedPnlToDate ?? 0,
+    "Partial Realized P&L": trade.tradeRealizedPnlToDate ?? trade.realizedPnlToDate ?? 0,
+    "Trading Realized P&L": trade.tradeRealizedPnlToDate ?? 0,
+    "Dividend Realized P&L": trade.dividendRealizedPnl ?? 0,
+    "Corporate Action Count": trade.corporateActions?.length || 0,
+    "Corporate Action History": (trade.corporateActions || []).map((item) =>
+      `${item.exDate || "NA"} ${item.type} ${item.status}; ${item.purpose}; entitled ${item.entitledQuantity ?? "NA"}; before ${item.quantityBefore ?? "NA"}; after ${item.quantityAfter ?? "NA"}; dividend ${item.amount ?? 0}; ${item.reviewReason || item.accountingNote || ""}`
+    ).join(" | "),
     "Transaction & Charge History": (trade.transactions || []).map((item) =>
       `${item.date || "NA"} ${item.time || ""} ${item.type} ${item.side} ${item.quantity} @ ${item.price}; turnover ${item.turnover}; brokerage ${item.charges?.brokerage || 0}; STT ${item.charges?.stt || 0}; exchange ${item.charges?.exchangeTransactionCharge || 0}; SEBI ${item.charges?.sebiTurnoverCharge || 0}; stamp ${item.charges?.stampDuty || 0}; GST ${item.charges?.gst || 0}; DP ${item.charges?.dpCharge || 0}; total ${item.charges?.total || 0}; net P&L ${item.netPnl ?? "NA"}`
     ).join(" | "),

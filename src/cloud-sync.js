@@ -89,6 +89,7 @@ export function compactCloudState(state = {}) {
     tradeSummary: state.tradeSummary,
     portfolioSummary: state.portfolioSummary,
     portfolioRules: state.portfolioRules,
+    corporateActionStatus: state.corporateActionStatus,
     trades: state.trades || [],
     waitingCandidates: state.waitingCandidates || [],
     candidateDecisionLog: state.candidateDecisionLog || [],

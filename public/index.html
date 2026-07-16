@@ -7,7 +7,7 @@
     <meta name="color-scheme" content="dark" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <title>Techno Funda Screener</title>
+    <title>Techno Funda PMS</title>
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="app-icon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css?v=20260714-url-auth-fix" />
@@ -55,11 +55,11 @@
     <header class="topbar">
       <div class="brandMark">TF</div>
       <div class="titleBlock">
-        <h1>Techno Funda Screener</h1>
+        <h1>Techno Funda PMS</h1>
         <p id="scanMeta">Waiting for first scan</p>
       </div>
       <div class="actions">
-        <button id="installAppButton" class="installAppButton" type="button" title="Install Techno Funda on this device" hidden><span aria-hidden="true">+</span> Install</button>
+        <button id="installAppButton" class="installAppButton" type="button" title="Install Techno Funda PMS on this device" hidden><span aria-hidden="true">+</span> Install</button>
         <span id="accountName" class="accountName"></span>
         <button id="logoutButton" type="button">Log out</button>
         <button id="refreshButton" class="primaryAction" type="button" title="Reload the latest published scan and current position values"><span aria-hidden="true">&#8635;</span> Update</button>
@@ -128,6 +128,12 @@
             <span>Booked Realized P&amp;L (Net)</span>
             <strong id="realizedPnl" aria-live="polite">0.00</strong>
             <small id="realizedPnlBreakdown">Gross 0.00 | realized charges 0.00</small>
+          </article>
+          <article class="pnlMetric dividend">
+            <span class="pnlMetricType">Income</span>
+            <span>Dividend Realized P&amp;L</span>
+            <strong id="dividendRealizedPnl" aria-live="polite">0.00</strong>
+            <small>Eligible open-position dividends</small>
           </article>
           <article class="pnlMetric today">
             <span class="pnlMetricType">Today</span>
@@ -532,7 +538,7 @@
     <aside id="detailPanel" class="detailPanel" aria-live="polite" aria-label="Stock details"></aside>
     <dialog id="installHelpDialog" class="installHelpDialog">
       <form method="dialog">
-        <div class="installHelpHeading"><span>APP INSTALL</span><h2>Add Techno Funda to this device</h2></div>
+        <div class="installHelpHeading"><span>APP INSTALL</span><h2>Add Techno Funda PMS to this device</h2></div>
         <p><strong>Android Chrome:</strong> open the browser menu and choose Install app or Add to Home screen.</p>
         <p><strong>iPhone Safari:</strong> tap Share, then Add to Home Screen.</p>
         <p><strong>PC Chrome:</strong> use the install icon in the address bar.</p>

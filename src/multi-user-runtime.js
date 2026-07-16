@@ -307,6 +307,7 @@ export function portfolioState(scan, journal, settings, config = appConfig) {
     tradeSummary: summarizeTrades(visibleTrades),
     portfolioSummary: portfolioSummary(visibleTrades, visibleCandidates, config),
     portfolioRules: journal.portfolioRules,
+    corporateActionStatus: journal.corporateActionStatus,
     trades: visibleTrades,
     waitingCandidates: visibleCandidates,
     candidateDecisionLog: journal.visibleCandidateDecisions || [],
@@ -337,6 +338,11 @@ function summarizeTrades(trades = []) {
     pendingExit: byStatus("PENDING_EXIT").length,
     pendingPartialExit: byStatus("PENDING_PARTIAL_EXIT").length,
     realizedPnl: totalRealizedPnl(trades),
+    tradeRealizedPnl: round(trades.reduce((sum, trade) => {
+      if (trade.status === "CLOSED") return sum + (Number(trade.pnl) || 0) - (Number(trade.dividendRealizedPnl) || 0);
+      return sum + (Number(trade.tradeRealizedPnlToDate) || 0);
+    }, 0)),
+    dividendRealizedPnl: round(trades.reduce((sum, trade) => sum + (Number(trade.dividendRealizedPnl) || 0), 0)),
     unrealizedPnl: round(active.reduce((sum, trade) => sum + (Number(trade.unrealizedPnl) || 0), 0))
   };
 }

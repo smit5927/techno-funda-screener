@@ -1,6 +1,6 @@
 {
-  "name": "Techno Funda Institutional System",
-  "short_name": "Techno Funda",
+  "name": "Techno Funda PMS",
+  "short_name": "TF PMS",
   "description": "Private positional market decision, portfolio risk and trade journal system.",
   "start_url": "./?source=pwa",
   "scope": "./",

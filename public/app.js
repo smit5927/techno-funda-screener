@@ -38,6 +38,7 @@ const elements = {
   closedTradesCount: document.querySelector("#closedTradesCount"),
   realizedPnl: document.querySelector("#realizedPnl"),
   realizedPnlBreakdown: document.querySelector("#realizedPnlBreakdown"),
+  dividendRealizedPnl: document.querySelector("#dividendRealizedPnl"),
   todayUnrealizedPnl: document.querySelector("#todayUnrealizedPnl"),
   unrealizedPnl: document.querySelector("#unrealizedPnl"),
   portfolioReturn: document.querySelector("#portfolioReturn"),
@@ -448,6 +449,7 @@ function renderSummary(payload) {
     (payload.tradeSummary?.pendingPartialExit || 0);
   elements.closedTradesCount.textContent = payload.tradeSummary?.closed || 0;
   renderSummaryPnl(elements.realizedPnl, Number(payload.tradeSummary?.realizedPnl) || 0, null);
+  renderSummaryPnl(elements.dividendRealizedPnl, Number(payload.tradeSummary?.dividendRealizedPnl) || 0, null);
   renderRealizedBreakdown(payload);
   const dayPerformance = portfolioDayPerformance(payload);
   renderSummaryPnl(elements.todayUnrealizedPnl, dayPerformance.dayPnl, dayPerformance.dayPnlPct);
@@ -700,8 +702,8 @@ function positionPerformance(trade, suppliedLivePosition = null) {
       state.payload.tradeSettings
     );
   }
-  const partialRealizedPnl = Number(trade?.realizedPnlToDate) || 0;
-  const totalPnl = unrealizedPnl + partialRealizedPnl;
+  const bookedRealizedPnl = Number(trade?.realizedPnlToDate) || 0;
+  const totalPnl = unrealizedPnl + bookedRealizedPnl;
   const investedValue = Number.isFinite(livePosition?.investedValue)
     ? livePosition.investedValue
     : Number(trade?.investedValue);
@@ -804,13 +806,17 @@ function renderRealizedBreakdown(payload) {
   if (!elements.realizedPnlBreakdown) return;
   const portfolio = payload?.portfolioSummary || {};
   const net = Number(payload?.tradeSummary?.realizedPnl) || 0;
+  const dividend = Number(payload?.tradeSummary?.dividendRealizedPnl) || 0;
+  const trading = Number.isFinite(Number(payload?.tradeSummary?.tradeRealizedPnl))
+    ? Number(payload.tradeSummary.tradeRealizedPnl)
+    : net - dividend;
   const realizedCharges = Number(portfolio.realizedCharges) || 0;
   const gross = Number.isFinite(Number(portfolio.grossRealizedPnl))
     ? Number(portfolio.grossRealizedPnl)
     : net + realizedCharges;
   elements.realizedPnlBreakdown.textContent = payload?.tradeSettings?.chargesEnabled
-    ? `Gross ${compact(gross)} | realized charges ${compact(realizedCharges)}`
-    : `Gross ${compact(gross)} | charges OFF`;
+    ? `Trading ${compact(trading)} | dividend ${compact(dividend)} | charges ${compact(realizedCharges)}`
+    : `Trading ${compact(trading)} | dividend ${compact(dividend)} | charges OFF`;
 }
 
 function portfolioReturnPerformance(realizedPnl, unrealizedPnl, totalCapital) {
@@ -1027,7 +1033,7 @@ function renderDetail(row, trade = null, candidate = null) {
           <div>
             <span>Total P&amp;L Since Buy</span>
             <strong class="${signedClass(performance.totalPnl)}">${compact(performance.totalPnl)} (${compact(performance.totalPnlPct)}%)</strong>
-            <small>Includes booked partial P&amp;L and remaining unrealized P&amp;L.</small>
+            <small>Includes trading realized P&amp;L, dividend income and remaining unrealized P&amp;L.</small>
           </div>
         </div>
       ` : ""}
@@ -1057,6 +1063,7 @@ function renderDetail(row, trade = null, candidate = null) {
         <p>Average ${fmt(trade.entryPrice)} | Initial ${fmt(trade.initialEntryPrice || trade.entryPrice)} | Quantity ${trade.quantity ?? "NA"} | Winner adds ${trade.addOns?.length || 0}/2 | Trailing stop ${fmt(trade.trailingStopPrice || trade.initialStopPrice)}</p>
         ${trade.pendingAdd ? reasonListHtml(trade.pendingAdd.reason) : reasonListHtml(trade.lastPyramidDecision?.reasons)}
       </div>
+      ${corporateActionDetailHtml(trade)}
     ` : ""}
     <div class="checkGrid">
       ${checkHtml("Net income YoY", checks.netIncomeYoYUp)}
@@ -1567,6 +1574,26 @@ function reasonListHtml(reasons = []) {
     .filter(Boolean);
   if (!values.length) return '<p class="neutral">No signal reason available.</p>';
   return `<ul class="reasonList">${values.map((reason) => `<li>${escapeHtml(reason)}</li>`).join("")}</ul>`;
+}
+
+function corporateActionDetailHtml(trade) {
+  const actions = Array.isArray(trade?.corporateActions) ? trade.corporateActions : [];
+  if (!actions.length) return "";
+  const rows = actions.map((action) => {
+    const quantity = action.type === "DIVIDEND"
+      ? `${action.entitledQuantity ?? "NA"} shares x Rs ${fmt(action.dividendPerShare)} = Rs ${compact(action.amount || 0)}`
+      : Number.isFinite(Number(action.quantityAfter))
+        ? `${action.quantityBefore ?? "NA"} to ${action.quantityAfter} shares${action.factor ? ` (${compact(action.factor)}x)` : ""}`
+        : action.reviewReason || "Manual entitlement review required";
+    return `<li><b>${escapeHtml(action.exDate || "NA")} ${escapeHtml(action.type || "ACTION")}</b> - ${escapeHtml(quantity)}<br><small>${escapeHtml(action.purpose || "")} | ${escapeHtml(action.status || "")}</small></li>`;
+  }).join("");
+  return `
+    <div class="reasonBlock">
+      <strong>Corporate Actions</strong>
+      <p>Dividend realized: Rs ${compact(trade.dividendRealizedPnl || 0)} | Entries ${actions.length}</p>
+      <ul>${rows}</ul>
+    </div>
+  `;
 }
 
 function snapshotHtml(label, value, tone = "") {

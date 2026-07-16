@@ -152,6 +152,7 @@ export async function runScreener(options = {}) {
   payload.tradeSummary = summarizeTrades(visibleTrades);
   payload.portfolioSummary = visiblePortfolioSummary(journal, config);
   payload.portfolioRules = journal.portfolioRules;
+  payload.corporateActionStatus = journal.corporateActionStatus;
   payload.waitingCandidates = journal.visibleCandidates || journal.candidates || [];
   payload.candidateDecisionLog = journal.visibleCandidateDecisions || [];
   payload.trades = visibleTrades;
@@ -299,6 +300,7 @@ export async function runExecutionPass(options = {}) {
   payload.tradeSummary = summarizeTrades(visibleTrades);
   payload.portfolioSummary = visiblePortfolioSummary(journal, config);
   payload.portfolioRules = journal.portfolioRules;
+  payload.corporateActionStatus = journal.corporateActionStatus;
   payload.waitingCandidates = journal.visibleCandidates || journal.candidates || [];
   payload.candidateDecisionLog = journal.visibleCandidateDecisions || [];
   payload.trades = visibleTrades;
@@ -386,6 +388,11 @@ export function summarizeTrades(trades) {
     pendingExit: pendingExit.length,
     pendingPartialExit: pendingPartialExit.length,
     realizedPnl: totalRealizedPnl(trades),
+    tradeRealizedPnl: Number(trades.reduce((sum, trade) => {
+      if (trade.status === "CLOSED") return sum + (Number(trade.pnl) || 0) - (Number(trade.dividendRealizedPnl) || 0);
+      return sum + (Number(trade.tradeRealizedPnlToDate) || 0);
+    }, 0).toFixed(2)),
+    dividendRealizedPnl: Number(trades.reduce((sum, trade) => sum + (Number(trade.dividendRealizedPnl) || 0), 0).toFixed(2)),
     unrealizedPnl: Number(
       active.reduce((sum, trade) => sum + (Number(trade.unrealizedPnl) || 0), 0).toFixed(2)
     )

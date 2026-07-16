@@ -24,3 +24,23 @@ test("visible portfolio accounting excludes hidden trades from another scope", (
   assert.equal(summary.unrealizedPnl, 350);
   assert.equal(summary.totalEquity - summary.totalCapital, 730);
 });
+
+test("dividend income stays separate while remaining part of realized P&L and portfolio equity", () => {
+  const trades = [{
+    status: "OPEN",
+    investedValue: 10_000,
+    unrealizedPnl: 200,
+    realizedPnlToDate: 350,
+    tradeRealizedPnlToDate: 100,
+    dividendRealizedPnl: 250
+  }];
+  const summary = summarizeTrades(trades);
+  const portfolio = visiblePortfolioSummary(
+    { trades, visibleTrades: trades, candidates: [], visibleCandidates: [] },
+    { trade: { totalCapital: 1_000_000 } }
+  );
+  assert.equal(summary.tradeRealizedPnl, 100);
+  assert.equal(summary.dividendRealizedPnl, 250);
+  assert.equal(summary.realizedPnl, 350);
+  assert.equal(portfolio.totalEquity, 1_000_550);
+});

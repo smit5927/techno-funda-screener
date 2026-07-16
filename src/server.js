@@ -177,7 +177,7 @@ startScheduler(appConfig, async () => {
 });
 
 app.listen(appConfig.port, () => {
-  console.log(`Techno Funda Screener running at http://localhost:${appConfig.port}`);
+  console.log(`Techno Funda PMS running at http://localhost:${appConfig.port}`);
 });
 
 function emptyResult() {

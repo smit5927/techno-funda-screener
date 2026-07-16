@@ -219,6 +219,7 @@ export function portfolioSummary(trades = [], candidates = [], config = {}) {
   );
   const charges = portfolioChargeSummary(trades);
   const grossRealizedPnl = realizedPnl + charges.realizedCharges;
+  const dividendPnl = round(trades.reduce((sum, trade) => sum + (Number(trade.dividendRealizedPnl) || 0), 0));
   const portfolioRisk =
     active.reduce((sum, trade) => sum + remainingTradeRisk(trade), 0) +
     pendingEntries.reduce((sum, trade) => sum + (Number(trade.plannedRisk) || 0), 0) +
@@ -255,6 +256,8 @@ export function portfolioSummary(trades = [], candidates = [], config = {}) {
     availableCash: round(availableCash),
     actualCash: round(actualCash),
     realizedPnl: round(realizedPnl),
+    tradeRealizedPnl: round(realizedPnl - dividendPnl),
+    dividendRealizedPnl: dividendPnl,
     grossRealizedPnl: round(grossRealizedPnl),
     unrealizedPnl: round(unrealizedPnl),
     chargesEnabled: config.trade?.chargesEnabled === true,

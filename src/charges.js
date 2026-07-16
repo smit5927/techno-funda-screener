@@ -76,6 +76,9 @@ export function applyTradeChargeAccounting(trade, config = {}, markPrice = null)
   let unallocatedBuyCharges = 0;
   let grossRealizedPnl = 0;
   let netRealizedPnl = 0;
+  let tradingGrossRealizedPnl = 0;
+  let tradingNetRealizedPnl = 0;
+  let dividendRealizedPnl = 0;
   let actualCharges = 0;
   let buyCharges = 0;
   let sellCharges = 0;
@@ -84,6 +87,24 @@ export function applyTradeChargeAccounting(trade, config = {}, markPrice = null)
     const qty = nonNegative(transaction.quantity);
     const price = nonNegative(transaction.price);
     actualCharges += transaction.charges.total;
+    if (transaction.type === "CORPORATE_ADJUSTMENT") {
+      const quantityAfter = nonNegative(transaction.quantityAfter);
+      const positionCost = averagePrice * quantity;
+      quantity = quantityAfter;
+      averagePrice = quantityAfter > 0 ? positionCost / quantityAfter : 0;
+      transaction.grossPnl = 0;
+      transaction.netPnl = 0;
+      continue;
+    }
+    if (transaction.type === "DIVIDEND") {
+      const amount = nonNegative(transaction.amount);
+      grossRealizedPnl += amount;
+      netRealizedPnl += amount;
+      dividendRealizedPnl += amount;
+      transaction.grossPnl = round(amount);
+      transaction.netPnl = round(amount);
+      continue;
+    }
     if (transaction.side === "BUY") {
       averagePrice = quantity + qty > 0
         ? ((averagePrice * quantity) + (price * qty)) / (quantity + qty)
@@ -106,6 +127,8 @@ export function applyTradeChargeAccounting(trade, config = {}, markPrice = null)
     unallocatedBuyCharges = Math.max(0, unallocatedBuyCharges - allocatedBuyCharges);
     grossRealizedPnl += grossPnl;
     netRealizedPnl += netPnl;
+    tradingGrossRealizedPnl += grossPnl;
+    tradingNetRealizedPnl += netPnl;
     sellCharges += transaction.charges.total;
     transaction.allocatedBuyCharges = round(allocatedBuyCharges);
     transaction.grossPnl = round(grossPnl);
@@ -148,12 +171,24 @@ export function applyTradeChargeAccounting(trade, config = {}, markPrice = null)
     openPositionCharges: round(unallocatedBuyCharges + estimatedExit.total),
     grossRealizedPnl: round(grossRealizedPnl),
     netRealizedPnl: round(netRealizedPnl),
+    tradingGrossRealizedPnl: round(tradingGrossRealizedPnl),
+    tradingNetRealizedPnl: round(tradingNetRealizedPnl),
+    dividendRealizedPnl: round(dividendRealizedPnl),
     grossUnrealizedPnl: round(grossUnrealizedPnl),
     netUnrealizedPnl: round(netUnrealizedPnl)
   };
   trade.costBasisWithCharges = round(chargeAdjustedCostBasis);
   trade.estimatedExitCharges = round(estimatedExit.total);
+  trade.tradeRealizedPnlToDate = round(tradingNetRealizedPnl);
+  trade.dividendRealizedPnl = round(dividendRealizedPnl);
   trade.realizedPnlToDate = round(netRealizedPnl);
+
+  if (trade.status !== "CLOSED" && trade.corporateActions?.some((item) => item.type !== "DIVIDEND" && item.status !== "REVIEW_REQUIRED")) {
+    trade.quantity = quantity;
+    trade.entryPrice = round(averagePrice);
+    trade.investedValue = round(grossInvestedValue);
+    trade.currentValue = currentPrice ? round(currentPrice * quantity) : trade.currentValue;
+  }
 
   if (trade.status === "CLOSED") {
     trade.pnl = round(netRealizedPnl);
@@ -189,15 +224,23 @@ function buildTransactions(trade, config) {
   const soldQuantity = partialExits.reduce((sum, item) => sum + nonNegative(item.quantity), 0);
   const currentQuantity = nonNegative(trade.quantity);
   const inferredInitial = Math.max(0, currentQuantity + soldQuantity - addedQuantity);
-  const initialQuantity = nonNegative(trade.initialQuantity || inferredInitial || trade.originalQuantity || currentQuantity);
-  if (positive(trade.entryPrice) && initialQuantity > 0 && trade.entryDate) {
-    transactions.push(transaction("ENTRY_BUY", "BUY", trade.entryDate, trade.entryTime, trade.initialEntryPrice || trade.entryPrice, initialQuantity, config, 0));
+  const initialQuantity = nonNegative(trade.accountingInitialQuantity || trade.initialQuantity || inferredInitial || trade.originalQuantity || currentQuantity);
+  const initialPrice = positive(trade.accountingInitialEntryPrice) || positive(trade.initialEntryPrice) || positive(trade.entryPrice);
+  if (initialPrice && initialQuantity > 0 && trade.entryDate) {
+    transactions.push(transaction("ENTRY_BUY", "BUY", trade.entryDate, trade.entryTime, initialPrice, initialQuantity, config, 0));
   }
   addOns.forEach((item, index) => {
     transactions.push(transaction("PYRAMID_BUY", "BUY", item.date, item.time, item.price, item.quantity, config, index));
   });
   partialExits.forEach((item, index) => {
     transactions.push(transaction("PARTIAL_EXIT", "SELL", item.date, item.time, item.price, item.quantity, config, index));
+  });
+  (trade.corporateActions || []).forEach((item, index) => {
+    if (item.type === "DIVIDEND" && item.status === "DIVIDEND_ENTITLED") {
+      transactions.push(corporateTransaction("DIVIDEND", item, config, index));
+    } else if (["SPLIT", "BONUS", "CONSOLIDATION"].includes(item.type) && Number(item.quantityAfter) >= 0 && item.status !== "REVIEW_REQUIRED") {
+      transactions.push(corporateTransaction("CORPORATE_ADJUSTMENT", item, config, index));
+    }
   });
   if (trade.status === "CLOSED" && positive(trade.exitPrice) && currentQuantity > 0 && trade.exitDate) {
     transactions.push(transaction("FULL_EXIT", "SELL", trade.exitDate, trade.exitTime, trade.exitPrice, currentQuantity, config, 0));
@@ -207,6 +250,28 @@ function buildTransactions(trade, config) {
     if (dateOrder) return dateOrder;
     return orderFor(left.type) - orderFor(right.type) || left.legIndex - right.legIndex;
   });
+}
+
+function corporateTransaction(type, item, config, legIndex) {
+  const settings = chargeSettings(config);
+  const amount = type === "DIVIDEND" ? nonNegative(item.amount) : 0;
+  return {
+    id: item.id,
+    type,
+    side: type === "DIVIDEND" ? "CASH" : "ADJUST",
+    date: item.exDate || null,
+    time: "EX-DATE",
+    price: type === "DIVIDEND" ? round(nonNegative(item.dividendPerShare)) : 0,
+    quantity: nonNegative(item.entitledQuantity),
+    quantityBefore: nonNegative(item.quantityBefore),
+    quantityAfter: nonNegative(item.quantityAfter),
+    factor: Number(item.factor) || null,
+    amount: round(amount),
+    turnover: round(amount),
+    charges: emptyBreakdown(amount, settings, type === "DIVIDEND" ? "CASH" : "ADJUST"),
+    legIndex,
+    purpose: item.purpose
+  };
 }
 
 function transaction(type, side, date, time, price, quantity, config, legIndex) {
@@ -244,7 +309,7 @@ function emptyBreakdown(turnover, settings, side) {
 }
 
 function orderFor(type) {
-  return { ENTRY_BUY: 0, PYRAMID_BUY: 1, PARTIAL_EXIT: 2, FULL_EXIT: 3 }[type] ?? 9;
+  return { CORPORATE_ADJUSTMENT: 0, DIVIDEND: 1, ENTRY_BUY: 2, PYRAMID_BUY: 3, PARTIAL_EXIT: 4, FULL_EXIT: 5 }[type] ?? 9;
 }
 
 function nonNegative(value, fallback = 0) {

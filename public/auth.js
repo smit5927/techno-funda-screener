@@ -167,7 +167,7 @@ async function prepareMfa() {
   } else {
     const { data: enrollment, error: enrollError } = await client.auth.mfa.enroll({
       factorType: "totp",
-      friendlyName: "Techno Funda Mobile"
+      friendlyName: "Techno Funda PMS Mobile"
     });
     if (enrollError) throw enrollError;
     pendingFactorId = enrollment.id;
@@ -363,7 +363,7 @@ async function downloadTradeSheet(event, format) {
     }
     if (!window.ExcelJS) throw new Error("Excel generator is not ready");
     const workbook = new window.ExcelJS.Workbook();
-    workbook.creator = "Techno Funda Institutional System";
+    workbook.creator = "Techno Funda PMS";
     const summary = workbook.addWorksheet("Summary", { views: [{ state: "frozen", ySplit: 1 }] });
     summary.columns = [{ header: "Metric", key: "metric", width: 34 }, { header: "Value", key: "value", width: 28 }];
     tradeSheetSummary(state).forEach(([metric, value]) => summary.addRow({ metric, value }));
@@ -377,6 +377,22 @@ async function downloadTradeSheet(event, format) {
     capital.columns = ["Date", "Type", "Amount", "Previous Capital", "New Capital"].map((header) => ({ header, key: header.toLowerCase().replaceAll(" ", "_"), width: 22 }));
     (state.tradeSettings?.capitalHistory || []).forEach((item) => capital.addRow({ date: item.date, type: item.type, amount: item.amount, previous_capital: item.previousCapital, new_capital: item.newCapital }));
     styleTradeSheet(capital, "E1");
+    const corporate = workbook.addWorksheet("Corporate Actions", { views: [{ state: "frozen", ySplit: 1 }] });
+    corporate.columns = [
+      ["Symbol", "symbol", 16], ["Type", "type", 18], ["Status", "status", 28],
+      ["Ex Date", "exDate", 15], ["Record Date", "recordDate", 15], ["Purpose", "purpose", 70],
+      ["Entitled Quantity", "entitledQuantity", 20], ["Quantity Before", "quantityBefore", 18],
+      ["Quantity After", "quantityAfter", 18], ["Factor", "factor", 12],
+      ["Dividend Per Share", "dividendPerShare", 22], ["Dividend Realized P&L", "amount", 24],
+      ["Fractional Entitlement", "fractionalEntitlement", 23], ["Review / Note", "note", 70],
+      ["Source", "source", 24]
+    ].map(([header, key, width]) => ({ header, key, width }));
+    for (const trade of trades) {
+      for (const action of trade.corporateActions || []) {
+        corporate.addRow({ symbol: trade.symbol, ...action, note: action.reviewReason || action.accountingNote || "" });
+      }
+    }
+    styleTradeSheet(corporate, `${corporate.getColumn(corporate.columnCount).letter}1`);
     const buffer = await workbook.xlsx.writeBuffer();
     saveBlob(new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), "techno-funda-trade-sheet.xlsx");
   } catch (error) {
@@ -392,7 +408,8 @@ function tradeSheetColumns() {
     ["Exit Date", "exitDate", 16], ["Exit Price", "exitPrice", 14], ["Invested Value", "investedValue", 17],
     ["Current Value", "currentValue", 17], ["Last Price", "lastPrice", 14], ["Unrealized P&L", "unrealizedPnl", 18],
     ["Unrealized P&L %", "unrealizedPnlPct", 18], ["Today P&L", "dayPnl", 17], ["Today P&L %", "dayPnlPct", 17],
-    ["Partial Realized P&L", "partialRealizedPnl", 21],
+    ["Trading Realized P&L", "partialRealizedPnl", 21], ["Dividend Realized P&L", "dividendRealizedPnl", 23],
+    ["Corporate Action Count", "corporateActionCount", 22],
     ["Final Realized P&L", "finalRealizedPnl", 20], ["Booked P&L Contribution", "bookedPnlContribution", 23],
     ["Total Position P&L", "totalPositionPnl", 20], ["Trailing Stop", "trailingStopPrice", 15],
     ["Management Decision", "managementDecision", 22], ["Reason", "reason", 80]
@@ -401,9 +418,12 @@ function tradeSheetColumns() {
 
 function tradeSheetRow(trade, state = {}) {
   const closed = trade.status === "CLOSED";
-  const partialRealizedPnl = Number(trade.realizedPnlToDate || 0);
+  const dividendRealizedPnl = Number(trade.dividendRealizedPnl || 0);
+  const partialRealizedPnl = Number.isFinite(Number(trade.tradeRealizedPnlToDate))
+    ? Number(trade.tradeRealizedPnlToDate)
+    : Number(trade.realizedPnlToDate || 0) - dividendRealizedPnl;
   const finalRealizedPnl = closed ? Number(trade.pnl || 0) : null;
-  const bookedPnlContribution = closed ? finalRealizedPnl : partialRealizedPnl;
+  const bookedPnlContribution = closed ? finalRealizedPnl : partialRealizedPnl + dividendRealizedPnl;
   const unrealizedPnl = closed ? 0 : Number(trade.unrealizedPnl || 0);
   const marketRow = tradeSheetMarketRow(state, trade);
   const previousClose = Number(marketRow?.setupStrength?.pyramidStructure?.previousClose);
@@ -418,6 +438,8 @@ function tradeSheetRow(trade, state = {}) {
   return {
     ...trade,
     partialRealizedPnl,
+    dividendRealizedPnl,
+    corporateActionCount: trade.corporateActions?.length || 0,
     finalRealizedPnl,
     bookedPnlContribution,
     dayPnl,
@@ -463,6 +485,7 @@ function tradeSheetSummary(state) {
     ["Open Positions", trades.open || 0], ["Pending Entry", trades.pendingEntry || 0],
     ["Pending Full Exit", trades.pendingExit || 0], ["Pending Partial Exit", trades.pendingPartialExit || 0],
     ["Closed Trades", trades.closed || 0], ["Realized P&L", trades.realizedPnl || 0],
+    ["Trading Realized P&L", trades.tradeRealizedPnl || 0], ["Dividend Realized P&L", trades.dividendRealizedPnl || 0],
     ["Unrealized P&L", trades.unrealizedPnl || 0], ["Unrealized P&L %", portfolio.unrealizedPnlPct || 0],
     ["Portfolio Risk", portfolio.portfolioRisk], ["Portfolio Risk %", portfolio.portfolioRiskPct]
   ];

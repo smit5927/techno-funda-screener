@@ -146,6 +146,10 @@ export const appConfig = {
     enabled: boolEnv("FUNDAMENTALS_ENABLED", true),
     cacheDays: Math.max(0, numberEnv("FUNDAMENTALS_CACHE_DAYS", 7))
   },
+  corporateActions: {
+    enabled: boolEnv("CORPORATE_ACTIONS_ENABLED", true),
+    lookbackDays: Math.max(30, numberEnv("CORPORATE_ACTIONS_LOOKBACK_DAYS", 400))
+  },
   schedule: {
     enabled: boolEnv("SCHEDULE_ENABLED", true),
     cron: process.env.SCAN_CRON || "0 8 * * 1-5",

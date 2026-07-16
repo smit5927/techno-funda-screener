@@ -1,4 +1,4 @@
-name: Daily Techno Funda Screener
+name: Daily Techno Funda PMS
 
 on:
   workflow_dispatch:
@@ -74,6 +74,8 @@ jobs:
           BENCHMARK_SYMBOL: ^CRSLDX
           FUNDAMENTALS_ENABLED: "true"
           FUNDAMENTALS_CACHE_DAYS: "7"
+          CORPORATE_ACTIONS_ENABLED: "true"
+          CORPORATE_ACTIONS_LOOKBACK_DAYS: "400"
           SCAN_CONCURRENCY: "12"
           MAX_SYMBOLS: "0"
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -108,6 +110,8 @@ jobs:
           ALL_MARKET_WATCHLIST_PATH: config/all-market.csv
           CUSTOM_WATCHLIST_PATH: config/custom-list.csv
           BENCHMARK_SYMBOL: ^CRSLDX
+          CORPORATE_ACTIONS_ENABLED: "true"
+          CORPORATE_ACTIONS_LOOKBACK_DAYS: "400"
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_SEND_EMPTY: "false"
