@@ -104,6 +104,8 @@ export const appConfig = {
     minimumManagementCloses: Math.max(2, numberEnv("TRADE_MINIMUM_MANAGEMENT_CLOSES", 5)),
     severeWeaknessConfirmationCloses: Math.max(2, numberEnv("TRADE_SEVERE_WEAKNESS_CONFIRMATION_CLOSES", 2)),
     trailingStopConfirmationCloses: Math.max(1, numberEnv("TRADE_TRAILING_STOP_CONFIRMATION_CLOSES", 2)),
+    dailyLongRsConfirmationCloses: Math.max(1, numberEnv("TRADE_DAILY_LONG_RS_CONFIRMATION_CLOSES", 2)),
+    dailyLongRsHardExitThreshold: Math.min(-0.01, numberEnv("TRADE_DAILY_LONG_RS_HARD_EXIT_THRESHOLD", -0.1)),
     rotationMinRankAdvantage: numberEnv("TRADE_ROTATION_MIN_RANK_ADVANTAGE", 15),
     rotationMinimumHoldingDays: numberEnv("TRADE_ROTATION_MIN_HOLDING_DAYS", 5),
     rotationConfirmationCloses: Math.max(2, numberEnv("TRADE_ROTATION_CONFIRMATION_CLOSES", 3)),

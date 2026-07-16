@@ -171,6 +171,7 @@ test("a BSE fallback trade uses the latest NSE-alias row for hard exit decisions
   assert.equal(updated.status, "PENDING_EXIT");
   assert.equal(updated.currentSnapshot.close, 17.83);
   assert.equal(updated.currentSnapshot.dailyLongRs, -0.16);
-  assert.match(updated.exitReason.join(" "), /RS55 is below zero/i);
+  assert.match(updated.exitReason.join(" "), /RS55 .*materially below.*hard-exit threshold/i);
+  assert.match(updated.exitReason.join(" "), /breached original structural stop/i);
   assert.match(updated.executionError, /09:17/i);
 });

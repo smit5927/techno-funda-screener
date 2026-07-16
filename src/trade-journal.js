@@ -129,6 +129,14 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
       if (outcome === "FILLED") events.push({ type: "PYRAMID_ADD_FILLED", trade });
       if (outcome === "SKIPPED") events.push({ type: "PYRAMID_ADD_SKIPPED", trade });
     }
+    const exitCancellation = cancelInvalidPendingModelExit(trade, row, config);
+    if (exitCancellation.cancelled) {
+      events.push({
+        type: "EXIT_SIGNAL_CANCELLED",
+        trade,
+        reason: exitCancellation.reason
+      });
+    }
     cancelInvalidPendingPartialExit(trade, row, config);
     cancelInvalidPendingQualityRotation(trade, row, candidates, config);
     if (trade.status === "PENDING_EXIT" && row) {
@@ -508,6 +516,38 @@ function cancelInvalidPendingPartialExit(trade, row, config) {
   trade.executionError = null;
   trade.riskActionNote =
     "Cancelled automatically: the pending partial exit no longer passes the confirmed trend-deterioration policy.";
+}
+
+export function cancelInvalidPendingModelExit(trade, row, config) {
+  if (trade.status !== "PENDING_EXIT" || trade.exitType !== "MODEL_EXIT" || !row) {
+    return { cancelled: false };
+  }
+  const decision = positionExitDecision({ ...trade, status: "OPEN" }, row, config);
+  if (decision.action === "FULL_EXIT") return { cancelled: false };
+  const reason = [
+    "Pending model exit cancelled before execution because the latest balanced confirmation policy no longer confirms a full exit.",
+    ...(decision.reasons || [])
+  ].join(" ");
+  trade.cancelledExitSignals = Array.isArray(trade.cancelledExitSignals)
+    ? trade.cancelledExitSignals
+    : [];
+  trade.cancelledExitSignals.push({
+    cancelledAsOf: row.asOf,
+    exitType: trade.exitType,
+    exitSignalDate: trade.exitSignalDate,
+    originalReasons: trade.exitReason || [],
+    cancellationReasons: decision.reasons || []
+  });
+  trade.status = "OPEN";
+  trade.exitType = null;
+  trade.exitSignalDate = null;
+  trade.exitSignalScanAt = null;
+  trade.exitReason = [];
+  trade.exitSnapshot = null;
+  trade.executionError = null;
+  trade.riskActionNote = reason;
+  trade.lastExitCancellationDate = row.asOf;
+  return { cancelled: true, reason };
 }
 
 function cancelInvalidPendingQualityRotation(trade, row, candidates, config) {
@@ -1539,6 +1579,9 @@ function recordRotationObservation(trade, row, weakness) {
     Number(row.close) <= Number(trade.trailingStopPrice);
   trade.trailingStopBreachDates = raisedTrailingStop
     ? Array.from(new Set([...(trade.trailingStopBreachDates || []), row.asOf])).slice(-5)
+    : [];
+  trade.dailyLongRsBelowZeroDates = Number(row.dailyLongRs) < 0
+    ? Array.from(new Set([...(trade.dailyLongRsBelowZeroDates || []), row.asOf])).slice(-5)
     : [];
 
   const qualificationVersion = 3;

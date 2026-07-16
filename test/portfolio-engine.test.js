@@ -705,15 +705,34 @@ test("original structural stop exits immediately even during entry grace", () =>
   assert.match(decision.reasons.join(" "), /original structural stop/i);
 });
 
-test("daily long RS55 failure exits immediately even during entry grace", () => {
+test("a marginal first daily long RS55 cross waits for confirmation", () => {
   const row = strongRow({ asOf: "2026-07-13", dailyLongRs: -0.01 });
   const decision = positionExitDecision(openTrade({
     entryDate: "2026-07-10",
     managementCloseDates: []
   }), row, { trade: {} });
 
+  assert.equal(decision.action, "HOLD");
+  assert.match(decision.reasons.join(" "), /RS55 EXIT CONFIRMATION.*1\/2/i);
+});
+
+test("daily long RS55 below zero for two completed closes creates a full exit", () => {
+  const row = strongRow({ asOf: "2026-07-14", dailyLongRs: -0.02 });
+  const decision = positionExitDecision(openTrade({
+    entryDate: "2026-07-10",
+    dailyLongRsBelowZeroDates: ["2026-07-13"]
+  }), row, { trade: {} });
+
   assert.equal(decision.action, "FULL_EXIT");
-  assert.match(decision.reasons.join(" "), /RS55 is below zero/i);
+  assert.match(decision.reasons.join(" "), /RS55 remained below zero for 2 confirmed closes/i);
+});
+
+test("material daily long RS55 damage exits immediately", () => {
+  const row = strongRow({ asOf: "2026-07-13", dailyLongRs: -0.11 });
+  const decision = positionExitDecision(openTrade({ entryDate: "2026-07-10" }), row, { trade: {} });
+
+  assert.equal(decision.action, "FULL_EXIT");
+  assert.match(decision.reasons.join(" "), /materially below the hard-exit threshold/i);
 });
 
 test("a raised trailing stop needs two confirmed closes before full exit", () => {

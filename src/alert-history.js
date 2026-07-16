@@ -70,6 +70,7 @@ function alertDefinition(type, trade) {
     ENTRY_TRADE_OPENED: ["ENTRY", "success", "Position opened", "Entry filled successfully."],
     ENTRY_SKIPPED: ["ENTRY", "warning", "Entry moved to waiting", "Portfolio or execution constraint prevented the buy."],
     EXIT_SIGNAL_PENDING: ["EXIT", "danger", "Full exit signal", "Exit is waiting for the next valid 09:17 execution."],
+    EXIT_SIGNAL_CANCELLED: ["EXIT", "info", "Exit signal cancelled", "The position remains open under the balanced confirmation policy."],
     PORTFOLIO_EXIT_PENDING: ["EXIT", "danger", "Portfolio exit signal", "Portfolio rule scheduled a full exit."],
     ROTATION_EXIT_PENDING: ["EXIT", "warning", "Rotation exit signal", "A stronger replacement initiated rotation review."],
     EXIT_TRADE_CLOSED: ["EXIT", "danger", trade.exitType === "QUALITY_ROTATION" ? "Rotation sell filled" : "Position closed", "Exit filled successfully."],

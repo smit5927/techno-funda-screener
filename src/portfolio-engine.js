@@ -24,6 +24,8 @@ export function portfolioConfig(config = {}) {
     minimumManagementCloses: integer(trade.minimumManagementCloses, 5),
     severeWeaknessConfirmationCloses: integer(trade.severeWeaknessConfirmationCloses, 2),
     trailingStopConfirmationCloses: integer(trade.trailingStopConfirmationCloses, 2),
+    dailyLongRsConfirmationCloses: integer(trade.dailyLongRsConfirmationCloses, 2),
+    dailyLongRsHardExitThreshold: negative(trade.dailyLongRsHardExitThreshold, -0.1),
     rotationMinRankAdvantage: positive(trade.rotationMinRankAdvantage, 15),
     rotationMinimumHoldingDays: integer(trade.rotationMinimumHoldingDays, 5),
     rotationConfirmationCloses: integer(trade.rotationConfirmationCloses, 3),
@@ -728,8 +730,19 @@ export function positionExitDecision(trade, row, config = {}) {
       `Completed weekly candle ${row.weeklyAsOf || ""} closed ${round(row.weeklyClose)} below EMA13 ${round(row.weeklyEma13)}; weekly momentum structure is broken.`
     );
   }
-  if (Number(row.dailyLongRs) < 0) {
-    fullReasons.push("Completed-close daily long RS55 is below zero.");
+  const dailyLongRs = Number(row.dailyLongRs);
+  const dailyLongRsBelowCloses = confirmedDailyLongRsBelowCloses(trade, row);
+  if (dailyLongRs <= rules.dailyLongRsHardExitThreshold) {
+    fullReasons.push(
+      `Completed-close daily long RS55 ${formatRs(dailyLongRs)} is materially below the hard-exit threshold ${formatRs(rules.dailyLongRsHardExitThreshold)}.`
+    );
+  } else if (
+    dailyLongRs < 0 &&
+    dailyLongRsBelowCloses >= rules.dailyLongRsConfirmationCloses
+  ) {
+    fullReasons.push(
+      `Completed-close daily long RS55 remained below zero for ${dailyLongRsBelowCloses} confirmed closes.`
+    );
   }
   if (Number.isFinite(initialStop) && close <= initialStop) {
     fullReasons.push(`Daily close ${round(close)} breached original structural stop ${round(initialStop)}.`);
@@ -820,6 +833,11 @@ export function positionExitDecision(trade, row, config = {}) {
   if (trendRide.protected) {
     holdReasons.push(
       "TREND RIDE: weekly/daily leadership and price structure remain healthy; trail the stop instead of cutting the winner."
+    );
+  }
+  if (dailyLongRs < 0 && dailyLongRs > rules.dailyLongRsHardExitThreshold) {
+    holdReasons.push(
+      `RS55 EXIT CONFIRMATION: marginal reading ${formatRs(dailyLongRs)} has ${dailyLongRsBelowCloses}/${rules.dailyLongRsConfirmationCloses} completed below-zero closes; immediate weekly, Supertrend/structural and hard-threshold protections remain active.`
     );
   }
   if (weakness.primaryScore === 1) {
@@ -1051,6 +1069,13 @@ function confirmedTrailingStopBreachCloses(trade = {}, row = {}, trailingStop) {
   return dates.size;
 }
 
+function confirmedDailyLongRsBelowCloses(trade = {}, row = {}) {
+  if (!(Number(row.dailyLongRs) < 0)) return 0;
+  const dates = new Set((trade.dailyLongRsBelowZeroDates || []).map(dateOnly).filter(Boolean));
+  if (row.asOf) dates.add(dateOnly(row.asOf));
+  return dates.size;
+}
+
 function calendarDays(start, end) {
   const startMs = new Date(start || 0).getTime();
   const endMs = new Date(end || 0).getTime();
@@ -1069,6 +1094,10 @@ function adaptivePositionCount(totalCapital) {
 
 function positive(value, fallback) {
   return Number.isFinite(Number(value)) && Number(value) > 0 ? Number(value) : fallback;
+}
+
+function negative(value, fallback) {
+  return Number.isFinite(Number(value)) && Number(value) < 0 ? Number(value) : fallback;
 }
 
 function normalizedSector(industry) {
