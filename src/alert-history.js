@@ -1,7 +1,13 @@
 const MAX_ALERTS = 500;
+const ALERT_RETENTION_DAYS = 30;
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 export function updateAlertHistory(existing = [], events = [], occurredAt = new Date().toISOString()) {
-  const output = Array.isArray(existing) ? existing.filter(validAlert).map((item) => ({ ...item })) : [];
+  const referenceTime = normalizedTime(occurredAt);
+  const cutoffTime = referenceTime - ALERT_RETENTION_DAYS * DAY_MS;
+  const output = Array.isArray(existing)
+    ? existing.filter((item) => validAlert(item) && Date.parse(item.occurredAt) > cutoffTime).map((item) => ({ ...item }))
+    : [];
   const seen = new Set(output.map((item) => item.id));
   for (const event of events || []) {
     const alert = alertFromTradeEvent(event, occurredAt);
@@ -171,8 +177,12 @@ function validAlert(alert) {
 }
 
 function normalizeTimestamp(value) {
-  const date = new Date(value || Date.now());
-  return Number.isNaN(date.getTime()) ? new Date().toISOString() : date.toISOString();
+  return new Date(normalizedTime(value)).toISOString();
+}
+
+function normalizedTime(value) {
+  const time = Date.parse(String(value || ""));
+  return Number.isFinite(time) ? time : Date.now();
 }
 
 function dateOnly(value) {

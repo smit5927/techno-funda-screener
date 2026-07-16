@@ -64,3 +64,16 @@ test("alert history is duplicate-proof, newest-first and capped", () => {
   assert.equal(capped.length, 500);
   assert.equal(capped[0].symbol, "ABC");
 });
+
+test("alerts auto-expire permanently when they complete 30 days", () => {
+  const reference = "2026-07-31T03:00:00.000Z";
+  const existing = [
+    { id: "expired", type: "ENTRY_TRADE_OPENED", symbol: "OLD", occurredAt: "2026-07-01T03:00:00.000Z" },
+    { id: "fresh", type: "ENTRY_TRADE_OPENED", symbol: "FRESH", occurredAt: "2026-07-01T03:00:00.001Z" },
+    { id: "invalid-date", type: "ENTRY_TRADE_OPENED", symbol: "BAD", occurredAt: "not-a-date" }
+  ];
+
+  const history = updateAlertHistory(existing, [], reference);
+
+  assert.deepEqual(history.map((alert) => alert.id), ["fresh"]);
+});
