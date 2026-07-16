@@ -3,6 +3,7 @@ import { readTrades } from "./storage.js";
 import { sendTelegramSummary } from "./telegram.js";
 import { updateTradeJournal } from "./trade-journal.js";
 import { portfolioSummary, totalRealizedPnl } from "./portfolio-engine.js";
+import { gunzipSync, gzipSync } from "node:zlib";
 
 const APP_API_URL = process.env.TECHNO_FUNDA_APP_API_URL || "";
 const APP_INTERNAL_KEY = process.env.TECHNO_FUNDA_APP_INTERNAL_KEY || "";
@@ -18,11 +19,13 @@ export async function syncMultiUserRuntime(scan, options = {}) {
 
   const strategyVersion = process.env.GITHUB_SHA || process.env.npm_package_version || "local";
   if (!options.executionOnly) {
+    const marketState = marketOnlyState(scan);
     await postApp({
       action: "ingest-market-state",
       internalKey: APP_INTERNAL_KEY,
       strategyVersion,
-      state: marketOnlyState(scan)
+      scanAt: marketState.scannedAt,
+      encodedState: encodeMarketState(marketState)
     });
   }
 
@@ -167,6 +170,26 @@ function compactMobileRow(row = {}) {
   output.gtfContext = compactGtf(row.gtfContext);
   output.institutionalContext = compactInstitutional(row.institutionalContext);
   return output;
+}
+
+export function encodeMarketState(state = {}) {
+  const raw = Buffer.from(JSON.stringify(state));
+  const compressed = gzipSync(raw, { level: 9 });
+  return {
+    formatVersion: 1,
+    encoding: "gzip-base64",
+    rawBytes: raw.length,
+    compressedBytes: compressed.length,
+    data: compressed.toString("base64")
+  };
+}
+
+export function decodeMarketState(payload = {}) {
+  if (payload?.encoding !== "gzip-base64") return payload;
+  if (typeof payload.data !== "string" || !payload.data) {
+    throw new Error("Compressed market state is missing data");
+  }
+  return JSON.parse(gunzipSync(Buffer.from(payload.data, "base64")).toString("utf8"));
 }
 
 function compactReasons(input) {

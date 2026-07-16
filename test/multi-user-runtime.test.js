@@ -2,11 +2,35 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   configForUser,
+  decodeMarketState,
+  encodeMarketState,
   journalForUser,
   marketOnlyState,
   portfolioState,
   scanForUser
 } from "../src/multi-user-runtime.js";
+
+test("compressed market state round-trips without losing screener evidence", () => {
+  const state = {
+    scannedAt: "2026-07-16T08:15:30.047Z",
+    lists: {
+      "all-market": {
+        results: [{
+          symbol: "BLUESTARCO",
+          status: "EXIT",
+          setupStrength: { checks: { baseBreakout: false } },
+          gtfContext: { score: 4 },
+          institutionalContext: { score: 3 }
+        }]
+      }
+    }
+  };
+
+  const encoded = encodeMarketState(state);
+  assert.equal(encoded.encoding, "gzip-base64");
+  assert.ok(encoded.compressedBytes < encoded.rawBytes);
+  assert.deepEqual(decodeMarketState(encoded), state);
+});
 
 test("multi-user runtime derives a private custom list without changing common market data", () => {
   const scan = {

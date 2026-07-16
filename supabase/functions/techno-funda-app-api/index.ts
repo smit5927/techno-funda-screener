@@ -352,7 +352,7 @@ async function userPayload(context: any) {
   ]);
   if (marketResult.error) throw marketResult.error;
   if (stateResult.error) throw stateResult.error;
-  const market = marketResult.data?.payload || {};
+  const market = await decodeMarketPayload(marketResult.data?.payload || {});
   const userState = stateResult.data?.state || {};
   const lists = withCustomList(market.lists || {}, symbols);
   const state = {
@@ -373,16 +373,36 @@ async function userPayload(context: any) {
 async function ingestMarketState(body: any) {
   await requireInternal(body);
   const state = body.state && typeof body.state === "object" ? body.state : null;
-  if (!state?.lists) throw httpError("Market state with scanned lists is required", 400);
+  const encodedState = body.encodedState?.encoding === "gzip-base64" && typeof body.encodedState?.data === "string"
+    ? {
+        formatVersion: Number(body.encodedState.formatVersion) || 1,
+        encoding: "gzip-base64",
+        rawBytes: Number(body.encodedState.rawBytes) || null,
+        compressedBytes: Number(body.encodedState.compressedBytes) || null,
+        data: body.encodedState.data
+      }
+    : null;
+  if (!encodedState && !state?.lists) throw httpError("Market state with scanned lists is required", 400);
   const row = {
     singleton: true,
     strategy_version: String(body.strategyVersion || "unknown"),
-    scan_at: state.scannedAt || new Date().toISOString(),
-    payload: state
+    scan_at: body.scanAt || state?.scannedAt || new Date().toISOString(),
+    payload: encodedState || state
   };
   const { error } = await admin().from("app_market_state").upsert(row);
   if (error) throw error;
   return { ok: true, scanAt: row.scan_at };
+}
+
+async function decodeMarketPayload(payload: any) {
+  if (payload?.encoding !== "gzip-base64") return payload || {};
+  const encoded = String(payload.data || "");
+  if (!encoded) throw new Error("Compressed market state is missing data");
+  const bytes = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0));
+  const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"));
+  const decoded = JSON.parse(await new Response(stream).text());
+  if (!decoded?.lists) throw new Error("Decoded market state is invalid");
+  return decoded;
 }
 
 async function runtimeUsers(body: any) {
