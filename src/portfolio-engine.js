@@ -60,7 +60,12 @@ export function candidateRank(row = {}) {
   const institutional = row.institutionalContext || {};
   const gtf = row.gtfContext || {};
   const coverageRatio = coverage.applicable > 0 ? coverage.passed / coverage.applicable : 0;
-  const styleBonus = ["RETRACEMENT_BUY", "BREAKOUT_BUY"].includes(row.entryStyle?.type) ? 8 : 3;
+  const styleBonus = [
+    "RETRACEMENT_BUY",
+    "BREAKOUT_BUY",
+    "BREAKOUT_RECLAIM_BUY",
+    "WEEKLY_TREND_RECLAIM"
+  ].includes(row.entryStyle?.type) ? 8 : 3;
   const rsPoints =
     clamp((Number(row.weeklyRs) || 0) * 35, -10, 25) +
     clamp((Number(row.dailyLongRs) || 0) * 30, -8, 18) +
@@ -68,6 +73,8 @@ export function candidateRank(row = {}) {
   const trendPoints = [
     checks.weeklyRsRising,
     checks.dailyLongRsRising,
+    checks.weeklyCloseAboveEma13,
+    checks.weeklyEma13Rising,
     checks.closeAboveSmaFast,
     checks.closeAboveSmaSlow,
     checks.smaFastAboveSlow,
@@ -79,6 +86,7 @@ export function candidateRank(row = {}) {
   const riskPenalty =
     (Number(values.atrPct) > 6 ? 6 : 0) +
     (Number(values.riskToSupertrendPct) > 8 ? 6 : 0) +
+    (checks.weeklyCloseAboveEma13 === false && Number.isFinite(Number(values.weeklyEma13)) ? 8 : 0) +
     (coverage.dataGaps || 0) * 1.5;
   const fundamentalChecks = Object.values(row.fundamental?.checks || {});
   const fundamentalFailures = fundamentalChecks.filter((check) => check?.ok === false).length;
@@ -104,15 +112,30 @@ export function candidateRank(row = {}) {
 export function structuralStop(row = {}, price, config = {}) {
   const rules = portfolioConfig(config);
   const values = row.setupStrength?.values || {};
+  const closestAllowed = price * (1 - rules.minimumStopPct / 100);
+  const furthestAllowed = price * (1 - rules.maximumStopPct / 100);
   const candidates = [
     row.dailySupertrend,
     values.fourCandleLow,
     values.twoCandleLow,
     values.fibonacciSupportNearby ? values.fibonacciNearestPrice : null
   ].filter((value) => Number.isFinite(value) && value > 0 && value < price);
-  const raw = candidates.length ? Math.max(...candidates) : price * (1 - rules.maximumStopPct / 100);
-  const closestAllowed = price * (1 - rules.minimumStopPct / 100);
-  const furthestAllowed = price * (1 - rules.maximumStopPct / 100);
+  const breakoutStyle = [
+    "BREAKOUT_BUY",
+    "BREAKOUT_RECLAIM_BUY",
+    "WEEKLY_TREND_RECLAIM"
+  ].includes(row.entryStyle?.type);
+  const breakoutSupports = [
+    row.dailySupertrend,
+    row.weeklyEma13
+  ].filter((value) =>
+    Number.isFinite(value) && value >= furthestAllowed && value < price
+  );
+  const raw = breakoutStyle && breakoutSupports.length
+    ? Math.min(...breakoutSupports)
+    : candidates.length
+      ? Math.max(...candidates)
+      : price * (1 - rules.maximumStopPct / 100);
   return round(Math.min(closestAllowed, Math.max(furthestAllowed, raw)));
 }
 
@@ -355,6 +378,11 @@ export function candidateEntryDecision(candidate = {}, row = {}, config = {}, op
   if (row.institutionalContext?.operator?.distribution) {
     warnings.push("Latest official NSE delivery context shows distribution; this remains additional evidence, not a compulsory entry override.");
   }
+  if (row.weeklyPriceAboveEma13 === false) {
+    warnings.push(
+      `Completed weekly close ${round(row.weeklyClose)} is below EMA13 ${round(row.weeklyEma13)}; fresh entry requires extra caution until a weekly reclaim.`
+    );
+  }
   if (
     Number.isFinite(executionGapPct) &&
     executionGapPct > rules.candidateMaxExecutionGapPct
@@ -372,6 +400,10 @@ export function candidateEntryDecision(candidate = {}, row = {}, config = {}, op
     }
     if (checks.marketRegimeStrong !== true) {
       reasons.push("Broad-market regime is not strong enough to justify an optional quality rotation.");
+      if (disposition === "ACTIONABLE") disposition = "WAITING_CONFIRMATION";
+    }
+    if (row.weeklyPriceAboveEma13 === false) {
+      reasons.push("Optional rotation is blocked because the completed weekly candle is below EMA13.");
       if (disposition === "ACTIONABLE") disposition = "WAITING_CONFIRMATION";
     }
   }
@@ -655,6 +687,15 @@ export function positionExitDecision(trade, row, config = {}) {
   if (Number(row.weeklyRs) < 0) {
     fullReasons.push(`Completed-week RS ${formatRs(row.weeklyRs)} is below zero.`);
   }
+  if (
+    row.weeklyPriceAboveEma13 === false &&
+    Number.isFinite(Number(row.weeklyClose)) &&
+    Number.isFinite(Number(row.weeklyEma13))
+  ) {
+    fullReasons.push(
+      `Completed weekly candle ${row.weeklyAsOf || ""} closed ${round(row.weeklyClose)} below EMA13 ${round(row.weeklyEma13)}; weekly momentum structure is broken.`
+    );
+  }
   if (Number(row.dailyLongRs) < 0) {
     fullReasons.push("Completed-close daily long RS55 is below zero.");
   }
@@ -777,6 +818,9 @@ export function positionTrendRide(row = {}) {
   const aboveFast = !Number.isFinite(smaFast) || close > smaFast;
   const smaSlow = Number(values.smaSlow);
   const aboveSlow = !Number.isFinite(smaSlow) || close > smaSlow;
+  const weeklyEmaHealthy =
+    row.weeklyPriceAboveEma13 !== false ||
+    !Number.isFinite(Number(row.weeklyEma13));
   const coreHealthy =
     Number(row.weeklyRs) > 0 &&
     Number(row.dailyLongRs) > 0 &&
@@ -784,11 +828,13 @@ export function positionTrendRide(row = {}) {
     close > Number(row.dailySupertrend) &&
     aboveFast &&
     aboveSlow &&
+    weeklyEmaHealthy &&
     checks.marketRegimeStrong !== false &&
     row.institutionalContext?.operator?.distribution !== true;
   return {
     protected: coreHealthy && !exhausted,
     coreHealthy,
+    weeklyEmaHealthy,
     exhausted,
     extensionAtr: Number.isFinite(extensionAtr) ? round(extensionAtr) : null
   };
@@ -804,6 +850,9 @@ export function positionWeakness(row = {}) {
   if (Number(row.close) < Number(row.dailySupertrend)) primaryReasons.push("close below Supertrend");
   if (Number.isFinite(values.smaFast) && Number(row.close) < values.smaFast) {
     primaryReasons.push("close below 50-DMA");
+  }
+  if (row.weeklyPriceAboveEma13 === false && Number.isFinite(Number(row.weeklyEma13))) {
+    primaryReasons.push("completed weekly close below EMA13");
   }
   const contextReasons = [];
   if (checks.marketRegimeStrong === false) contextReasons.push("broad-market regime not strong");

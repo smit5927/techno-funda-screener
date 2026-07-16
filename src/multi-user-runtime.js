@@ -135,10 +135,12 @@ function compactMarketLists(lists) {
 
 function compactMobileRow(row = {}) {
   const output = pick(row, [
-    "symbol", "yahooSymbol", "name", "industry", "asOf", "status", "close",
+    "symbol", "yahooSymbol", "name", "industry", "asOf", "weeklyAsOf", "status", "close",
     "dailySupertrend", "dailyPriceAboveSupertrend", "weeklyRsi", "weeklyRs",
     "dailyLongRs", "dailyShortRs", "dailyRsi", "fundamentalScore", "score",
-    "setupGrade", "entryStyle", "aiReview", "aiScore"
+    "weeklyClose", "weeklyEma13", "weeklyPriceAboveEma13", "weeklyEma13Rising",
+    "weeklyEma13Reclaim", "weeklyEma13BelowCloses", "setupGrade", "entryStyle",
+    "aiReview", "aiScore"
   ]);
   output.signalReason = compactReasons(row.signalReason);
 
@@ -153,7 +155,9 @@ function compactMobileRow(row = {}) {
         "retracementSupportProximityOk", "retracementSupportDistancePct",
         "retracementVolumePatternOk", "retracementPullbackVolumeRatio",
         "retracementReclaimCandleOk", "retracementCloseLocationPct",
-        "riskToSupertrendPct", "atrPct", "averageTurnover", "previousLow"
+        "riskToSupertrendPct", "atrPct", "averageTurnover", "previousLow",
+        "weeklyClose", "weeklyEma13", "weeklyEma13Previous",
+        "weeklyEma13DistancePct", "weeklyEma13BelowCloses", "weeklyEma13Period"
       ])
     };
     output.sectorStrength = row.sectorStrength;

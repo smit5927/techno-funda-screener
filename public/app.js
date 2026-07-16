@@ -1038,6 +1038,8 @@ function renderDetail(row, trade = null, candidate = null) {
       ${snapshotHtml("Close", fmt(row.close))}
       ${snapshotHtml("Weekly RSI", fmt(row.weeklyRsi), classForAbove(row.weeklyRsi, 50))}
       ${snapshotHtml("Weekly RS", rs(row.weeklyRs), classForAbove(row.weeklyRs, 0))}
+      ${snapshotHtml("Weekly Close", fmt(row.weeklyClose))}
+      ${snapshotHtml("Weekly EMA13", fmt(row.weeklyEma13), row.weeklyPriceAboveEma13 === false ? "bad" : row.weeklyPriceAboveEma13 === true ? "good" : "neutral")}
       ${snapshotHtml("Daily RSI", fmt(row.dailyRsi), classForAbove(row.dailyRsi, 50))}
       ${snapshotHtml("Daily RS55", rs(row.dailyLongRs), classForAbove(row.dailyLongRs, 0))}
       ${snapshotHtml("Daily RS21", rs(row.dailyShortRs), classForAbove(row.dailyShortRs, 0))}
@@ -1082,6 +1084,8 @@ function renderDetail(row, trade = null, candidate = null) {
       ${setupCheckHtml("Pullback volume", setupValues.retracementVolumePatternOk, setupValues.retracementPullbackVolumeRatio, "x")}
       ${setupCheckHtml("Reclaim candle", setupValues.retracementReclaimCandleOk, setupValues.retracementCloseLocationPct, "%")}
       ${setupCheckHtml("RS55 rising", setupChecks.dailyLongRsRising)}
+      ${setupCheckHtml("Weekly > EMA13", setupChecks.weeklyCloseAboveEma13, setupValues.weeklyEma13)}
+      ${setupCheckHtml("Weekly EMA13 reclaim", setupChecks.weeklyEma13Reclaim, setupValues.weeklyEma13DistancePct, "%")}
       ${setupCheckHtml("50/200 DMA", setupChecks.smaFastAboveSlow)}
       ${setupCheckHtml("Risk to ST", setupChecks.favorableRiskToSupertrend, setupValues.riskToSupertrendPct, "%")}
       ${setupCheckHtml("ATR control", setupChecks.controlledVolatility, setupValues.atrPct, "%")}
@@ -1645,6 +1649,9 @@ function exportCsv() {
     "dailyPriceAboveSupertrend",
     "weeklyRsi",
     "weeklyRs",
+    "weeklyClose",
+    "weeklyEma13",
+    "weeklyEma13State",
     "dailyLongRs",
     "dailyShortRs",
     "dailyRsi",
@@ -1687,6 +1694,11 @@ function exportCsv() {
       ...row,
       list: row.listLabel,
       entryStyle: row.entryStyle?.label || "",
+      weeklyEma13State: row.weeklyPriceAboveEma13 === true
+        ? "Above"
+        : row.weeklyPriceAboveEma13 === false
+          ? "Below - weekly momentum exit"
+          : "NA",
       sectorBreadth: Number.isFinite(row.sectorStrength?.breadthPct)
         ? `${compact(row.sectorStrength.breadthPct)}%`
         : "",

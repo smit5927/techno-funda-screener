@@ -9,6 +9,7 @@ import {
   latestValue
 } from "../src/indicators.js";
 import { analyzeDeliveryHistory } from "../src/institutional-context.js";
+import { buildWeeklyEmaContext } from "../src/screener.js";
 import {
   applyExecutionPriceCorrection,
   rowPassesTradeQuality,
@@ -184,6 +185,30 @@ test("a 09:17 market order uses the first actual traded candle in the controlled
   const fill = selectNextTradingSessionExecutionCandle(candles, "2026-07-10");
   assert.equal(fill.minutes, 9 * 60 + 18);
   assert.equal(fill.open, 102);
+});
+
+test("weekly EMA13 uses completed weekly closes and identifies a reclaim", () => {
+  const stable = Array.from({ length: 13 }, (_, index) => {
+    const date = new Date("2026-01-05T00:00:00Z");
+    date.setUTCDate(date.getUTCDate() + index * 7);
+    return candle(date.toISOString().slice(0, 10), 100, 101, 99, 100, 10);
+  });
+  const broken = buildWeeklyEmaContext([
+    ...stable,
+    candle("2026-04-06", 100, 101, 89, 90, 10)
+  ]);
+  assert.equal(broken.above, false);
+  assert.equal(broken.consecutiveBelow, 1);
+  assert.equal(broken.reclaim, false);
+
+  const reclaimed = buildWeeklyEmaContext([
+    ...stable,
+    candle("2026-04-06", 100, 101, 89, 90, 10),
+    candle("2026-04-13", 91, 106, 90, 105, 10)
+  ]);
+  assert.equal(reclaimed.above, true);
+  assert.equal(reclaimed.reclaim, true);
+  assert.equal(reclaimed.consecutiveBelow, 0);
 });
 
 test("a missing execution window cannot be replaced with a later session's fictional fill", () => {

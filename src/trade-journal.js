@@ -1946,6 +1946,9 @@ function tradeColumns() {
     { header: "Current Rank", key: "Current Rank", width: 14 },
     { header: "Initial Stop", key: "Initial Stop", width: 14 },
     { header: "Trailing Stop", key: "Trailing Stop", width: 14 },
+    { header: "Completed Weekly Close", key: "Completed Weekly Close", width: 24 },
+    { header: "Weekly EMA13", key: "Weekly EMA13", width: 16 },
+    { header: "Weekly EMA13 State", key: "Weekly EMA13 State", width: 24 },
     { header: "Initial Risk", key: "Initial Risk", width: 14 },
     { header: "Current R", key: "Current R", width: 12 },
     { header: "Add-On Count", key: "Add-On Count", width: 14 },
@@ -2019,6 +2022,7 @@ function tradeToRow(trade) {
   const coverage = trade.entrySnapshot?.conceptCoverage || {};
   const institutional = trade.entrySnapshot?.institutionalContext || {};
   const gtf = trade.entrySnapshot?.gtfContext || {};
+  const currentSnapshot = trade.currentSnapshot || trade.latestSnapshot || trade.entrySnapshot || {};
   return {
     "Trade Scope": trade.tradeScopeLabel || TRADE_SCOPE_LABELS[inferTradeScope(trade)] || "",
     "Trade Quality": trade.tradeQualityLabel || "",
@@ -2066,6 +2070,13 @@ function tradeToRow(trade) {
     "Current Rank": trade.currentRank ?? "",
     "Initial Stop": trade.initialStopPrice ?? "",
     "Trailing Stop": trade.trailingStopPrice ?? "",
+    "Completed Weekly Close": currentSnapshot.weeklyClose ?? "",
+    "Weekly EMA13": currentSnapshot.weeklyEma13 ?? "",
+    "Weekly EMA13 State": currentSnapshot.weeklyPriceAboveEma13 === true
+      ? "Above"
+      : currentSnapshot.weeklyPriceAboveEma13 === false
+        ? "Below - exit"
+        : "NA",
     "Initial Risk": trade.initialRiskAmount ?? trade.plannedRisk ?? "",
     "Current R": trade.currentRewardR ?? "",
     "Add-On Count": trade.addOns?.length || 0,
@@ -2190,12 +2201,19 @@ function snapshot(row) {
     signalReason: row.signalReason,
     close: row.close,
     asOf: row.asOf,
+    weeklyAsOf: row.weeklyAsOf,
     dailyRsi: row.dailyRsi,
     weeklyRsi: row.weeklyRsi,
     weeklyRs: row.weeklyRs,
     dailyLongRs: row.dailyLongRs,
     dailyShortRs: row.dailyShortRs,
     dailySupertrend: row.dailySupertrend,
+    weeklyClose: row.weeklyClose,
+    weeklyEma13: row.weeklyEma13,
+    weeklyPriceAboveEma13: row.weeklyPriceAboveEma13,
+    weeklyEma13Rising: row.weeklyEma13Rising,
+    weeklyEma13Reclaim: row.weeklyEma13Reclaim,
+    weeklyEma13BelowCloses: row.weeklyEma13BelowCloses,
     dailyPriceAboveSupertrend: row.dailyPriceAboveSupertrend,
     entryStyle: row.entryStyle,
     setupStrength: row.setupStrength,

@@ -6,6 +6,7 @@ import {
   calculateRelativeStrength,
   calculateRsi,
   calculateSupertrend,
+  exponentialMovingAverage,
   latestIndex,
   latestValue,
   priceAboveSma,
@@ -492,6 +493,10 @@ async function scanSymbol(
     supertrendLength,
     supertrendMultiplier
   );
+  const weeklyEmaContext = buildWeeklyEmaContext(
+    weeklyCandles,
+    rules.exit?.weeklyEmaPeriod || rules.setupStrength?.weeklyEmaPeriod || 13
+  );
 
   const latestDailyIndex = dailyCandles.length - 1;
   const latestWeeklyIndex = weeklyCandles.length - 1;
@@ -510,6 +515,7 @@ async function scanSymbol(
     weeklyRsSeries,
     dailyLongRsSeries,
     dailyShortRsSeries,
+    weeklyEmaContext,
     marketContext,
     rules
   });
@@ -539,7 +545,8 @@ async function scanSymbol(
   };
 
   const exitChecks = {
-    weeklyRs: weeklyRs < (rules.exit?.weeklyRsBelow ?? 0)
+    weeklyRs: weeklyRs < (rules.exit?.weeklyRsBelow ?? 0),
+    weeklyEma13: weeklyEmaContext.above === false
   };
 
   const entry = technicalReady && Object.values(entryChecks).every(Boolean);
@@ -556,7 +563,12 @@ async function scanSymbol(
     supertrendLength,
     supertrendMultiplier
   });
-  const exitReason = buildExitReasons(exitChecks, { weeklyRs });
+  const exitReason = buildExitReasons(exitChecks, {
+    weeklyRs,
+    weeklyAsOf: weeklyEmaContext.asOf,
+    weeklyClose: weeklyEmaContext.close,
+    weeklyEma13: weeklyEmaContext.ema
+  });
   const setupReason = buildSetupStrengthReasons(setupStrength);
   const institutionalContext = buildSymbolInstitutionalContext(resolvedItem, institutionalMarketContext);
   const institutionalReason = buildInstitutionalReasons(institutionalContext);
@@ -566,6 +578,7 @@ async function scanSymbol(
     dailyLongRs,
     close,
     dailySupertrend,
+    weeklyEmaContext,
     setupStrength
   });
   const signalReason =
@@ -621,6 +634,12 @@ async function scanSymbol(
     dailyLongRs,
     dailyShortRs,
     dailySupertrend,
+    weeklyClose: weeklyEmaContext.close,
+    weeklyEma13: weeklyEmaContext.ema,
+    weeklyPriceAboveEma13: weeklyEmaContext.above,
+    weeklyEma13Rising: weeklyEmaContext.rising,
+    weeklyEma13Reclaim: weeklyEmaContext.reclaim,
+    weeklyEma13BelowCloses: weeklyEmaContext.consecutiveBelow,
     dailyPriceAboveSupertrend: close > dailySupertrend,
     entryChecks,
     exitChecks,
@@ -648,6 +667,41 @@ async function scanSymbol(
   };
 }
 
+export function buildWeeklyEmaContext(weeklyCandles = [], period = 13) {
+  const normalizedPeriod = Math.max(2, Math.floor(Number(period) || 13));
+  const series = exponentialMovingAverage(weeklyCandles, normalizedPeriod);
+  const latestIndex = weeklyCandles.length - 1;
+  const previousIndex = latestIndex - 1;
+  const close = Number(weeklyCandles[latestIndex]?.close);
+  const ema = Number(series[latestIndex]);
+  const previousClose = Number(weeklyCandles[previousIndex]?.close);
+  const previousEma = Number(series[previousIndex]);
+  const available = Number.isFinite(close) && Number.isFinite(ema);
+  const previousAvailable = Number.isFinite(previousClose) && Number.isFinite(previousEma);
+  let consecutiveBelow = 0;
+
+  for (let index = latestIndex; index >= 0; index -= 1) {
+    const candleClose = Number(weeklyCandles[index]?.close);
+    const candleEma = Number(series[index]);
+    if (!Number.isFinite(candleClose) || !Number.isFinite(candleEma) || candleClose >= candleEma) break;
+    consecutiveBelow += 1;
+  }
+
+  return {
+    period: normalizedPeriod,
+    asOf: weeklyCandles[latestIndex]?.date || null,
+    close: available ? close : null,
+    ema: available ? ema : null,
+    previousClose: previousAvailable ? previousClose : null,
+    previousEma: previousAvailable ? previousEma : null,
+    above: available ? close >= ema : null,
+    rising: available && previousAvailable ? ema > previousEma : null,
+    reclaim: available && previousAvailable ? close >= ema && previousClose < previousEma : false,
+    consecutiveBelow,
+    distancePct: available && ema > 0 ? ((close - ema) / ema) * 100 : null
+  };
+}
+
 function buildSetupStrength({
   dailyCandles,
   close,
@@ -655,6 +709,7 @@ function buildSetupStrength({
   weeklyRsSeries,
   dailyLongRsSeries,
   dailyShortRsSeries,
+  weeklyEmaContext,
   marketContext,
   rules
 }) {
@@ -769,6 +824,9 @@ function buildSetupStrength({
     weeklyRsRising,
     dailyLongRsRising,
     dailyShortRsRising,
+    weeklyCloseAboveEma13: weeklyEmaContext?.above === true,
+    weeklyEma13Rising: weeklyEmaContext?.rising === true,
+    weeklyEma13Reclaim: weeklyEmaContext?.reclaim === true,
     closeAboveSmaFast,
     closeAboveSmaSlow,
     smaFastAboveSlow,
@@ -790,7 +848,12 @@ function buildSetupStrength({
   return {
     score: Object.entries(checks)
       .filter(([key, value]) =>
-        value && !["fibonacciSupportNearby", "bollingerTrendSupport", "bollingerRangeBound"].includes(key)
+        value && ![
+          "fibonacciSupportNearby",
+          "bollingerTrendSupport",
+          "bollingerRangeBound",
+          "weeklyEma13Reclaim"
+        ].includes(key)
       ).length,
     checks,
     pyramidStructure,
@@ -815,6 +878,12 @@ function buildSetupStrength({
       fourCandleLow,
       riskToSupertrendPct,
       riskToPreviousLowPct,
+      weeklyClose: weeklyEmaContext?.close ?? null,
+      weeklyEma13: weeklyEmaContext?.ema ?? null,
+      weeklyEma13Previous: weeklyEmaContext?.previousEma ?? null,
+      weeklyEma13DistancePct: weeklyEmaContext?.distancePct ?? null,
+      weeklyEma13BelowCloses: weeklyEmaContext?.consecutiveBelow ?? 0,
+      weeklyEma13Period: weeklyEmaContext?.period || 13,
       retracementPullbackDepthPct: retracement.pullbackDepthPct,
       retracementSupportSource: retracement.supportSource,
       retracementSupportReference: retracement.supportReference,
@@ -1124,13 +1193,20 @@ function supportCandidate(source, value, close) {
 function buildEntryStyle(setupStrength) {
   const checks = setupStrength?.checks || {};
   const values = setupStrength?.values || {};
+  const breakout = checks.yearHighBreakout || checks.recentHighBreakout || checks.baseBreakout;
+  if (checks.weeklyEma13Reclaim && breakout) {
+    return { type: "BREAKOUT_RECLAIM_BUY", label: "Breakout after weekly EMA13 reclaim" };
+  }
+  if (checks.weeklyEma13Reclaim) {
+    return { type: "WEEKLY_TREND_RECLAIM", label: "Weekly EMA13 reclaim buy" };
+  }
   if (checks.retracementBuyZone) {
     return {
       type: "RETRACEMENT_BUY",
       label: `Retracement buy near ${values.retracementSupportSource || "support"}`
     };
   }
-  if (checks.yearHighBreakout || checks.recentHighBreakout || checks.baseBreakout) {
+  if (breakout) {
     return { type: "BREAKOUT_BUY", label: "Breakout buy" };
   }
   if (checks.nearYearHigh && checks.volumeExpansion) {
@@ -1267,6 +1343,11 @@ function buildConceptCoverage(row) {
     "Supertrend trend filter",
     entry.dailyPriceAboveSupertrend,
     Number.isFinite(row.dailySupertrend)
+  );
+  addConcept(
+    "Weekly EMA13 trend health/reclaim",
+    checks.weeklyCloseAboveEma13 || checks.weeklyEma13Reclaim,
+    Number.isFinite(values.weeklyClose) && Number.isFinite(values.weeklyEma13)
   );
   addConcept(
     "Breakout or 52-week high zone",
@@ -1449,6 +1530,11 @@ function buildEntryReasons(checks, values) {
 function buildExitReasons(checks, values) {
   const reasons = [];
   if (checks.weeklyRs) reasons.push(`Weekly RS ${fmtRs(values.weeklyRs)} is below 0 on closed weekly candle.`);
+  if (checks.weeklyEma13) {
+    reasons.push(
+      `Completed weekly candle ${values.weeklyAsOf || ""} closed ${fmt(values.weeklyClose)} below EMA13 ${fmt(values.weeklyEma13)}; weekly momentum structure is broken.`
+    );
+  }
   if (reasons.length === 0) reasons.push("No exit condition is triggered.");
   return reasons;
 }
@@ -1514,6 +1600,18 @@ function buildSetupStrengthReasons(setupStrength) {
   } else if (checks.dailyLongRsRising) {
     reasons.push("RS trend strength: daily RS55 is rising.");
   }
+  if (checks.weeklyCloseAboveEma13) {
+    reasons.push(
+      `Weekly trend health: completed weekly close ${fmt(values.weeklyClose)} is above weekly EMA13 ${fmt(values.weeklyEma13)}${checks.weeklyEma13Rising ? " and the EMA is rising" : ""}.`
+    );
+  } else if (Number.isFinite(values.weeklyClose) && Number.isFinite(values.weeklyEma13)) {
+    reasons.push(
+      `Weekly momentum break: completed weekly close ${fmt(values.weeklyClose)} is below weekly EMA13 ${fmt(values.weeklyEma13)}; intraweek dips are ignored, but this completed-week close is an exit condition.`
+    );
+  }
+  if (checks.weeklyEma13Reclaim) {
+    reasons.push("Weekly EMA13 reclaim: the completed week closed back above the trend average after the prior week was below it.");
+  }
   if (checks.closeAboveSmaFast && checks.closeAboveSmaSlow && checks.smaFastAboveSlow) {
     reasons.push(
       `Trend strength: close is above ${values.smaFastPeriod}-DMA and ${values.smaSlowPeriod}-DMA, with fast DMA above slow DMA.`
@@ -1541,7 +1639,14 @@ function buildSetupStrengthReasons(setupStrength) {
   return reasons;
 }
 
-function buildWeaknessReasons({ dailyShortRs, dailyLongRs, close, dailySupertrend, setupStrength }) {
+function buildWeaknessReasons({
+  dailyShortRs,
+  dailyLongRs,
+  close,
+  dailySupertrend,
+  weeklyEmaContext,
+  setupStrength
+}) {
   const reasons = [];
   if (Number.isFinite(dailyShortRs) && dailyShortRs < 0) {
     reasons.push(`Early weakness: daily short RS21 ${fmtRs(dailyShortRs)} is below 0.`);
@@ -1551,6 +1656,11 @@ function buildWeaknessReasons({ dailyShortRs, dailyLongRs, close, dailySupertren
   }
   if (Number.isFinite(close) && Number.isFinite(dailySupertrend) && close < dailySupertrend) {
     reasons.push(`Early weakness: daily close ${fmt(close)} is below Supertrend ${fmt(dailySupertrend)}.`);
+  }
+  if (weeklyEmaContext?.above === false) {
+    reasons.push(
+      `Weekly trend warning: completed weekly close ${fmt(weeklyEmaContext.close)} is below EMA13 ${fmt(weeklyEmaContext.ema)} for ${weeklyEmaContext.consecutiveBelow || 1} week(s).`
+    );
   }
   const previousLow = setupStrength?.values?.previousLow;
   if (Number.isFinite(close) && Number.isFinite(previousLow) && close < previousLow) {

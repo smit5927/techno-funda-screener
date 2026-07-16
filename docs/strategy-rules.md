@@ -147,6 +147,14 @@ The same stock in multiple lists is scanned once and creates only one trade. Its
 6. A valid new signal remains pending through weekends and exchange holidays, then uses the next real session's exact 09:17 one-minute candle open.
 7. Open-position management applies the video-derived full/partial exit hierarchy and ratcheting structural stop. GTF may confirm, but cannot originate, a sell.
 
+### Completed Weekly EMA13 Momentum Rule
+
+- Weekly EMA13 is calculated only from completed weekly candles. An intraweek wick or temporary trade below EMA13 is ignored.
+- A completed weekly candle close below EMA13 is a full momentum-break exit condition. It does not wait for a second weekly close.
+- A completed weekly reclaim above EMA13 is supportive re-entry evidence; it cannot replace the six compulsory entry checks.
+- A stock below weekly EMA13 cannot become a fresh automated entry or an optional rotation replacement until the completed-week structure reclaims the average.
+- Breakout/reclaim entries use the wider valid support of daily Supertrend and weekly EMA13 when both lie inside the configured 1.5%-8% stop band. Position quantity is reduced by the unchanged risk budget instead of using a noisy candle-low stop.
+
 ## Trade Selection
 
 The website has a persistent Trade Settings panel. The selected source applies from the next scheduled scan:
@@ -201,3 +209,13 @@ The workbook contains Summary, Open Positions, Pending Orders, Closed Trades, Al
 - When enabled, every entry, pyramid add, partial exit and full exit records turnover, brokerage, STT, NSE transaction charge, SEBI turnover charge, stamp duty, IPFT, GST and DP charge.
 - Booked realized P&L is net of allocated buy charges and actual sell charges. Open unrealized P&L is net of remaining buy charges and the estimated delivery sell charges at the latest price.
 - The workbook includes a Transactions & Charges sheet and keeps gross P&L, net P&L and charge components separate for auditability.
+
+## Forward Evidence And Continuous Improvement Mandate
+
+- Preserve every forward entry, skipped candidate, waiting decision, rotation, add-on, partial/full exit, charge, daily mark-to-market snapshot and benchmark outcome as immutable audit evidence.
+- Once a statistically useful live sample exists, audit expectancy, win rate, average win/loss, profit factor, maximum drawdown, MAE/MFE, holding time, capital utilization and returns after all charges.
+- Attribute results separately to entry style, exit reason, setup grade, market regime, sector, fundamentals, weekly EMA13 state, GTF confirmation and institutional context so weak and useful rules can be distinguished.
+- Specifically review false exits, delayed exits, missed runners, failed breakouts, successful reclaims, premature rotations and waiting candidates that ran without entry.
+- Improve thresholds only through chronological walk-forward analysis with separate development, validation and untouched out-of-sample periods. No look-ahead data or retrospective fill fabrication is allowed.
+- Compare every proposed upgrade against the unchanged original RS/RSI/Supertrend baseline after brokerage and statutory charges. Adopt it only when robustness, drawdown and expectancy improve across regimes, not merely in one historical sample.
+- Record the old rule, proposed rule, evidence window, sample size, before/after metrics and rollback condition before deployment. Strategy changes remain versioned and reversible.

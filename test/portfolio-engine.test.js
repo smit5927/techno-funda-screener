@@ -362,6 +362,18 @@ test("fundamental deterioration alone cannot trigger a partial exit", () => {
   assert.equal(decision.action, "HOLD");
 });
 
+test("completed weekly close below EMA13 creates a momentum-break full exit", () => {
+  const row = strongRow({
+    weeklyAsOf: "2026-07-10",
+    weeklyClose: 92,
+    weeklyEma13: 95,
+    weeklyPriceAboveEma13: false
+  });
+  const decision = positionExitDecision(openTrade(), row, { trade: {} });
+  assert.equal(decision.action, "FULL_EXIT");
+  assert.match(decision.reasons.join(" "), /completed weekly candle.*below EMA13/i);
+});
+
 test("fundamental deterioration cannot repeat an already-booked technical partial exit", () => {
   const row = strongRow({
     dailyShortRs: -0.02,
@@ -653,8 +665,16 @@ test("a raised trailing stop needs two confirmed closes before full exit", () =>
 
 test("structural stop remains inside configured risk band", () => {
   const stop = structuralStop(strongRow({ dailySupertrend: 50 }), 100, { trade: {} });
-  assert.equal(stop, 93);
+  assert.equal(stop, 95);
   assert.ok(stop >= 92 && stop <= 98.5);
+});
+
+test("weekly EMA13 reclaim and breakout use a wider structural stop with the same risk cap", () => {
+  const row = strongRow({ weeklyEma13: 95 });
+  row.entryStyle = { type: "BREAKOUT_RECLAIM_BUY", label: "Breakout after weekly EMA13 reclaim" };
+  row.setupStrength.values.recentBaseLow = 93;
+  row.setupStrength.values.fourCandleLow = 97;
+  assert.equal(structuralStop(row, 100, { trade: {} }), 94);
 });
 
 function strongRow(overrides = {}) {
@@ -670,6 +690,10 @@ function strongRow(overrides = {}) {
     dailyShortRs: 0.08,
     dailyRsi: 62,
     weeklyRsi: 65,
+    weeklyAsOf: "2026-07-06",
+    weeklyClose: 100,
+    weeklyEma13: 95,
+    weeklyPriceAboveEma13: true,
     dailySupertrend: 94,
     setupGrade: "A+",
     setupStrengthScore: 14,
