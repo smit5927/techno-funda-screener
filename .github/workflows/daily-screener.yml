@@ -58,7 +58,7 @@ jobs:
         run: npm run update:universe
         continue-on-error: true
 
-      - name: Refresh all NSE equity universe
+      - name: Refresh all Indian equity universe and new listings
         if: env.EXECUTION_ONLY != 'true'
         run: npm run update:all-market
         continue-on-error: true

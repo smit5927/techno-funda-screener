@@ -2,13 +2,21 @@ import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { ROOT_DIR } from "../src/config.js";
-import { parseCsv, stringifyCsv } from "../src/csv.js";
+import { parseCsv } from "../src/csv.js";
 import { buildIndianEquityUniverse } from "../src/indian-market-universe.js";
+import {
+  formatUniverseChanges,
+  readExistingUniverse,
+  universeChanges,
+  validateUniverseSnapshot,
+  writeUniverseAtomically
+} from "../src/universe-refresh.js";
 
 const nseUrl = "https://nsearchives.nseindia.com/content/equities/EQUITY_L.csv";
 const bseUrl = "https://api.bseindia.com/BseIndiaAPI/api/ListofScripData/w?Group=&Scripcode=&industry=&segment=Equity&status=Active";
 const outputPath = path.join(ROOT_DIR, "config", "all-market.csv");
 const niftyPath = path.join(ROOT_DIR, "config", "universe.csv");
+const previousRows = readExistingUniverse(outputPath);
 
 const nseResponse = await fetch(nseUrl, {
   headers: {
@@ -48,15 +56,23 @@ const rows = buildIndianEquityUniverse(
   niftyIndustries
 );
 
-fs.writeFileSync(
+validateUniverseSnapshot(rows, {
+  label: "All Indian Market",
+  minRows: 3000,
+  maxRows: 15000,
+  maxDropPct: 20,
+  previousRows
+});
+writeUniverseAtomically(
   outputPath,
-  stringifyCsv(rows, [
+  rows,
+  [
     "symbol", "name", "industry", "series", "isin", "exchange",
     "trading_symbol", "scrip_code", "search_aliases", "enabled"
-  ]),
-  "utf8"
+  ]
 );
 
 const nseCount = rows.filter((row) => row.exchange === "NSE").length;
 const bseOnlyCount = rows.filter((row) => row.exchange === "BSE").length;
 console.log(`Saved ${rows.length} unique Indian equities (${nseCount} NSE, ${bseOnlyCount} BSE-only) to ${outputPath}`);
+console.log(formatUniverseChanges(universeChanges(previousRows, rows)));

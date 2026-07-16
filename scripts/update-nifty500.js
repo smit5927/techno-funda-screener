@@ -1,10 +1,17 @@
-import fs from "node:fs";
 import path from "node:path";
 import { ROOT_DIR } from "../src/config.js";
-import { parseCsv, stringifyCsv } from "../src/csv.js";
+import { parseCsv } from "../src/csv.js";
+import {
+  formatUniverseChanges,
+  readExistingUniverse,
+  universeChanges,
+  validateUniverseSnapshot,
+  writeUniverseAtomically
+} from "../src/universe-refresh.js";
 
 const url = "https://www.niftyindices.com/IndexConstituent/ind_nifty500list.csv";
 const outputPath = path.join(ROOT_DIR, "config", "universe.csv");
+const previousRows = readExistingUniverse(outputPath);
 
 const response = await fetch(url, {
   headers: {
@@ -29,10 +36,18 @@ const rows = records
   }))
   .filter((record) => record.symbol);
 
-fs.writeFileSync(
+validateUniverseSnapshot(rows, {
+  label: "Nifty 500",
+  minRows: 450,
+  maxRows: 550,
+  maxDropPct: 5,
+  previousRows
+});
+writeUniverseAtomically(
   outputPath,
-  stringifyCsv(rows, ["symbol", "name", "industry", "enabled"]),
-  "utf8"
+  rows,
+  ["symbol", "name", "industry", "enabled"]
 );
 
 console.log(`Saved ${rows.length} symbols to ${outputPath}`);
+console.log(formatUniverseChanges(universeChanges(previousRows, rows)));
