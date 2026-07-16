@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-16T05:27:23.463Z",
+  "updatedAt": "2026-07-16T05:59:12.113Z",
   "legacyOwnerJournalMigratedAt": null,
   "portfolioEngineStartedAt": "2026-07-11T05:24:12.577Z",
   "pyramidingStartedAt": "2026-07-13T06:00:40.290Z",
@@ -27,6 +27,20 @@
     "ipftPct": 1e-7,
     "gstPct": 18,
     "version": "NSE_EQUITY_DELIVERY_2026_07"
+  },
+  "corporateActionStatus": {
+    "enabled": true,
+    "source": "NSE Corporate Actions",
+    "sourceUrl": "https://www.nseindia.com/companies-listing/corporate-filings-actions",
+    "fetchedAt": "2026-07-16T05:59:12.092Z",
+    "asOf": "2026-07-15",
+    "fromDate": "2025-06-10",
+    "dataAvailable": true,
+    "fetchedActions": 2169,
+    "appliedCount": 0,
+    "reviewCount": 0,
+    "dividendAmount": 0,
+    "reason": "no new eligible open-position actions"
   },
   "signalState": {
     "default:CHOICEIN": {
@@ -28471,841 +28485,841 @@
     "custom:GRANULES.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SKYGOLD.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:THANGAMAYL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:TBZ.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:CGCL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:RML.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:NEULANDLAB.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:INOXINDIA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:UNIHEALTH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:RADICO.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:TIPSMUSIC.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:ALIVUS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:IKS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:TORNTPHARM.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:BHARATSE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:POCL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:PPAP.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:APOLLOHOSP.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:LUPIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:MARKSANS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:MMP.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SANGAMIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:ANANDRATHI.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:HAPPYFORGE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:VADILALIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:PGIL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SANSERA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:BUTTERFLY.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:CREDITACC.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:GHCLTEXTIL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:VIJIFIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:CEMPRO.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:HESTERBIO.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:OFSS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:RANEHOLDIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SFL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SHILPAMED.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SJS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:MANKIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:RAINBOW.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:AEGISVOPAK.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:INDIGRID.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:JAYBARMARU.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:MINDACORP.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:ADOR.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:GINNIFILA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:GODREJIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:GSMFOILS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:PANACHE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SANGHVIMOV.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:BLISSGVS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:HARSHA.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:INDNIPPON.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:MAYURUNIQ.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:NAM-INDIA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:PRIVISCL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:RPEL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:VIYASH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:LALPATHLAB.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SHRIPISTON.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:INDHOTEL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:KRISHNADEF.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:THELEELA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:NUVAMA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:IMPAL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:PARAS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:RAMCOIND.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SGFIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:STOVEKRAFT.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:UNIVASTU.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:GRWRHITECH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:PIDILITIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:CAPLIPOINT.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:KMEW.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:NINSYS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:WABAG.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:FUSION.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:BETA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:KIMS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:NRL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:KOVAI.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SCHNEIDER.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:RUBICON.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:MARC.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:APTUS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:MINDSPACE.NS": {
       "status": "EXIT",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:KARURVYSYA.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:FIEMIND.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:GRINDWELL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:LMW.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:PREMIERENE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:PGHL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:NH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:CRAFTSMAN.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:FORTIS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:MAHLOG.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:RAIN.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SIS.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SKIPPER.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:NRBBEARING.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:ASTERDM.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:KPIL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SANDHAR.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:THYROCARE.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:PRUDENT.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:VIJAYA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:ENDURANCE.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:PRICOLLTD.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:MOTHERSON.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:APCOTEXIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:ASIANPAINT.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:ORIENTBELL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:PRECOT.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SAKAR.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:FINEORG.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:BAJAJ-AUTO.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:KRN.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:NIVABUPA.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:INGERRAND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:TATACOMM.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:YATHARTH.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:MGEL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SBCL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:RRKABEL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:EMMVEE.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:CAMS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:CUMMINSIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SOLARINDS.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:V2RETAIL.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:HAL.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:NMDC.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:LLOYDSME.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:ANTHEM.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:JSWSTEEL.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:ADANIPOWER.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:VBL.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:BHEL.NS": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:POLYCAB.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:COALINDIA.NS": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:TENNIND.NS": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:BRPL.NS": {
@@ -29385,7 +29399,7 @@
     },
     "custom:HEXAGON.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:INVPRECQ.NS": {
@@ -29400,17 +29414,17 @@
     },
     "custom:OBSCP.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SEDEMAC.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:VIGOR.NS": {
       "status": "DATA_GAP",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:CLIOINFO.NS": {
@@ -29506,211 +29520,211 @@
     "custom:SW1.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:YASHHV.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:COVANCE.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:VIKRAMTH.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:CLIOINFO.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:CIL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-14",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:UNIABEXAL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:KMCSHIL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:RAJSEC.BO": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SUDARSHAN.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:INVPRECQ.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:KELENRG.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:NEXUSSURGL.BO": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:BIMETAL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:KPL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:KVFORGE.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:UCIL.BO": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:RASRESOR.BO": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:INDUSFINL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:TAALTECH.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:FREDUN.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:DHABRIYA.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:RRMETAL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SEKURITIND.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:MKTCREAT.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:TERAI.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:GOLKUNDIA.BO": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:EMERALD.BO": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:GSAUTO.BO": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SANCTRN.BO": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:TANFACIND.BO": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:SIMMOND.BO": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:CJGEL.BO": {
       "status": "ENTRY",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:BENARAS.BO": {
       "status": "WATCH",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     },
     "custom:BRPL.BO": {
       "status": "EXIT",
       "asOf": "2026-07-15",
-      "scannedAt": "2026-07-16T05:27:23.080Z",
+      "scannedAt": "2026-07-16T05:59:10.258Z",
       "scopeListId": "custom"
     }
   },
@@ -29762,6 +29776,8 @@
     "availableCash": 62662.59,
     "actualCash": 66607.68,
     "realizedPnl": 3945.09,
+    "tradeRealizedPnl": 3945.09,
+    "dividendRealizedPnl": 0,
     "grossRealizedPnl": 3945.09,
     "unrealizedPnl": -415.3,
     "chargesEnabled": false,
@@ -29827,11 +29843,11 @@
       "firstFundamentalScore": 7,
       "firstSeenAt": "2026-07-15T10:40:23.503Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T05:27:23.080Z",
-      "rank": 227.84,
-      "peakRank": 227.84,
+      "lastSeenAt": "2026-07-16T05:59:10.258Z",
+      "rank": 229.34,
+      "peakRank": 229.34,
       "grade": "A+",
-      "score": 39,
+      "score": 40,
       "entryStyle": "Breakout buy",
       "latestClose": 1866.0999755859375,
       "latestAsOf": "2026-07-15",
@@ -29874,6 +29890,8 @@
           "Institutional concept coverage: 20/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 20/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 21/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 21/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -30142,7 +30160,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 26,
+        "setupStrengthScore": 27,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -30383,7 +30401,7 @@
           },
           "cacheHit": true
         },
-        "score": 39
+        "score": 40
       },
       "entryCloseDates": [
         "2026-07-15"
@@ -30408,13 +30426,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 10.22,
           "atrExtension": 1.86,
-          "currentRank": 227.84,
-          "peakRank": 227.84,
+          "currentRank": 229.34,
+          "peakRank": 229.34,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-16T05:27:23.080Z",
+      "lastEvaluatedAt": "2026-07-16T05:59:10.258Z",
       "plannedStopPrice": 1776.1,
       "plannedRisk": 2970,
       "plannedAllocation": 61581.3,
@@ -30441,11 +30459,11 @@
       "firstFundamentalScore": 6,
       "firstSeenAt": "2026-07-15T10:40:23.503Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T05:27:23.080Z",
-      "rank": 223.49,
-      "peakRank": 223.49,
+      "lastSeenAt": "2026-07-16T05:59:10.258Z",
+      "rank": 224.99,
+      "peakRank": 224.99,
       "grade": "A+",
-      "score": 36,
+      "score": 37,
       "entryStyle": "Trend continuation buy",
       "latestClose": 417.95001220703125,
       "latestAsOf": "2026-07-15",
@@ -30486,6 +30504,8 @@
           "Institutional concept coverage: 21/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 21/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 22/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 22/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -30754,7 +30774,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 24,
+        "setupStrengthScore": 25,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -30979,7 +30999,7 @@
           },
           "cacheHit": true
         },
-        "score": 36
+        "score": 37
       },
       "entryCloseDates": [
         "2026-07-15"
@@ -31004,13 +31024,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 11.34,
           "atrExtension": 1.26,
-          "currentRank": 223.49,
-          "peakRank": 223.49,
+          "currentRank": 224.99,
+          "peakRank": 224.99,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-16T05:27:23.080Z",
+      "lastEvaluatedAt": "2026-07-16T05:59:10.258Z",
       "plannedStopPrice": 389.6,
       "plannedRisk": 4224.15,
       "plannedAllocation": 62274.55,
@@ -31036,11 +31056,11 @@
       "firstFundamentalScore": 4,
       "firstSeenAt": "2026-07-15T10:40:23.503Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T05:27:23.080Z",
-      "rank": 213.56,
-      "peakRank": 213.56,
+      "lastSeenAt": "2026-07-16T05:59:10.258Z",
+      "rank": 215.06,
+      "peakRank": 215.06,
       "grade": "A+",
-      "score": 31,
+      "score": 32,
       "entryStyle": "Momentum continuation buy",
       "latestClose": 625.6500244140625,
       "latestAsOf": "2026-07-15",
@@ -31084,6 +31104,8 @@
           "Institutional concept coverage: 19/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 20/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 20/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -31352,7 +31374,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 21,
+        "setupStrengthScore": 22,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -31596,7 +31618,7 @@
           },
           "cacheHit": true
         },
-        "score": 31
+        "score": 32
       },
       "entryCloseDates": [
         "2026-07-15"
@@ -31619,13 +31641,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 3.84,
           "atrExtension": 0.77,
-          "currentRank": 213.56,
-          "peakRank": 213.56,
+          "currentRank": 215.06,
+          "peakRank": 215.06,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-16T05:27:23.080Z",
+      "lastEvaluatedAt": "2026-07-16T05:59:10.258Z",
       "plannedStopPrice": 616.27,
       "plannedRisk": 938,
       "plannedAllocation": 62565,
@@ -31652,11 +31674,11 @@
       "firstFundamentalScore": 6,
       "firstSeenAt": "2026-07-14T09:43:28.265Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T05:27:23.080Z",
-      "rank": 209.1,
-      "peakRank": 209.1,
+      "lastSeenAt": "2026-07-16T05:59:10.258Z",
+      "rank": 210.6,
+      "peakRank": 210.6,
       "grade": "A+",
-      "score": 35,
+      "score": 36,
       "entryStyle": "Trend continuation buy",
       "latestClose": 8934,
       "latestAsOf": "2026-07-15",
@@ -31683,13 +31705,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 4.49,
           "atrExtension": 3.64,
-          "currentRank": 209.1,
-          "peakRank": 209.1,
+          "currentRank": 210.6,
+          "peakRank": 210.6,
           "rankDecay": 0,
           "confirmedEntryCloses": 3
         }
       },
-      "lastEvaluatedAt": "2026-07-16T05:27:23.080Z",
+      "lastEvaluatedAt": "2026-07-16T05:59:10.258Z",
       "plannedStopPrice": 8739,
       "plannedRisk": 1365,
       "plannedAllocation": 62538,
@@ -31732,6 +31754,8 @@
           "Institutional concept coverage: 19/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 20/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 20/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -32000,7 +32024,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 23,
+        "setupStrengthScore": 24,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -32259,7 +32283,7 @@
           },
           "cacheHit": true
         },
-        "score": 35
+        "score": 36
       },
       "rotation": null
     },
@@ -32282,11 +32306,11 @@
       "firstFundamentalScore": 4,
       "firstSeenAt": "2026-07-15T03:47:23.768Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T05:27:23.080Z",
-      "rank": 207.62,
-      "peakRank": 207.62,
+      "lastSeenAt": "2026-07-16T05:59:10.258Z",
+      "rank": 209.12,
+      "peakRank": 209.12,
       "grade": "A+",
-      "score": 31,
+      "score": 32,
       "entryStyle": "Retracement buy near 55D high retest",
       "latestClose": 24.399999618530273,
       "latestAsOf": "2026-07-15",
@@ -32316,13 +32340,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 13.44,
           "atrExtension": 3.2,
-          "currentRank": 207.62,
-          "peakRank": 207.62,
+          "currentRank": 209.12,
+          "peakRank": 209.12,
           "rankDecay": 0,
           "confirmedEntryCloses": 2
         }
       },
-      "lastEvaluatedAt": "2026-07-16T05:27:23.080Z",
+      "lastEvaluatedAt": "2026-07-16T05:59:10.258Z",
       "plannedStopPrice": 22.45,
       "plannedRisk": 5007.6,
       "plannedAllocation": 62659.2,
@@ -32365,6 +32389,8 @@
           "Institutional concept coverage: 16/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -32633,7 +32659,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 21,
+        "setupStrengthScore": 22,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -32835,7 +32861,7 @@
           },
           "cacheHit": true
         },
-        "score": 31
+        "score": 32
       },
       "rotation": null
     },
@@ -32860,11 +32886,11 @@
       "firstFundamentalScore": 5,
       "firstSeenAt": "2026-07-15T03:47:23.768Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T05:27:23.080Z",
-      "rank": 207.55,
-      "peakRank": 207.55,
+      "lastSeenAt": "2026-07-16T05:59:10.258Z",
+      "rank": 209.05,
+      "peakRank": 209.05,
       "grade": "A+",
-      "score": 35,
+      "score": 36,
       "entryStyle": "Breakout buy",
       "latestClose": 824.5999755859375,
       "latestAsOf": "2026-07-15",
@@ -32890,13 +32916,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 8.92,
           "atrExtension": 2.41,
-          "currentRank": 207.55,
-          "peakRank": 207.55,
+          "currentRank": 209.05,
+          "peakRank": 209.05,
           "rankDecay": 0,
           "confirmedEntryCloses": 2
         }
       },
-      "lastEvaluatedAt": "2026-07-16T05:27:23.080Z",
+      "lastEvaluatedAt": "2026-07-16T05:59:10.258Z",
       "plannedStopPrice": 805.05,
       "plannedRisk": 1466.25,
       "plannedAllocation": 61845,
@@ -32939,6 +32965,8 @@
           "Institutional concept coverage: 18/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 18/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -33207,7 +33235,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 24,
+        "setupStrengthScore": 25,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -33448,7 +33476,7 @@
           },
           "cacheHit": true
         },
-        "score": 35
+        "score": 36
       }
     },
     {
@@ -33472,11 +33500,11 @@
       "firstFundamentalScore": 5,
       "firstSeenAt": "2026-07-15T10:40:23.503Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T05:27:23.080Z",
-      "rank": 207.4,
-      "peakRank": 207.4,
+      "lastSeenAt": "2026-07-16T05:59:10.258Z",
+      "rank": 208.9,
+      "peakRank": 208.9,
       "grade": "A+",
-      "score": 37,
+      "score": 38,
       "entryStyle": "Retracement buy near 55D high retest",
       "latestClose": 2746.199951171875,
       "latestAsOf": "2026-07-15",
@@ -33520,6 +33548,8 @@
           "Institutional concept coverage: 20/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 20/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 21/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 21/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -33788,7 +33818,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 26,
+        "setupStrengthScore": 27,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -34045,7 +34075,7 @@
           },
           "cacheHit": true
         },
-        "score": 37
+        "score": 38
       },
       "entryCloseDates": [
         "2026-07-15"
@@ -34070,13 +34100,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 8.51,
           "atrExtension": 1.44,
-          "currentRank": 207.4,
-          "peakRank": 207.4,
+          "currentRank": 208.9,
+          "peakRank": 208.9,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-16T05:27:23.080Z",
+      "lastEvaluatedAt": "2026-07-16T05:59:10.258Z",
       "plannedStopPrice": 2621,
       "plannedRisk": 2754.4,
       "plannedAllocation": 60416.4,
@@ -34102,11 +34132,11 @@
       "firstFundamentalScore": 2,
       "firstSeenAt": "2026-07-15T10:40:23.503Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T05:27:23.080Z",
-      "rank": 207.01,
-      "peakRank": 207.01,
+      "lastSeenAt": "2026-07-16T05:59:10.258Z",
+      "rank": 208.51,
+      "peakRank": 208.51,
       "grade": "A+",
-      "score": 31,
+      "score": 32,
       "entryStyle": "Retracement buy near Fibonacci 38.2%",
       "latestClose": 5986,
       "latestAsOf": "2026-07-15",
@@ -34149,6 +34179,8 @@
           "Institutional concept coverage: 17/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 18/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 18/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -34417,7 +34449,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 23,
+        "setupStrengthScore": 24,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -34643,7 +34675,7 @@
           },
           "cacheHit": true
         },
-        "score": 31
+        "score": 32
       },
       "entryCloseDates": [
         "2026-07-15"
@@ -34666,13 +34698,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 5.95,
           "atrExtension": 1.88,
-          "currentRank": 207.01,
-          "peakRank": 207.01,
+          "currentRank": 208.51,
+          "peakRank": 208.51,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-16T05:27:23.080Z",
+      "lastEvaluatedAt": "2026-07-16T05:59:10.258Z",
       "plannedStopPrice": 5896.21,
       "plannedRisk": 897.9,
       "plannedAllocation": 59860,
@@ -34699,7 +34731,7 @@
       "firstFundamentalScore": 6,
       "firstSeenAt": "2026-07-14T10:56:37.603Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T05:27:23.080Z",
+      "lastSeenAt": "2026-07-16T05:59:10.258Z",
       "rank": 190.71,
       "peakRank": 193.73,
       "grade": "A+",
@@ -34733,7 +34765,7 @@
           "confirmedEntryCloses": 2
         }
       },
-      "lastEvaluatedAt": "2026-07-16T05:27:23.080Z",
+      "lastEvaluatedAt": "2026-07-16T05:59:10.258Z",
       "plannedStopPrice": 9610.62,
       "plannedRisk": 4274.28,
       "plannedAllocation": 61938,
@@ -34770,7 +34802,7 @@
           "GTF 50-SMA slope: daily up, weekly up.",
           "Opposing daily supply 11537.9-11680.",
           "Index context: NIFTY 500 proxy is BULLISH; broad index support is positive.",
-          "Derivatives context: F&O listed with lot size 75; OI participation -0.02%, volume 12716.00.",
+          "Derivatives context: F&O listed with lot size 75; OI participation -0.08%, volume 17174.00.",
           "Options context: NSE option-chain snapshot unavailable; mark this as data gap, not as bearish.",
           "Commodity/currency context: 2/5 commodity/currency proxies are bullish; 2 bearish.",
           "Operator/delivery context: Delivery neutral: traded quantity 0.87x, delivery 0.76x, delivery percentage 51.80%.",
@@ -35068,14 +35100,14 @@
             "dataAvailable": true,
             "fnoEligible": true,
             "oiAvailable": true,
-            "oiChangePct": -0.02,
-            "oiVolume": 12716,
-            "optionValue": 8844840199,
-            "futureValue": 11449.48386,
+            "oiChangePct": -0.08,
+            "oiVolume": 17174,
+            "optionValue": 11845606558,
+            "futureValue": 16302.83416,
             "participation": false,
             "lotSize": 75,
             "underlying": "BAJAJ AUTO LIMITED",
-            "reason": "F&O listed with lot size 75; OI participation -0.02%, volume 12716.00."
+            "reason": "F&O listed with lot size 75; OI participation -0.08%, volume 17174.00."
           },
           "options": {
             "dataAvailable": false,
@@ -35299,6 +35331,624 @@
       }
     },
     {
+      "id": "FINEORG-2026-07-15-candidate",
+      "symbol": "FINEORG",
+      "yahooSymbol": "FINEORG.NS",
+      "name": "FINEORG",
+      "industry": "My List",
+      "sourceLists": [
+        "All NSE Market",
+        "My Custom List"
+      ],
+      "listId": "custom",
+      "listLabel": "My List",
+      "tradeScope": "custom",
+      "tradeScopeLabel": "My List",
+      "firstSignalDate": "2026-07-15",
+      "firstSignalClose": 5118.5,
+      "firstSignalRank": 176.06,
+      "firstFundamentalScore": 3,
+      "firstSeenAt": "2026-07-15T10:40:23.503Z",
+      "lastSignalDate": "2026-07-15",
+      "lastSeenAt": "2026-07-16T05:59:10.258Z",
+      "rank": 189.32,
+      "peakRank": 189.32,
+      "grade": "A+",
+      "score": 30,
+      "entryStyle": "Retracement buy near Fibonacci 38.2%",
+      "latestClose": 5118.5,
+      "latestAsOf": "2026-07-15",
+      "latestSnapshot": {
+        "symbol": "FINEORG",
+        "yahooSymbol": "FINEORG.NS",
+        "name": "FINEORG",
+        "industry": "My List",
+        "listLabel": "My Custom List",
+        "status": "ENTRY",
+        "signalReason": [
+          "Weekly RSI 57.91 is above 50.",
+          "Daily RSI 55.28 is above 50.",
+          "Weekly RS 0.13 is above 0.",
+          "Daily long RS55 0.07 is above 0.",
+          "Daily short RS21 0.00 is above 0.",
+          "Daily close 5118.50 is above Supertrend(10, 3) 4814.91.",
+          "Entry style: Retracement buy near Fibonacci 38.2%.",
+          "Price action strength: close is within 15% of 52-week high 5494.00.",
+          "Momentum confirmation: MACD is not fully confirmed; OBV is rising.",
+          "Retracement buy: price pulled back 5.34% from the 55-day high and reclaimed near Fibonacci 38.2% 5031.53; support distance is 1.70%.",
+          "Retracement confirmation: pullback volume ratio 0.67 and reclaim volume ratio 0.89 with candle close location 78.88%.",
+          "Fibonacci confluence: close is 1.70% from 38.2% retracement support 5031.53.",
+          "Bollinger context: bandwidth 9.71% indicates a range-bound/compressed phase.",
+          "RS trend strength: daily RS55 is rising.",
+          "Trend strength: close is above 50-DMA and 200-DMA, with fast DMA above slow DMA.",
+          "Risk reference: close is 5.93% above daily Supertrend.",
+          "Price confirmation: previous-high confirmation is present.",
+          "Volatility is controlled: ATR(14) is 2.86% of price.",
+          "Liquidity strength: 20-day average turnover is Rs 79415587.47.",
+          "Market regime supports longs: NIFTY 500 bullish/healthy.",
+          "Weekly demand DBR 4424.1-4754.4: fresh, score 7/7, achievement 1.98R, achievement_close.",
+          "GTF 50-SMA slope: daily up, weekly sideways.",
+          "Opposing daily supply 6007.75-6115.5; estimated room 1.25R.",
+          "Index context: NIFTY 500 proxy is BULLISH; broad index support is positive.",
+          "Derivatives context: Not present in NSE F&O lot-size master; treat as cash-equity only.",
+          "Options context: NSE option-chain snapshot unavailable; mark this as data gap, not as bearish.",
+          "Commodity/currency context: 2/5 commodity/currency proxies are bullish; 2 bearish.",
+          "Operator/delivery context: Delivery neutral: traded quantity 1.33x, delivery 1.05x, delivery percentage 45.98%.",
+          "Institutional confluence score 2/5 (Institutional C).",
+          "Execution plan: buy on the next actual market session using the exact 09:17 one-minute candle open; weekends and exchange holidays are skipped.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 18/30 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 18/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 19/31 applicable video-derived buckets are strong."
+        ],
+        "close": 5118.5,
+        "asOf": "2026-07-15",
+        "weeklyAsOf": "2026-07-06",
+        "dailyRsi": 55.28309855423578,
+        "weeklyRsi": 57.90565787462295,
+        "weeklyRs": 0.128660419202274,
+        "dailyLongRs": 0.06575193717540317,
+        "dailyShortRs": 0.004373346504121134,
+        "dailySupertrend": 4814.912826480341,
+        "weeklyClose": 4999.5,
+        "weeklyEma13": 4865.474190266652,
+        "weeklyPriceAboveEma13": true,
+        "weeklyEma13Rising": true,
+        "weeklyEma13Reclaim": false,
+        "weeklyEma13BelowCloses": 0,
+        "dailyPriceAboveSupertrend": true,
+        "entryStyle": {
+          "type": "RETRACEMENT_BUY",
+          "label": "Retracement buy near Fibonacci 38.2%"
+        },
+        "setupStrength": {
+          "score": 12,
+          "checks": {
+            "recentHighBreakout": false,
+            "baseBreakout": false,
+            "higherLowStructure": false,
+            "yearHighBreakout": false,
+            "nearYearHigh": true,
+            "volumeExpansion": false,
+            "weeklyRsRising": false,
+            "dailyLongRsRising": true,
+            "dailyShortRsRising": false,
+            "closeAboveSmaFast": true,
+            "closeAboveSmaSlow": true,
+            "smaFastAboveSlow": true,
+            "favorableRiskToSupertrend": true,
+            "controlledVolatility": true,
+            "liquidEnough": true,
+            "bullishCandleConfirmation": true,
+            "bullishEngulfing": false,
+            "hammer": false,
+            "macdBullish": false,
+            "obvRising": true,
+            "retracementBuyZone": true,
+            "fibonacciSupportNearby": true,
+            "bollingerTrendSupport": false,
+            "bollingerRangeBound": true,
+            "marketRegimeStrong": true,
+            "weeklyCloseAboveEma13": true,
+            "weeklyEma13Rising": true,
+            "weeklyEma13Reclaim": false
+          },
+          "pyramidStructure": {
+            "pivotBars": 2,
+            "lookback": 160,
+            "latestDate": "2026-07-15",
+            "latestClose": 5118.5,
+            "previousDate": "2026-07-14",
+            "previousClose": 4984,
+            "points": [
+              {
+                "date": "2026-03-12",
+                "type": "HIGH",
+                "price": 4388
+              },
+              {
+                "date": "2026-03-12",
+                "type": "LOW",
+                "price": 4191.2001953125
+              },
+              {
+                "date": "2026-03-24",
+                "type": "LOW",
+                "price": 3890.5
+              },
+              {
+                "date": "2026-03-25",
+                "type": "HIGH",
+                "price": 4272.39990234375
+              },
+              {
+                "date": "2026-03-30",
+                "type": "LOW",
+                "price": 3902
+              },
+              {
+                "date": "2026-04-10",
+                "type": "HIGH",
+                "price": 4700.10009765625
+              },
+              {
+                "date": "2026-04-22",
+                "type": "HIGH",
+                "price": 5144.89990234375
+              },
+              {
+                "date": "2026-05-04",
+                "type": "HIGH",
+                "price": 4739.7998046875
+              },
+              {
+                "date": "2026-05-05",
+                "type": "LOW",
+                "price": 4541.2001953125
+              },
+              {
+                "date": "2026-05-08",
+                "type": "HIGH",
+                "price": 4815.89990234375
+              },
+              {
+                "date": "2026-05-13",
+                "type": "LOW",
+                "price": 4518
+              },
+              {
+                "date": "2026-05-15",
+                "type": "HIGH",
+                "price": 4748.89990234375
+              },
+              {
+                "date": "2026-05-18",
+                "type": "LOW",
+                "price": 4429.7998046875
+              },
+              {
+                "date": "2026-05-20",
+                "type": "HIGH",
+                "price": 4827.5
+              },
+              {
+                "date": "2026-05-22",
+                "type": "LOW",
+                "price": 4503
+              },
+              {
+                "date": "2026-05-27",
+                "type": "HIGH",
+                "price": 4760.7998046875
+              },
+              {
+                "date": "2026-06-02",
+                "type": "LOW",
+                "price": 4424.10009765625
+              },
+              {
+                "date": "2026-06-05",
+                "type": "HIGH",
+                "price": 4808
+              },
+              {
+                "date": "2026-06-12",
+                "type": "LOW",
+                "price": 4659.7998046875
+              },
+              {
+                "date": "2026-06-22",
+                "type": "HIGH",
+                "price": 5399
+              },
+              {
+                "date": "2026-06-23",
+                "type": "LOW",
+                "price": 5052
+              },
+              {
+                "date": "2026-06-29",
+                "type": "LOW",
+                "price": 5166.10009765625
+              },
+              {
+                "date": "2026-06-30",
+                "type": "HIGH",
+                "price": 5407
+              },
+              {
+                "date": "2026-07-08",
+                "type": "LOW",
+                "price": 4852
+              }
+            ]
+          },
+          "values": {
+            "priorRecentHigh": 5407,
+            "priorBaseHigh": 5407,
+            "recentBaseLow": 4852,
+            "previousBaseLow": 4937.2001953125,
+            "macd": 37.170814470585356,
+            "macdSignal": 69.26553909723945,
+            "macdHistogram": -32.0947246266541,
+            "priorYearHigh": 5494,
+            "volumeAverage": 13133.76,
+            "volumeRatio": 0.8864940428331263,
+            "smaFast": 4860.393984375,
+            "smaSlow": 4535.296009521484,
+            "atr": 146.4742468371963,
+            "atrPct": 2.861663511520881,
+            "averageTurnover": 79415587.46582031,
+            "previousLow": 4950,
+            "twoCandleLow": 4950,
+            "fourCandleLow": 4875,
+            "riskToSupertrendPct": 5.931174631623694,
+            "riskToPreviousLowPct": 3.291980072286803,
+            "retracementPullbackDepthPct": 5.335675975587201,
+            "retracementSupportSource": "Fibonacci 38.2%",
+            "retracementSupportReference": 5031.532237304687,
+            "retracementSupportDistancePct": 1.6990868945064483,
+            "retracementPullbackVolumeRatio": 0.6671052310990913,
+            "retracementCurrentVolumeRatio": 0.8864940428331263,
+            "retracementCloseLocationPct": 78.88198757763976,
+            "retracementPullbackDepthOk": true,
+            "retracementSupportProximityOk": true,
+            "retracementVolumePatternOk": true,
+            "retracementReclaimCandleOk": true,
+            "retracementRiskOk": true,
+            "retracementTrendHoldOk": true,
+            "retracementPatternLabel": "Pullback 5.34% to Fibonacci 38.2%",
+            "retracementLookback": 5,
+            "retracementMinPullbackPct": 2,
+            "retracementMaxPullbackPct": 15,
+            "retracementSupportProximityPct": 5,
+            "retracementBreakoutRetestPct": 3,
+            "retracementDryVolumeMaxRatio": 0.9,
+            "retracementReclaimVolumeMinRatio": 1.1,
+            "retracementMaxRiskPct": 8,
+            "fibonacciSwingHigh": 5407,
+            "fibonacciSwingLow": 4424.10009765625,
+            "fibonacciNearestLevel": "38.2%",
+            "fibonacciNearestPrice": 5031.532237304687,
+            "fibonacciDistancePct": 1.6990868945064483,
+            "fibonacciSupportNearby": true,
+            "bollingerMiddle": 5141.605004882813,
+            "bollingerUpper": 5391.289748143238,
+            "bollingerLower": 4891.920261622387,
+            "bollingerPercentB": 0.4537316445908873,
+            "bollingerBandwidthPct": 9.712326910500051,
+            "bollingerRangeBound": true,
+            "recentHighPeriod": 55,
+            "baseBreakoutPeriod": 20,
+            "yearHighPeriod": 252,
+            "nearYearHighPct": 15,
+            "volumeAveragePeriod": 50,
+            "volumeExpansionMultiple": 1.5,
+            "riskToSupertrendMaxPct": 7,
+            "smaFastPeriod": 50,
+            "smaSlowPeriod": 200,
+            "atrPeriod": 14,
+            "maxAtrPct": 8,
+            "minimumAverageTurnover": 10000000,
+            "candlePattern": "previous-high confirmation",
+            "marketRegimeLabel": "NIFTY 500 bullish/healthy",
+            "weeklyClose": 4999.5,
+            "weeklyEma13": 4865.474190266652,
+            "weeklyEma13Previous": 4843.136555311094,
+            "weeklyEma13DistancePct": 2.7546299598395936,
+            "weeklyEma13BelowCloses": 0,
+            "weeklyEma13Period": 13
+          }
+        },
+        "setupStrengthScore": 21,
+        "setupGrade": "A+",
+        "sectorStrength": {
+          "industry": "My List",
+          "total": 175,
+          "strong": 122,
+          "entry": 119,
+          "breadthPct": 69.71428571428572,
+          "ok": true,
+          "minPct": 50,
+          "minStocks": 5
+        },
+        "sectorStrengthScore": 1,
+        "institutionalContext": {
+          "score": 2,
+          "maxScore": 5,
+          "grade": "Institutional C",
+          "dataGaps": 1,
+          "index": {
+            "dataAvailable": true,
+            "supportsLongs": true,
+            "primaryBias": "BULLISH",
+            "sectorProxy": "NIFTY 500",
+            "sectorProxyBias": "BULLISH",
+            "reason": "NIFTY 500 proxy is BULLISH; broad index support is positive."
+          },
+          "derivatives": {
+            "dataAvailable": true,
+            "fnoEligible": false,
+            "oiAvailable": false,
+            "oiChangePct": null,
+            "oiVolume": null,
+            "optionValue": null,
+            "futureValue": null,
+            "participation": false,
+            "lotSize": null,
+            "underlying": "",
+            "reason": "Not present in NSE F&O lot-size master; treat as cash-equity only."
+          },
+          "options": {
+            "dataAvailable": false,
+            "supportsLongs": false,
+            "symbol": "NIFTY",
+            "pcr": null,
+            "maxPutOiStrike": null,
+            "maxCallOiStrike": null,
+            "bias": "UNKNOWN",
+            "reason": "NSE option-chain snapshot unavailable; mark this as data gap, not as bearish."
+          },
+          "commodity": {
+            "dataAvailable": true,
+            "supportsSector": true,
+            "exposure": "Broad macro",
+            "proxy": "",
+            "proxyBias": "UNKNOWN",
+            "reason": "2/5 commodity/currency proxies are bullish; 2 bearish."
+          },
+          "operator": {
+            "dataAvailable": true,
+            "asOf": "2026-07-15",
+            "tradedQuantityRatio": 1.3289810080350621,
+            "deliveryQuantityRatio": 1.0482007909471789,
+            "deliveryPct": 45.98,
+            "averagePrice": 5105,
+            "priceChangePct": 2.698635634028901,
+            "closeAboveAveragePrice": true,
+            "participation": false,
+            "accumulation": false,
+            "distribution": false,
+            "reason": "Delivery neutral: traded quantity 1.33x, delivery 1.05x, delivery percentage 45.98%."
+          }
+        },
+        "institutionalScore": 2,
+        "gtfContext": {
+          "dataAvailable": true,
+          "score": 4,
+          "maxScore": 10,
+          "grade": "GTF C",
+          "rankAdjustment": 4,
+          "preferredEntryStyle": "GTF_NEUTRAL",
+          "structuralStop": 4406.4,
+          "dailyTrend": "up",
+          "weeklyTrend": "sideways",
+          "dailyDemand": null,
+          "weeklyDemand": {
+            "timeframe": "weekly",
+            "side": "demand",
+            "pattern": "DBR",
+            "proximal": 4754.4,
+            "distal": 4424.1,
+            "entry": 4759.15,
+            "stopLoss": 4406.4,
+            "score": 7,
+            "freshnessTests": 0,
+            "achievementR": 1.98,
+            "baseWickRatio": 0.16,
+            "departureQuality": "achievement_close",
+            "legoutDate": "2026-06-15",
+            "active": true,
+            "distancePct": 7.11
+          },
+          "higherTimeframeDemand": null,
+          "reactingFromHtf": {
+            "active": false,
+            "sourceStatus": "PROXY_UNVALIDATED",
+            "role": "SECONDARY_CONFLUENCE_ONLY",
+            "managementClass": null,
+            "managementPlan": null,
+            "zone": null,
+            "overlapWithExecutionDemand": false,
+            "recentTouchAndReclaim": false,
+            "reason": "No fresh score-7 M/Q/HY/Y demand overlap or recent reclaim was detected."
+          },
+          "opposingSupply": {
+            "timeframe": "daily",
+            "side": "supply",
+            "pattern": "DBD",
+            "proximal": 6007.75,
+            "distal": 6115.5,
+            "entry": 6001.74,
+            "stopLoss": 6139.96,
+            "score": 7,
+            "freshnessTests": 0,
+            "achievementR": 24.14,
+            "baseWickRatio": 0.16,
+            "departureQuality": "significant_gap",
+            "legoutDate": "2022-12-12",
+            "active": true,
+            "distancePct": 19.48
+          },
+          "rewardRisk": 1.25,
+          "unlimitedRewardRoom": false,
+          "supplyDistancePct": 19.48,
+          "supplyBlocked": false,
+          "demandRetest": false,
+          "checks": {
+            "dailyDemandQualified": false,
+            "weeklyDemandQualified": true,
+            "dailyDemandFresh": false,
+            "weeklyDemandFresh": true,
+            "demandRetest": false,
+            "reactingFromHtf": false,
+            "dailyTrendUp": true,
+            "weeklyTrendNotDown": true,
+            "roomForTwoR": false,
+            "supplyBlocked": false
+          },
+          "reasons": [
+            "Weekly demand DBR 4424.1-4754.4: fresh, score 7/7, achievement 1.98R, achievement_close.",
+            "GTF 50-SMA slope: daily up, weekly sideways.",
+            "Opposing daily supply 6007.75-6115.5; estimated room 1.25R."
+          ]
+        },
+        "gtfScore": 0,
+        "conceptCoverage": {
+          "passed": 19,
+          "applicable": 31,
+          "weak": 10,
+          "dataGaps": 2,
+          "excluded": 6,
+          "passLabels": [
+            "Compulsory multi-timeframe engine",
+            "Relative strength leadership",
+            "RSI momentum",
+            "Supertrend trend filter",
+            "Weekly EMA13 trend health/reclaim",
+            "Breakout or 52-week high zone",
+            "Retracement/pullback buy setup",
+            "Fibonacci retracement support",
+            "Sector breadth",
+            "50/200 DMA trend structure",
+            "Candle IPC confirmation",
+            "Volatility and liquidity control",
+            "Risk reference discipline",
+            "Market regime",
+            "Index regime confirmation",
+            "Commodity/currency macro context",
+            "Fundamental improvement",
+            "Exit rule discipline",
+            "09:17 execution discipline"
+          ],
+          "weakLabels": [
+            "RS trend follow-through",
+            "Price-action base and higher-low structure",
+            "GTF demand/supply confluence",
+            "GTF reacting from higher timeframe (secondary proxy)",
+            "Bollinger trend/range context",
+            "Volume participation",
+            "MACD and OBV confirmation",
+            "Operator delivery confirmation",
+            "Derivative/F&O eligibility",
+            "Derivative OI participation"
+          ],
+          "dataGapLabels": [
+            "Index option-chain positioning",
+            "News/event context"
+          ],
+          "excludedLabels": [
+            "Intraday tick scalping",
+            "Broker-only live Greeks/order-book depth",
+            "Pair-trading spread execution",
+            "Short-selling execution",
+            "Options premium/straddle/strangle execution",
+            "Manual charting/terminal workflow"
+          ],
+          "summary": "19/31 applicable video-derived buckets strong; 2 data gaps; 6 non-EOD playbooks excluded."
+        },
+        "fundamentalScore": 3,
+        "fundamental": {
+          "available": true,
+          "score": 3,
+          "maxScore": 5,
+          "currentPe": 38.274645,
+          "ebitdaMargin": 0.2615316293835704,
+          "checks": {
+            "netIncomeYoYUp": {
+              "ok": true,
+              "latest": 4170740000,
+              "previous": 4104964000
+            },
+            "operatingIncomeYoYUp": {
+              "ok": false,
+              "latest": 4265426000,
+              "previous": 4605811000
+            },
+            "ebitdaMarginQoQUp": {
+              "ok": true,
+              "latest": 0.2615316293835704,
+              "previous": 0.20729789258909453
+            },
+            "ebitdaMarginYoYUp": {
+              "ok": true,
+              "latest": 0.2615316293835704,
+              "previous": 0.23975962665135547
+            },
+            "peRising": {
+              "ok": false,
+              "latest": 29.927552468444247,
+              "previous": 30.03461439374907
+            }
+          },
+          "cacheHit": true
+        },
+        "score": 30
+      },
+      "entryCloseDates": [
+        "2026-07-15"
+      ],
+      "status": "WAITING_CONFIRMATION",
+      "skipReason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1.",
+      "lastDecision": {
+        "actionable": false,
+        "disposition": "WAITING_CONFIRMATION",
+        "reasons": [
+          "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
+        ],
+        "warnings": [],
+        "metrics": {
+          "signalAgeDays": 0,
+          "firstSignalClose": 5118.5,
+          "currentClose": 5118.5,
+          "executionPrice": null,
+          "runupPct": 0,
+          "executionGapPct": null,
+          "supertrendDistancePct": 5.93,
+          "atrExtension": 1.76,
+          "currentRank": 189.32,
+          "peakRank": 189.32,
+          "rankDecay": 0,
+          "confirmedEntryCloses": 1
+        }
+      },
+      "lastEvaluatedAt": "2026-07-16T05:59:10.258Z",
+      "plannedStopPrice": 5031.53,
+      "plannedRisk": 1043.64,
+      "plannedAllocation": 61422,
+      "skipAlertedAt": "2026-07-15T10:40:23.503Z"
+    },
+    {
       "id": "INDIGRID-2026-07-13-candidate",
       "symbol": "INDIGRID",
       "yahooSymbol": "INDIGRID.NS",
@@ -35317,7 +35967,7 @@
       "firstFundamentalScore": 2,
       "firstSeenAt": "2026-07-14T09:43:28.265Z",
       "lastSignalDate": "2026-07-14",
-      "lastSeenAt": "2026-07-16T05:27:23.080Z",
+      "lastSeenAt": "2026-07-16T05:59:10.258Z",
       "rank": 188.19,
       "peakRank": 188.19,
       "grade": "A+",
@@ -35351,7 +36001,7 @@
           "confirmedEntryCloses": 2
         }
       },
-      "lastEvaluatedAt": "2026-07-16T05:27:23.080Z",
+      "lastEvaluatedAt": "2026-07-16T05:59:10.258Z",
       "plannedStopPrice": 175.16,
       "plannedRisk": 939.84,
       "plannedAllocation": 62596.16,
@@ -35897,622 +36547,6 @@
       }
     },
     {
-      "id": "FINEORG-2026-07-15-candidate",
-      "symbol": "FINEORG",
-      "yahooSymbol": "FINEORG.NS",
-      "name": "FINEORG",
-      "industry": "My List",
-      "sourceLists": [
-        "All NSE Market",
-        "My Custom List"
-      ],
-      "listId": "custom",
-      "listLabel": "My List",
-      "tradeScope": "custom",
-      "tradeScopeLabel": "My List",
-      "firstSignalDate": "2026-07-15",
-      "firstSignalClose": 5118.5,
-      "firstSignalRank": 176.06,
-      "firstFundamentalScore": 3,
-      "firstSeenAt": "2026-07-15T10:40:23.503Z",
-      "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T05:27:23.080Z",
-      "rank": 187.82,
-      "peakRank": 187.82,
-      "grade": "A+",
-      "score": 29,
-      "entryStyle": "Retracement buy near Fibonacci 38.2%",
-      "latestClose": 5118.5,
-      "latestAsOf": "2026-07-15",
-      "latestSnapshot": {
-        "symbol": "FINEORG",
-        "yahooSymbol": "FINEORG.NS",
-        "name": "FINEORG",
-        "industry": "My List",
-        "listLabel": "My Custom List",
-        "status": "ENTRY",
-        "signalReason": [
-          "Weekly RSI 57.91 is above 50.",
-          "Daily RSI 55.28 is above 50.",
-          "Weekly RS 0.13 is above 0.",
-          "Daily long RS55 0.07 is above 0.",
-          "Daily short RS21 0.00 is above 0.",
-          "Daily close 5118.50 is above Supertrend(10, 3) 4814.91.",
-          "Entry style: Retracement buy near Fibonacci 38.2%.",
-          "Price action strength: close is within 15% of 52-week high 5494.00.",
-          "Momentum confirmation: MACD is not fully confirmed; OBV is rising.",
-          "Retracement buy: price pulled back 5.34% from the 55-day high and reclaimed near Fibonacci 38.2% 5031.53; support distance is 1.70%.",
-          "Retracement confirmation: pullback volume ratio 0.67 and reclaim volume ratio 0.89 with candle close location 78.88%.",
-          "Fibonacci confluence: close is 1.70% from 38.2% retracement support 5031.53.",
-          "Bollinger context: bandwidth 9.71% indicates a range-bound/compressed phase.",
-          "RS trend strength: daily RS55 is rising.",
-          "Trend strength: close is above 50-DMA and 200-DMA, with fast DMA above slow DMA.",
-          "Risk reference: close is 5.93% above daily Supertrend.",
-          "Price confirmation: previous-high confirmation is present.",
-          "Volatility is controlled: ATR(14) is 2.86% of price.",
-          "Liquidity strength: 20-day average turnover is Rs 79415587.47.",
-          "Market regime supports longs: NIFTY 500 bullish/healthy.",
-          "Weekly demand DBR 4424.1-4754.4: fresh, score 7/7, achievement 1.98R, achievement_close.",
-          "GTF 50-SMA slope: daily up, weekly sideways.",
-          "Opposing daily supply 6007.75-6115.5; estimated room 1.25R.",
-          "Index context: NIFTY 500 proxy is BULLISH; broad index support is positive.",
-          "Derivatives context: Not present in NSE F&O lot-size master; treat as cash-equity only.",
-          "Options context: NSE option-chain snapshot unavailable; mark this as data gap, not as bearish.",
-          "Commodity/currency context: 2/5 commodity/currency proxies are bullish; 2 bearish.",
-          "Operator/delivery context: Delivery neutral: traded quantity 1.33x, delivery 1.05x, delivery percentage 45.98%.",
-          "Institutional confluence score 2/5 (Institutional C).",
-          "Execution plan: buy on the next actual market session using the exact 09:17 one-minute candle open; weekends and exchange holidays are skipped.",
-          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
-          "Institutional concept coverage: 18/30 applicable video-derived buckets are strong.",
-          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
-          "Institutional concept coverage: 18/31 applicable video-derived buckets are strong.",
-          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
-          "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
-          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
-          "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
-          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
-          "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
-          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
-          "Institutional concept coverage: 19/31 applicable video-derived buckets are strong."
-        ],
-        "close": 5118.5,
-        "asOf": "2026-07-15",
-        "weeklyAsOf": "2026-07-06",
-        "dailyRsi": 55.28309855423578,
-        "weeklyRsi": 57.90565787462295,
-        "weeklyRs": 0.128660419202274,
-        "dailyLongRs": 0.06575193717540317,
-        "dailyShortRs": 0.004373346504121134,
-        "dailySupertrend": 4814.912826480341,
-        "weeklyClose": 4999.5,
-        "weeklyEma13": 4865.474190266652,
-        "weeklyPriceAboveEma13": true,
-        "weeklyEma13Rising": true,
-        "weeklyEma13Reclaim": false,
-        "weeklyEma13BelowCloses": 0,
-        "dailyPriceAboveSupertrend": true,
-        "entryStyle": {
-          "type": "RETRACEMENT_BUY",
-          "label": "Retracement buy near Fibonacci 38.2%"
-        },
-        "setupStrength": {
-          "score": 12,
-          "checks": {
-            "recentHighBreakout": false,
-            "baseBreakout": false,
-            "higherLowStructure": false,
-            "yearHighBreakout": false,
-            "nearYearHigh": true,
-            "volumeExpansion": false,
-            "weeklyRsRising": false,
-            "dailyLongRsRising": true,
-            "dailyShortRsRising": false,
-            "closeAboveSmaFast": true,
-            "closeAboveSmaSlow": true,
-            "smaFastAboveSlow": true,
-            "favorableRiskToSupertrend": true,
-            "controlledVolatility": true,
-            "liquidEnough": true,
-            "bullishCandleConfirmation": true,
-            "bullishEngulfing": false,
-            "hammer": false,
-            "macdBullish": false,
-            "obvRising": true,
-            "retracementBuyZone": true,
-            "fibonacciSupportNearby": true,
-            "bollingerTrendSupport": false,
-            "bollingerRangeBound": true,
-            "marketRegimeStrong": true,
-            "weeklyCloseAboveEma13": true,
-            "weeklyEma13Rising": true,
-            "weeklyEma13Reclaim": false
-          },
-          "pyramidStructure": {
-            "pivotBars": 2,
-            "lookback": 160,
-            "latestDate": "2026-07-15",
-            "latestClose": 5118.5,
-            "previousDate": "2026-07-14",
-            "previousClose": 4984,
-            "points": [
-              {
-                "date": "2026-03-12",
-                "type": "HIGH",
-                "price": 4388
-              },
-              {
-                "date": "2026-03-12",
-                "type": "LOW",
-                "price": 4191.2001953125
-              },
-              {
-                "date": "2026-03-24",
-                "type": "LOW",
-                "price": 3890.5
-              },
-              {
-                "date": "2026-03-25",
-                "type": "HIGH",
-                "price": 4272.39990234375
-              },
-              {
-                "date": "2026-03-30",
-                "type": "LOW",
-                "price": 3902
-              },
-              {
-                "date": "2026-04-10",
-                "type": "HIGH",
-                "price": 4700.10009765625
-              },
-              {
-                "date": "2026-04-22",
-                "type": "HIGH",
-                "price": 5144.89990234375
-              },
-              {
-                "date": "2026-05-04",
-                "type": "HIGH",
-                "price": 4739.7998046875
-              },
-              {
-                "date": "2026-05-05",
-                "type": "LOW",
-                "price": 4541.2001953125
-              },
-              {
-                "date": "2026-05-08",
-                "type": "HIGH",
-                "price": 4815.89990234375
-              },
-              {
-                "date": "2026-05-13",
-                "type": "LOW",
-                "price": 4518
-              },
-              {
-                "date": "2026-05-15",
-                "type": "HIGH",
-                "price": 4748.89990234375
-              },
-              {
-                "date": "2026-05-18",
-                "type": "LOW",
-                "price": 4429.7998046875
-              },
-              {
-                "date": "2026-05-20",
-                "type": "HIGH",
-                "price": 4827.5
-              },
-              {
-                "date": "2026-05-22",
-                "type": "LOW",
-                "price": 4503
-              },
-              {
-                "date": "2026-05-27",
-                "type": "HIGH",
-                "price": 4760.7998046875
-              },
-              {
-                "date": "2026-06-02",
-                "type": "LOW",
-                "price": 4424.10009765625
-              },
-              {
-                "date": "2026-06-05",
-                "type": "HIGH",
-                "price": 4808
-              },
-              {
-                "date": "2026-06-12",
-                "type": "LOW",
-                "price": 4659.7998046875
-              },
-              {
-                "date": "2026-06-22",
-                "type": "HIGH",
-                "price": 5399
-              },
-              {
-                "date": "2026-06-23",
-                "type": "LOW",
-                "price": 5052
-              },
-              {
-                "date": "2026-06-29",
-                "type": "LOW",
-                "price": 5166.10009765625
-              },
-              {
-                "date": "2026-06-30",
-                "type": "HIGH",
-                "price": 5407
-              },
-              {
-                "date": "2026-07-08",
-                "type": "LOW",
-                "price": 4852
-              }
-            ]
-          },
-          "values": {
-            "priorRecentHigh": 5407,
-            "priorBaseHigh": 5407,
-            "recentBaseLow": 4852,
-            "previousBaseLow": 4937.2001953125,
-            "macd": 37.170814470585356,
-            "macdSignal": 69.26553909723945,
-            "macdHistogram": -32.0947246266541,
-            "priorYearHigh": 5494,
-            "volumeAverage": 13133.76,
-            "volumeRatio": 0.8864940428331263,
-            "smaFast": 4860.393984375,
-            "smaSlow": 4535.296009521484,
-            "atr": 146.4742468371963,
-            "atrPct": 2.861663511520881,
-            "averageTurnover": 79415587.46582031,
-            "previousLow": 4950,
-            "twoCandleLow": 4950,
-            "fourCandleLow": 4875,
-            "riskToSupertrendPct": 5.931174631623694,
-            "riskToPreviousLowPct": 3.291980072286803,
-            "retracementPullbackDepthPct": 5.335675975587201,
-            "retracementSupportSource": "Fibonacci 38.2%",
-            "retracementSupportReference": 5031.532237304687,
-            "retracementSupportDistancePct": 1.6990868945064483,
-            "retracementPullbackVolumeRatio": 0.6671052310990913,
-            "retracementCurrentVolumeRatio": 0.8864940428331263,
-            "retracementCloseLocationPct": 78.88198757763976,
-            "retracementPullbackDepthOk": true,
-            "retracementSupportProximityOk": true,
-            "retracementVolumePatternOk": true,
-            "retracementReclaimCandleOk": true,
-            "retracementRiskOk": true,
-            "retracementTrendHoldOk": true,
-            "retracementPatternLabel": "Pullback 5.34% to Fibonacci 38.2%",
-            "retracementLookback": 5,
-            "retracementMinPullbackPct": 2,
-            "retracementMaxPullbackPct": 15,
-            "retracementSupportProximityPct": 5,
-            "retracementBreakoutRetestPct": 3,
-            "retracementDryVolumeMaxRatio": 0.9,
-            "retracementReclaimVolumeMinRatio": 1.1,
-            "retracementMaxRiskPct": 8,
-            "fibonacciSwingHigh": 5407,
-            "fibonacciSwingLow": 4424.10009765625,
-            "fibonacciNearestLevel": "38.2%",
-            "fibonacciNearestPrice": 5031.532237304687,
-            "fibonacciDistancePct": 1.6990868945064483,
-            "fibonacciSupportNearby": true,
-            "bollingerMiddle": 5141.605004882813,
-            "bollingerUpper": 5391.289748143238,
-            "bollingerLower": 4891.920261622387,
-            "bollingerPercentB": 0.4537316445908873,
-            "bollingerBandwidthPct": 9.712326910500051,
-            "bollingerRangeBound": true,
-            "recentHighPeriod": 55,
-            "baseBreakoutPeriod": 20,
-            "yearHighPeriod": 252,
-            "nearYearHighPct": 15,
-            "volumeAveragePeriod": 50,
-            "volumeExpansionMultiple": 1.5,
-            "riskToSupertrendMaxPct": 7,
-            "smaFastPeriod": 50,
-            "smaSlowPeriod": 200,
-            "atrPeriod": 14,
-            "maxAtrPct": 8,
-            "minimumAverageTurnover": 10000000,
-            "candlePattern": "previous-high confirmation",
-            "marketRegimeLabel": "NIFTY 500 bullish/healthy",
-            "weeklyClose": 4999.5,
-            "weeklyEma13": 4865.474190266652,
-            "weeklyEma13Previous": 4843.136555311094,
-            "weeklyEma13DistancePct": 2.7546299598395936,
-            "weeklyEma13BelowCloses": 0,
-            "weeklyEma13Period": 13
-          }
-        },
-        "setupStrengthScore": 20,
-        "setupGrade": "A+",
-        "sectorStrength": {
-          "industry": "My List",
-          "total": 175,
-          "strong": 122,
-          "entry": 119,
-          "breadthPct": 69.71428571428572,
-          "ok": true,
-          "minPct": 50,
-          "minStocks": 5
-        },
-        "sectorStrengthScore": 1,
-        "institutionalContext": {
-          "score": 2,
-          "maxScore": 5,
-          "grade": "Institutional C",
-          "dataGaps": 1,
-          "index": {
-            "dataAvailable": true,
-            "supportsLongs": true,
-            "primaryBias": "BULLISH",
-            "sectorProxy": "NIFTY 500",
-            "sectorProxyBias": "BULLISH",
-            "reason": "NIFTY 500 proxy is BULLISH; broad index support is positive."
-          },
-          "derivatives": {
-            "dataAvailable": true,
-            "fnoEligible": false,
-            "oiAvailable": false,
-            "oiChangePct": null,
-            "oiVolume": null,
-            "optionValue": null,
-            "futureValue": null,
-            "participation": false,
-            "lotSize": null,
-            "underlying": "",
-            "reason": "Not present in NSE F&O lot-size master; treat as cash-equity only."
-          },
-          "options": {
-            "dataAvailable": false,
-            "supportsLongs": false,
-            "symbol": "NIFTY",
-            "pcr": null,
-            "maxPutOiStrike": null,
-            "maxCallOiStrike": null,
-            "bias": "UNKNOWN",
-            "reason": "NSE option-chain snapshot unavailable; mark this as data gap, not as bearish."
-          },
-          "commodity": {
-            "dataAvailable": true,
-            "supportsSector": true,
-            "exposure": "Broad macro",
-            "proxy": "",
-            "proxyBias": "UNKNOWN",
-            "reason": "2/5 commodity/currency proxies are bullish; 2 bearish."
-          },
-          "operator": {
-            "dataAvailable": true,
-            "asOf": "2026-07-15",
-            "tradedQuantityRatio": 1.3289810080350621,
-            "deliveryQuantityRatio": 1.0482007909471789,
-            "deliveryPct": 45.98,
-            "averagePrice": 5105,
-            "priceChangePct": 2.698635634028901,
-            "closeAboveAveragePrice": true,
-            "participation": false,
-            "accumulation": false,
-            "distribution": false,
-            "reason": "Delivery neutral: traded quantity 1.33x, delivery 1.05x, delivery percentage 45.98%."
-          }
-        },
-        "institutionalScore": 2,
-        "gtfContext": {
-          "dataAvailable": true,
-          "score": 4,
-          "maxScore": 10,
-          "grade": "GTF C",
-          "rankAdjustment": 4,
-          "preferredEntryStyle": "GTF_NEUTRAL",
-          "structuralStop": 4406.4,
-          "dailyTrend": "up",
-          "weeklyTrend": "sideways",
-          "dailyDemand": null,
-          "weeklyDemand": {
-            "timeframe": "weekly",
-            "side": "demand",
-            "pattern": "DBR",
-            "proximal": 4754.4,
-            "distal": 4424.1,
-            "entry": 4759.15,
-            "stopLoss": 4406.4,
-            "score": 7,
-            "freshnessTests": 0,
-            "achievementR": 1.98,
-            "baseWickRatio": 0.16,
-            "departureQuality": "achievement_close",
-            "legoutDate": "2026-06-15",
-            "active": true,
-            "distancePct": 7.11
-          },
-          "higherTimeframeDemand": null,
-          "reactingFromHtf": {
-            "active": false,
-            "sourceStatus": "PROXY_UNVALIDATED",
-            "role": "SECONDARY_CONFLUENCE_ONLY",
-            "managementClass": null,
-            "managementPlan": null,
-            "zone": null,
-            "overlapWithExecutionDemand": false,
-            "recentTouchAndReclaim": false,
-            "reason": "No fresh score-7 M/Q/HY/Y demand overlap or recent reclaim was detected."
-          },
-          "opposingSupply": {
-            "timeframe": "daily",
-            "side": "supply",
-            "pattern": "DBD",
-            "proximal": 6007.75,
-            "distal": 6115.5,
-            "entry": 6001.74,
-            "stopLoss": 6139.96,
-            "score": 7,
-            "freshnessTests": 0,
-            "achievementR": 24.14,
-            "baseWickRatio": 0.16,
-            "departureQuality": "significant_gap",
-            "legoutDate": "2022-12-12",
-            "active": true,
-            "distancePct": 19.48
-          },
-          "rewardRisk": 1.25,
-          "unlimitedRewardRoom": false,
-          "supplyDistancePct": 19.48,
-          "supplyBlocked": false,
-          "demandRetest": false,
-          "checks": {
-            "dailyDemandQualified": false,
-            "weeklyDemandQualified": true,
-            "dailyDemandFresh": false,
-            "weeklyDemandFresh": true,
-            "demandRetest": false,
-            "reactingFromHtf": false,
-            "dailyTrendUp": true,
-            "weeklyTrendNotDown": true,
-            "roomForTwoR": false,
-            "supplyBlocked": false
-          },
-          "reasons": [
-            "Weekly demand DBR 4424.1-4754.4: fresh, score 7/7, achievement 1.98R, achievement_close.",
-            "GTF 50-SMA slope: daily up, weekly sideways.",
-            "Opposing daily supply 6007.75-6115.5; estimated room 1.25R."
-          ]
-        },
-        "gtfScore": 0,
-        "conceptCoverage": {
-          "passed": 19,
-          "applicable": 31,
-          "weak": 10,
-          "dataGaps": 2,
-          "excluded": 6,
-          "passLabels": [
-            "Compulsory multi-timeframe engine",
-            "Relative strength leadership",
-            "RSI momentum",
-            "Supertrend trend filter",
-            "Weekly EMA13 trend health/reclaim",
-            "Breakout or 52-week high zone",
-            "Retracement/pullback buy setup",
-            "Fibonacci retracement support",
-            "Sector breadth",
-            "50/200 DMA trend structure",
-            "Candle IPC confirmation",
-            "Volatility and liquidity control",
-            "Risk reference discipline",
-            "Market regime",
-            "Index regime confirmation",
-            "Commodity/currency macro context",
-            "Fundamental improvement",
-            "Exit rule discipline",
-            "09:17 execution discipline"
-          ],
-          "weakLabels": [
-            "RS trend follow-through",
-            "Price-action base and higher-low structure",
-            "GTF demand/supply confluence",
-            "GTF reacting from higher timeframe (secondary proxy)",
-            "Bollinger trend/range context",
-            "Volume participation",
-            "MACD and OBV confirmation",
-            "Operator delivery confirmation",
-            "Derivative/F&O eligibility",
-            "Derivative OI participation"
-          ],
-          "dataGapLabels": [
-            "Index option-chain positioning",
-            "News/event context"
-          ],
-          "excludedLabels": [
-            "Intraday tick scalping",
-            "Broker-only live Greeks/order-book depth",
-            "Pair-trading spread execution",
-            "Short-selling execution",
-            "Options premium/straddle/strangle execution",
-            "Manual charting/terminal workflow"
-          ],
-          "summary": "19/31 applicable video-derived buckets strong; 2 data gaps; 6 non-EOD playbooks excluded."
-        },
-        "fundamentalScore": 3,
-        "fundamental": {
-          "available": true,
-          "score": 3,
-          "maxScore": 5,
-          "currentPe": 38.274645,
-          "ebitdaMargin": 0.2615316293835704,
-          "checks": {
-            "netIncomeYoYUp": {
-              "ok": true,
-              "latest": 4170740000,
-              "previous": 4104964000
-            },
-            "operatingIncomeYoYUp": {
-              "ok": false,
-              "latest": 4265426000,
-              "previous": 4605811000
-            },
-            "ebitdaMarginQoQUp": {
-              "ok": true,
-              "latest": 0.2615316293835704,
-              "previous": 0.20729789258909453
-            },
-            "ebitdaMarginYoYUp": {
-              "ok": true,
-              "latest": 0.2615316293835704,
-              "previous": 0.23975962665135547
-            },
-            "peRising": {
-              "ok": false,
-              "latest": 29.927552468444247,
-              "previous": 30.03461439374907
-            }
-          },
-          "cacheHit": true
-        },
-        "score": 29
-      },
-      "entryCloseDates": [
-        "2026-07-15"
-      ],
-      "status": "WAITING_CONFIRMATION",
-      "skipReason": "Rotation requires 2 distinct valid ENTRY closes; candidate has 1.",
-      "lastDecision": {
-        "actionable": false,
-        "disposition": "WAITING_CONFIRMATION",
-        "reasons": [
-          "Rotation requires 2 distinct valid ENTRY closes; candidate has 1."
-        ],
-        "warnings": [],
-        "metrics": {
-          "signalAgeDays": 0,
-          "firstSignalClose": 5118.5,
-          "currentClose": 5118.5,
-          "executionPrice": null,
-          "runupPct": 0,
-          "executionGapPct": null,
-          "supertrendDistancePct": 5.93,
-          "atrExtension": 1.76,
-          "currentRank": 187.82,
-          "peakRank": 187.82,
-          "rankDecay": 0,
-          "confirmedEntryCloses": 1
-        }
-      },
-      "lastEvaluatedAt": "2026-07-16T05:27:23.080Z",
-      "plannedStopPrice": 5031.53,
-      "plannedRisk": 1043.64,
-      "plannedAllocation": 61422,
-      "skipAlertedAt": "2026-07-15T10:40:23.503Z"
-    },
-    {
       "id": "KIMS-2026-07-14-candidate",
       "symbol": "KIMS",
       "yahooSymbol": "KIMS.NS",
@@ -36533,11 +36567,11 @@
       "firstFundamentalScore": 3,
       "firstSeenAt": "2026-07-15T03:47:23.768Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T05:27:23.080Z",
-      "rank": 184.1,
+      "lastSeenAt": "2026-07-16T05:59:10.258Z",
+      "rank": 185.6,
       "peakRank": 187.48,
       "grade": "A+",
-      "score": 30,
+      "score": 31,
       "entryStyle": "Trend continuation buy",
       "latestClose": 807.9500122070312,
       "latestAsOf": "2026-07-15",
@@ -36561,13 +36595,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 3.2,
           "atrExtension": 1.12,
-          "currentRank": 184.1,
+          "currentRank": 185.6,
           "peakRank": 187.48,
-          "rankDecay": 3.38,
+          "rankDecay": 1.88,
           "confirmedEntryCloses": 2
         }
       },
-      "lastEvaluatedAt": "2026-07-16T05:27:23.080Z",
+      "lastEvaluatedAt": "2026-07-16T05:59:10.258Z",
       "plannedStopPrice": 795.05,
       "plannedRisk": 993.3,
       "plannedAllocation": 62212.15,
@@ -36610,6 +36644,8 @@
           "Institutional concept coverage: 15/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 15/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -36878,7 +36914,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 21,
+        "setupStrengthScore": 22,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -37119,7 +37155,7 @@
           },
           "cacheHit": true
         },
-        "score": 30
+        "score": 31
       }
     },
     {
@@ -37142,11 +37178,11 @@
       "firstFundamentalScore": 4,
       "firstSeenAt": "2026-07-14T09:43:28.265Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T05:27:23.080Z",
-      "rank": 183.56,
-      "peakRank": 183.56,
+      "lastSeenAt": "2026-07-16T05:59:10.258Z",
+      "rank": 185.06,
+      "peakRank": 185.06,
       "grade": "A+",
-      "score": 30,
+      "score": 31,
       "entryStyle": "Retracement buy near 50-DMA",
       "latestClose": 16364,
       "latestAsOf": "2026-07-15",
@@ -37171,13 +37207,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 5.89,
           "atrExtension": 1.91,
-          "currentRank": 183.56,
-          "peakRank": 183.56,
+          "currentRank": 185.06,
+          "peakRank": 185.06,
           "rankDecay": 0,
           "confirmedEntryCloses": 3
         }
       },
-      "lastEvaluatedAt": "2026-07-16T05:27:23.080Z",
+      "lastEvaluatedAt": "2026-07-16T05:59:10.258Z",
       "plannedStopPrice": 16002,
       "plannedRisk": 1086,
       "plannedAllocation": 49092,
@@ -37222,6 +37258,8 @@
           "Institutional concept coverage: 18/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 18/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 19/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -37490,7 +37528,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 20,
+        "setupStrengthScore": 21,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -37749,7 +37787,7 @@
           },
           "cacheHit": true
         },
-        "score": 30
+        "score": 31
       }
     },
     {
@@ -37771,11 +37809,11 @@
       "firstFundamentalScore": 4,
       "firstSeenAt": "2026-07-15T10:40:23.503Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T05:27:23.080Z",
-      "rank": 177.09,
-      "peakRank": 177.09,
+      "lastSeenAt": "2026-07-16T05:59:10.258Z",
+      "rank": 178.59,
+      "peakRank": 178.59,
       "grade": "A+",
-      "score": 28,
+      "score": 29,
       "entryStyle": "Trend continuation buy",
       "latestClose": 156.60000610351562,
       "latestAsOf": "2026-07-15",
@@ -37814,6 +37852,8 @@
           "Institutional concept coverage: 14/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 14/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 15/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 15/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -38082,7 +38122,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 18,
+        "setupStrengthScore": 19,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -38284,7 +38324,7 @@
           },
           "cacheHit": true
         },
-        "score": 28
+        "score": 29
       },
       "entryCloseDates": [
         "2026-07-15"
@@ -38310,13 +38350,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 10.95,
           "atrExtension": 1.26,
-          "currentRank": 177.09,
-          "peakRank": 177.09,
+          "currentRank": 178.59,
+          "peakRank": 178.59,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-16T05:27:23.080Z",
+      "lastEvaluatedAt": "2026-07-16T05:59:10.258Z",
       "plannedStopPrice": 150.3,
       "plannedRisk": 2520,
       "plannedAllocation": 62640,
@@ -38342,11 +38382,11 @@
       "firstFundamentalScore": 2,
       "firstSeenAt": "2026-07-15T10:40:23.503Z",
       "lastSignalDate": "2026-07-15",
-      "lastSeenAt": "2026-07-16T05:27:23.080Z",
-      "rank": 173.13,
-      "peakRank": 173.13,
+      "lastSeenAt": "2026-07-16T05:59:10.258Z",
+      "rank": 174.63,
+      "peakRank": 174.63,
       "grade": "A+",
-      "score": 27,
+      "score": 28,
       "entryStyle": "Trend continuation buy",
       "latestClose": 841.2999877929688,
       "latestAsOf": "2026-07-15",
@@ -38387,6 +38427,8 @@
           "Institutional concept coverage: 15/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 15/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
+          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
           "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: My List has 122/175 stocks (69.71%) passing daily strength.",
@@ -38655,7 +38697,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 19,
+        "setupStrengthScore": 20,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "My List",
@@ -38881,7 +38923,7 @@
           },
           "cacheHit": true
         },
-        "score": 27
+        "score": 28
       },
       "entryCloseDates": [
         "2026-07-15"
@@ -38904,13 +38946,13 @@
           "executionGapPct": null,
           "supertrendDistancePct": 5.21,
           "atrExtension": 0.33,
-          "currentRank": 173.13,
-          "peakRank": 173.13,
+          "currentRank": 174.63,
+          "peakRank": 174.63,
           "rankDecay": 0,
           "confirmedEntryCloses": 1
         }
       },
-      "lastEvaluatedAt": "2026-07-16T05:27:23.080Z",
+      "lastEvaluatedAt": "2026-07-16T05:59:10.258Z",
       "plannedStopPrice": 806.35,
       "plannedRisk": 2586.3,
       "plannedAllocation": 62256.2,
@@ -39981,7 +40023,7 @@
     },
     {
       "id": "LLOYDSME-2026-07-15-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-16T05:27:23.080Z",
+      "evaluatedAt": "2026-07-16T05:59:10.258Z",
       "asOf": "2026-07-15",
       "symbol": "LLOYDSME",
       "industry": "Metals & Mining",
@@ -39990,7 +40032,7 @@
       "outcome": "ROTATION_DEFERRED",
       "disposition": "WAITING_CONFIRMATION",
       "grade": "A+",
-      "rank": 227.84,
+      "rank": 229.34,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 1866.1,
@@ -40000,8 +40042,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 10.22,
         "atrExtension": 1.86,
-        "currentRank": 227.84,
-        "peakRank": 227.84,
+        "currentRank": 229.34,
+        "peakRank": 229.34,
         "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
@@ -40009,7 +40051,7 @@
     },
     {
       "id": "BHEL-2026-07-15-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-16T05:27:23.080Z",
+      "evaluatedAt": "2026-07-16T05:59:10.258Z",
       "asOf": "2026-07-15",
       "symbol": "BHEL",
       "industry": "Capital Goods",
@@ -40018,7 +40060,7 @@
       "outcome": "ROTATION_DEFERRED",
       "disposition": "WAITING_CONFIRMATION",
       "grade": "A+",
-      "rank": 223.49,
+      "rank": 224.99,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 417.95,
@@ -40028,8 +40070,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 11.34,
         "atrExtension": 1.26,
-        "currentRank": 223.49,
-        "peakRank": 223.49,
+        "currentRank": 224.99,
+        "peakRank": 224.99,
         "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
@@ -40037,7 +40079,7 @@
     },
     {
       "id": "SGFIN-2026-07-15-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-16T05:27:23.080Z",
+      "evaluatedAt": "2026-07-16T05:59:10.258Z",
       "asOf": "2026-07-15",
       "symbol": "SGFIN",
       "industry": "My List",
@@ -40046,7 +40088,7 @@
       "outcome": "ROTATION_DEFERRED",
       "disposition": "WAITING_CONFIRMATION",
       "grade": "A+",
-      "rank": 213.56,
+      "rank": 215.06,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 625.65,
@@ -40056,8 +40098,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 3.84,
         "atrExtension": 0.77,
-        "currentRank": 213.56,
-        "peakRank": 213.56,
+        "currentRank": 215.06,
+        "peakRank": 215.06,
         "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
@@ -40065,7 +40107,7 @@
     },
     {
       "id": "CJGEL-2026-07-15-DEFERRED-WAITING_RECONFIRMATION",
-      "evaluatedAt": "2026-07-16T05:27:23.080Z",
+      "evaluatedAt": "2026-07-16T05:59:10.258Z",
       "asOf": "2026-07-15",
       "symbol": "CJGEL",
       "industry": "My List",
@@ -40074,7 +40116,7 @@
       "outcome": "DEFERRED",
       "disposition": "WAITING_RECONFIRMATION",
       "grade": "A+",
-      "rank": 207.62,
+      "rank": 209.12,
       "metrics": {
         "signalAgeDays": 1,
         "firstSignalClose": 23.7,
@@ -40084,8 +40126,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 13.44,
         "atrExtension": 3.2,
-        "currentRank": 207.62,
-        "peakRank": 207.62,
+        "currentRank": 209.12,
+        "peakRank": 209.12,
         "rankDecay": 0,
         "confirmedEntryCloses": 2
       },
@@ -40093,7 +40135,7 @@
     },
     {
       "id": "ENDURANCE-2026-07-15-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-16T05:27:23.080Z",
+      "evaluatedAt": "2026-07-16T05:59:10.258Z",
       "asOf": "2026-07-15",
       "symbol": "ENDURANCE",
       "industry": "Automobile and Auto Components",
@@ -40102,7 +40144,7 @@
       "outcome": "ROTATION_DEFERRED",
       "disposition": "WAITING_CONFIRMATION",
       "grade": "A+",
-      "rank": 207.4,
+      "rank": 208.9,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 2746.2,
@@ -40112,8 +40154,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 8.51,
         "atrExtension": 1.44,
-        "currentRank": 207.4,
-        "peakRank": 207.4,
+        "currentRank": 208.9,
+        "peakRank": 208.9,
         "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
@@ -40121,7 +40163,7 @@
     },
     {
       "id": "KOVAI-2026-07-15-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-16T05:27:23.080Z",
+      "evaluatedAt": "2026-07-16T05:59:10.258Z",
       "asOf": "2026-07-15",
       "symbol": "KOVAI",
       "industry": "My List",
@@ -40130,7 +40172,7 @@
       "outcome": "ROTATION_DEFERRED",
       "disposition": "WAITING_CONFIRMATION",
       "grade": "A+",
-      "rank": 207.01,
+      "rank": 208.51,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 5986,
@@ -40140,8 +40182,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 5.95,
         "atrExtension": 1.88,
-        "currentRank": 207.01,
-        "peakRank": 207.01,
+        "currentRank": 208.51,
+        "peakRank": 208.51,
         "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
@@ -40149,7 +40191,7 @@
     },
     {
       "id": "FINEORG-2026-07-15-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-16T05:27:23.080Z",
+      "evaluatedAt": "2026-07-16T05:59:10.258Z",
       "asOf": "2026-07-15",
       "symbol": "FINEORG",
       "industry": "My List",
@@ -40158,7 +40200,7 @@
       "outcome": "ROTATION_DEFERRED",
       "disposition": "WAITING_CONFIRMATION",
       "grade": "A+",
-      "rank": 187.82,
+      "rank": 189.32,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 5118.5,
@@ -40168,8 +40210,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 5.93,
         "atrExtension": 1.76,
-        "currentRank": 187.82,
-        "peakRank": 187.82,
+        "currentRank": 189.32,
+        "peakRank": 189.32,
         "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
@@ -40177,7 +40219,7 @@
     },
     {
       "id": "KVFORGE-2026-07-15-DEFERRED-WAITING_RECONFIRMATION",
-      "evaluatedAt": "2026-07-16T05:27:23.080Z",
+      "evaluatedAt": "2026-07-16T05:59:10.258Z",
       "asOf": "2026-07-15",
       "symbol": "KVFORGE",
       "industry": "My List",
@@ -40186,7 +40228,7 @@
       "outcome": "DEFERRED",
       "disposition": "WAITING_RECONFIRMATION",
       "grade": "A+",
-      "rank": 177.09,
+      "rank": 178.59,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 156.6,
@@ -40196,8 +40238,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 10.95,
         "atrExtension": 1.26,
-        "currentRank": 177.09,
-        "peakRank": 177.09,
+        "currentRank": 178.59,
+        "peakRank": 178.59,
         "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
@@ -40205,7 +40247,7 @@
     },
     {
       "id": "YATHARTH-2026-07-15-ROTATION_DEFERRED-WAITING_CONFIRMATION",
-      "evaluatedAt": "2026-07-16T05:27:23.080Z",
+      "evaluatedAt": "2026-07-16T05:59:10.258Z",
       "asOf": "2026-07-15",
       "symbol": "YATHARTH",
       "industry": "My List",
@@ -40214,7 +40256,7 @@
       "outcome": "ROTATION_DEFERRED",
       "disposition": "WAITING_CONFIRMATION",
       "grade": "A+",
-      "rank": 173.13,
+      "rank": 174.63,
       "metrics": {
         "signalAgeDays": 0,
         "firstSignalClose": 841.3,
@@ -40224,8 +40266,8 @@
         "executionGapPct": null,
         "supertrendDistancePct": 5.21,
         "atrExtension": 0.33,
-        "currentRank": 173.13,
-        "peakRank": 173.13,
+        "currentRank": 174.63,
+        "peakRank": 174.63,
         "rankDecay": 0,
         "confirmedEntryCloses": 1
       },
@@ -40953,6 +40995,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 0,
         "netRealizedPnl": 0,
+        "tradingGrossRealizedPnl": 0,
+        "tradingNetRealizedPnl": 0,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": -464.4,
         "netUnrealizedPnl": -464.4
       },
@@ -40993,6 +41038,7 @@
           "Execution plan: buy on the next actual market session using the exact 09:17 one-minute candle open; weekends and exchange holidays are skipped.",
           "Institutional concept coverage: 15/30 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 15/31 applicable video-derived buckets are strong.",
+          "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
@@ -41473,7 +41519,10 @@
         "2026-07-15"
       ],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 0,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "MAYURUNIQ-2026-07-13-1783939921655",
@@ -42057,6 +42106,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 0,
         "netRealizedPnl": 0,
+        "tradingGrossRealizedPnl": 0,
+        "tradingNetRealizedPnl": 0,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": -2764.2,
         "netUnrealizedPnl": -2764.2
       },
@@ -42566,7 +42618,10 @@
         "2026-07-15"
       ],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 0,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "SANGAMIND-2026-07-13-1784004908930",
@@ -43259,6 +43314,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 0,
         "netRealizedPnl": 0,
+        "tradingGrossRealizedPnl": 0,
+        "tradingNetRealizedPnl": 0,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": -2212,
         "netUnrealizedPnl": -2212
       },
@@ -43299,6 +43357,7 @@
           "Execution plan: buy on the next actual market session using the exact 09:17 one-minute candle open; weekends and exchange holidays are skipped.",
           "Institutional concept coverage: 16/30 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
+          "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
@@ -43779,7 +43838,10 @@
         "2026-07-15"
       ],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 0,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "NIVABUPA-2026-07-13-1784022208660",
@@ -44520,6 +44582,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 0,
         "netRealizedPnl": 0,
+        "tradingGrossRealizedPnl": 0,
+        "tradingNetRealizedPnl": 0,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": -0.65,
         "netUnrealizedPnl": -0.65
       },
@@ -45082,7 +45147,10 @@
         "2026-07-15"
       ],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 0,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "GRINDWELL-2026-07-10-1783914455587",
@@ -45777,6 +45845,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -1561.2,
         "netRealizedPnl": -1561.2,
+        "tradingGrossRealizedPnl": -1561.2,
+        "tradingNetRealizedPnl": -1561.2,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": -16.1,
         "netUnrealizedPnl": -16.1
       },
@@ -46324,7 +46395,10 @@
           ]
         }
       ],
-      "riskActionNote": "Optional rotation cancelled before execution: Position has only 1/5 completed management closes. Only 2/3 stock-specific weakness signals are active. Weakness has only 1/3 distinct confirmed closes. Only 0/3 completed closes have passed since the last partial exit."
+      "riskActionNote": "Optional rotation cancelled before execution: Position has only 1/5 completed management closes. Only 2/3 stock-specific weakness signals are active. Weakness has only 1/3 distinct confirmed closes. Only 0/3 completed closes have passed since the last partial exit.",
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -1561.2,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "INGERRAND-2026-07-10-1783914455587",
@@ -46822,6 +46896,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 0,
         "netRealizedPnl": 0,
+        "tradingGrossRealizedPnl": 0,
+        "tradingNetRealizedPnl": 0,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 173.8,
         "netUnrealizedPnl": 173.8
       },
@@ -47313,7 +47390,10 @@
         "2026-07-15"
       ],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 0,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "RAIN-2026-07-10-1783914455586",
@@ -48334,6 +48414,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -867.1,
         "netRealizedPnl": -867.1,
+        "tradingGrossRealizedPnl": -867.1,
+        "tradingNetRealizedPnl": -867.1,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": -773.8,
         "netUnrealizedPnl": -773.8
       },
@@ -48873,7 +48956,7 @@
               "previous": null
             }
           },
-          "cacheHit": false
+          "cacheHit": true
         },
         "score": 27
       },
@@ -48882,7 +48965,10 @@
         "2026-07-15"
       ],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -867.1,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "CRAFTSMAN-2026-07-10-1783932291458",
@@ -50011,6 +50097,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -162.5,
         "netRealizedPnl": -162.5,
+        "tradingGrossRealizedPnl": -162.5,
+        "tradingNetRealizedPnl": -162.5,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": -267.5,
         "netUnrealizedPnl": -267.5
       },
@@ -50550,7 +50639,10 @@
         "2026-07-15"
       ],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -162.5,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "KPIL-2026-07-09-1783671948444",
@@ -51074,6 +51166,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -1476,
         "netRealizedPnl": -1476,
+        "tradingGrossRealizedPnl": -1476,
+        "tradingNetRealizedPnl": -1476,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": -1016.5,
         "netUnrealizedPnl": -1016.5
       },
@@ -51667,7 +51762,10 @@
             "Only 0/3 completed closes have passed since the last partial exit."
           ]
         }
-      ]
+      ],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -1476,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "SIS-2026-07-09-1783671948704",
@@ -52127,6 +52225,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -501.6,
         "netRealizedPnl": -501.6,
+        "tradingGrossRealizedPnl": -501.6,
+        "tradingNetRealizedPnl": -501.6,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 199.5,
         "netUnrealizedPnl": 199.5
       },
@@ -52665,7 +52766,7 @@
               "previous": 31.553585196607553
             }
           },
-          "cacheHit": false
+          "cacheHit": true
         },
         "score": 27
       },
@@ -52673,7 +52774,10 @@
         "2026-07-15"
       ],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -501.6,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "PGHL-2026-07-09-1783671948367",
@@ -53061,6 +53165,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 0,
         "netRealizedPnl": 0,
+        "tradingGrossRealizedPnl": 0,
+        "tradingNetRealizedPnl": 0,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 3682.5,
         "netUnrealizedPnl": 3682.5
       },
@@ -53102,6 +53209,7 @@
           "Execution plan: buy on the next actual market session using the exact 09:17 one-minute candle open; weekends and exchange holidays are skipped.",
           "Institutional concept coverage: 17/30 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
+          "Institutional concept coverage: 18/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 18/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 18/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 18/31 applicable video-derived buckets are strong.",
@@ -53616,7 +53724,10 @@
         "2026-07-15"
       ],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 0,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "NH-2026-07-09-1783671948531",
@@ -53888,7 +53999,7 @@
       "realizedPnlToDate": 0,
       "initialStopPrice": 1842.85,
       "trailingStopPrice": 1968,
-      "currentRank": 190.97,
+      "currentRank": 192.47,
       "currentGrade": "A+",
       "currentWeakness": {
         "score": 0,
@@ -54004,6 +54115,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 0,
         "netRealizedPnl": 0,
+        "tradingGrossRealizedPnl": 0,
+        "tradingNetRealizedPnl": 0,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 2038.4,
         "netUnrealizedPnl": 2038.4
       },
@@ -54045,6 +54159,8 @@
           "Institutional concept coverage: 16/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: Healthcare has 35/49 stocks (71.43%) passing daily strength.",
           "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: Healthcare has 35/49 stocks (71.43%) passing daily strength.",
+          "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: Healthcare has 35/49 stocks (71.43%) passing daily strength.",
           "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: Healthcare has 35/49 stocks (71.43%) passing daily strength.",
@@ -54313,7 +54429,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 21,
+        "setupStrengthScore": 22,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "Healthcare",
@@ -54554,13 +54670,16 @@
           },
           "cacheHit": true
         },
-        "score": 32
+        "score": 33
       },
       "managementCloseDates": [
         "2026-07-15"
       ],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 0,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "VIJAYA-2026-07-09-1783671948591",
@@ -54831,7 +54950,7 @@
       "realizedPnlToDate": 0,
       "initialStopPrice": 1285.88,
       "trailingStopPrice": 1324.8,
-      "currentRank": 204.54,
+      "currentRank": 206.04,
       "currentGrade": "A+",
       "currentWeakness": {
         "score": 0,
@@ -54947,6 +55066,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 0,
         "netRealizedPnl": 0,
+        "tradingGrossRealizedPnl": 0,
+        "tradingNetRealizedPnl": 0,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 1128.9,
         "netUnrealizedPnl": 1128.9
       },
@@ -54990,6 +55112,8 @@
           "Institutional concept coverage: 16/30 applicable video-derived buckets are strong.",
           "Sector breadth strong: Healthcare has 35/49 stocks (71.43%) passing daily strength.",
           "Institutional concept coverage: 16/31 applicable video-derived buckets are strong.",
+          "Sector breadth strong: Healthcare has 35/49 stocks (71.43%) passing daily strength.",
+          "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: Healthcare has 35/49 stocks (71.43%) passing daily strength.",
           "Institutional concept coverage: 17/31 applicable video-derived buckets are strong.",
           "Sector breadth strong: Healthcare has 35/49 stocks (71.43%) passing daily strength.",
@@ -55258,7 +55382,7 @@
             "weeklyEma13Period": 13
           }
         },
-        "setupStrengthScore": 21,
+        "setupStrengthScore": 22,
         "setupGrade": "A+",
         "sectorStrength": {
           "industry": "Healthcare",
@@ -55515,13 +55639,16 @@
           },
           "cacheHit": true
         },
-        "score": 33
+        "score": 34
       },
       "managementCloseDates": [
         "2026-07-15"
       ],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 0,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "PRECOT-2026-07-09-1783671948651",
@@ -55907,6 +56034,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 0,
         "netRealizedPnl": 0,
+        "tradingGrossRealizedPnl": 0,
+        "tradingNetRealizedPnl": 0,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 886.55,
         "netUnrealizedPnl": 886.55
       },
@@ -55947,6 +56077,7 @@
           "Execution plan: buy on the next actual market session using the exact 09:17 one-minute candle open; weekends and exchange holidays are skipped.",
           "Institutional concept coverage: 14/30 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 14/31 applicable video-derived buckets are strong.",
+          "Institutional concept coverage: 15/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 15/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 15/31 applicable video-derived buckets are strong.",
           "Institutional concept coverage: 15/31 applicable video-derived buckets are strong.",
@@ -56444,7 +56575,10 @@
         "2026-07-15"
       ],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 0,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "PRUDENT-2026-07-09-1783671948763",
@@ -57396,6 +57530,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 54.4,
         "netRealizedPnl": 54.4,
+        "tradingGrossRealizedPnl": 54.4,
+        "tradingNetRealizedPnl": 54.4,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": -1009.8,
         "netUnrealizedPnl": -1009.8
       },
@@ -57922,7 +58059,10 @@
         "2026-07-15"
       ],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 54.4,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "NEXUSSURGL-2026-07-10-1783999943766",
@@ -59179,6 +59319,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -17.44,
         "netRealizedPnl": -17.44,
+        "tradingGrossRealizedPnl": -17.44,
+        "tradingNetRealizedPnl": -17.44,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -59186,7 +59329,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -17.44,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "AZAD-2026-07-09-1783661302358",
@@ -59714,6 +59860,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -2679.3,
         "netRealizedPnl": -2679.3,
+        "tradingGrossRealizedPnl": -2679.3,
+        "tradingNetRealizedPnl": -2679.3,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -59721,7 +59870,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -2679.3,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "BALAMINES-2026-07-09-1783661302438",
@@ -60251,6 +60403,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -405.9,
         "netRealizedPnl": -405.9,
+        "tradingGrossRealizedPnl": -405.9,
+        "tradingNetRealizedPnl": -405.9,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -60258,7 +60413,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -405.9,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "CONSOFINVT-2026-07-09-1783661302504",
@@ -60787,6 +60945,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -1372.58,
         "netRealizedPnl": -1372.58,
+        "tradingGrossRealizedPnl": -1372.58,
+        "tradingNetRealizedPnl": -1372.58,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -60794,7 +60955,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -1372.58,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "GRASIM-2026-07-09-1783661302577",
@@ -61325,6 +61489,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -548.7,
         "netRealizedPnl": -548.7,
+        "tradingGrossRealizedPnl": -548.7,
+        "tradingNetRealizedPnl": -548.7,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -61332,7 +61499,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -548.7,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "SAREGAMA-2026-07-09-1783661302675",
@@ -61861,6 +62031,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 31.2,
         "netRealizedPnl": 31.2,
+        "tradingGrossRealizedPnl": 31.2,
+        "tradingNetRealizedPnl": 31.2,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -61868,7 +62041,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 31.2,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "USHAMART-2026-07-09-1783661302757",
@@ -62395,6 +62571,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 950.4,
         "netRealizedPnl": 950.4,
+        "tradingGrossRealizedPnl": 950.4,
+        "tradingNetRealizedPnl": 950.4,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -62402,7 +62581,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 950.4,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "TIPSMUSIC-2026-07-09-1783661303171",
@@ -62931,6 +63113,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -1112,
         "netRealizedPnl": -1112,
+        "tradingGrossRealizedPnl": -1112,
+        "tradingNetRealizedPnl": -1112,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -62938,7 +63123,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -1112,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "VINCOFE-2026-07-09-1783661303592",
@@ -63467,6 +63655,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -3277.8,
         "netRealizedPnl": -3277.8,
+        "tradingGrossRealizedPnl": -3277.8,
+        "tradingNetRealizedPnl": -3277.8,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -63474,7 +63665,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -3277.8,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "ANANTRAJ-2026-07-09-1783661303739",
@@ -64001,6 +64195,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 769.85,
         "netRealizedPnl": 769.85,
+        "tradingGrossRealizedPnl": 769.85,
+        "tradingNetRealizedPnl": 769.85,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -64008,7 +64205,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 769.85,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "SUMICHEM-2026-07-09-1783661303967",
@@ -64535,6 +64735,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 6056.4,
         "netRealizedPnl": 6056.4,
+        "tradingGrossRealizedPnl": 6056.4,
+        "tradingNetRealizedPnl": 6056.4,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -64542,7 +64745,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 6056.4,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "AMNPLST-2026-07-09-1783661304208",
@@ -65067,6 +65273,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -979.9,
         "netRealizedPnl": -979.9,
+        "tradingGrossRealizedPnl": -979.9,
+        "tradingNetRealizedPnl": -979.9,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -65074,7 +65283,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -979.9,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "LENSKART-2026-07-09-1783661304420",
@@ -65604,6 +65816,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -2711.85,
         "netRealizedPnl": -2711.85,
+        "tradingGrossRealizedPnl": -2711.85,
+        "tradingNetRealizedPnl": -2711.85,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -65611,7 +65826,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -2711.85,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "UTLSOLAR-2026-07-09-1783661304487",
@@ -66135,6 +66353,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 1121.4,
         "netRealizedPnl": 1121.4,
+        "tradingGrossRealizedPnl": 1121.4,
+        "tradingNetRealizedPnl": 1121.4,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -66142,7 +66363,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 1121.4,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "ARTEMISMED-2026-07-09-1783661304555",
@@ -66668,6 +66892,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 1855,
         "netRealizedPnl": 1855,
+        "tradingGrossRealizedPnl": 1855,
+        "tradingNetRealizedPnl": 1855,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -66675,7 +66902,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 1855,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "DHANBANK-2026-07-09-1783661304626",
@@ -67200,6 +67430,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -117.44,
         "netRealizedPnl": -117.44,
+        "tradingGrossRealizedPnl": -117.44,
+        "tradingNetRealizedPnl": -117.44,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -67207,7 +67440,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -117.44,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "SHRIRAMFIN-2026-07-09-1783661304996",
@@ -67737,6 +67973,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -2555.5,
         "netRealizedPnl": -2555.5,
+        "tradingGrossRealizedPnl": -2555.5,
+        "tradingNetRealizedPnl": -2555.5,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -67744,7 +67983,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -2555.5,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "SIYSIL-2026-07-09-1783661305065",
@@ -68269,6 +68511,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -1162.5,
         "netRealizedPnl": -1162.5,
+        "tradingGrossRealizedPnl": -1162.5,
+        "tradingNetRealizedPnl": -1162.5,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -68276,7 +68521,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -1162.5,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "ADANIENSOL-2026-07-08-1783573488721",
@@ -68799,6 +69047,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -810,
         "netRealizedPnl": -810,
+        "tradingGrossRealizedPnl": -810,
+        "tradingNetRealizedPnl": -810,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -68806,7 +69057,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -810,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "ICICIBANK-2026-07-08-1783573489146",
@@ -69332,6 +69586,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 324,
         "netRealizedPnl": 324,
+        "tradingGrossRealizedPnl": 324,
+        "tradingNetRealizedPnl": 324,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -69339,7 +69596,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 324,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "SGMART-2026-07-08-1783661302260",
@@ -69867,6 +70127,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -4851,
         "netRealizedPnl": -4851,
+        "tradingGrossRealizedPnl": -4851,
+        "tradingNetRealizedPnl": -4851,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -69874,7 +70137,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -4851,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "LAURUSLABS-2026-07-08-1783661302865",
@@ -70402,6 +70668,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 4841.6,
         "netRealizedPnl": 4841.6,
+        "tradingGrossRealizedPnl": 4841.6,
+        "tradingNetRealizedPnl": 4841.6,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -70409,7 +70678,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 4841.6,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "MANGLMCEM-2026-07-08-1783661302950",
@@ -70936,6 +71208,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 4050,
         "netRealizedPnl": 4050,
+        "tradingGrossRealizedPnl": 4050,
+        "tradingNetRealizedPnl": 4050,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -70943,7 +71218,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 4050,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "AGARWALEYE-2026-07-08-1783661303252",
@@ -71470,6 +71748,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -925.6,
         "netRealizedPnl": -925.6,
+        "tradingGrossRealizedPnl": -925.6,
+        "tradingNetRealizedPnl": -925.6,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -71477,7 +71758,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -925.6,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "MMP-2026-07-08-1783661303391",
@@ -72007,6 +72291,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 1165.8,
         "netRealizedPnl": 1165.8,
+        "tradingGrossRealizedPnl": 1165.8,
+        "tradingNetRealizedPnl": 1165.8,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -72014,7 +72301,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 1165.8,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "VENUSREM-2026-07-08-1783661303478",
@@ -72543,6 +72833,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 423.4,
         "netRealizedPnl": 423.4,
+        "tradingGrossRealizedPnl": 423.4,
+        "tradingNetRealizedPnl": 423.4,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -72550,7 +72843,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 423.4,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "ACMESOLAR-2026-07-08-1783661303664",
@@ -73078,6 +73374,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 2026.4,
         "netRealizedPnl": 2026.4,
+        "tradingGrossRealizedPnl": 2026.4,
+        "tradingNetRealizedPnl": 2026.4,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -73085,7 +73384,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 2026.4,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "HEALTHX-2026-07-08-1783661303807",
@@ -73610,6 +73912,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -2287.65,
         "netRealizedPnl": -2287.65,
+        "tradingGrossRealizedPnl": -2287.65,
+        "tradingNetRealizedPnl": -2287.65,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -73617,7 +73922,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -2287.65,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "MBAPL-2026-07-08-1783661303872",
@@ -74143,6 +74451,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 10333.4,
         "netRealizedPnl": 10333.4,
+        "tradingGrossRealizedPnl": 10333.4,
+        "tradingNetRealizedPnl": 10333.4,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -74150,7 +74461,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 10333.4,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "ACUTAAS-2026-07-08-1783661304034",
@@ -74679,6 +74993,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -2044,
         "netRealizedPnl": -2044,
+        "tradingGrossRealizedPnl": -2044,
+        "tradingNetRealizedPnl": -2044,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -74686,7 +75003,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -2044,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "AIAENG-2026-07-08-1783661304135",
@@ -75212,6 +75532,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 1218,
         "netRealizedPnl": 1218,
+        "tradingGrossRealizedPnl": 1218,
+        "tradingNetRealizedPnl": 1218,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -75219,7 +75542,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 1218,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "IVALUE-2026-07-08-1783661304277",
@@ -75743,6 +76069,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 7087.5,
         "netRealizedPnl": 7087.5,
+        "tradingGrossRealizedPnl": 7087.5,
+        "tradingNetRealizedPnl": 7087.5,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -75750,7 +76079,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 7087.5,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "KRYSTAL-2026-07-08-1783661304343",
@@ -76277,6 +76609,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 199.2,
         "netRealizedPnl": 199.2,
+        "tradingGrossRealizedPnl": 199.2,
+        "tradingNetRealizedPnl": 199.2,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -76284,7 +76619,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 199.2,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "FOSECOIND-2026-07-08-1783661304695",
@@ -76807,6 +77145,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 959.5,
         "netRealizedPnl": 959.5,
+        "tradingGrossRealizedPnl": 959.5,
+        "tradingNetRealizedPnl": 959.5,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -76814,7 +77155,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 959.5,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "KIMS-2026-07-08-1783661304758",
@@ -77342,6 +77686,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 427.8,
         "netRealizedPnl": 427.8,
+        "tradingGrossRealizedPnl": 427.8,
+        "tradingNetRealizedPnl": 427.8,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -77349,7 +77696,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 427.8,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "MARICO-2026-07-08-1783661304856",
@@ -77878,6 +78228,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 961.7,
         "netRealizedPnl": 961.7,
+        "tradingGrossRealizedPnl": 961.7,
+        "tradingNetRealizedPnl": 961.7,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -77885,7 +78238,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 961.7,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "MONARCH-2026-07-08-1783661304929",
@@ -78412,6 +78768,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 3831.45,
         "netRealizedPnl": 3831.45,
+        "tradingGrossRealizedPnl": 3831.45,
+        "tradingNetRealizedPnl": 3831.45,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -78419,7 +78778,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 3831.45,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "default-BAJFINANCE-2026-07-07",
@@ -78888,6 +79250,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -1047.6,
         "netRealizedPnl": -1047.6,
+        "tradingGrossRealizedPnl": -1047.6,
+        "tradingNetRealizedPnl": -1047.6,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -78895,7 +79260,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -1047.6,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "default-EXIDEIND-2026-07-07",
@@ -79365,6 +79733,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 1241.15,
         "netRealizedPnl": 1241.15,
+        "tradingGrossRealizedPnl": 1241.15,
+        "tradingNetRealizedPnl": 1241.15,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -79372,7 +79743,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 1241.15,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "TITAN-2026-07-07-1783573488381",
@@ -79899,6 +80273,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -392.7,
         "netRealizedPnl": -392.7,
+        "tradingGrossRealizedPnl": -392.7,
+        "tradingNetRealizedPnl": -392.7,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -79906,7 +80283,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -392.7,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "TRAVELFOOD-2026-07-07-1783573488454",
@@ -80434,6 +80814,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -1487.4,
         "netRealizedPnl": -1487.4,
+        "tradingGrossRealizedPnl": -1487.4,
+        "tradingNetRealizedPnl": -1487.4,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -80441,7 +80824,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -1487.4,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "360ONE-2026-07-07-1783573488553",
@@ -80968,6 +81354,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -1722.6,
         "netRealizedPnl": -1722.6,
+        "tradingGrossRealizedPnl": -1722.6,
+        "tradingNetRealizedPnl": -1722.6,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -80975,7 +81364,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -1722.6,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "KAJARIACER-2026-07-07-1783573488636",
@@ -81503,6 +81895,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 8.2,
         "netRealizedPnl": 8.2,
+        "tradingGrossRealizedPnl": 8.2,
+        "tradingNetRealizedPnl": 8.2,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -81510,7 +81905,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 8.2,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "CHOLAHLDNG-2026-07-07-1783573488873",
@@ -82035,6 +82433,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -2407.2,
         "netRealizedPnl": -2407.2,
+        "tradingGrossRealizedPnl": -2407.2,
+        "tradingNetRealizedPnl": -2407.2,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -82042,7 +82443,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -2407.2,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "TBOTEK-2026-07-07-1783573489008",
@@ -82566,6 +82970,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -811.8,
         "netRealizedPnl": -811.8,
+        "tradingGrossRealizedPnl": -811.8,
+        "tradingNetRealizedPnl": -811.8,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -82573,7 +82980,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -811.8,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "NIVABUPA-2026-07-07-1783573489276",
@@ -83101,6 +83511,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -1069.5,
         "netRealizedPnl": -1069.5,
+        "tradingGrossRealizedPnl": -1069.5,
+        "tradingNetRealizedPnl": -1069.5,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -83108,7 +83521,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -1069.5,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "TATACAP-2026-07-07-1783573489408",
@@ -83631,6 +84047,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 2137.5,
         "netRealizedPnl": 2137.5,
+        "tradingGrossRealizedPnl": 2137.5,
+        "tradingNetRealizedPnl": 2137.5,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -83638,7 +84057,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 2137.5,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "BAJAJHLDNG-2026-07-07-1783573489570",
@@ -84163,6 +84585,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -3249,
         "netRealizedPnl": -3249,
+        "tradingGrossRealizedPnl": -3249,
+        "tradingNetRealizedPnl": -3249,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -84170,7 +84595,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -3249,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "JINDALSAW-2026-07-07-1783573489723",
@@ -84695,6 +85123,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 4876.2,
         "netRealizedPnl": 4876.2,
+        "tradingGrossRealizedPnl": 4876.2,
+        "tradingNetRealizedPnl": 4876.2,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -84702,7 +85133,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 4876.2,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "default-NAUKRI-2026-07-07",
@@ -85028,6 +85462,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -522.75,
         "netRealizedPnl": -522.75,
+        "tradingGrossRealizedPnl": -522.75,
+        "tradingNetRealizedPnl": -522.75,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -85035,7 +85472,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -522.75,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "default-ETERNAL-2026-07-07",
@@ -85360,6 +85800,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 0,
         "netRealizedPnl": 0,
+        "tradingGrossRealizedPnl": 0,
+        "tradingNetRealizedPnl": 0,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -85367,7 +85810,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 0,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "default-RITES-2026-07-07",
@@ -85692,6 +86138,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -3105.9,
         "netRealizedPnl": -3105.9,
+        "tradingGrossRealizedPnl": -3105.9,
+        "tradingNetRealizedPnl": -3105.9,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -85699,7 +86148,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -3105.9,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "default-LICI-2026-07-07",
@@ -86025,6 +86477,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -1161.5,
         "netRealizedPnl": -1161.5,
+        "tradingGrossRealizedPnl": -1161.5,
+        "tradingNetRealizedPnl": -1161.5,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -86032,7 +86487,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -1161.5,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "default-3MINDIA-2026-07-06",
@@ -86499,6 +86957,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 200,
         "netRealizedPnl": 200,
+        "tradingGrossRealizedPnl": 200,
+        "tradingNetRealizedPnl": 200,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -86506,7 +86967,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 200,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "default-CUB-2026-07-06",
@@ -86832,6 +87296,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 600.75,
         "netRealizedPnl": 600.75,
+        "tradingGrossRealizedPnl": 600.75,
+        "tradingNetRealizedPnl": 600.75,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -86839,7 +87306,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 600.75,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "default-SHREECEM-2026-07-06",
@@ -87164,6 +87634,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -90,
         "netRealizedPnl": -90,
+        "tradingGrossRealizedPnl": -90,
+        "tradingNetRealizedPnl": -90,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -87171,7 +87644,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -90,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "default-CANFINHOME-2026-07-06",
@@ -87496,6 +87972,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -2694.6,
         "netRealizedPnl": -2694.6,
+        "tradingGrossRealizedPnl": -2694.6,
+        "tradingNetRealizedPnl": -2694.6,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -87503,7 +87982,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -2694.6,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "default-CONCORDBIO-2026-07-06",
@@ -87829,6 +88311,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": -1617,
         "netRealizedPnl": -1617,
+        "tradingGrossRealizedPnl": -1617,
+        "tradingNetRealizedPnl": -1617,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -87836,7 +88321,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": -1617,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "HAL-2026-07-10-1783741571124",
@@ -88172,6 +88660,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 0,
         "netRealizedPnl": 0,
+        "tradingGrossRealizedPnl": 0,
+        "tradingNetRealizedPnl": 0,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -88179,7 +88670,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 0,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "PREMIERENE-2026-07-10-1783741571229",
@@ -88513,6 +89007,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 0,
         "netRealizedPnl": 0,
+        "tradingGrossRealizedPnl": 0,
+        "tradingNetRealizedPnl": 0,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -88520,7 +89017,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 0,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "SBCL-2026-07-10-1783741571328",
@@ -88852,6 +89352,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 0,
         "netRealizedPnl": 0,
+        "tradingGrossRealizedPnl": 0,
+        "tradingNetRealizedPnl": 0,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -88859,7 +89362,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 0,
+      "dividendRealizedPnl": 0
     },
     {
       "id": "BANKA-2026-07-08-1783661303330",
@@ -89068,6 +89574,9 @@
         "openPositionCharges": 0,
         "grossRealizedPnl": 0,
         "netRealizedPnl": 0,
+        "tradingGrossRealizedPnl": 0,
+        "tradingNetRealizedPnl": 0,
+        "dividendRealizedPnl": 0,
         "grossUnrealizedPnl": 0,
         "netUnrealizedPnl": 0
       },
@@ -89075,7 +89584,10 @@
       "estimatedExitCharges": 0,
       "managementCloseDates": [],
       "trailingStopBreachDates": [],
-      "cancelledExitSignals": []
+      "cancelledExitSignals": [],
+      "corporateActions": [],
+      "tradeRealizedPnlToDate": 0,
+      "dividendRealizedPnl": 0
     }
   ]
 }
