@@ -1031,7 +1031,6 @@ function rowHtml(row, index) {
 
 function renderDetail(row, trade = null, candidate = null) {
   row = buildDetailEvidenceRow(row, trade, candidate);
-  const checks = row.fundamental?.checks || {};
   const setup = row.setupStrength || {};
   const setupChecks = setup.checks || {};
   const setupValues = setup.values || {};
@@ -1039,6 +1038,9 @@ function renderDetail(row, trade = null, candidate = null) {
   const coverage = row.conceptCoverage || {};
   const institutional = row.institutionalContext || {};
   const gtf = row.gtfContext || {};
+  const hasSetupEvidence = Object.keys(setupChecks).length > 0;
+  const hasGtfEvidence = Number.isFinite(gtf.maxScore);
+  const hasInstitutionalEvidence = Number.isFinite(institutional.maxScore);
   const guide = buildDecisionGuide(row, trade, candidate);
   const performance = trade ? positionPerformance(trade) : null;
   elements.detailPanel.innerHTML = `
@@ -1102,21 +1104,12 @@ function renderDetail(row, trade = null, candidate = null) {
       </div>
       ${corporateActionDetailHtml(trade)}
     ` : ""}
-    <div class="checkGrid">
-      ${checkHtml("Net income YoY", checks.netIncomeYoYUp)}
-      ${checkHtml("Quarterly sales YoY", checks.revenueQuarterYoYUp)}
-      ${checkHtml("Quarterly EPS YoY", checks.epsQuarterYoYUp)}
-      ${checkHtml("Quarterly EBITDA YoY", checks.ebitdaQuarterYoYUp)}
-      ${checkHtml("Operating income YoY", checks.operatingIncomeYoYUp)}
-      ${checkHtml("EBITDA margin QoQ", checks.ebitdaMarginQoQUp, true)}
-      ${checkHtml("EBITDA margin YoY", checks.ebitdaMarginYoYUp, true)}
-      ${checkHtml("P/E rising", checks.peRising)}
-    </div>
+    ${fundamentalEvidenceHtml(row)}
     <div class="reasonBlock">
       <strong>Video RS Strength</strong>
-      <p>${escapeHtml(strengthReasons(row).join(" "))}</p>
+      <p>${escapeHtml(hasSetupEvidence ? strengthReasons(row).join(" ") || "Technical evidence is available in the checks below." : "Completed market history is unavailable, so technical strength evidence cannot be calculated for this row.")}</p>
     </div>
-    <div class="checkGrid">
+    ${hasSetupEvidence ? `<div class="checkGrid">
       ${setupCheckHtml("20D base breakout", setupChecks.baseBreakout, setupValues.priorBaseHigh)}
       ${setupCheckHtml("Higher-low structure", setupChecks.higherLowStructure, setupValues.recentBaseLow)}
       ${setupCheckHtml("55D breakout", setupChecks.recentHighBreakout, setupValues.priorRecentHigh)}
@@ -1139,31 +1132,31 @@ function renderDetail(row, trade = null, candidate = null) {
       ${setupCheckHtml("Market regime", setupChecks.marketRegimeStrong)}
       ${setupCheckHtml("Sector breadth", sector.ok, sector.breadthPct, "%")}
       ${setupCheckHtml("Prev candle low", Number.isFinite(setupValues.previousLow), setupValues.previousLow)}
-    </div>
+    </div>` : ""}
     <div class="reasonBlock">
       <strong>GTF Additional Confluence</strong>
       <p>${escapeHtml(gtf.dataAvailable ? `${gtf.score}/${gtf.maxScore} - ${gtf.grade}. ${(gtf.reasons || []).join(" ")}` : "No qualified daily/weekly GTF zone context is available for this row.")}</p>
     </div>
-    <div class="checkGrid">
+    ${hasGtfEvidence ? `<div class="checkGrid">
       ${contextCheckHtml("Daily demand", gtf.checks?.dailyDemandQualified, formatGtfZone(gtf.dailyDemand))}
       ${contextCheckHtml("Weekly demand", gtf.checks?.weeklyDemandQualified, formatGtfZone(gtf.weeklyDemand))}
       ${contextCheckHtml("Reacting from HTF", gtf.reactingFromHtf?.active, gtf.reactingFromHtf?.active ? `${formatGtfZone(gtf.reactingFromHtf.zone)} | Secondary GTF proxy | ${gtf.reactingFromHtf.managementClass}` : gtf.reactingFromHtf?.reason || "No reaction")}
       ${contextCheckHtml("Demand retest", gtf.demandRetest, gtf.preferredEntryStyle)}
       ${contextCheckHtml("2R runway", gtf.checks?.roomForTwoR, gtf.unlimitedRewardRoom ? "No active supply blocker" : Number.isFinite(gtf.rewardRisk) ? `${compact(gtf.rewardRisk)}R room` : "Not available")}
-      ${contextCheckHtml("Opposing supply clear", !gtf.supplyBlocked, formatGtfZone(gtf.opposingSupply))}
-      ${contextCheckHtml("Daily 50-SMA slope", gtf.dailyTrend === "up", gtf.dailyTrend || "unknown")}
-    </div>
+      ${contextCheckHtml("Opposing supply clear", gtf.supplyBlocked === false ? true : gtf.supplyBlocked === true ? false : null, formatGtfZone(gtf.opposingSupply))}
+      ${contextCheckHtml("Daily 50-SMA slope", gtf.dailyTrend ? gtf.dailyTrend === "up" : null, gtf.dailyTrend || "unknown")}
+    </div>` : ""}
     <div class="reasonBlock">
       <strong>Institutional Multi-Market Context</strong>
       <p>${escapeHtml(institutional.maxScore ? `${institutional.score}/${institutional.maxScore} - ${institutional.grade}` : "No institutional context available for this row yet.")}</p>
     </div>
-    <div class="checkGrid">
+    ${hasInstitutionalEvidence ? `<div class="checkGrid">
       ${contextCheckHtml("Index", institutional.index?.supportsLongs, institutional.index?.reason)}
       ${contextCheckHtml("Derivatives/F&O", institutional.derivatives?.fnoEligible, institutional.derivatives?.reason)}
       ${contextCheckHtml("Options", institutional.options?.supportsLongs, institutional.options?.reason)}
       ${contextCheckHtml("Commodity/Currency", institutional.commodity?.supportsSector, institutional.commodity?.reason)}
       ${contextCheckHtml("NSE Delivery/Operator", institutional.operator?.accumulation, institutional.operator?.reason)}
-    </div>
+    </div>` : ""}
     <div class="reasonBlock">
       <strong>Institutional Concept Coverage</strong>
       <p>${escapeHtml(coverage.summary || "No concept coverage available for this row yet.")}</p>
@@ -1905,6 +1898,34 @@ function checkHtml(label, check, asPercent = false) {
       <span>${escapeHtml(label)}</span>
       <strong class="${css}">${status}</strong>
       <span>${latest} vs ${previous}</span>
+    </div>
+  `;
+}
+
+function fundamentalEvidenceHtml(row = {}) {
+  const fundamental = row.fundamental;
+  if (!fundamental || fundamental.available === false) {
+    const reason = fundamental?.reason || (row.status === "DATA_GAP"
+      ? "Completed market history is unavailable, so fundamental evidence was not evaluated for this row."
+      : "Fundamental history is unavailable for this stock.");
+    return `
+      <div class="reasonBlock">
+        <strong>Fundamental Evidence</strong>
+        <p>${escapeHtml(reason)}</p>
+      </div>
+    `;
+  }
+  const checks = fundamental?.checks || {};
+  return `
+    <div class="checkGrid">
+      ${checkHtml("Net income YoY", checks.netIncomeYoYUp)}
+      ${checkHtml("Quarterly sales YoY", checks.revenueQuarterYoYUp)}
+      ${checkHtml("Quarterly EPS YoY", checks.epsQuarterYoYUp)}
+      ${checkHtml("Quarterly EBITDA YoY", checks.ebitdaQuarterYoYUp)}
+      ${checkHtml("Operating income YoY", checks.operatingIncomeYoYUp)}
+      ${checkHtml("EBITDA margin QoQ", checks.ebitdaMarginQoQUp, true)}
+      ${checkHtml("EBITDA margin YoY", checks.ebitdaMarginYoYUp, true)}
+      ${checkHtml("P/E rising", checks.peRising)}
     </div>
   `;
 }

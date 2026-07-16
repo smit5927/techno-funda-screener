@@ -59,6 +59,47 @@ test("mobile market state keeps decision evidence but removes large execution in
   assert.deepEqual(market.lists.default.symbols, ["ABC"]);
 });
 
+test("mobile market state keeps detail evidence for non-entry screener rows", () => {
+  const scan = {
+    lists: {
+      "all-market": {
+        results: [{
+          symbol: "BLUESTARCO",
+          status: "EXIT",
+          fundamental: { available: false, reason: "Technical gate not met." },
+          setupStrength: {
+            score: 7,
+            checks: { baseBreakout: false, weeklyCloseAboveEma13: true },
+            values: { priorBaseHigh: 1800, weeklyEma13: 1700 }
+          },
+          sectorStrength: { ok: true, breadthPct: 63 },
+          conceptCoverage: { summary: "Evidence retained", weakLabels: ["Daily RS55"] },
+          gtfContext: {
+            dataAvailable: true,
+            score: 4,
+            maxScore: 8,
+            dailyTrend: "up",
+            checks: { dailyDemandQualified: true }
+          },
+          institutionalContext: {
+            score: 3,
+            maxScore: 5,
+            index: { supportsLongs: true, reason: "Broad market supportive" }
+          }
+        }]
+      }
+    }
+  };
+
+  const row = marketOnlyState(scan).lists["all-market"].results[0];
+  assert.equal(row.fundamental.reason, "Technical gate not met.");
+  assert.equal(row.setupStrength.values.priorBaseHigh, 1800);
+  assert.equal(row.sectorStrength.breadthPct, 63);
+  assert.equal(row.conceptCoverage.weakLabels[0], "Daily RS55");
+  assert.equal(row.gtfContext.checks.dailyDemandQualified, true);
+  assert.equal(row.institutionalContext.index.supportsLongs, true);
+});
+
 test("user capital and risk settings override defaults without mutating shared config", () => {
   const config = configForUser({
     totalCapital: 2500000,

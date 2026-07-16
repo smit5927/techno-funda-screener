@@ -145,32 +145,27 @@ function compactMobileRow(row = {}) {
   ]);
   output.signalReason = compactReasons(row.signalReason);
 
-  if (row.status === "ENTRY") {
-    output.fundamental = row.fundamental;
-    output.setupStrength = {
-      score: row.setupStrength?.score,
-      checks: row.setupStrength?.checks,
-      values: pick(row.setupStrength?.values || {}, [
-        "priorBaseHigh", "recentBaseLow", "priorRecentHigh", "priorYearHigh",
-        "volumeRatio", "macd", "retracementPullbackDepthPct",
-        "retracementSupportProximityOk", "retracementSupportDistancePct",
-        "retracementVolumePatternOk", "retracementPullbackVolumeRatio",
-        "retracementReclaimCandleOk", "retracementCloseLocationPct",
-        "riskToSupertrendPct", "atrPct", "averageTurnover", "previousLow",
-        "weeklyClose", "weeklyEma13", "weeklyEma13Previous",
-        "weeklyEma13DistancePct", "weeklyEma13BelowCloses", "weeklyEma13Period"
-      ])
-    };
-    output.sectorStrength = row.sectorStrength;
-    output.conceptCoverage = compactCoverage(row.conceptCoverage);
-    output.gtfContext = compactGtf(row.gtfContext);
-    output.institutionalContext = compactInstitutional(row.institutionalContext);
-  } else if (row.status === "EXIT") {
-    output.fundamental = row.fundamental;
-    output.gtfContext = pick(row.gtfContext || {}, [
-      "dataAvailable", "score", "maxScore", "supplyBlocked"
-    ]);
-  }
+  // Every screener row can be opened in the detail drawer. Keep the compact
+  // evidence for every status so WATCH/EXIT/DATA_GAP rows do not render as NA.
+  output.fundamental = row.fundamental;
+  output.setupStrength = {
+    score: row.setupStrength?.score,
+    checks: row.setupStrength?.checks,
+    values: pick(row.setupStrength?.values || {}, [
+      "priorBaseHigh", "recentBaseLow", "priorRecentHigh", "priorYearHigh",
+      "volumeRatio", "macd", "retracementPullbackDepthPct",
+      "retracementSupportProximityOk", "retracementSupportDistancePct",
+      "retracementVolumePatternOk", "retracementPullbackVolumeRatio",
+      "retracementReclaimCandleOk", "retracementCloseLocationPct",
+      "riskToSupertrendPct", "atrPct", "averageTurnover", "previousLow",
+      "weeklyClose", "weeklyEma13", "weeklyEma13Previous",
+      "weeklyEma13DistancePct", "weeklyEma13BelowCloses", "weeklyEma13Period"
+    ])
+  };
+  output.sectorStrength = row.sectorStrength;
+  output.conceptCoverage = compactCoverage(row.conceptCoverage);
+  output.gtfContext = compactGtf(row.gtfContext);
+  output.institutionalContext = compactInstitutional(row.institutionalContext);
   return output;
 }
 
