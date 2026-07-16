@@ -405,6 +405,9 @@ function normalizeTradeSettings(input: any) {
     qualityMode: quality.id,
     qualityLabel: quality.label,
     totalCapital: normalizeCapital(input?.totalCapital),
+    minimumInitialAllocation: Math.round(
+      Math.min(100000000, Math.max(1000, Number(input?.minimumInitialAllocation) || 10000))
+    ),
     chargesEnabled: input?.chargesEnabled === true,
     brokerageMode: String(input?.brokerageMode || "FLAT_PER_ORDER").toUpperCase() === "PERCENT_TURNOVER"
       ? "PERCENT_TURNOVER"

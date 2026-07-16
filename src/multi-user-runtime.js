@@ -135,7 +135,7 @@ function compactMarketLists(lists) {
 
 function compactMobileRow(row = {}) {
   const output = pick(row, [
-    "symbol", "yahooSymbol", "name", "industry", "asOf", "weeklyAsOf", "status", "close",
+    "symbol", "requestedYahooSymbol", "yahooSymbol", "exchangeFallback", "name", "industry", "asOf", "weeklyAsOf", "status", "close",
     "dailySupertrend", "dailyPriceAboveSupertrend", "weeklyRsi", "weeklyRs",
     "dailyLongRs", "dailyShortRs", "dailyRsi", "fundamentalScore", "score",
     "weeklyClose", "weeklyEma13", "weeklyPriceAboveEma13", "weeklyEma13Rising",
@@ -263,6 +263,10 @@ export function configForUser(settings = {}, telegram = {}) {
     trade: {
       ...appConfig.trade,
       totalCapital: finite(settings.totalCapital, appConfig.trade.totalCapital),
+      minimumInitialAllocation: finite(
+        settings.minimumInitialAllocation,
+        appConfig.trade.minimumInitialAllocation
+      ),
       scopeListId: settings.scopeListId || appConfig.trade.scopeListId,
       qualityMode: settings.qualityMode || appConfig.trade.qualityMode,
       maxOpenPositions: finite(settings.maxOpenPositions, appConfig.trade.maxOpenPositions),

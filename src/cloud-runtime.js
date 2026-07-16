@@ -39,6 +39,11 @@ export async function hydrateCloudRuntime({ includeCustomList = true } = {}) {
     if (Number.isFinite(Number(tradeSettings.tradeSettings.totalCapital))) {
       appConfig.trade.totalCapital = Number(tradeSettings.tradeSettings.totalCapital);
     }
+    if (Number.isFinite(Number(tradeSettings.tradeSettings.minimumInitialAllocation))) {
+      appConfig.trade.minimumInitialAllocation = Number(
+        tradeSettings.tradeSettings.minimumInitialAllocation
+      );
+    }
     appConfig.trade.chargesEnabled = tradeSettings.tradeSettings.chargesEnabled === true;
     appConfig.trade.brokerageMode = tradeSettings.tradeSettings.brokerageMode || appConfig.trade.brokerageMode;
     for (const key of ["brokerageFlatPerOrder", "brokeragePercent", "dpChargePerSell"]) {

@@ -92,6 +92,7 @@ const elements = {
   tradeQualitySelect: document.querySelector("#tradeQualitySelect"),
   totalCapitalInput: document.querySelector("#totalCapitalInput"),
   addCapitalInput: document.querySelector("#addCapitalInput"),
+  minimumInitialAllocationInput: document.querySelector("#minimumInitialAllocationInput"),
   maxOpenPositionsInput: document.querySelector("#maxOpenPositionsInput"),
   riskPerTradeInput: document.querySelector("#riskPerTradeInput"),
   maxPortfolioRiskInput: document.querySelector("#maxPortfolioRiskInput"),
@@ -1394,6 +1395,7 @@ async function saveTradeSettings() {
         qualityMode: elements.tradeQualitySelect.value,
         totalCapital: Number(elements.totalCapitalInput.value),
         addCapital: Number(elements.addCapitalInput.value || 0),
+        minimumInitialAllocation: Number(elements.minimumInitialAllocationInput.value),
         maxOpenPositions: Number(elements.maxOpenPositionsInput.value),
         riskPerTradePct: Number(elements.riskPerTradeInput.value),
         maxPortfolioRiskPct: Number(elements.maxPortfolioRiskInput.value),
@@ -1494,6 +1496,7 @@ function renderTradeSettings(settings, options = {}) {
     elements.totalCapitalInput.value = String(settings.totalCapital);
   }
   const numericControls = [
+    [elements.minimumInitialAllocationInput, settings.minimumInitialAllocation ?? 10000],
     [elements.maxOpenPositionsInput, settings.maxOpenPositions],
     [elements.riskPerTradeInput, settings.riskPerTradePct],
     [elements.maxPortfolioRiskInput, settings.maxPortfolioRiskPct],
@@ -1521,7 +1524,7 @@ function renderTradeSettings(settings, options = {}) {
   if (elements.tradeSettingsStatus) {
     const updated = settings.updatedAt ? ` | saved ${formatDateTime(settings.updatedAt)}` : "";
     elements.tradeSettingsStatus.textContent =
-      `${settings.scopeLabel || "All NSE Market"} | ${settings.qualityLabel || "Best only"} | Capital Rs ${compact(settings.totalCapital || 1000000)} | Risk ${compact(settings.riskPerTradePct || 1)}%/trade | Charges ${settings.chargesEnabled ? "ON" : "OFF"}${updated}`;
+      `${settings.scopeLabel || "All NSE Market"} | ${settings.qualityLabel || "Best only"} | Capital Rs ${compact(settings.totalCapital || 1000000)} | Min buy Rs ${compact(settings.minimumInitialAllocation || 10000)} | Risk ${compact(settings.riskPerTradePct || 1)}%/trade | Charges ${settings.chargesEnabled ? "ON" : "OFF"}${updated}`;
   }
 }
 

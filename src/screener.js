@@ -75,7 +75,11 @@ export async function runScreener(options = {}) {
           listId: list.id,
           listLabel: list.label,
           symbol: item.symbol,
+          requestedYahooSymbol: item.yahooSymbol,
           yahooSymbol: core.resolvedYahooSymbol || item.yahooSymbol,
+          exchangeFallback:
+            String(core.resolvedYahooSymbol || item.yahooSymbol).toUpperCase() !==
+            String(item.yahooSymbol).toUpperCase(),
           name: item.name,
           industry: item.industry
         };
@@ -85,7 +89,9 @@ export async function runScreener(options = {}) {
           listId: list.id,
           listLabel: list.label,
           symbol: item.symbol,
+          requestedYahooSymbol: item.yahooSymbol,
           yahooSymbol: item.yahooSymbol,
+          exchangeFallback: false,
           name: item.name,
           industry: item.industry,
           status: failure.status,
@@ -215,6 +221,10 @@ export function reconcileResultFreshness(currentRows = [], previousRows = []) {
       listId: current.listId,
       listLabel: current.listLabel,
       symbol: current.symbol,
+      requestedYahooSymbol: current.requestedYahooSymbol || previous.requestedYahooSymbol,
+      yahooSymbol: current.yahooSymbol || previous.yahooSymbol,
+      resolvedYahooSymbol: current.resolvedYahooSymbol || previous.resolvedYahooSymbol,
+      exchangeFallback: current.exchangeFallback === true,
       name: current.name || previous.name,
       industry: current.industry || previous.industry,
       dataFreshness: {
@@ -676,7 +686,10 @@ async function scanSymbol(
   return {
     status,
     asOf: dailyCandles[latestDailyIndex].date,
+    requestedYahooSymbol: item.yahooSymbol,
     resolvedYahooSymbol: priceHistory.yahooSymbol,
+    exchangeFallback:
+      String(priceHistory.yahooSymbol).toUpperCase() !== String(item.yahooSymbol).toUpperCase(),
     weeklyAsOf: weeklyCandles[latestWeeklyIndex].date,
     close,
     dailyRsi,

@@ -605,6 +605,11 @@ function normalizeSettings(input: any) {
   const quality = ["BEST_ONLY", "STRONG_OR_BETTER", "ALL_ENTRIES"].includes(String(input.qualityMode)) ? String(input.qualityMode) : "BEST_ONLY";
   return {
     total_capital: clamp(Number(input.totalCapital ?? input.total_capital) || 1000000, 10000, 1000000000),
+    minimum_initial_allocation: clamp(
+      Number(input.minimumInitialAllocation ?? input.minimum_initial_allocation) || 10000,
+      1000,
+      100000000
+    ),
     scope_list_id: scope,
     quality_mode: quality,
     max_open_positions: Math.round(clamp(Number(input.maxOpenPositions ?? input.max_open_positions) || 15, 1, 100)),
@@ -630,6 +635,7 @@ function publicSettings(row: any) {
     qualityMode: row.quality_mode || "BEST_ONLY",
     qualityLabel: { BEST_ONLY: "Best only (A+/A)", STRONG_OR_BETTER: "Strong and best (A+/A/B)", ALL_ENTRIES: "All entry signals" }[row.quality_mode] || "Best only (A+/A)",
     totalCapital: Number(row.total_capital) || 1000000,
+    minimumInitialAllocation: Number(row.minimum_initial_allocation) || 10000,
     maxOpenPositions: Number(row.max_open_positions) || 15,
     riskPerTradePct: Number(row.risk_per_trade_pct) || 1,
     maxPortfolioRiskPct: Number(row.max_portfolio_risk_pct) || 6,

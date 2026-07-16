@@ -167,6 +167,10 @@ The default trade quality is `BEST_ONLY`, which opens sheet/Telegram trades only
 
 ## Portfolio And Risk Engine
 
+- Every automated initial buy and pyramid add-on must be at least Rs 10,000 by default. Residual cash, sector room or risk room below this floor stays in cash instead of creating an uneconomical tiny position. The owner can change the floor in Trade Settings.
+- Liquidity is compulsory for automated execution. A row with failed 20-day turnover liquidity or a requested NSE symbol that only resolves through a BSE fallback cannot be bought or pyramided until reliable exchange-consistent coverage is available.
+- Existing legacy positions below the minimum are not force-sold only because of size; normal structural exit and rotation rules continue to manage them so DP charges are not created unnecessarily.
+
 - Starting capital is Rs. 10,00,000 and can be changed or increased from persistent website Trade Settings.
 - Portfolio breadth adapts to capital: up to 10 positions below Rs. 10 lakh, 15 at Rs. 10 lakh, 20 at Rs. 25 lakh, 25 at Rs. 50 lakh, 30 at Rs. 1 crore, and 50 at Rs. 5 crore or more. Available cash and risk limits can result in fewer positions.
 - Initial capital allocation remains capped at 10% per stock (Rs. 1,00,000 at the default capital).

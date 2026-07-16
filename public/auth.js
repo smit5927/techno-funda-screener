@@ -139,7 +139,8 @@ async function bootstrapOwner(event) {
       email: document.querySelector("#bootstrapEmail").value,
       mobileNumber: document.querySelector("#bootstrapMobile").value,
       password: document.querySelector("#bootstrapPassword").value,
-      totalCapital: 1000000
+      totalCapital: 1000000,
+      minimumInitialAllocation: 10000
     }, false);
     await client.auth.setSession({
       access_token: payload.session.access_token,
@@ -273,7 +274,8 @@ async function createUser(event) {
       email: document.querySelector("#newUserEmail").value,
       mobileNumber: document.querySelector("#newUserMobile").value,
       password: document.querySelector("#newUserPassword").value,
-      totalCapital: Number(document.querySelector("#newUserCapital").value)
+      totalCapital: Number(document.querySelector("#newUserCapital").value),
+      minimumInitialAllocation: 10000
     });
     elements.createUserForm.reset();
     document.querySelector("#newUserCapital").value = 1000000;
@@ -456,6 +458,7 @@ function tradeSheetSummary(state) {
     ["Trade Scope", settings.scopeLabel || settings.scopeListId || ""],
     ["Trade Quality", settings.qualityLabel || settings.qualityMode || ""],
     ["Total Capital", portfolio.totalCapital], ["Total Equity", portfolio.totalEquity],
+    ["Minimum Initial Buy", settings.minimumInitialAllocation || 10000],
     ["Invested Capital", portfolio.investedCapital], ["Available Cash", portfolio.availableCash],
     ["Open Positions", trades.open || 0], ["Pending Entry", trades.pendingEntry || 0],
     ["Pending Full Exit", trades.pendingExit || 0], ["Pending Partial Exit", trades.pendingPartialExit || 0],

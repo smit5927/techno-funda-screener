@@ -8,6 +8,7 @@ export function portfolioConfig(config = {}) {
   const pyramidPullbackMinPct = positive(trade.pyramidPullbackMinPct, 2);
   return {
     totalCapital,
+    minimumInitialAllocation: positive(trade.minimumInitialAllocation, 10_000),
     maxOpenPositions: trade.autoPositionBreadth === false
       ? integer(trade.maxOpenPositions, adaptivePositionCount(totalCapital))
       : adaptivePositionCount(totalCapital),
@@ -165,15 +166,19 @@ export function buildPositionPlan(row, price, portfolio = {}, config = {}) {
   const quantity = Math.max(0, Math.min(quantityByCapital, quantityByRisk));
   const allocation = quantity * price;
   const plannedRisk = quantity * riskPerShare;
+  const minimumAllocationMet = allocation >= rules.minimumInitialAllocation;
   let reason = "Risk and capital limits allow entry.";
   if ((Number(portfolio.openSlots) || 0) <= 0) reason = "Maximum open-position limit reached.";
   else if (availableCash < price) reason = "Available portfolio cash is insufficient.";
   else if (sectorAvailable < price) reason = `Sector exposure limit reached for ${sector}.`;
   else if (availableRisk < riskPerShare) reason = "Maximum aggregate portfolio risk reached.";
   else if (quantity < 1) reason = "Risk-sized quantity is below one share.";
+  else if (!minimumAllocationMet) {
+    reason = `Planned investment Rs ${round(allocation)} is below the minimum initial buy value Rs ${round(rules.minimumInitialAllocation)}; residual cash or sector capacity is not used for an uneconomical tiny position.`;
+  }
 
   return {
-    eligible: quantity > 0 && (Number(portfolio.openSlots) || 0) > 0,
+    eligible: quantity > 0 && minimumAllocationMet && (Number(portfolio.openSlots) || 0) > 0,
     quantity,
     allocation: round(allocation),
     stopPrice,
@@ -181,6 +186,7 @@ export function buildPositionPlan(row, price, portfolio = {}, config = {}) {
     riskPerShare: round(riskPerShare),
     plannedRisk: round(plannedRisk),
     riskBudget: round(riskBudget),
+    minimumInitialAllocation: round(rules.minimumInitialAllocation),
     maxAllocation: round(maxAllocation),
     sector,
     sectorUsed: round(sectorUsed),
@@ -343,6 +349,18 @@ export function candidateEntryDecision(candidate = {}, row = {}, config = {}, op
   if (options.qualityPass === false) {
     reasons.push(`Current setup grade ${row.setupGrade || "NA"} no longer passes the selected trade-quality filter.`);
     disposition = "EXPIRED";
+  }
+  if (checks.liquidEnough === false) {
+    reasons.push(
+      `Automated entry is blocked because 20-day average turnover Rs ${round(values.averageTurnover)} is below the compulsory liquidity standard; execution and exit costs are not reliable enough.`
+    );
+    if (disposition === "ACTIONABLE") disposition = "WAITING_RECONFIRMATION";
+  }
+  if (row.exchangeFallback === true) {
+    reasons.push(
+      `Automated entry is blocked because requested ${row.requestedYahooSymbol || "NSE symbol"} resolved only through ${row.yahooSymbol || row.resolvedYahooSymbol || "a cross-exchange fallback"}; exchange-consistent live and 09:17 execution coverage is required.`
+    );
+    if (disposition === "ACTIONABLE") disposition = "WAITING_RECONFIRMATION";
   }
   if (signalAgeDays > rules.candidateMaxWaitDays) {
     warnings.push(
@@ -548,6 +566,12 @@ export function pyramidAddDecision(trade, row, portfolio = {}, config = {}) {
   if (row?.institutionalContext?.operator?.distribution) {
     reasons.push("Official NSE delivery data shows distribution; winner add-on is blocked.");
   }
+  if (checks.liquidEnough === false) {
+    reasons.push("Winner add-on is blocked because compulsory liquidity is insufficient.");
+  }
+  if (row?.exchangeFallback === true) {
+    reasons.push("Winner add-on is blocked because the instrument is using a cross-exchange data fallback.");
+  }
   if (
     Number.isFinite(values.riskToSupertrendPct) &&
     values.riskToSupertrendPct > rules.maximumStopPct
@@ -619,6 +643,7 @@ export function buildPyramidAddPlan(trade, row, price, portfolio = {}, config = 
   const quantity = Math.max(0, Math.min(quantityByCapital, quantityByRisk));
   const allocation = quantity * price;
   const plannedRisk = quantity * riskPerShare;
+  const minimumAllocationMet = allocation >= rules.minimumInitialAllocation;
   let reason = "Capital, position, sector and risk limits allow a winner add-on.";
   if (!Number.isFinite(riskPerShare) || riskPerShare <= 0) {
     reason = "Actual price is not above the protected trailing stop; add-on skipped.";
@@ -628,9 +653,12 @@ export function buildPyramidAddPlan(trade, row, price, portfolio = {}, config = 
   else if (availablePortfolioRisk < riskPerShare) reason = "Aggregate portfolio-risk room is insufficient.";
   else if (totalTradeRiskCapacity < riskPerShare) reason = "Total position risk would exceed the 1% trade-risk cap.";
   else if (quantity < 1) reason = "Risk-sized add-on quantity is below one share.";
+  else if (!minimumAllocationMet) {
+    reason = `Planned add-on Rs ${round(allocation)} is below the minimum order value Rs ${round(rules.minimumInitialAllocation)}.`;
+  }
 
   return {
-    eligible: quantity > 0,
+    eligible: quantity > 0 && minimumAllocationMet,
     quantity,
     allocation: round(allocation),
     plannedRisk: round(plannedRisk),
@@ -638,6 +666,7 @@ export function buildPyramidAddPlan(trade, row, price, portfolio = {}, config = 
     trailingStop: round(trailingStop),
     maximumPositionAllocation: round(maximumPositionAllocation),
     addAllocationCap: round(addAllocationCap),
+    minimumInitialAllocation: round(rules.minimumInitialAllocation),
     sector,
     rank: candidateRank(row),
     reason

@@ -20,6 +20,7 @@ import { buildPyramidStructure } from "../src/screener.js";
 test("portfolio defaults use ten lakh capital with institutional limits", () => {
   const rules = portfolioConfig({ trade: {} });
   assert.equal(rules.totalCapital, 1_000_000);
+  assert.equal(rules.minimumInitialAllocation, 10_000);
   assert.equal(rules.maxOpenPositions, 15);
   assert.equal(rules.maxPositionPct, 10);
   assert.equal(rules.riskPerTradePct, 1);
@@ -150,8 +151,8 @@ test("pyramid add plan respects total stock, incremental risk and sector caps", 
   const trade = openTrade({
     entryPrice: 100,
     trailingStopPrice: 101,
-    investedValue: 140_000,
-    quantity: 1400
+    investedValue: 130_000,
+    quantity: 1300
   });
   const plan = buildPyramidAddPlan(
     trade,
@@ -160,14 +161,15 @@ test("pyramid add plan respects total stock, incremental risk and sector caps", 
     {
       availableCash: 500_000,
       availableRisk: 30_000,
-      sectorExposure: { Industrials: 140_000 }
+      sectorExposure: { Industrials: 130_000 }
     },
     { trade: {} }
   );
   assert.equal(plan.eligible, true);
-  assert.ok(plan.allocation <= 10_000);
+  assert.ok(plan.allocation >= 10_000);
+  assert.ok(plan.allocation <= 20_000);
   assert.ok(plan.plannedRisk <= 5_000);
-  assert.ok(140_000 + plan.allocation <= 150_000);
+  assert.ok(130_000 + plan.allocation <= 150_000);
 });
 
 test("maximum add-on count blocks further pyramiding", () => {
@@ -362,6 +364,43 @@ test("fundamental deterioration alone cannot trigger a partial exit", () => {
   assert.equal(decision.action, "HOLD");
 });
 
+test("position sizing rejects an uneconomical residual allocation below ten thousand rupees", () => {
+  const row = strongRow({ industry: "Banks" });
+  const plan = buildPositionPlan(
+    row,
+    100,
+    {
+      availableCash: 500_000,
+      availableRisk: 30_000,
+      openSlots: 5,
+      sectorExposure: { Banks: 249_500 }
+    },
+    { trade: {} }
+  );
+  assert.equal(plan.quantity, 5);
+  assert.equal(plan.allocation, 500);
+  assert.equal(plan.eligible, false);
+  assert.match(plan.reason, /below the minimum initial buy value Rs 10000/i);
+});
+
+test("position sizing accepts an allocation at the ten thousand rupee floor", () => {
+  const row = strongRow({ industry: "Banks" });
+  const plan = buildPositionPlan(
+    row,
+    100,
+    {
+      availableCash: 500_000,
+      availableRisk: 30_000,
+      openSlots: 5,
+      sectorExposure: { Banks: 240_000 }
+    },
+    { trade: {} }
+  );
+  assert.equal(plan.quantity, 100);
+  assert.equal(plan.allocation, 10_000);
+  assert.equal(plan.eligible, true);
+});
+
 test("completed weekly close below EMA13 creates a momentum-break full exit", () => {
   const row = strongRow({
     weeklyAsOf: "2026-07-10",
@@ -537,6 +576,37 @@ test("portfolio summary reserves pending capital and reports cash", () => {
   assert.equal(summary.deployedCapital, 180_000);
   assert.equal(summary.availableCash, 820_000);
   assert.equal(summary.openSlots, 13);
+});
+
+test("illiquid candidate cannot become an automated entry", () => {
+  const row = strongRow();
+  row.setupStrength.checks.liquidEnough = false;
+  row.setupStrength.values.averageTurnover = 20_875;
+  const decision = candidateEntryDecision(
+    { firstSignalDate: row.asOf, firstSignalClose: row.close, entryCloseDates: [row.asOf] },
+    row,
+    { trade: {} },
+    { qualityPass: true }
+  );
+  assert.equal(decision.actionable, false);
+  assert.equal(decision.disposition, "WAITING_RECONFIRMATION");
+  assert.match(decision.reasons.join(" "), /compulsory liquidity/i);
+});
+
+test("cross-exchange fallback candidate cannot become an automated entry", () => {
+  const row = strongRow({
+    requestedYahooSymbol: "NEXUSSURGL.NS",
+    yahooSymbol: "NEXUSSURGL.BO",
+    exchangeFallback: true
+  });
+  const decision = candidateEntryDecision(
+    { firstSignalDate: row.asOf, firstSignalClose: row.close, entryCloseDates: [row.asOf] },
+    row,
+    { trade: {} },
+    { qualityPass: true }
+  );
+  assert.equal(decision.actionable, false);
+  assert.match(decision.reasons.join(" "), /cross-exchange|resolved only through/i);
 });
 
 test("portfolio summary separates gross booked P&L from realized charges", () => {

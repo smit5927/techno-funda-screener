@@ -553,6 +553,7 @@ export function tradeSettingsSummary(config = appConfig) {
     qualityMode,
     qualityLabel: TRADE_QUALITY_LABELS[qualityMode],
     totalCapital: config.trade?.totalCapital ?? 1000000,
+    minimumInitialAllocation: config.trade?.minimumInitialAllocation ?? 10000,
     capitalPerStock: config.trade?.capitalPerStock ?? 100000,
     chargesEnabled: config.trade?.chargesEnabled === true,
     brokerageMode: config.trade?.brokerageMode || "FLAT_PER_ORDER",

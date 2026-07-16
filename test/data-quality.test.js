@@ -71,6 +71,29 @@ test("an older provider candle cannot overwrite a newer completed close", () => 
   });
 });
 
+test("fresh exchange fallback evidence is retained when a newer close is preserved", () => {
+  const previous = [{
+    symbol: "NEXUSSURGL",
+    yahooSymbol: "NEXUSSURGL.BO",
+    asOf: "2026-07-14",
+    status: "ENTRY"
+  }];
+  const current = [{
+    symbol: "NEXUSSURGL",
+    requestedYahooSymbol: "NEXUSSURGL.NS",
+    yahooSymbol: "NEXUSSURGL.BO",
+    resolvedYahooSymbol: "NEXUSSURGL.BO",
+    exchangeFallback: true,
+    asOf: "2026-07-13",
+    status: "ENTRY"
+  }];
+  const [row] = reconcileResultFreshness(current, previous);
+  assert.equal(row.asOf, "2026-07-14");
+  assert.equal(row.requestedYahooSymbol, "NEXUSSURGL.NS");
+  assert.equal(row.yahooSymbol, "NEXUSSURGL.BO");
+  assert.equal(row.exchangeFallback, true);
+});
+
 test("an older provider row still enriches the preserved close with completed weekly EMA13 evidence", () => {
   const previous = [{
     symbol: "INGERRAND",

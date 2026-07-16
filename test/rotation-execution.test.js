@@ -210,6 +210,7 @@ function testConfig({ strongPrice = 100 } = {}) {
     trade: {
       ...appConfig.trade,
       totalCapital: 1000,
+      minimumInitialAllocation: 100,
       autoPositionBreadth: false,
       maxOpenPositions: 1,
       maxPositionPct: 100,

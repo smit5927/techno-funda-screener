@@ -86,6 +86,7 @@ export const appConfig = {
   trade: {
     capitalPerStock: numberEnv("TRADE_CAPITAL_PER_STOCK", 100000),
     totalCapital: numberEnv("TRADE_TOTAL_CAPITAL", 1000000),
+    minimumInitialAllocation: numberEnv("TRADE_MINIMUM_INITIAL_ALLOCATION", 10000),
     maxOpenPositions: Math.max(1, numberEnv("TRADE_MAX_OPEN_POSITIONS", 15)),
     autoPositionBreadth: boolEnv("TRADE_AUTO_POSITION_BREADTH", true),
     maxPositionPct: numberEnv("TRADE_MAX_POSITION_PCT", 10),
