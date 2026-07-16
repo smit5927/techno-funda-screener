@@ -578,7 +578,7 @@ function withCustomList(lists: any, symbols: string[]) {
     ...lists,
     "all-market": {
       ...allMarket,
-      results: allRows.map((row: any) => ({ ...row, listLabel: allMarket.label || "All NSE Market" }))
+      results: allRows.map((row: any) => ({ ...row, listLabel: allMarket.label || "All Indian Market" }))
     },
     default: {
       ...defaultList,
@@ -652,7 +652,7 @@ function normalizeSettings(input: any) {
 function publicSettings(row: any) {
   return {
     scopeListId: row.scope_list_id || "all-market",
-    scopeLabel: { "all-market": "All NSE Market", default: "Nifty 500", custom: "My List" }[row.scope_list_id] || "All NSE Market",
+    scopeLabel: { "all-market": "All Indian Market", default: "Nifty 500", custom: "My List" }[row.scope_list_id] || "All Indian Market",
     qualityMode: row.quality_mode || "BEST_ONLY",
     qualityLabel: { BEST_ONLY: "Best only (A+/A)", STRONG_OR_BETTER: "Strong and best (A+/A/B)", ALL_ENTRIES: "All entry signals" }[row.quality_mode] || "Best only (A+/A)",
     totalCapital: Number(row.total_capital) || 1000000,

@@ -24,7 +24,7 @@ import {
 } from "./portfolio-engine.js";
 
 const TRADE_SCOPE_LABELS = {
-  "all-market": "All NSE Market",
+  "all-market": "All Indian Market",
   default: "Nifty 500",
   custom: "My List"
 };

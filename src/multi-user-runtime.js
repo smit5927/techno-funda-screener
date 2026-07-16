@@ -117,12 +117,12 @@ export function marketOnlyState(scan = {}) {
 }
 
 function compactMarketLists(lists) {
-  const allMarket = lists["all-market"] || { id: "all-market", label: "All NSE Market", results: [] };
+  const allMarket = lists["all-market"] || { id: "all-market", label: "All Indian Market", results: [] };
   const nifty500 = lists.default || { id: "default", label: "Nifty 500", results: [] };
   return {
     "all-market": {
       id: allMarket.id || "all-market",
-      label: allMarket.label || "All NSE Market",
+      label: allMarket.label || "All Indian Market",
       editable: false,
       summary: allMarket.summary || summarizeRows(allMarket.results || []),
       results: (allMarket.results || []).map(compactMobileRow)
@@ -139,7 +139,7 @@ function compactMarketLists(lists) {
 
 function compactMobileRow(row = {}) {
   const output = pick(row, [
-    "symbol", "requestedYahooSymbol", "yahooSymbol", "exchangeFallback", "name", "industry", "asOf", "weeklyAsOf", "status", "close",
+    "symbol", "requestedYahooSymbol", "yahooSymbol", "exchangeFallback", "name", "industry", "searchAliases", "asOf", "weeklyAsOf", "status", "close",
     "dailySupertrend", "dailyPriceAboveSupertrend", "weeklyRsi", "weeklyRs",
     "dailyLongRs", "dailyShortRs", "dailyRsi", "fundamentalScore", "score",
     "weeklyClose", "weeklyEma13", "weeklyPriceAboveEma13", "weeklyEma13Rising",

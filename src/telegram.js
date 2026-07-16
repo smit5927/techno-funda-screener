@@ -45,7 +45,7 @@ function buildMessage(scan, events) {
     `Scan: ${scan.scannedAt}`,
     `New trade alerts: ${events.length}`,
     `Market snapshot: Total ${scan.summary.total} | Entry candidates ${scan.summary.entry} | Exit candidates ${scan.summary.exit} | Watch ${scan.summary.watch}`,
-    `Trade sheet: ${scan.tradeSettings?.scopeLabel || "All NSE Market"} | ${scan.tradeSettings?.qualityLabel || "Best only (A+/A)"}`,
+    `Trade sheet: ${scan.tradeSettings?.scopeLabel || "All Indian Market"} | ${scan.tradeSettings?.qualityLabel || "Best only (A+/A)"}`,
     `Positions open ${scan.tradeSummary?.open ?? 0} | Pending buy ${scan.tradeSummary?.pendingEntry ?? 0} | Pending winner add ${scan.portfolioSummary?.pendingAdds ?? 0} | Pending sell ${scan.tradeSummary?.pendingExit ?? 0}`,
     `P&L realized ${fmt(scan.tradeSummary?.realizedPnl)} (trading ${fmt(scan.tradeSummary?.tradeRealizedPnl)}, dividend ${fmt(scan.tradeSummary?.dividendRealizedPnl)}) | unrealized ${fmt(scan.tradeSummary?.unrealizedPnl)} (${fmt(scan.portfolioSummary?.unrealizedPnlPct)}%)`,
     `Portfolio capital ${fmt(scan.portfolioSummary?.totalCapital)} | deployed ${fmt(scan.portfolioSummary?.deployedCapital)} | cash ${fmt(scan.portfolioSummary?.availableCash)} | risk ${fmt(scan.portfolioSummary?.portfolioRisk)} (${fmt(scan.portfolioSummary?.portfolioRiskPct)}%)`,

@@ -15,7 +15,7 @@ const LIVE_MTM_CACHE_MS = 45_000;
 let liveMtmCache: { expiresAt: number; payload: unknown } = { expiresAt: 0, payload: null };
 
 const TRADE_SCOPE_OPTIONS = [
-  { id: "all-market", label: "All NSE Market" },
+  { id: "all-market", label: "All Indian Market" },
   { id: "default", label: "Nifty 500" },
   { id: "custom", label: "My List" }
 ];

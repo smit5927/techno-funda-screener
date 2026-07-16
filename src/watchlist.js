@@ -30,7 +30,13 @@ export function loadWatchlist(filePath, maxSymbols = 0) {
       symbol: normalized.displaySymbol,
       yahooSymbol,
       name: record.name || record.company_name || record.company || normalized.displaySymbol,
-      industry: record.industry || record.sector || normalized.exchange || ""
+      industry: record.industry || record.sector || normalized.exchange || "",
+      searchAliases: [
+        record.search_aliases,
+        record.trading_symbol,
+        record.scrip_code,
+        record.isin
+      ].filter(Boolean).join(" ")
     });
 
     if (maxSymbols > 0 && symbols.length >= maxSymbols) break;

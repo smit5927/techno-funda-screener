@@ -1,6 +1,6 @@
 # Techno Funda PMS
 
-Daily-close based screener for all NSE equities, Nifty 500, and a custom uploaded list, with Telegram alerts, next-morning execution, automatic trade journal, and Excel export.
+Daily-close based screener for unique active NSE and BSE equities, Nifty 500, and a custom uploaded list, with Telegram alerts, next-morning execution, automatic trade journal, and Excel export.
 
 ## Rules
 
@@ -13,7 +13,7 @@ Daily-close based screener for all NSE equities, Nifty 500, and a custom uploade
 
 ## Lists
 
-- All NSE Market: `config/all-market.csv`
+- All Indian Market (NSE plus BSE-only, deduplicated by ISIN): `config/all-market.csv`
 - Default Nifty 500: `config/universe.csv`
 - My Custom List: `config/custom-list.csv` locally, or Supabase cloud upload in free online mode
 
@@ -36,7 +36,7 @@ For free cloud mode, upload the Excel/CSV directly from the website with the Tec
 
 The website has a `Trade Settings` panel. Enter the Techno Funda access code once, then choose which universe should drive the trade sheet, Telegram trade alerts, and open positions from the next scheduled scan:
 
-- All NSE Market
+- All Indian Market
 - Nifty 500
 - My List
 

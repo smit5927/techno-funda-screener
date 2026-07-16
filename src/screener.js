@@ -81,7 +81,8 @@ export async function runScreener(options = {}) {
             String(core.resolvedYahooSymbol || item.yahooSymbol).toUpperCase() !==
             String(item.yahooSymbol).toUpperCase(),
           name: item.name,
-          industry: item.industry
+          industry: item.industry,
+          searchAliases: item.searchAliases
         };
       } catch (error) {
         const failure = classifyScanFailure(error);
@@ -94,6 +95,7 @@ export async function runScreener(options = {}) {
           exchangeFallback: false,
           name: item.name,
           industry: item.industry,
+          searchAliases: item.searchAliases,
           status: failure.status,
           error: failure.status === "ERROR" ? failure.message : undefined,
           dataGapCode: failure.code,

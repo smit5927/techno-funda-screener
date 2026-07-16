@@ -496,7 +496,7 @@ function renderSummary(payload) {
   );
   renderSummaryPnl(elements.portfolioReturn, portfolioReturn.value, portfolioReturn.percentage);
   renderChargesStatus(payload);
-  elements.tradeScopeText.textContent = payload.tradeSettings?.scopeLabel || "All NSE Market";
+  elements.tradeScopeText.textContent = payload.tradeSettings?.scopeLabel || "All Indian Market";
   elements.tradeQualityText.textContent = payload.tradeSettings?.qualityLabel || "Best only";
   elements.totalCapital.textContent = compact(portfolio.totalCapital || payload.tradeSettings?.totalCapital || 1000000);
   elements.deployedCapital.textContent = compact(portfolio.deployedCapital || 0);
@@ -999,7 +999,7 @@ function filteredRows() {
     if (state.filter !== "ALL" && row.status !== state.filter) return false;
     if ((row.score || 0) < state.minScore) return false;
     if (!state.search) return true;
-    const haystack = `${row.symbol} ${row.name} ${row.industry}`.toLowerCase();
+    const haystack = `${row.symbol} ${row.name} ${row.industry} ${row.searchAliases || ""}`.toLowerCase();
     return haystack.includes(state.search);
   });
 }
@@ -1553,7 +1553,7 @@ function renderTradeSettings(settings, options = {}) {
   if (elements.dpChargeInput) elements.dpChargeInput.value = String(settings.dpChargePerSell ?? 15.34);
   updateBrokerageControlState();
   if (updateBadges && elements.tradeScopeText) {
-    elements.tradeScopeText.textContent = settings.scopeLabel || "All NSE Market";
+    elements.tradeScopeText.textContent = settings.scopeLabel || "All Indian Market";
   }
   if (updateBadges && elements.tradeQualityText) {
     elements.tradeQualityText.textContent = settings.qualityLabel || "Best only";
@@ -1561,7 +1561,7 @@ function renderTradeSettings(settings, options = {}) {
   if (elements.tradeSettingsStatus) {
     const updated = settings.updatedAt ? ` | saved ${formatDateTime(settings.updatedAt)}` : "";
     elements.tradeSettingsStatus.textContent =
-      `${settings.scopeLabel || "All NSE Market"} | ${settings.qualityLabel || "Best only"} | Capital Rs ${compact(settings.totalCapital || 1000000)} | Min buy Rs ${compact(settings.minimumInitialAllocation || 10000)} | Risk ${compact(settings.riskPerTradePct || 1)}%/trade | Charges ${settings.chargesEnabled ? "ON" : "OFF"}${updated}`;
+      `${settings.scopeLabel || "All Indian Market"} | ${settings.qualityLabel || "Best only"} | Capital Rs ${compact(settings.totalCapital || 1000000)} | Min buy Rs ${compact(settings.minimumInitialAllocation || 10000)} | Risk ${compact(settings.riskPerTradePct || 1)}%/trade | Charges ${settings.chargesEnabled ? "ON" : "OFF"}${updated}`;
   }
 }
 

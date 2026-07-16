@@ -58,7 +58,7 @@ export const appConfig = {
   lists: [
     {
       id: "all-market",
-      label: "All NSE Market",
+      label: "All Indian Market",
       path: resolveProjectPath(process.env.ALL_MARKET_WATCHLIST_PATH || "config/all-market.csv"),
       editable: false
     },

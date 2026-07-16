@@ -1,13 +1,16 @@
 import fs from "node:fs";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
 import { ROOT_DIR } from "../src/config.js";
 import { parseCsv, stringifyCsv } from "../src/csv.js";
+import { buildIndianEquityUniverse } from "../src/indian-market-universe.js";
 
-const url = "https://nsearchives.nseindia.com/content/equities/EQUITY_L.csv";
+const nseUrl = "https://nsearchives.nseindia.com/content/equities/EQUITY_L.csv";
+const bseUrl = "https://api.bseindia.com/BseIndiaAPI/api/ListofScripData/w?Group=&Scripcode=&industry=&segment=Equity&status=Active";
 const outputPath = path.join(ROOT_DIR, "config", "all-market.csv");
 const niftyPath = path.join(ROOT_DIR, "config", "universe.csv");
 
-const response = await fetch(url, {
+const nseResponse = await fetch(nseUrl, {
   headers: {
     "User-Agent": "Mozilla/5.0",
     Accept: "text/csv,*/*",
@@ -15,9 +18,21 @@ const response = await fetch(url, {
   }
 });
 
-if (!response.ok) {
-  throw new Error(`NSE equity master download failed: ${response.status} ${response.statusText}`);
+if (!nseResponse.ok) {
+  throw new Error(`NSE equity master download failed: ${nseResponse.status} ${nseResponse.statusText}`);
 }
+
+// BSE's Akamai response currently includes non-standard header whitespace that
+// strict Node HTTP parsers reject. curl accepts the official response on both
+// Windows and GitHub's Ubuntu runner and gives us deterministic retries.
+const bseRecords = JSON.parse(execFileSync("curl", [
+  "--location", "--fail", "--silent", "--show-error",
+  "--retry", "3", "--retry-delay", "2",
+  "--user-agent", "Mozilla/5.0",
+  "--referer", "https://www.bseindia.com/",
+  bseUrl
+], { encoding: "utf8", maxBuffer: 20 * 1024 * 1024 }));
+if (!Array.isArray(bseRecords)) throw new Error("BSE equity master returned an invalid payload");
 
 const niftyIndustries = new Map();
 if (fs.existsSync(niftyPath)) {
@@ -27,24 +42,21 @@ if (fs.existsSync(niftyPath)) {
   }
 }
 
-const rows = parseCsv(await response.text())
-  .map((record) => {
-    const symbol = String(record.symbol || "").trim().toUpperCase();
-    return {
-      symbol,
-      name: record.name_of_company || symbol,
-      industry: niftyIndustries.get(symbol) || "NSE Equity",
-      series: record.series || "",
-      isin: record.isin_number || "",
-      enabled: "true"
-    };
-  })
-  .filter((record) => record.symbol);
+const rows = buildIndianEquityUniverse(
+  parseCsv(await nseResponse.text()),
+  bseRecords,
+  niftyIndustries
+);
 
 fs.writeFileSync(
   outputPath,
-  stringifyCsv(rows, ["symbol", "name", "industry", "series", "isin", "enabled"]),
+  stringifyCsv(rows, [
+    "symbol", "name", "industry", "series", "isin", "exchange",
+    "trading_symbol", "scrip_code", "search_aliases", "enabled"
+  ]),
   "utf8"
 );
 
-console.log(`Saved ${rows.length} NSE equity symbols to ${outputPath}`);
+const nseCount = rows.filter((row) => row.exchange === "NSE").length;
+const bseOnlyCount = rows.filter((row) => row.exchange === "BSE").length;
+console.log(`Saved ${rows.length} unique Indian equities (${nseCount} NSE, ${bseOnlyCount} BSE-only) to ${outputPath}`);
