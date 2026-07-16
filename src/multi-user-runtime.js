@@ -48,7 +48,7 @@ export async function syncMultiUserRuntime(scan, options = {}) {
       });
       const state = portfolioState(userScan, journal, user.settings || {}, config);
       let telegram = { sent: false, reason: "not configured" };
-      if (config.telegram.botToken && config.telegram.chatId) {
+      if (options.sendTelegram === true && config.telegram.botToken && config.telegram.chatId) {
         try {
           telegram = await sendTelegramSummary(state, config);
         } catch (error) {

@@ -1,4 +1,11 @@
-import { tradeActionAllocation, tradeActionAllocationText } from "./alert-allocation.js";
+import { tradeActionAllocation } from "./alert-allocation.js";
+
+const MORNING_TELEGRAM_TYPES = new Set([
+  "ENTRY_SIGNAL_PENDING",
+  "EXIT_SIGNAL_PENDING",
+  "PORTFOLIO_EXIT_PENDING",
+  "ROTATION_EXIT_PENDING"
+]);
 
 export function isTelegramConfigured(config) {
   return Boolean(config.telegram.botToken && config.telegram.chatId);
@@ -9,16 +16,18 @@ export async function sendTelegramSummary(scan, config) {
     return { sent: false, reason: "telegram not configured" };
   }
 
-  const events = scan.tradeEvents || [];
-
-  if (events.length === 0 && !config.telegram.sendEmpty) {
-    return { sent: false, reason: "no new entry/exit trade events" };
+  const events = (scan.tradeEvents || []).filter((event) =>
+    MORNING_TELEGRAM_TYPES.has(String(event.type || "").toUpperCase())
+  );
+  if (events.length === 0) {
+    return { sent: false, reason: "no new buy entry or full exit alerts" };
   }
 
-  const text = telegramHtml(buildMessage(scan, events));
-  const chunks = splitTelegramMessage(text);
-
-  for (const chunk of chunks) {
+  const totalFund = scan.portfolioSummary?.totalCapital;
+  let sent = 0;
+  for (const event of events) {
+    const text = buildStockActionMessage(event, totalFund);
+    if (!text) continue;
     const response = await fetch(
       `https://api.telegram.org/bot${config.telegram.botToken}/sendMessage`,
       {
@@ -26,209 +35,50 @@ export async function sendTelegramSummary(scan, config) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           chat_id: config.telegram.chatId,
-          text: chunk,
+          text,
           parse_mode: "HTML",
           disable_web_page_preview: true
         })
       }
     );
-
     if (!response.ok) {
       const body = await response.text();
       throw new Error(`Telegram error ${response.status}: ${body}`);
     }
+    sent += 1;
   }
-
-  return { sent: true, chunks: chunks.length };
+  return sent > 0
+    ? { sent: true, messages: sent, chunks: sent }
+    : { sent: false, reason: "no sizeable buy entry or full exit alerts" };
 }
 
-function buildMessage(scan, events) {
-  const lines = [
-    "Techno Funda PMS",
-    `Scan: ${scan.scannedAt}`,
-    `New trade alerts: ${events.length}`,
-    `Market snapshot: Total ${scan.summary.total} | Entry candidates ${scan.summary.entry} | Exit candidates ${scan.summary.exit} | Watch ${scan.summary.watch}`,
-    `Trade sheet: ${scan.tradeSettings?.scopeLabel || "All Indian Market"} | ${scan.tradeSettings?.qualityLabel || "Best only (A+/A)"}`,
-    `Positions open ${scan.tradeSummary?.open ?? 0} | Pending buy ${scan.tradeSummary?.pendingEntry ?? 0} | Pending winner add ${scan.portfolioSummary?.pendingAdds ?? 0} | Pending sell ${scan.tradeSummary?.pendingExit ?? 0}`,
-    `P&L realized ${fmt(scan.tradeSummary?.realizedPnl)} (trading ${fmt(scan.tradeSummary?.tradeRealizedPnl)}, dividend ${fmt(scan.tradeSummary?.dividendRealizedPnl)}) | unrealized ${fmt(scan.tradeSummary?.unrealizedPnl)} (${fmt(scan.portfolioSummary?.unrealizedPnlPct)}%)`,
-    `Portfolio capital ${fmt(scan.portfolioSummary?.totalCapital)} | deployed ${fmt(scan.portfolioSummary?.deployedCapital)} | cash ${fmt(scan.portfolioSummary?.availableCash)} | risk ${fmt(scan.portfolioSummary?.portfolioRisk)} (${fmt(scan.portfolioSummary?.portfolioRiskPct)}%)`,
-    `Portfolio slots ${scan.portfolioSummary?.openPositions ?? 0}/${scan.portfolioSummary?.maxOpenPositions ?? 15} | waiting ranked entries ${scan.portfolioSummary?.waitingCandidates ?? 0}`,
-    `Market risk ${scan.portfolioSummary?.marketRiskMode || "NA"} | exposure cap ${fmt(scan.portfolioSummary?.effectiveExposureCapPct)}% | drawdown ${fmt(scan.portfolioSummary?.drawdownPct)}%`,
-    ""
-  ];
-
-  addListSummary(lines, scan);
-  if (events.length === 0) lines.push("", "No new entry/exit trade events after go-live baseline.");
-  else addTradeEvents(
-    lines,
-    events,
-    scan.portfolioSummary?.totalEquity || scan.portfolioSummary?.totalCapital
-  );
-
-  return lines.join("\n");
+function buildStockActionMessage(event, totalFund) {
+  const type = String(event.type || "").toUpperCase();
+  const trade = event.trade || {};
+  const symbol = escapeTelegramHtml(trade.symbol || event.candidate?.symbol || "NA");
+  const allocation = tradeActionAllocation(event, totalFund);
+  if (!allocation) return "";
+  const isBuy = type === "ENTRY_SIGNAL_PENDING";
+  const action = isBuy ? "BUY ENTRY" : "FULL EXIT";
+  const quantityLabel = isBuy ? "Approx Buy Qty" : "Approx Sell Qty";
+  const percentage = Number.isFinite(allocation.fundPct)
+    ? `${formatNumber(allocation.fundPct)}%`
+    : "NA";
+  return [
+    `<b>${action} | ${symbol}</b>`,
+    `${quantityLabel}: <b>${formatNumber(allocation.quantity)}</b>`,
+    `Fund Allocation: <b>${percentage}</b>`,
+    `<i>Basis: configured total fund</i>`
+  ].join("\n");
 }
 
-function addListSummary(lines, scan) {
-  lines.push("LIST SUMMARY");
-  for (const list of Object.values(scan.lists || {})) {
-    lines.push(
-      `${list.label}: Total ${list.summary.total}, Entry ${list.summary.entry}, Exit ${list.summary.exit}, Watch ${list.summary.watch}, Error ${list.summary.error}`
-    );
-  }
-}
-
-function addTradeEvents(lines, events, currentPortfolioValue) {
-  if (events.length === 0) return;
-  lines.push("", "TRADE SHEET UPDATES");
-  for (const event of events) {
-    const trade = event.trade;
-    if (event.type === "ENTRY_TRADE_OPENED") {
-      const score = trade.entrySnapshot?.score;
-      const setupScore = trade.entrySnapshot?.setupStrengthScore;
-      const coverage = conceptCoverageText(trade);
-      const entryStyle = trade.entrySnapshot?.entryStyle?.label || "Entry style NA";
-      const gtf = trade.entrySnapshot?.gtfContext || {};
-      const buyLabel = trade.rotationSourceSymbol ? "ROTATION BUY FILLED" : "BUY FILLED";
-      lines.push(
-        `${buyLabel} ${trade.symbol} (${trade.listLabel}) signal ${trade.entrySignalDate} | ${trade.entryDate} ${trade.entryTime} @ ${fmt(trade.entryPrice)} | qty ${trade.quantity} | invested ${fmt(trade.investedValue)} | stop ${fmt(trade.initialStopPrice)} | risk ${fmt(trade.initialRiskAmount)} | rank ${fmt(trade.positionRank)} | ${entryStyle} | grade ${trade.entrySnapshot?.setupGrade || "NA"} | score ${fmt(score)} setup ${fmt(setupScore)} | GTF ${gtf.dataAvailable ? `${fmt(gtf.score)}/${fmt(gtf.maxScore)} ${gtf.grade || ""}` : "NA"} | RHTF ${gtf.reactingFromHtf?.active ? gtf.reactingFromHtf.zone?.timeframe || "YES" : "NO"} | concepts ${coverage}`
-      );
-      if (trade.rotationSourceSymbol) {
-        lines.push(`   Atomic rotation: sold ${trade.rotationSourceSymbol} and bought ${trade.symbol} in the same ${trade.entryDate} ${trade.entryTime} execution slot; released cash was reused immediately.`);
-      }
-      lines.push(`   Reason: ${(trade.entryReason || []).join(" ")}`);
-    }
-    if (event.type === "EXIT_TRADE_CLOSED") {
-      const sellLabel = trade.exitType === "QUALITY_ROTATION" ? "ROTATION SELL FILLED" : "SELL FILLED";
-      lines.push(
-        `${sellLabel} ${trade.symbol} (${trade.listLabel}) signal ${trade.exitSignalDate} | ${trade.exitDate} ${trade.exitTime} @ ${fmt(trade.exitPrice)} | P&L ${fmt(trade.pnl)} (${fmt(trade.pnlPct)}%) | replacement ${trade.replacementCandidateSymbol || "NA"}`
-      );
-      lines.push(`   Reason: ${(trade.exitReason || []).join(" ")}`);
-    }
-    if (event.type === "ENTRY_SIGNAL_PENDING") {
-      lines.push(
-        `BUY PENDING ${trade.symbol} | closing signal ${trade.entrySignalDate} | ${trade.entrySnapshot?.entryStyle?.label || "Entry style NA"} | waiting for next actual market session exact 09:17 one-minute candle open (weekends/holidays skipped) | concepts ${conceptCoverageText(trade)}`
-      );
-      const gtf = trade.entrySnapshot?.gtfContext || {};
-      if (gtf.dataAvailable) lines.push(`   GTF: ${fmt(gtf.score)}/${fmt(gtf.maxScore)} ${gtf.grade || ""}. ${(gtf.reasons || []).join(" ")}`);
-      if (trade.rotationSourceSymbol) lines.push(`   Same-slot rotation from ${trade.rotationSourceSymbol}; buy cannot move to a fictional later session.`);
-      lines.push(`   Reason: ${(trade.entryReason || []).join(" ")}`);
-    }
-    if (event.type === "EXIT_SIGNAL_PENDING") {
-      lines.push(
-        `SELL PENDING ${trade.symbol} | closing signal ${trade.exitSignalDate} | waiting for next actual market session exact 09:17 one-minute candle open (weekends/holidays skipped)`
-      );
-      lines.push(`   Reason: ${(trade.exitReason || []).join(" ")}`);
-    }
-    if (["PORTFOLIO_EXIT_PENDING", "ROTATION_EXIT_PENDING"].includes(event.type)) {
-      lines.push(
-        `PORTFOLIO SELL PENDING ${trade.symbol} | type ${trade.exitType || "REBALANCE"} | replacement ${trade.replacementCandidateSymbol || event.candidate?.symbol || "NA"} | next market session 09:17 IST`
-      );
-      lines.push(`   Reason: ${(trade.exitReason || []).join(" ")}`);
-    }
-    if (event.type === "PARTIAL_EXIT_PENDING") {
-      lines.push(
-        `PARTIAL SELL PENDING ${trade.symbol} | ${trade.pendingPartialExitPct || 50}% | next market session 09:17 IST`
-      );
-      lines.push(`   Reason: ${(trade.pendingPartialExitReason || []).join(" ")}`);
-    }
-    if (event.type === "PARTIAL_EXIT_FILLED") {
-      const leg = trade.partialExits?.[trade.partialExits.length - 1];
-      lines.push(
-        `PARTIAL SELL FILLED ${trade.symbol} | ${leg?.date || ""} @ ${fmt(leg?.price)} | qty ${leg?.quantity ?? "NA"} | leg P&L ${fmt(leg?.pnl)} | remaining qty ${trade.quantity}`
-      );
-    }
-    if (event.type === "ENTRY_SKIPPED") {
-      const candidate = event.candidate || {};
-      lines.push(
-        `ENTRY WAITING ${candidate.symbol || trade?.symbol || "NA"} | grade ${candidate.grade || "NA"} | rank ${fmt(candidate.rank)} | no buy executed`
-      );
-      lines.push(`   Reason: ${candidate.skipReason || trade?.skipReason || "Portfolio constraint"}`);
-    }
-    if (event.type === "ROTATION_CANCELLED") {
-      lines.push(
-        `ROTATION CANCELLED ${trade?.symbol || "NA"} remains open | replacement ${event.candidate?.symbol || "NA"} was not entry-ready`
-      );
-      lines.push(`   Reason: ${event.reason || "Replacement failed the latest close/09:17 preflight."}`);
-    }
-    if (event.type === "PYRAMID_ADD_PENDING") {
-      const add = trade.pendingAdd || {};
-      lines.push(
-        `WINNER ADD PENDING ${trade.symbol} | signal ${add.signalDate || "NA"} | post-entry swing high ${add.swingHighDate || "NA"} @ ${fmt(add.breakoutLevel)} closed above after ${fmt(add.pullbackDepthPct)}% pullback to ${fmt(add.pullbackLow)} on ${add.pullbackLowDate || "NA"} | planned qty ${add.plannedQuantity ?? "NA"} allocation ${fmt(add.plannedAllocation)} risk ${fmt(add.plannedRisk)} | next actual session exact 09:17`
-      );
-      lines.push(`   Reason: ${(add.reason || []).join(" ")}`);
-    }
-    if (event.type === "PYRAMID_ADD_FILLED") {
-      const add = trade.addOns?.[trade.addOns.length - 1];
-      lines.push(
-        `WINNER ADD FILLED ${trade.symbol} | add #${add?.number ?? "NA"} | ${add?.date || ""} ${add?.time || ""} @ ${fmt(add?.price)} | qty ${add?.quantity ?? "NA"} | swing high ${add?.swingHighDate || "NA"} @ ${fmt(add?.breakoutLevel)} after ${fmt(add?.pullbackDepthPct)}% pullback | blended average ${fmt(trade.entryPrice)} | total qty ${trade.quantity} | trailing stop ${fmt(trade.trailingStopPrice)}`
-      );
-    }
-    if (event.type === "PYRAMID_ADD_SKIPPED") {
-      lines.push(
-        `WINNER ADD SKIPPED ${trade.symbol} | no buy executed | ${trade.executionError || trade.lastPyramidDecision?.reasons?.join(" ") || "Risk constraint"}`
-      );
-    }
-    if (event.type === "DIVIDEND_CREDIT") {
-      const action = event.corporateAction || {};
-      lines.push(
-        `DIVIDEND ENTITLEMENT ${trade.symbol} | ex-date ${action.exDate || "NA"} | qty ${action.entitledQuantity ?? "NA"} x Rs ${fmt(action.dividendPerShare)} | dividend realized Rs ${fmt(action.amount)}`
-      );
-      lines.push(`   NSE purpose: ${action.purpose || "NA"}`);
-    }
-    if (event.type === "CORPORATE_ACTION_ADJUSTED") {
-      const action = event.corporateAction || {};
-      lines.push(
-        `${action.type || "CORPORATE ACTION"} ADJUSTED ${trade.symbol} | ex-date ${action.exDate || "NA"} | quantity ${action.quantityBefore ?? "NA"} -> ${action.quantityAfter ?? "NA"} | factor ${fmt(action.factor)}x | adjusted average Rs ${fmt(trade.entryPrice)}`
-      );
-      lines.push(`   NSE purpose: ${action.purpose || "NA"}`);
-    }
-    if (event.type === "CORPORATE_ACTION_REVIEW") {
-      const action = event.corporateAction || {};
-      lines.push(
-        `CORPORATE ACTION REVIEW ${trade.symbol} | ex-date ${action.exDate || "NA"} | ${action.purpose || "NA"}`
-      );
-      lines.push(`   No automatic cash/quantity assumption posted: ${action.reviewReason || "Broker entitlement confirmation required."}`);
-    }
-    const allocation = tradeActionAllocation(event, currentPortfolioValue);
-    const allocationText = tradeActionAllocationText(allocation);
-    if (allocationText) lines.push(`   [[B]]${allocationText}[[/B]]`);
-  }
-}
-
-function telegramHtml(text) {
-  return String(text)
+function escapeTelegramHtml(value) {
+  return String(value)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll("[[B]]", "<b>")
-    .replaceAll("[[/B]]", "</b>");
+    .replaceAll(">", "&gt;");
 }
 
-function conceptCoverageText(trade) {
-  const coverage = trade.entrySnapshot?.conceptCoverage;
-  if (!coverage?.applicable) return "NA";
-  return `${coverage.passed}/${coverage.applicable}`;
-}
-
-function splitTelegramMessage(text) {
-  const maxLength = 3900;
-  const lines = text.split("\n");
-  const chunks = [];
-  let current = "";
-
-  for (const line of lines) {
-    if (`${current}\n${line}`.length > maxLength) {
-      chunks.push(current);
-      current = line;
-    } else {
-      current = current ? `${current}\n${line}` : line;
-    }
-  }
-
-  if (current) chunks.push(current);
-  return chunks;
-}
-
-function fmt(value) {
-  return Number.isFinite(value) ? value.toFixed(2) : "NA";
+function formatNumber(value) {
+  return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 2 }).format(Number(value));
 }

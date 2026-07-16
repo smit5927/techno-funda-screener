@@ -32,7 +32,7 @@ export function alertFromTradeEvent(event = {}, occurredAt = new Date().toISOStr
   if (!type || !definition || !symbol) return null;
   const eventDate = relevantDate(type, trade, action, occurredAt);
   const reasons = alertReasons(type, event, trade, candidate, action);
-  const allocation = tradeActionAllocation(event, context.currentPortfolioValue);
+  const allocation = tradeActionAllocation(event, context.totalFund);
   const allocationSummary = tradeActionAllocationText(allocation);
   const details = alertDetails(type, trade, candidate, action, allocation);
   const identity = [
@@ -89,7 +89,15 @@ function alertDefinition(type, trade) {
 
 function alertReasons(type, event, trade, candidate, action) {
   const values = [];
-  if (type.startsWith("CORPORATE_ACTION") || type === "DIVIDEND_CREDIT") {
+  if (type === "DIVIDEND_CREDIT") {
+    values.push(
+      action.exDate
+        ? `Dividend ex-date ${action.exDate}.${action.purpose ? ` ${action.purpose}` : ""}`
+        : action.purpose,
+      action.accountingNote,
+      action.reviewReason
+    );
+  } else if (type.startsWith("CORPORATE_ACTION")) {
     values.push(action.purpose, action.accountingNote, action.reviewReason);
   } else if (type.includes("PARTIAL_EXIT")) {
     values.push(...asArray(trade.pendingPartialExitReason));
@@ -115,7 +123,8 @@ function alertDetails(type, trade, candidate, action, allocation) {
     actionSide: allocation?.side || null,
     actionQuantity: allocation?.quantity ?? null,
     actionValue: allocation?.value ?? null,
-    actionPortfolioPct: allocation?.portfolioPct ?? null,
+    actionFundPct: allocation?.fundPct ?? null,
+    exDate: action.exDate || null,
     status: trade.status || candidate.status || action.status || "",
     price: numeric(
       type === "PARTIAL_EXIT_FILLED" ? partial.price

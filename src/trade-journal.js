@@ -446,7 +446,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
   for (const trade of trades) applyTradeChargeAccounting(trade, config, trade.lastPrice);
   const finalPortfolio = portfolioSummary(trades, candidates, config);
   const alertHistory = updateAlertHistory(journal.alertHistory, events, scan.scannedAt, {
-    currentPortfolioValue: finalPortfolio.totalEquity || finalPortfolio.totalCapital || riskRules.totalCapital
+    totalFund: finalPortfolio.totalCapital || riskRules.totalCapital
   });
 
   const nextJournal = {

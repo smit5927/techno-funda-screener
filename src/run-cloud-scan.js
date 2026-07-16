@@ -1,19 +1,22 @@
 import { pushCloudState } from "./cloud-sync.js";
 import { attemptCloud, hydrateCloudRuntime } from "./cloud-runtime.js";
 import { runScreener } from "./screener.js";
-import { syncMultiUserRuntime } from "./multi-user-runtime.js";
+import { multiUserRuntimeEnabled, syncMultiUserRuntime } from "./multi-user-runtime.js";
 
 try {
   await hydrateCloudRuntime({ includeCustomList: true });
 
-  const result = await runScreener({ sendTelegram: true });
+  const morningTelegram = process.env.TELEGRAM_MORNING_ONLY === "true";
+  const result = await runScreener({
+    sendTelegram: morningTelegram && !multiUserRuntimeEnabled()
+  });
   const pushed = await attemptCloud(
     () => pushCloudState(result),
     { ok: false, reason: "cloud state upload unavailable" }
   );
   console.log(pushed.ok ? "Cloud state updated" : `Cloud state skipped: ${pushed.reason}`);
   const multiUser = await attemptCloud(
-    () => syncMultiUserRuntime(result),
+    () => syncMultiUserRuntime(result, { sendTelegram: morningTelegram }),
     { ok: false, reason: "multi-user app sync unavailable", processed: 0 }
   );
   console.log(

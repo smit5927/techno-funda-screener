@@ -26,7 +26,7 @@ test("trade events become reason-first alerts for every required portfolio actio
   }
 });
 
-test("trade action alerts include quantity, value and current cash-plus-holdings percentage", () => {
+test("trade action alerts include quantity, value and configured total-fund percentage", () => {
   const pendingEntry = alertFromTradeEvent({
     type: "ENTRY_SIGNAL_PENDING",
     trade: {
@@ -36,12 +36,12 @@ test("trade action alerts include quantity, value and current cash-plus-holdings
       plannedAllocation: 99_500,
       entryReason: ["Leadership confirmed."]
     }
-  }, "2026-07-16T03:00:00.000Z", { currentPortfolioValue: 1_100_000 });
+  }, "2026-07-16T03:00:00.000Z", { totalFund: 1_000_000 });
   assert.equal(pendingEntry.details.actionSide, "BUY");
   assert.equal(pendingEntry.details.actionQuantity, 100);
   assert.equal(pendingEntry.details.actionValue, 99_500);
-  assert.equal(pendingEntry.details.actionPortfolioPct, 9.05);
-  assert.match(pendingEntry.allocationSummary, /APPROX BUY: Qty 100.*9\.05% of current portfolio value \(cash \+ holdings\)/);
+  assert.equal(pendingEntry.details.actionFundPct, 9.95);
+  assert.match(pendingEntry.allocationSummary, /APPROX BUY: Qty 100.*Fund Allocation 9\.95% of total fund/);
 
   const partialExit = alertFromTradeEvent({
     type: "PARTIAL_EXIT_PENDING",
@@ -53,11 +53,11 @@ test("trade action alerts include quantity, value and current cash-plus-holdings
       lastPrice: 120,
       pendingPartialExitReason: ["Confirmed deterioration."]
     }
-  }, "2026-07-16T03:00:00.000Z", { currentPortfolioValue: 1_000_000 });
+  }, "2026-07-16T03:00:00.000Z", { totalFund: 1_000_000 });
   assert.equal(partialExit.details.actionSide, "PARTIAL SELL");
   assert.equal(partialExit.details.actionQuantity, 50);
   assert.equal(partialExit.details.actionValue, 6_000);
-  assert.equal(partialExit.details.actionPortfolioPct, 0.6);
+  assert.equal(partialExit.details.actionFundPct, 0.6);
 });
 
 test("dividend alert carries entitlement details while accounting stays in realized P&L", () => {
@@ -75,6 +75,9 @@ test("dividend alert carries entitlement details while accounting stays in reali
     }
   }, "2026-07-16T03:00:00.000Z");
   assert.equal(alert.category, "CORPORATE");
+  assert.equal(alert.actionDate, "2026-07-16");
+  assert.equal(alert.details.exDate, "2026-07-16");
+  assert.match(alert.summary, /Dividend ex-date 2026-07-16/);
   assert.equal(alert.details.dividendAmount, 200);
   assert.equal(alert.details.entitledQuantity, 100);
 });

@@ -5,14 +5,14 @@ import { syncMultiUserRuntime } from "./multi-user-runtime.js";
 
 try {
   await hydrateCloudRuntime({ includeCustomList: false });
-  const result = await runExecutionPass({ sendTelegram: true });
+  const result = await runExecutionPass({ sendTelegram: false });
   const pushed = await attemptCloud(
     () => pushCloudState(result),
     { ok: false, reason: "cloud state upload unavailable" }
   );
   console.log(pushed.ok ? "Cloud state updated" : `Cloud state skipped: ${pushed.reason}`);
   const multiUser = await attemptCloud(
-    () => syncMultiUserRuntime(result, { executionOnly: true }),
+    () => syncMultiUserRuntime(result, { executionOnly: true, sendTelegram: false }),
     { ok: false, reason: "multi-user execution sync unavailable", processed: 0 }
   );
   console.log(

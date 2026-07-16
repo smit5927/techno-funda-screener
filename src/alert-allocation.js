@@ -8,7 +8,7 @@ const PENDING_TYPES = new Set([
   "ENTRY_SKIPPED"
 ]);
 
-export function tradeActionAllocation(event = {}, currentPortfolioValue = null) {
+export function tradeActionAllocation(event = {}, totalFund = null) {
   const type = String(event.type || "").trim().toUpperCase();
   const trade = event.trade || {};
   const candidate = event.candidate || {};
@@ -56,15 +56,15 @@ export function tradeActionAllocation(event = {}, currentPortfolioValue = null) 
 
   if (!side || !Number.isFinite(quantity) || quantity <= 0) return null;
   if (!Number.isFinite(value) || value <= 0) value = multiply(quantity, referencePrice);
-  const portfolioValue = firstPositive(currentPortfolioValue);
-  const portfolioPct = Number.isFinite(value) && portfolioValue
-    ? round(value / portfolioValue * 100, 2)
+  const fund = firstPositive(totalFund);
+  const fundPct = Number.isFinite(value) && fund
+    ? round(value / fund * 100, 2)
     : null;
   return {
     side,
     quantity: Math.floor(quantity),
     value: Number.isFinite(value) ? round(value, 2) : null,
-    portfolioPct,
+    fundPct,
     approximate: PENDING_TYPES.has(type)
   };
 }
@@ -75,10 +75,10 @@ export function tradeActionAllocationText(allocation) {
   const value = Number.isFinite(allocation.value)
     ? `Rs ${formatNumber(allocation.value)}`
     : "Value pending";
-  const portfolio = Number.isFinite(allocation.portfolioPct)
-    ? `${formatNumber(allocation.portfolioPct)}% of current portfolio value (cash + holdings)`
+  const fund = Number.isFinite(allocation.fundPct)
+    ? `${formatNumber(allocation.fundPct)}% of total fund`
     : "% available after portfolio refresh";
-  return `${prefix} ${allocation.side}: Qty ${formatNumber(allocation.quantity)} | ${value} | ${portfolio}`;
+  return `${prefix} ${allocation.side}: Qty ${formatNumber(allocation.quantity)} | ${value} | Fund Allocation ${fund}`;
 }
 
 function partialExitQuantity(quantityValue, percentageValue) {
