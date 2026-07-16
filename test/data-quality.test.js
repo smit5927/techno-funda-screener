@@ -71,6 +71,47 @@ test("an older provider candle cannot overwrite a newer completed close", () => 
   });
 });
 
+test("an older provider row still enriches the preserved close with completed weekly EMA13 evidence", () => {
+  const previous = [{
+    symbol: "INGERRAND",
+    asOf: "2026-07-15",
+    status: "WATCH",
+    dailyShortRs: -0.01,
+    signalReason: ["Daily pullback watch."],
+    setupStrength: { checks: {}, values: { previousLow: 4300 } }
+  }];
+  const current = [{
+    symbol: "INGERRAND",
+    asOf: "2026-07-14",
+    weeklyAsOf: "2026-07-06",
+    status: "EXIT",
+    dailyShortRs: 0.02,
+    weeklyClose: 4100,
+    weeklyEma13: 4200,
+    weeklyPriceAboveEma13: false,
+    weeklyEma13Rising: true,
+    weeklyEma13Reclaim: false,
+    weeklyEma13BelowCloses: 1,
+    exitChecks: { weeklyRs: false, weeklyEma13: true },
+    signalReason: ["Completed weekly candle closed below EMA13; weekly momentum structure is broken."],
+    setupStrength: {
+      checks: { weeklyCloseAboveEma13: false, weeklyEma13Rising: true, weeklyEma13Reclaim: false },
+      values: { weeklyClose: 4100, weeklyEma13: 4200, weeklyEma13Period: 13 }
+    },
+    listId: "custom",
+    listLabel: "My List"
+  }];
+
+  const [row] = reconcileResultFreshness(current, previous);
+  assert.equal(row.asOf, "2026-07-15");
+  assert.equal(row.dailyShortRs, -0.01);
+  assert.equal(row.weeklyEma13, 4200);
+  assert.equal(row.setupStrength.values.previousLow, 4300);
+  assert.equal(row.setupStrength.values.weeklyEma13, 4200);
+  assert.equal(row.status, "EXIT");
+  assert.match(row.signalReason.join(" "), /weekly.*EMA13/i);
+});
+
 test("a same-day or newer provider candle replaces the previous row", () => {
   const previous = [{ symbol: "RAIN", asOf: "2026-07-14", status: "WATCH" }];
   const current = [{ symbol: "RAIN", asOf: "2026-07-15", status: "ENTRY" }];

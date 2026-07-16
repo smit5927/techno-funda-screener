@@ -182,8 +182,36 @@ export function reconcileResultFreshness(currentRows = [], previousRows = []) {
   return currentRows.map((current) => {
     const previous = previousBySymbol.get(current?.symbol);
     if (!previous?.asOf || !current?.asOf || current.asOf >= previous.asOf) return current;
+    const hasWeeklyEmaEvidence = Number.isFinite(Number(current.weeklyEma13));
+    const weeklyFields = hasWeeklyEmaEvidence
+      ? {
+          weeklyAsOf: current.weeklyAsOf || previous.weeklyAsOf,
+          weeklyClose: current.weeklyClose,
+          weeklyEma13: current.weeklyEma13,
+          weeklyPriceAboveEma13: current.weeklyPriceAboveEma13,
+          weeklyEma13Rising: current.weeklyEma13Rising,
+          weeklyEma13Reclaim: current.weeklyEma13Reclaim,
+          weeklyEma13BelowCloses: current.weeklyEma13BelowCloses,
+          setupStrength: mergeWeeklyEmaSetup(previous.setupStrength, current.setupStrength),
+          exitChecks: {
+            ...(previous.exitChecks || {}),
+            weeklyEma13: current.exitChecks?.weeklyEma13 === true
+          }
+        }
+      : {};
+    const weeklyMomentumExit = hasWeeklyEmaEvidence && current.exitChecks?.weeklyEma13 === true;
+    const weeklyExitReasons = weeklyMomentumExit
+      ? (current.signalReason || []).filter((reason) => /weekly.*EMA13|weekly momentum/i.test(reason))
+      : [];
     return {
       ...previous,
+      ...weeklyFields,
+      status: weeklyMomentumExit ? "EXIT" : previous.status,
+      signalReason: weeklyMomentumExit
+        ? [...weeklyExitReasons, ...(previous.signalReason || []).filter((reason) => !/execution plan/i.test(reason))]
+        : previous.signalReason,
+      executionPlan: weeklyMomentumExit ? "SELL_NEXT_SESSION_0915_IF_OPEN" : previous.executionPlan,
+      entryStyle: current.weeklyEma13Reclaim ? current.entryStyle : previous.entryStyle,
       listId: current.listId,
       listLabel: current.listLabel,
       symbol: current.symbol,
@@ -196,6 +224,29 @@ export function reconcileResultFreshness(currentRows = [], previousRows = []) {
       }
     };
   });
+}
+
+function mergeWeeklyEmaSetup(previousSetup = {}, currentSetup = {}) {
+  const currentChecks = currentSetup?.checks || {};
+  const currentValues = currentSetup?.values || {};
+  return {
+    ...previousSetup,
+    checks: {
+      ...(previousSetup?.checks || {}),
+      weeklyCloseAboveEma13: currentChecks.weeklyCloseAboveEma13,
+      weeklyEma13Rising: currentChecks.weeklyEma13Rising,
+      weeklyEma13Reclaim: currentChecks.weeklyEma13Reclaim
+    },
+    values: {
+      ...(previousSetup?.values || {}),
+      weeklyClose: currentValues.weeklyClose,
+      weeklyEma13: currentValues.weeklyEma13,
+      weeklyEma13Previous: currentValues.weeklyEma13Previous,
+      weeklyEma13DistancePct: currentValues.weeklyEma13DistancePct,
+      weeklyEma13BelowCloses: currentValues.weeklyEma13BelowCloses,
+      weeklyEma13Period: currentValues.weeklyEma13Period
+    }
+  };
 }
 
 export async function runExecutionPass(options = {}) {
