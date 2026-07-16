@@ -41,6 +41,7 @@ const elements = {
   pendingTradesCount: document.querySelector("#pendingTradesCount"),
   closedTradesCount: document.querySelector("#closedTradesCount"),
   realizedPnl: document.querySelector("#realizedPnl"),
+  realizedPnlLabel: document.querySelector("#realizedPnlLabel"),
   realizedPnlBreakdown: document.querySelector("#realizedPnlBreakdown"),
   todayUnrealizedPnl: document.querySelector("#todayUnrealizedPnl"),
   unrealizedPnl: document.querySelector("#unrealizedPnl"),
@@ -837,16 +838,20 @@ function renderRealizedBreakdown(payload) {
   const portfolio = payload?.portfolioSummary || {};
   const net = Number(payload?.tradeSummary?.realizedPnl) || 0;
   const dividend = Number(payload?.tradeSummary?.dividendRealizedPnl) || 0;
-  const trading = Number.isFinite(Number(payload?.tradeSummary?.tradeRealizedPnl))
-    ? Number(payload.tradeSummary.tradeRealizedPnl)
-    : net - dividend;
   const realizedCharges = Number(portfolio.realizedCharges) || 0;
-  const gross = Number.isFinite(Number(portfolio.grossRealizedPnl))
+  const grossTotal = Number.isFinite(Number(portfolio.grossRealizedPnl))
     ? Number(portfolio.grossRealizedPnl)
     : net + realizedCharges;
-  elements.realizedPnlBreakdown.textContent = payload?.tradeSettings?.chargesEnabled
-    ? `Trading ${compact(trading)} | dividend ${compact(dividend)} | charges ${compact(realizedCharges)}`
-    : `Trading ${compact(trading)} | dividend ${compact(dividend)} | charges OFF`;
+  const grossTrading = grossTotal - dividend;
+  const chargesEnabled = payload?.tradeSettings?.chargesEnabled === true || portfolio.chargesEnabled === true;
+  if (elements.realizedPnlLabel) {
+    elements.realizedPnlLabel.textContent = chargesEnabled
+      ? "Booked Realized P&L (Net Total)"
+      : "Booked Realized P&L (Total)";
+  }
+  elements.realizedPnlBreakdown.textContent = chargesEnabled
+    ? `Gross Trading P&L ${compact(grossTrading)} | Dividend Income ${compact(dividend)} | Charges ${compact(-Math.abs(realizedCharges))}`
+    : `Gross Trading P&L ${compact(grossTrading)} | Dividend Income ${compact(dividend)}`;
 }
 
 function portfolioReturnPerformance(realizedPnl, unrealizedPnl, totalCapital) {
