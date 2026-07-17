@@ -56,8 +56,8 @@ export function pushPayloadForAlert(alert = {}) {
   return {
     title: `${symbol} | ${action}`,
     body,
-    icon: "./app-icon-192.png",
-    badge: "./app-icon-192.png",
+    icon: "./techno-funda-pms-bull-192-v2.png",
+    badge: "./techno-funda-pms-bull-192-v2.png",
     tag: alertId,
     data: {
       alertId,

@@ -1847,8 +1847,8 @@ async function enableBrowserNotifications() {
       const registration = await navigator.serviceWorker.ready;
       await registration.showNotification("Techno Funda PMS alerts enabled", {
         body: "Background delivery is active even when the app is closed.",
-        icon: "app-icon-192.png",
-        badge: "app-icon-192.png",
+        icon: "techno-funda-pms-bull-192-v2.png",
+        badge: "techno-funda-pms-bull-192-v2.png",
         tag: "tf-alerts-enabled",
         data: { url: "./?view=alerts" }
       });
@@ -1943,8 +1943,8 @@ async function processAlertNotifications(alerts) {
     await registration.showNotification(`${alert.symbol}: ${alert.title}`, {
       body: [alert.allocationSummary, alert.summary || alert.reasons?.[0] || "Portfolio action recorded"]
         .filter(Boolean).join(" | ").slice(0, 180),
-      icon: "app-icon-192.png",
-      badge: "app-icon-192.png",
+      icon: "techno-funda-pms-bull-192-v2.png",
+      badge: "techno-funda-pms-bull-192-v2.png",
       tag: alert.id,
       data: { url: `./?view=alerts&alert=${encodeURIComponent(alert.id)}` }
     });

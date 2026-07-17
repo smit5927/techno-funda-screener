@@ -1,15 +1,16 @@
 {
   "name": "Techno Funda PMS",
   "short_name": "Techno Funda PMS",
+  "id": "./?source=pwa",
   "description": "Private positional market decision, portfolio risk and trade journal system.",
-  "start_url": "./?source=pwa",
+  "start_url": "./?source=pwa&brand=bull-v2",
   "scope": "./",
   "display": "standalone",
   "background_color": "#0b0d10",
   "theme_color": "#100d0b",
   "icons": [
-    { "src": "app-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "app-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "app-icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "techno-funda-pms-bull-192-v2.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "techno-funda-pms-bull-512-v2.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "techno-funda-pms-bull-maskable-512-v2.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }

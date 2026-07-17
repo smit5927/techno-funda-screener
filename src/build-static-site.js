@@ -25,6 +25,9 @@ for (const filename of [
   "app-icon-192.png",
   "app-icon-512.png",
   "app-icon-maskable-512.png",
+  "techno-funda-pms-bull-192-v2.png",
+  "techno-funda-pms-bull-512-v2.png",
+  "techno-funda-pms-bull-maskable-512-v2.png",
   "service-worker.js"
 ]) {
   copyFile(filename);

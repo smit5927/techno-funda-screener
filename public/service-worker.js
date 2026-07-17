@@ -1,4 +1,4 @@
-const CACHE = "techno-funda-shell-v22-background-push-brand";
+const CACHE = "techno-funda-shell-v23-bull-logo-v2";
 const SHELL = [
   "./",
   "./styles.css",
@@ -9,9 +9,9 @@ const SHELL = [
   "./decision-guide.js",
   "./mobile-config.js",
   "./manifest.webmanifest",
-  "./app-icon-192.png",
-  "./app-icon-512.png",
-  "./app-icon-maskable-512.png",
+  "./techno-funda-pms-bull-192-v2.png",
+  "./techno-funda-pms-bull-512-v2.png",
+  "./techno-funda-pms-bull-maskable-512-v2.png",
   "./vendor/supabase.js",
   "./vendor/exceljs.min.js"
 ];
@@ -44,8 +44,8 @@ self.addEventListener("push", (event) => {
   const data = payload.data && typeof payload.data === "object" ? payload.data : {};
   const options = {
     body: payload.body || "New portfolio action is available.",
-    icon: payload.icon || "./app-icon-192.png",
-    badge: payload.badge || "./app-icon-192.png",
+    icon: payload.icon || "./techno-funda-pms-bull-192-v2.png",
+    badge: payload.badge || "./techno-funda-pms-bull-192-v2.png",
     tag: payload.tag || data.alertId || `tf-push-${Date.now()}`,
     data: { ...data, url: data.url || "./?view=alerts" },
     requireInteraction: true,
