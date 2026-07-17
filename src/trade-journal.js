@@ -37,6 +37,15 @@ const TRADE_QUALITY_LABELS = {
 };
 
 const EXECUTION_TIME = "09:17 IST";
+const PUBLISHABLE_ACTION_TYPES = new Set([
+  "ENTRY_SIGNAL_PENDING",
+  "EXIT_SIGNAL_PENDING",
+  "PORTFOLIO_EXIT_PENDING",
+  "ROTATION_EXIT_PENDING",
+  "PARTIAL_EXIT_PENDING",
+  "PYRAMID_ADD_PENDING",
+  "DIVIDEND_CREDIT"
+]);
 const LEGACY_EXECUTION_METHODS = new Set([
   "09:15 five-minute candle open",
   "first_5m_candle_open"
@@ -455,8 +464,12 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
 
   for (const trade of trades) applyTradeChargeAccounting(trade, config, trade.lastPrice);
   const finalPortfolio = portfolioSummary(trades, candidates, config);
-  const alertHistory = updateAlertHistory(journal.alertHistory, events, scan.scannedAt, {
-    totalFund: finalPortfolio.totalCapital || riskRules.totalCapital
+  const publishedEvents = publishPortfolioActionEvents(events, trades, scan.scannedAt, {
+    enabled: options.publishActionAlerts === true
+  });
+  const alertHistory = updateAlertHistory(journal.alertHistory, publishedEvents, scan.scannedAt, {
+    totalFund: finalPortfolio.totalCapital || riskRules.totalCapital,
+    trades
   });
 
   const nextJournal = {
@@ -498,7 +511,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
   return {
     ...nextJournal,
     visibleTrades,
-    events,
+    events: publishedEvents,
     visibleCandidates: nextJournal.candidates,
     visibleCandidateDecisions: nextJournal.candidateDecisionLog.slice(-50).reverse()
   };
@@ -1160,6 +1173,7 @@ async function fillEntry(trade, row, config, trades, candidates) {
     if (!executionDecision.actionable) {
       trade.executionError = `Entry skipped at actual 09:17 recheck: ${executionDecision.reasons.join(" ")}`;
       trade.status = "SKIPPED_ENTRY";
+      trade.orderState = "CANCELLED_AT_EXECUTION";
       trade.skipReason = trade.executionError;
       return "SKIPPED";
     }
@@ -1185,11 +1199,13 @@ async function fillEntry(trade, row, config, trades, candidates) {
     if (!plan.eligible) {
       trade.executionError = `Entry skipped at actual fill: ${plan.reason}`;
       trade.status = "SKIPPED_ENTRY";
+      trade.orderState = "CANCELLED_AT_EXECUTION";
       trade.skipReason = trade.executionError;
       return "SKIPPED";
     }
     const quantity = plan.quantity;
     trade.status = "OPEN";
+    trade.orderState = "EXECUTED";
     trade.entryDate = fill.date;
     trade.entryTime = fill.timeLabel || EXECUTION_TIME;
     trade.entryActualFillTime = fill.actualTimeLabel || trade.entryTime;
@@ -1479,6 +1495,93 @@ function migrateTradeMetadata(trades) {
       trade.initialStopPrice = round(trade.entryPrice * 0.92);
     }
     trade.trailingStopPrice = trade.trailingStopPrice || trade.initialStopPrice || null;
+  }
+}
+
+export function publishPortfolioActionEvents(events = [], trades = [], occurredAt, options = {}) {
+  const operationalEvents = (events || []).filter((event) => !isPublishableAction(event));
+  if (options.enabled !== true) {
+    for (const event of events || []) {
+      if (String(event.type || "").toUpperCase() === "DIVIDEND_CREDIT" && event.corporateAction) {
+        event.corporateAction.notificationPending = true;
+      }
+    }
+    return operationalEvents;
+  }
+
+  const actionEvents = [
+    ...(events || []).filter(isPublishableAction),
+    ...currentPendingActionEvents(trades)
+  ];
+  const published = [];
+  const seen = new Set();
+  for (const event of actionEvents) {
+    const key = actionPublicationKey(event);
+    if (!key || seen.has(key) || actionWasPublished(event, key)) continue;
+    seen.add(key);
+    markActionPublished(event, key, occurredAt);
+    published.push(event);
+  }
+  return [...operationalEvents, ...published];
+}
+
+function currentPendingActionEvents(trades = []) {
+  const output = [];
+  for (const trade of trades || []) {
+    if (trade.status === "PENDING_ENTRY") {
+      output.push({ type: "ENTRY_SIGNAL_PENDING", trade });
+    } else if (trade.status === "PENDING_EXIT") {
+      const type = trade.exitType === "QUALITY_ROTATION"
+        ? "ROTATION_EXIT_PENDING"
+        : ["SCOPE_REBALANCE", "CAPITAL_REBALANCE"].includes(trade.exitType)
+          ? "PORTFOLIO_EXIT_PENDING"
+          : "EXIT_SIGNAL_PENDING";
+      output.push({ type, trade });
+    } else if (trade.status === "PENDING_PARTIAL_EXIT") {
+      output.push({ type: "PARTIAL_EXIT_PENDING", trade });
+    }
+    if (trade.pendingAdd) output.push({ type: "PYRAMID_ADD_PENDING", trade });
+    for (const action of trade.corporateActions || []) {
+      if (String(action.type || "").toUpperCase() === "DIVIDEND" && action.notificationPending === true) {
+        output.push({ type: "DIVIDEND_CREDIT", trade, corporateAction: action });
+      }
+    }
+  }
+  return output;
+}
+
+function isPublishableAction(event = {}) {
+  return PUBLISHABLE_ACTION_TYPES.has(String(event.type || "").toUpperCase());
+}
+
+function actionPublicationKey(event = {}) {
+  const type = String(event.type || "").toUpperCase();
+  const trade = event.trade || {};
+  const action = event.corporateAction || {};
+  const actionDate = type === "ENTRY_SIGNAL_PENDING" ? trade.entrySignalDate
+    : type === "PARTIAL_EXIT_PENDING" ? trade.partialExitSignalDate
+      : type === "PYRAMID_ADD_PENDING" ? trade.pendingAdd?.signalDate
+        : type === "DIVIDEND_CREDIT" ? action.exDate
+          : trade.exitSignalDate;
+  const identity = action.id || trade.id || event.candidate?.id || event.candidate?.symbol;
+  return identity && actionDate ? `${type}:${identity}:${actionDate}` : "";
+}
+
+function actionWasPublished(event, key) {
+  return Boolean(event.trade?.actionAlertPublications?.[key]);
+}
+
+function markActionPublished(event, key, occurredAt) {
+  if (!event.trade) return;
+  event.trade.actionAlertPublications = {
+    ...(event.trade.actionAlertPublications || {}),
+    [key]: occurredAt || new Date().toISOString()
+  };
+  if (event.corporateAction) event.corporateAction.notificationPending = false;
+  if (event.type === "ENTRY_SIGNAL_PENDING") {
+    event.trade.orderState = "CONFIRMED_FOR_0917";
+    event.trade.capitalReservedAt = event.trade.capitalReservedAt || occurredAt;
+    event.trade.riskReservedAt = event.trade.riskReservedAt || occurredAt;
   }
 }
 

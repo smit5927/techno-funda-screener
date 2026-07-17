@@ -44,7 +44,8 @@ export async function syncMultiUserRuntime(scan, options = {}) {
       const journal = await updateTradeJournal(userScan, config, {
         journal: journalForUser(user, legacyOwnerJournal, scan.scannedAt),
         persist: false,
-        writeSheets: false
+        writeSheets: false,
+        publishActionAlerts: options.publishActionAlerts === true
       });
       const state = portfolioState(userScan, journal, user.settings || {}, config);
       let telegram = { sent: false, reason: "not configured" };

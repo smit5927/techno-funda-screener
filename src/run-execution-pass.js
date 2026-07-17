@@ -12,7 +12,11 @@ try {
   );
   console.log(pushed.ok ? "Cloud state updated" : `Cloud state skipped: ${pushed.reason}`);
   const multiUser = await attemptCloud(
-    () => syncMultiUserRuntime(result, { executionOnly: true, sendTelegram: false }),
+    () => syncMultiUserRuntime(result, {
+      executionOnly: true,
+      sendTelegram: false,
+      publishActionAlerts: false
+    }),
     { ok: false, reason: "multi-user execution sync unavailable", processed: 0 }
   );
   console.log(

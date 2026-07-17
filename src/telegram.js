@@ -59,7 +59,7 @@ function buildStockActionMessage(event, totalFund) {
   const allocation = tradeActionAllocation(event, totalFund);
   if (!allocation) return "";
   const isBuy = type === "ENTRY_SIGNAL_PENDING";
-  const action = isBuy ? "BUY ENTRY" : "FULL EXIT";
+  const action = isBuy ? "CONFIRMED BUY ORDER" : "CONFIRMED FULL EXIT";
   const quantityLabel = isBuy ? "Approx Buy Qty" : "Approx Sell Qty";
   const percentage = Number.isFinite(allocation.fundPct)
     ? `${formatNumber(allocation.fundPct)}%`
@@ -67,8 +67,9 @@ function buildStockActionMessage(event, totalFund) {
   return [
     `<b>${action} | ${symbol}</b>`,
     `${quantityLabel}: <b>${formatNumber(allocation.quantity)}</b>`,
+    `Order Value: <b>Rs ${formatNumber(allocation.value)}</b>`,
     `Fund Allocation: <b>${percentage}</b>`,
-    `<i>Basis: configured total fund</i>`
+    `<i>Capital/risk reserved | Execution: next valid session 09:17 IST</i>`
   ].join("\n");
 }
 

@@ -7,8 +7,10 @@ try {
   await hydrateCloudRuntime({ includeCustomList: true });
 
   const morningTelegram = process.env.TELEGRAM_MORNING_ONLY === "true";
+  const publishActionAlerts = process.env.MORNING_ALERTS === "true" || morningTelegram;
   const result = await runScreener({
-    sendTelegram: morningTelegram && !multiUserRuntimeEnabled()
+    sendTelegram: morningTelegram && !multiUserRuntimeEnabled(),
+    publishActionAlerts
   });
   const pushed = await attemptCloud(
     () => pushCloudState(result),
@@ -16,7 +18,7 @@ try {
   );
   console.log(pushed.ok ? "Cloud state updated" : `Cloud state skipped: ${pushed.reason}`);
   const multiUser = await attemptCloud(
-    () => syncMultiUserRuntime(result, { sendTelegram: morningTelegram }),
+    () => syncMultiUserRuntime(result, { sendTelegram: morningTelegram, publishActionAlerts }),
     { ok: false, reason: "multi-user app sync unavailable", processed: 0 }
   );
   console.log(

@@ -514,7 +514,7 @@ function renderSummary(payload) {
   elements.totalCapital.textContent = compact(portfolio.totalCapital || payload.tradeSettings?.totalCapital || 1000000);
   elements.deployedCapital.textContent = compact(portfolio.deployedCapital || 0);
   elements.availableCash.textContent = compact(portfolio.availableCash || 0);
-  elements.availableCash.title = `Deployable cash; actual cash ${compact(portfolio.actualCash || portfolio.availableCash || 0)}. Market ${portfolio.marketRiskMode || "NA"}, exposure cap ${compact(portfolio.effectiveExposureCapPct ?? 100)}%.`;
+  elements.availableCash.title = `Cash remaining after confirmed 09:17 orders reserve Rs ${compact(portfolio.reservedCapital || 0)}. Actual cash before reservations: Rs ${compact(portfolio.actualCash || portfolio.availableCash || 0)}. Market ${portfolio.marketRiskMode || "NA"}, exposure cap ${compact(portfolio.effectiveExposureCapPct ?? 100)}%.`;
   if (elements.removeCapitalInput) {
     const withdrawalLimit = Math.max(0, Math.min(
       Number(portfolio.availableCash) || 0,

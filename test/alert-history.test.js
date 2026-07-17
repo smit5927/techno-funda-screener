@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { alertFromTradeEvent, updateAlertHistory } from "../src/alert-history.js";
+import { alertFromTradeEvent, reconcileAlertLifecycle, updateAlertHistory } from "../src/alert-history.js";
 
 test("trade events become reason-first alerts for every required portfolio action", () => {
   const baseTrade = {
@@ -128,4 +128,78 @@ test("alerts auto-expire permanently when they complete 30 days", () => {
   const history = updateAlertHistory(existing, [], reference);
 
   assert.deepEqual(history.map((alert) => alert.id), ["fresh"]);
+});
+
+test("confirmed buy alert reconciles to the exact 09:17 portfolio fill", () => {
+  const trade = {
+    id: "ABC-2026-07-16",
+    symbol: "ABC",
+    status: "PENDING_ENTRY",
+    entrySignalDate: "2026-07-16",
+    plannedQuantity: 100,
+    plannedAllocation: 99_500,
+    plannedRisk: 5_000,
+    orderState: "CONFIRMED_FOR_0917"
+  };
+  const pending = alertFromTradeEvent(
+    { type: "ENTRY_SIGNAL_PENDING", trade },
+    "2026-07-17T03:00:00.000Z",
+    { totalFund: 1_000_000 }
+  );
+  const [confirmed] = reconcileAlertLifecycle([pending], [trade], 1_000_000);
+  assert.equal(confirmed.lifecycleStatus, "CONFIRMED");
+  assert.equal(confirmed.actionable, true);
+  assert.equal(confirmed.details.reservedCapital, 99_500);
+
+  Object.assign(trade, {
+    status: "OPEN",
+    orderState: "EXECUTED",
+    entryDate: "2026-07-17",
+    entryTime: "09:17 IST",
+    entryPrice: 995,
+    quantity: 100,
+    investedValue: 99_500
+  });
+  const [executed] = reconcileAlertLifecycle([pending], [trade], 1_000_000);
+  assert.equal(executed.lifecycleStatus, "EXECUTED");
+  assert.equal(executed.actionable, false);
+  assert.match(executed.title, /Buy executed/);
+  assert.match(executed.allocationSummary, /99,500|99500/);
+});
+
+test("cancelled 09:17 entry cannot remain as a stale actionable buy alert", () => {
+  const trade = {
+    id: "ABC-cancelled",
+    symbol: "ABC",
+    status: "SKIPPED_ENTRY",
+    orderState: "CANCELLED_AT_EXECUTION",
+    entrySignalDate: "2026-07-16"
+  };
+  const alert = alertFromTradeEvent({ type: "ENTRY_SIGNAL_PENDING", trade });
+  assert.deepEqual(reconcileAlertLifecycle([alert], [trade], 1_000_000), []);
+});
+
+test("post-09:17 same-day buy alert is removed and can be republished next session", () => {
+  const trade = {
+    id: "BHEL-late",
+    symbol: "BHEL",
+    status: "PENDING_ENTRY",
+    entrySignalDate: "2026-07-16",
+    entryExecutionAfterDate: "2026-07-17",
+    plannedQuantity: 229,
+    plannedAllocation: 99_706.6
+  };
+  const late = alertFromTradeEvent(
+    { type: "ENTRY_SIGNAL_PENDING", trade },
+    "2026-07-17T03:54:59.000Z",
+    { totalFund: 1_000_000 }
+  );
+  assert.deepEqual(reconcileAlertLifecycle([late], [trade], 1_000_000), []);
+
+  const morning = alertFromTradeEvent(
+    { type: "ENTRY_SIGNAL_PENDING", trade },
+    "2026-07-20T03:00:00.000Z",
+    { totalFund: 1_000_000 }
+  );
+  assert.equal(reconcileAlertLifecycle([morning], [trade], 1_000_000)[0].lifecycleStatus, "CONFIRMED");
 });

@@ -16,9 +16,10 @@ const ACTIONABLE_ALERT_TYPES = new Set([
 export function updateAlertHistory(existing = [], events = [], occurredAt = new Date().toISOString(), context = {}) {
   const referenceTime = normalizedTime(occurredAt);
   const cutoffTime = referenceTime - ALERT_RETENTION_DAYS * DAY_MS;
-  const output = Array.isArray(existing)
+  let output = Array.isArray(existing)
     ? existing.filter((item) => validAlert(item) && Date.parse(item.occurredAt) > cutoffTime).map((item) => ({ ...item }))
     : [];
+  output = reconcileAlertLifecycle(output, context.trades || [], context.totalFund);
   const seen = new Set(output.map((item) => item.id));
   for (const event of events || []) {
     const alert = alertFromTradeEvent(event, occurredAt, context);
@@ -26,7 +27,7 @@ export function updateAlertHistory(existing = [], events = [], occurredAt = new 
     seen.add(alert.id);
     output.push(alert);
   }
-  return output
+  return reconcileAlertLifecycle(output, context.trades || [], context.totalFund)
     .sort((left, right) => String(right.occurredAt).localeCompare(String(left.occurredAt)))
     .slice(0, MAX_ALERTS);
 }
@@ -76,7 +77,7 @@ export function alertFromTradeEvent(event = {}, occurredAt = new Date().toISOStr
 
 function alertDefinition(type, trade) {
   const definitions = {
-    ENTRY_SIGNAL_PENDING: ["ENTRY", "info", "Entry signal ready", "Waiting for the next valid 09:17 execution."],
+    ENTRY_SIGNAL_PENDING: ["ENTRY", "info", "Confirmed 09:17 buy order", "Capital, risk and portfolio slot are reserved for the next valid 09:17 execution."],
     ENTRY_TRADE_OPENED: ["ENTRY", "success", "Position opened", "Entry filled successfully."],
     ENTRY_SKIPPED: ["ENTRY", "warning", "Entry moved to waiting", "Portfolio or execution constraint prevented the buy."],
     EXIT_SIGNAL_PENDING: ["EXIT", "danger", "Full exit signal", "Exit is waiting for the next valid 09:17 execution."],
@@ -137,6 +138,9 @@ function alertDetails(type, trade, candidate, action, allocation) {
     actionFundPct: allocation?.fundPct ?? null,
     exDate: action.exDate || null,
     status: trade.status || candidate.status || action.status || "",
+    orderState: trade.orderState || null,
+    reservedCapital: numeric(trade.plannedAllocation),
+    reservedRisk: numeric(trade.plannedRisk),
     price: numeric(
       type === "PARTIAL_EXIT_FILLED" ? partial.price
         : type === "PYRAMID_ADD_FILLED" ? add.price
@@ -209,6 +213,133 @@ function validAlert(alert) {
     ACTIONABLE_ALERT_TYPES.has(String(alert.type || "").toUpperCase()) &&
     alert.symbol
   );
+}
+
+export function reconcileAlertLifecycle(alerts = [], trades = [], totalFund) {
+  const tradeById = new Map((trades || []).filter((trade) => trade?.id).map((trade) => [trade.id, trade]));
+  const output = [];
+  for (const alert of alerts || []) {
+    const trade = tradeById.get(alert.tradeId);
+    if (!trade) {
+      output.push(alert);
+      continue;
+    }
+    if (alert.type === "ENTRY_SIGNAL_PENDING") {
+      if (trade.status === "SKIPPED_ENTRY" || trade.orderState === "CANCELLED_AT_EXECUTION") continue;
+      if (trade.entryDate && Number.isFinite(Number(trade.entryPrice))) {
+        const actualValue = numeric(trade.investedValue) ?? roundMoney(Number(trade.entryPrice) * Number(trade.quantity));
+        output.push({
+          ...alert,
+          title: "Buy executed at 09:17",
+          severity: "success",
+          lifecycleStatus: "EXECUTED",
+          actionable: false,
+          summary: `${trade.symbol} bought at Rs ${roundMoney(trade.entryPrice)} on ${trade.entryDate} ${trade.entryTime || "09:17 IST"}.`,
+          allocationSummary: allocationText(trade.quantity, actualValue, totalFund, "BUY"),
+          details: {
+            ...(alert.details || {}),
+            status: trade.status,
+            orderState: trade.orderState || "EXECUTED",
+            price: numeric(trade.entryPrice),
+            quantity: numeric(trade.quantity),
+            actionQuantity: numeric(trade.quantity),
+            actionValue: actualValue,
+            actionFundPct: fundPct(actualValue, totalFund)
+          }
+        });
+        continue;
+      }
+      if (!pendingAlertCanReachNextExecution(alert, trade.entryExecutionAfterDate)) continue;
+      output.push({ ...alert, lifecycleStatus: "CONFIRMED", actionable: true });
+      continue;
+    }
+    if (["EXIT_SIGNAL_PENDING", "PORTFOLIO_EXIT_PENDING", "ROTATION_EXIT_PENDING"].includes(alert.type)) {
+      if (trade.status === "CLOSED" && trade.exitDate) {
+        const value = roundMoney(Number(trade.exitPrice) * Number(trade.exitQuantity || trade.quantity));
+        output.push({
+          ...alert,
+          title: "Sell executed at 09:17",
+          lifecycleStatus: "EXECUTED",
+          actionable: false,
+          summary: `${trade.symbol} sold at Rs ${roundMoney(trade.exitPrice)} on ${trade.exitDate} ${trade.exitTime || "09:17 IST"}.`,
+          details: { ...(alert.details || {}), status: trade.status, price: numeric(trade.exitPrice), pnl: numeric(trade.pnl) }
+        });
+        continue;
+      }
+      if (trade.status !== "PENDING_EXIT") continue;
+      if (!pendingAlertCanReachNextExecution(alert, trade.exitExecutionAfterDate)) continue;
+      output.push({ ...alert, lifecycleStatus: "CONFIRMED", actionable: true });
+      continue;
+    }
+    if (alert.type === "PARTIAL_EXIT_PENDING") {
+      const fill = (trade.partialExits || []).find((item) => item.date >= alert.actionDate);
+      if (fill) {
+        output.push({
+          ...alert,
+          title: "Partial sell executed at 09:17",
+          lifecycleStatus: "EXECUTED",
+          actionable: false,
+          summary: `${trade.symbol} partial sell filled: ${fill.quantity} shares at Rs ${roundMoney(fill.price)} on ${fill.date}.`,
+          details: { ...(alert.details || {}), status: trade.status, price: numeric(fill.price), quantity: numeric(fill.quantity), pnl: numeric(fill.pnl) }
+        });
+      } else if (trade.status === "PENDING_PARTIAL_EXIT") {
+        output.push({ ...alert, lifecycleStatus: "CONFIRMED", actionable: true });
+      }
+      continue;
+    }
+    if (alert.type === "PYRAMID_ADD_PENDING") {
+      const fill = (trade.addOns || []).find((item) => item.date >= alert.actionDate);
+      if (fill) {
+        output.push({
+          ...alert,
+          title: "Pyramid buy executed at 09:17",
+          severity: "success",
+          lifecycleStatus: "EXECUTED",
+          actionable: false,
+          summary: `${trade.symbol} winner add filled: ${fill.quantity} shares at Rs ${roundMoney(fill.price)} on ${fill.date}.`,
+          details: { ...(alert.details || {}), status: trade.status, price: numeric(fill.price), quantity: numeric(fill.quantity) }
+        });
+      } else if (trade.pendingAdd) {
+        output.push({ ...alert, lifecycleStatus: "CONFIRMED", actionable: true });
+      }
+      continue;
+    }
+    output.push({
+      ...alert,
+      lifecycleStatus: alert.lifecycleStatus || (alert.type === "DIVIDEND_CREDIT" ? "POSTED" : "CONFIRMED"),
+      actionable: alert.actionable !== false
+    });
+  }
+  return output;
+}
+
+function pendingAlertCanReachNextExecution(alert, executionAfterDate) {
+  if (!executionAfterDate) return true;
+  return istDate(alert.occurredAt) > String(executionAfterDate).slice(0, 10);
+}
+
+function istDate(value) {
+  const time = Date.parse(String(value || ""));
+  if (!Number.isFinite(time)) return "";
+  return new Date(time + 330 * 60 * 1000).toISOString().slice(0, 10);
+}
+
+function allocationText(quantity, value, totalFund, side) {
+  const percentage = fundPct(value, totalFund);
+  return `${side}: Qty ${quantity ?? "NA"} | Rs ${roundMoney(value)}${percentage == null ? "" : ` | Fund Allocation ${percentage}% of total fund`}`;
+}
+
+function fundPct(value, totalFund) {
+  const amount = Number(value);
+  const fund = Number(totalFund);
+  return Number.isFinite(amount) && Number.isFinite(fund) && fund > 0
+    ? Number((amount / fund * 100).toFixed(2))
+    : null;
+}
+
+function roundMoney(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? Number(number.toFixed(2)) : null;
 }
 
 function normalizeTimestamp(value) {

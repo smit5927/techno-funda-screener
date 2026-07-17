@@ -149,7 +149,9 @@ export async function runScreener(options = {}) {
   };
 
   saveLatestScan(payload);
-  const journal = await updateTradeJournal(payload, { ...config, marketContext });
+  const journal = await updateTradeJournal(payload, { ...config, marketContext }, {
+    publishActionAlerts: options.publishActionAlerts === true
+  });
   const visibleTrades = journal.visibleTrades || journal.trades;
   payload.tradeSummary = summarizeTrades(visibleTrades);
   payload.portfolioSummary = visiblePortfolioSummary(journal, config);
@@ -298,6 +300,8 @@ export async function runExecutionPass(options = {}) {
   const journal = await updateTradeJournal(payload, {
     ...config,
     marketContext: payload.marketContext
+  }, {
+    publishActionAlerts: false
   });
   const visibleTrades = journal.visibleTrades || journal.trades;
   payload.tradeSummary = summarizeTrades(visibleTrades);

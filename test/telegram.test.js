@@ -38,10 +38,11 @@ test("Telegram sends one minimal stock-wise message for each buy entry and full 
     assert.equal(result.sent, true);
     assert.equal(result.messages, 2);
     assert.equal(requests.length, 2);
-    assert.match(requests[0].text, /<b>BUY ENTRY \| ABC<\/b>/);
+    assert.match(requests[0].text, /<b>CONFIRMED BUY ORDER \| ABC<\/b>/);
     assert.match(requests[0].text, /Approx Buy Qty: <b>100<\/b>/);
+    assert.match(requests[0].text, /Order Value: <b>Rs 99,500<\/b>/);
     assert.match(requests[0].text, /Fund Allocation: <b>9\.95%<\/b>/);
-    assert.match(requests[1].text, /<b>FULL EXIT \| XYZ<\/b>/);
+    assert.match(requests[1].text, /<b>CONFIRMED FULL EXIT \| XYZ<\/b>/);
     assert.match(requests[1].text, /Approx Sell Qty: <b>50<\/b>/);
     assert.match(requests[1].text, /Fund Allocation: <b>11%<\/b>/);
     assert.ok(requests.every((request) => request.parse_mode === "HTML"));
@@ -73,6 +74,7 @@ test("workflow authorizes Telegram only for the scheduled 08:30 IST scan", () =>
   assert.match(workflow, /MORNING_ALERTS:.*event_name == 'schedule'.*event\.schedule == '0 3 \* \* 1-5'/);
   assert.match(workflow, /TELEGRAM_MORNING_ONLY:.*MORNING_ALERTS/);
   assert.match(executionRunner, /runExecutionPass\(\{ sendTelegram: false \}\)/);
-  assert.match(executionRunner, /executionOnly: true, sendTelegram: false/);
+  assert.match(executionRunner, /executionOnly: true,[\s\S]*sendTelegram: false,[\s\S]*publishActionAlerts: false/);
   assert.match(cloudRunner, /TELEGRAM_MORNING_ONLY === "true"/);
+  assert.match(cloudRunner, /publishActionAlerts/);
 });

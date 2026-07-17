@@ -39,6 +39,7 @@ export function recentPushAlerts(alerts = [], now = Date.now()) {
       const occurred = Date.parse(String(alert?.occurredAt || ""));
       return Boolean(alert?.id) &&
         ACTIONABLE_PUSH_TYPES.has(String(alert?.type || "").toUpperCase()) &&
+        alert?.actionable !== false &&
         Number.isFinite(occurred) &&
         occurred >= cutoff &&
         occurred <= now + 60_000;
