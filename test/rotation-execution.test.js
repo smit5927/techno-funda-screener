@@ -25,6 +25,13 @@ test("full-capital quality rotation reuses sell cash in the same exact 09:17 slo
   try {
     fs.writeFileSync(appConfig.tradesPath, `${JSON.stringify(seedJournal(), null, 2)}\n`);
     const config = testConfig();
+    const morningScan = { ...scanFixture(), scannedAt: "2026-07-13T03:00:00.000Z" };
+    const approved = await updateTradeJournal(morningScan, config, { publishActionAlerts: true });
+    assert.equal(approved.trades.find((trade) => trade.symbol === "WEAK").status, "PENDING_EXIT");
+    assert.equal(approved.trades.find((trade) => trade.symbol === "STRONG").status, "PENDING_ENTRY");
+    assert.ok(approved.events.some((event) => event.type === "ROTATION_EXIT_PENDING"));
+    assert.ok(approved.events.some((event) => event.type === "ENTRY_SIGNAL_PENDING"));
+
     const journal = await updateTradeJournal(scanFixture(), config);
     const sold = journal.trades.find((trade) => trade.symbol === "WEAK");
     const bought = journal.trades.find((trade) => trade.symbol === "STRONG");
@@ -50,7 +57,7 @@ test("full-capital quality rotation reuses sell cash in the same exact 09:17 slo
   }
 });
 
-test("rotation does not sell the weak holding when replacement fails the 09:17 trend preflight", async () => {
+test("an unannounced rotation cannot sell or buy even when historical 09:17 prices exist", async () => {
   const temp = fs.mkdtempSync(path.join(os.tmpdir(), "techno-funda-rotation-guard-"));
   const original = {
     dataDir: appConfig.dataDir,
@@ -72,12 +79,13 @@ test("rotation does not sell the weak holding when replacement fails the 09:17 t
     const replacement = journal.trades.find((trade) => trade.symbol === "STRONG");
     const candidate = journal.candidates.find((item) => item.symbol === "STRONG");
 
-    assert.equal(weak.status, "OPEN");
-    assert.equal(replacement, undefined);
-    assert.ok(weak.rotationCancellations?.length > 0);
-    assert.match(weak.rotationCancellations.at(-1).reason, /below daily Supertrend/i);
-    assert.equal(candidate.status, "WAITING_RECONFIRMATION");
-    assert.ok(journal.events.some((event) => event.type === "ROTATION_CANCELLED"));
+    assert.equal(weak.status, "PENDING_EXIT");
+    assert.equal(weak.exitOrderState, undefined);
+    assert.equal(replacement?.status, "PENDING_ENTRY");
+    assert.equal(replacement?.orderState, undefined);
+    assert.ok(candidate == null || /WAITING|ROTATION/.test(candidate.status));
+    assert.equal(journal.events.some((event) => event.type === "EXIT_TRADE_CLOSED"), false);
+    assert.equal(journal.events.some((event) => event.type === "ENTRY_TRADE_OPENED"), false);
   } finally {
     Object.assign(appConfig, original);
     fs.rmSync(temp, { recursive: true, force: true });

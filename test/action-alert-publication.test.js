@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { publishPortfolioActionEvents } from "../src/trade-journal.js";
+import { projectedSellFunding, publishPortfolioActionEvents } from "../src/trade-journal.js";
 
 function pendingTrade() {
   return {
@@ -61,4 +61,34 @@ test("a dividend discovered outside 08:30 is deferred without replaying old corp
   const morning = publishPortfolioActionEvents([], [trade], "2026-07-20T03:00:00.000Z", { enabled: true });
   assert.deepEqual(morning.map((event) => event.corporateAction.id), ["DIV-2026"]);
   assert.equal(currentDividend.notificationPending, false);
+});
+
+test("same-batch funding counts confirmed full and partial sell proceeds before approving buys", () => {
+  const funding = projectedSellFunding([
+    {
+      id: "FULL",
+      symbol: "WEAK",
+      status: "PENDING_EXIT",
+      quantity: 100,
+      lastPrice: 200,
+      investedValue: 18_000,
+      industry: "Industrials"
+    },
+    {
+      id: "PARTIAL",
+      symbol: "TRIM",
+      status: "PENDING_PARTIAL_EXIT",
+      quantity: 80,
+      pendingPartialExitPct: 25,
+      lastPrice: 500,
+      investedValue: 32_000,
+      industry: "Finance"
+    }
+  ]);
+  assert.equal(funding.expectedProceeds, 30_000);
+  assert.equal(funding.fullExitCount, 1);
+  assert.deepEqual(funding.sources.map((source) => [source.kind, source.expectedQuantity]), [
+    ["FULL_EXIT", 100],
+    ["PARTIAL_EXIT", 20]
+  ]);
 });

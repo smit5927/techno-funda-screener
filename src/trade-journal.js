@@ -441,6 +441,26 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
     }
   }
 
+  candidates = releaseUnfundedCommittedEntries({
+    candidates,
+    trades,
+    scopeRowBySymbol,
+    scan,
+    settings,
+    events
+  });
+
+  ({ candidates, candidateDecisionLog } = commitSellFundedEntries({
+    candidates,
+    candidateDecisionLog,
+    events,
+    trades,
+    scopeRowBySymbol,
+    scan,
+    settings,
+    config
+  }));
+
   for (const trade of trades.filter((item) => item.status === "PENDING_ENTRY")) {
     const row = rowBySymbol.get(trade.yahooSymbol || trade.symbol);
     if (!row) continue;
@@ -519,6 +539,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
 
 function cancelInvalidPendingPartialExit(trade, row, config) {
   if (trade.status !== "PENDING_PARTIAL_EXIT" || !row) return;
+  if (trade.partialExitOrderState === "CONFIRMED_FOR_0917") return;
   const decision = positionExitDecision({ ...trade, status: "OPEN" }, row, config);
   const stillValid = decision.action === "PARTIAL_EXIT" && decision.tag === trade.pendingPartialExitTag;
   if (stillValid) return;
@@ -537,6 +558,7 @@ export function cancelInvalidPendingModelExit(trade, row, config) {
   if (trade.status !== "PENDING_EXIT" || trade.exitType !== "MODEL_EXIT" || !row) {
     return { cancelled: false };
   }
+  if (trade.exitOrderState === "CONFIRMED_FOR_0917") return { cancelled: false };
   const decision = positionExitDecision({ ...trade, status: "OPEN" }, row, config);
   if (decision.action === "FULL_EXIT") return { cancelled: false };
   const reason = [
@@ -567,6 +589,7 @@ export function cancelInvalidPendingModelExit(trade, row, config) {
 
 function cancelInvalidPendingQualityRotation(trade, row, candidates, config) {
   if (trade.status !== "PENDING_EXIT" || trade.exitType !== "QUALITY_ROTATION" || !row) return;
+  if (trade.exitOrderState === "CONFIRMED_FOR_0917") return;
   const decision = rotationSourceDecision(trade, row, config);
   if (decision.eligible) return;
   trade.cancelledExitSignals = Array.isArray(trade.cancelledExitSignals)
@@ -820,26 +843,9 @@ async function attemptPendingExit(
   config,
   events
 ) {
-  if (trade.exitType === "QUALITY_ROTATION") {
-    const preflight = await preflightRotationReplacement(
-      trade,
-      candidates,
-      rowBySymbol,
-      scan,
-      settings,
-      config
-    );
-    if (!preflight.ready) {
-      if (preflight.cancelled) {
-        events.push({
-          type: "ROTATION_CANCELLED",
-          trade,
-          candidate: preflight.candidate,
-          reason: preflight.reason
-        });
-      }
-      return false;
-    }
+  if (trade.exitOrderState !== "CONFIRMED_FOR_0917") {
+    trade.executionError = "Waiting for the 08:30 portfolio approval; an unannounced sell cannot execute at 09:17.";
+    return false;
   }
   const filled = await fillExit(trade, row, config);
   if (!filled) return false;
@@ -1003,6 +1009,10 @@ export function sameExecutionSlot(rotationExecution, fill) {
 async function fillPyramidAdd(trade, row, config, trades, candidates) {
   const pending = trade.pendingAdd;
   if (!pending) return "WAITING";
+  if (pending.orderState !== "CONFIRMED_FOR_0917") {
+    trade.executionError = "Winner add is waiting for the 08:30 portfolio approval; an unannounced add cannot execute.";
+    return "WAITING";
+  }
   try {
     const fill = await fetchExecutionPrice(
       trade.yahooSymbol || row.yahooSymbol,
@@ -1020,7 +1030,7 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
       0,
       (adjustedSectorExposure[sector] || 0) - (Number(pending.plannedAllocation) || 0)
     );
-    const plan = buildPyramidAddPlan(
+    let plan = buildPyramidAddPlan(
       trade,
       row,
       fill.price,
@@ -1032,6 +1042,30 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
       },
       config
     );
+    if (!plan.eligible && pending.orderState === "CONFIRMED_FOR_0917") {
+      const reservedQuantity = Number(pending.plannedQuantity) || 0;
+      const reservedAllocation = Number(pending.plannedAllocation) || 0;
+      const reservedRisk = Number(pending.plannedRisk) || 0;
+      const riskPerShare = reservedQuantity > 0 ? Math.max(0.01, reservedRisk / reservedQuantity) : 0.01;
+      const quantity = Math.min(
+        reservedQuantity,
+        Math.floor(Math.min(reservedAllocation, summary.availableCash + reservedAllocation) / fill.price),
+        Math.floor((summary.availableRisk + reservedRisk) / riskPerShare)
+      );
+      if (quantity > 0) {
+        plan = {
+          ...plan,
+          eligible: true,
+          quantity,
+          allocation: round(quantity * fill.price),
+          plannedRisk: round(quantity * riskPerShare),
+          trailingStop: Number(plan.trailingStop) || Number(pending.plannedStop) || Number(trade.trailingStopPrice)
+        };
+      } else {
+        trade.executionError = "Confirmed pyramid order is still waiting because its reserved cash/risk cannot fit one share at the exact 09:17 price.";
+        return "WAITING";
+      }
+    }
     if (!plan.eligible) {
       const reason = `Winner add-on skipped at actual 09:17 fill: ${plan.reason}`;
       trade.addOnSkips = Array.isArray(trade.addOnSkips) ? trade.addOnSkips : [];
@@ -1130,6 +1164,26 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
 
 async function fillEntry(trade, row, config, trades, candidates) {
   try {
+    if (trade.orderState !== "CONFIRMED_FOR_0917") {
+      trade.executionError = "Waiting for the next 08:30 portfolio approval cycle; unannounced candidates cannot execute.";
+      return "WAITING";
+    }
+    if (trade.rotationFundingCommitment && !trade.rotationExecution) {
+      const source = trades.find((item) => item.id === trade.rotationFundingCommitment.sourceTradeId);
+      if (source?.status !== "CLOSED" || !source.exitDate) {
+        trade.executionError = `Confirmed rotation buy is waiting for ${trade.rotationFundingCommitment.sourceSymbol || "source"} to sell in the same 09:17 batch.`;
+        return "WAITING";
+      }
+      trade.rotationExecution = {
+        sourceTradeId: source.id,
+        sourceSymbol: source.symbol,
+        exitDate: source.exitDate,
+        exitTime: source.exitTime || EXECUTION_TIME,
+        exitPrice: source.exitPrice,
+        releasedCash: round(Number(source.exitPrice) * Number(source.quantity)),
+        rule: "SELL_THEN_BUY_SAME_0917_SLOT"
+      };
+    }
     const afterDate = trade.rotationExecution
       ? trade.entrySignalDate
       : trade.entryExecutionAfterDate || executionAfterDate(trade.entrySignalDate, trade.entrySignalScanAt);
@@ -1167,16 +1221,10 @@ async function fillEntry(trade, row, config, trades, candidates) {
     );
     trade.entryExecutionDecision = {
       ...executionDecision,
+      committedOrderOverride: !executionDecision.actionable,
       evaluatedDate: fill.date,
       evaluatedTime: fill.timeLabel || EXECUTION_TIME
     };
-    if (!executionDecision.actionable) {
-      trade.executionError = `Entry skipped at actual 09:17 recheck: ${executionDecision.reasons.join(" ")}`;
-      trade.status = "SKIPPED_ENTRY";
-      trade.orderState = "CANCELLED_AT_EXECUTION";
-      trade.skipReason = trade.executionError;
-      return "SKIPPED";
-    }
     const summary = portfolioSummary(trades, candidates, config);
     const sector = String(trade.industry || row.industry || "Unknown");
     const adjustedSectorExposure = { ...summary.sectorExposure };
@@ -1184,7 +1232,7 @@ async function fillEntry(trade, row, config, trades, candidates) {
       0,
       (adjustedSectorExposure[sector] || 0) - (Number(trade.plannedAllocation) || 0)
     );
-    const plan = buildPositionPlan(
+    const dynamicPlan = buildPositionPlan(
       row,
       fill.price,
       {
@@ -1196,14 +1244,33 @@ async function fillEntry(trade, row, config, trades, candidates) {
       },
       config
     );
-    if (!plan.eligible) {
-      trade.executionError = `Entry skipped at actual fill: ${plan.reason}`;
-      trade.status = "SKIPPED_ENTRY";
-      trade.orderState = "CANCELLED_AT_EXECUTION";
-      trade.skipReason = trade.executionError;
-      return "SKIPPED";
+    const reservedAllocation = Number(trade.plannedAllocation) || 0;
+    const reservedRisk = Number(trade.plannedRisk) || 0;
+    const reservedQuantity = Number(trade.plannedQuantity) || 0;
+    const cashCapacity = Math.max(0, summary.availableCash + reservedAllocation);
+    const riskCapacity = Math.max(0, summary.availableRisk + reservedRisk);
+    const stopPrice = Number.isFinite(dynamicPlan.stopPrice)
+      ? dynamicPlan.stopPrice
+      : Math.min(Number(trade.initialStopPrice) || fill.price * 0.92, fill.price * 0.985);
+    const riskPerShare = Math.max(0.01, fill.price - stopPrice);
+    const committedQuantity = Math.min(
+      reservedQuantity,
+      Math.floor(Math.min(reservedAllocation, cashCapacity) / fill.price),
+      Math.floor(riskCapacity / riskPerShare)
+    );
+    if (committedQuantity < 1) {
+      trade.executionError = "Confirmed order is still waiting: exact 09:17 price cannot fit even one share inside its reserved cash and risk. No different stock will be substituted.";
+      return "WAITING";
     }
-    const quantity = plan.quantity;
+    const plan = {
+      ...dynamicPlan,
+      quantity: committedQuantity,
+      allocation: round(committedQuantity * fill.price),
+      stopPrice,
+      riskPerShare: round(riskPerShare),
+      plannedRisk: round(committedQuantity * riskPerShare)
+    };
+    const quantity = committedQuantity;
     trade.status = "OPEN";
     trade.orderState = "EXECUTED";
     trade.entryDate = fill.date;
@@ -1252,6 +1319,7 @@ async function fillExit(trade, row, config = appConfig) {
       return false;
     }
     trade.status = "CLOSED";
+    trade.exitOrderState = "EXECUTED";
     trade.exitDate = fill.date;
     trade.exitTime = fill.timeLabel || EXECUTION_TIME;
     trade.exitActualFillTime = fill.actualTimeLabel || trade.exitTime;
@@ -1393,6 +1461,10 @@ function rewriteExecutionReasons(reasons) {
 
 async function fillPartialExit(trade, row, config = appConfig) {
   try {
+    if (trade.partialExitOrderState !== "CONFIRMED_FOR_0917") {
+      trade.executionError = "Partial sell is waiting for the 08:30 portfolio approval; an unannounced sell cannot execute.";
+      return false;
+    }
     const afterDate = trade.partialExitExecutionAfterDate || executionAfterDate(
       trade.partialExitSignalDate,
       trade.partialExitSignalScanAt
@@ -1438,6 +1510,7 @@ async function fillPartialExit(trade, row, config = appConfig) {
     trade.quantity -= sellQuantity;
     trade.investedValue = round(trade.quantity * trade.entryPrice);
     trade.status = "OPEN";
+    trade.partialExitOrderState = "EXECUTED";
     trade.lastPartialExitDate = fill.date;
     trade.lastRiskActionSignalDate = row.asOf;
     trade.lastPartialExitPrice = round(fill.price);
@@ -1498,6 +1571,167 @@ function migrateTradeMetadata(trades) {
   }
 }
 
+function releaseUnfundedCommittedEntries({
+  candidates,
+  trades,
+  scopeRowBySymbol,
+  scan,
+  settings,
+  events
+}) {
+  for (const trade of trades.filter((item) =>
+    item.status === "PENDING_ENTRY" && item.fundingMode === "CONFIRMED_SELL_PROCEEDS"
+  )) {
+    const sources = trade.fundingSources || [];
+    const valid = sources.length > 0 && sources.every((source) => {
+      const fundingTrade = trades.find((item) => item.id === source.tradeId);
+      if (!fundingTrade) return false;
+      if (source.kind === "FULL_EXIT") {
+        return fundingTrade.status === "PENDING_EXIT" ||
+          (fundingTrade.status === "CLOSED" && fundingTrade.exitOrderState === "EXECUTED");
+      }
+      return fundingTrade.status === "PENDING_PARTIAL_EXIT" ||
+        fundingTrade.partialExitOrderState === "EXECUTED";
+    });
+    if (valid) continue;
+    trade.status = "SKIPPED_ENTRY";
+    trade.orderState = "CANCELLED_BEFORE_ALERT";
+    trade.skipReason = "Linked full/partial sell was cancelled before 08:30 approval, so its projected cash cannot fund this buy.";
+    trade.executionError = trade.skipReason;
+    const row = scopeRowBySymbol.get(trade.yahooSymbol || trade.symbol);
+    if (row) {
+      const candidate = upsertCandidate(candidates, row, scan, settings, null, trade.candidateContext);
+      candidate.status = "WAITING_CAPITAL";
+      candidate.skipReason = trade.skipReason;
+      events.push({ type: "ENTRY_SKIPPED", trade, candidate });
+    }
+  }
+  return candidates;
+}
+
+function commitSellFundedEntries({
+  candidates,
+  candidateDecisionLog,
+  events,
+  trades,
+  scopeRowBySymbol,
+  scan,
+  settings,
+  config
+}) {
+  const funding = projectedSellFunding(trades);
+  if (funding.expectedProceeds <= 0) return { candidates, candidateDecisionLog };
+
+  const alreadyCommitted = trades
+    .filter((trade) => trade.status === "PENDING_ENTRY" && trade.fundingMode === "CONFIRMED_SELL_PROCEEDS")
+    .reduce((sum, trade) => sum + (Number(trade.plannedAllocation) || 0), 0);
+  const summary = portfolioSummary(trades, candidates, config);
+  let remainingCash = Math.max(0, summary.availableCash + funding.expectedProceeds - alreadyCommitted);
+  const rules = portfolioConfig(config);
+  const projectedActive = Math.max(0, summary.openPositions - funding.fullExitCount);
+  let remainingSlots = Math.max(0, rules.maxOpenPositions - projectedActive - summary.pendingEntries);
+  const projectedSectorExposure = { ...summary.sectorExposure };
+  for (const source of funding.sources) {
+    projectedSectorExposure[source.sector] = Math.max(
+      0,
+      (Number(projectedSectorExposure[source.sector]) || 0) - source.exposureRelease
+    );
+  }
+
+  for (const candidate of [...candidates].sort((left, right) => right.rank - left.rank)) {
+    if (remainingCash <= 0 || remainingSlots <= 0) break;
+    const row = scopeRowBySymbol.get(candidate.yahooSymbol || candidate.symbol);
+    if (!row || findAnyActiveTrade(trades, row)) continue;
+    const decision = candidateEntryDecision(candidate, row, config, {
+      qualityPass: rowPassesTradeQuality(row, settings),
+      forRotation: Boolean(candidate.rotation?.sourceTradeId)
+    });
+    applyCandidateDecision(candidate, decision, scan);
+    if (!decision.actionable) continue;
+    const current = portfolioSummary(trades, candidates, config);
+    const plan = buildPositionPlan(row, row.close, {
+      ...current,
+      availableCash: remainingCash,
+      openSlots: remainingSlots,
+      sectorExposure: projectedSectorExposure
+    }, config);
+    if (!plan.eligible) continue;
+
+    const trade = createPendingEntry(row, scan, config, settings, plan, null, candidate);
+    trade.fundingMode = "CONFIRMED_SELL_PROCEEDS";
+    trade.fundingSources = funding.sources.map((source) => ({ ...source }));
+    trade.expectedSellProceeds = round(funding.expectedProceeds);
+    if (candidate.rotation?.sourceTradeId) {
+      trade.rotationSourceTradeId = candidate.rotation.sourceTradeId;
+      trade.rotationSourceSymbol = candidate.rotation.sourceSymbol ||
+        funding.sources.find((source) => source.tradeId === candidate.rotation.sourceTradeId)?.symbol || null;
+      trade.rotationFundingCommitment = {
+        sourceTradeId: candidate.rotation.sourceTradeId,
+        sourceSymbol: trade.rotationSourceSymbol,
+        rule: "CONFIRMED_SELL_THEN_BUY_SAME_0917_SLOT"
+      };
+    }
+    trade.entryReason.push(
+      `Order funding is locked to the same 09:17 batch: confirmed sells are expected to release Rs ${round(funding.expectedProceeds)} before this buy is filled.`
+    );
+    trades.push(trade);
+    candidates = candidates.filter((item) => item !== candidate);
+    remainingCash = Math.max(0, remainingCash - plan.allocation);
+    remainingSlots -= 1;
+    projectedSectorExposure[plan.sector] =
+      (Number(projectedSectorExposure[plan.sector]) || 0) + plan.allocation;
+    events.push({ type: "ENTRY_SIGNAL_PENDING", trade });
+    candidateDecisionLog = recordCandidateDecision(
+      candidateDecisionLog,
+      candidate,
+      { ...decision, reasons: [...decision.reasons, "Funded by confirmed same-batch sell proceeds."] },
+      scan,
+      "COMMITTED_SELL_FUNDED_ENTRY"
+    );
+  }
+  return { candidates, candidateDecisionLog };
+}
+
+export function projectedSellFunding(trades = []) {
+  const sources = [];
+  for (const trade of trades) {
+    const price = Number(trade.lastPrice) || Number(trade.exitSnapshot?.close) || Number(trade.entryPrice) || 0;
+    const quantity = Number(trade.quantity) || 0;
+    if (!(price > 0 && quantity > 0)) continue;
+    let sellQuantity = 0;
+    let kind = "";
+    if (trade.status === "PENDING_EXIT") {
+      sellQuantity = quantity;
+      kind = "FULL_EXIT";
+    } else if (trade.status === "PENDING_PARTIAL_EXIT" && quantity >= 2) {
+      sellQuantity = Math.max(1, Math.min(
+        quantity - 1,
+        Math.floor(quantity * (Number(trade.pendingPartialExitPct) || 50) / 100)
+      ));
+      kind = "PARTIAL_EXIT";
+    }
+    if (sellQuantity < 1) continue;
+    const expectedProceeds = round(price * sellQuantity);
+    const exposureRelease = kind === "FULL_EXIT"
+      ? Number(trade.investedValue) || expectedProceeds
+      : round((Number(trade.investedValue) || price * quantity) * sellQuantity / quantity);
+    sources.push({
+      tradeId: trade.id,
+      symbol: trade.symbol,
+      kind,
+      expectedQuantity: sellQuantity,
+      expectedProceeds,
+      exposureRelease,
+      sector: String(trade.industry || "Unclassified")
+    });
+  }
+  return {
+    expectedProceeds: round(sources.reduce((sum, source) => sum + source.expectedProceeds, 0)),
+    fullExitCount: sources.filter((source) => source.kind === "FULL_EXIT").length,
+    sources
+  };
+}
+
 export function publishPortfolioActionEvents(events = [], trades = [], occurredAt, options = {}) {
   const operationalEvents = (events || []).filter((event) => !isPublishableAction(event));
   if (options.enabled !== true) {
@@ -1517,7 +1751,7 @@ export function publishPortfolioActionEvents(events = [], trades = [], occurredA
   const seen = new Set();
   for (const event of actionEvents) {
     const key = actionPublicationKey(event);
-    if (!key || seen.has(key) || actionWasPublished(event, key)) continue;
+    if (!key || !actionCanBePublished(event, occurredAt) || seen.has(key) || actionWasPublished(event, key)) continue;
     seen.add(key);
     markActionPublished(event, key, occurredAt);
     published.push(event);
@@ -1578,11 +1812,36 @@ function markActionPublished(event, key, occurredAt) {
     [key]: occurredAt || new Date().toISOString()
   };
   if (event.corporateAction) event.corporateAction.notificationPending = false;
-  if (event.type === "ENTRY_SIGNAL_PENDING") {
+  const type = String(event.type || "").toUpperCase();
+  if (type === "ENTRY_SIGNAL_PENDING") {
     event.trade.orderState = "CONFIRMED_FOR_0917";
     event.trade.capitalReservedAt = event.trade.capitalReservedAt || occurredAt;
     event.trade.riskReservedAt = event.trade.riskReservedAt || occurredAt;
+  } else if (["EXIT_SIGNAL_PENDING", "PORTFOLIO_EXIT_PENDING", "ROTATION_EXIT_PENDING"].includes(type)) {
+    event.trade.exitOrderState = "CONFIRMED_FOR_0917";
+  } else if (type === "PARTIAL_EXIT_PENDING") {
+    event.trade.partialExitOrderState = "CONFIRMED_FOR_0917";
+  } else if (type === "PYRAMID_ADD_PENDING" && event.trade.pendingAdd) {
+    event.trade.pendingAdd.orderState = "CONFIRMED_FOR_0917";
   }
+}
+
+function actionCanBePublished(event, occurredAt) {
+  const type = String(event.type || "").toUpperCase();
+  const trade = event.trade || {};
+  const afterDate = type === "ENTRY_SIGNAL_PENDING" ? trade.entryExecutionAfterDate
+    : type === "PARTIAL_EXIT_PENDING" ? trade.partialExitExecutionAfterDate
+      : type === "PYRAMID_ADD_PENDING" ? trade.pendingAdd?.executionAfterDate
+        : type === "DIVIDEND_CREDIT" ? null
+          : trade.exitExecutionAfterDate;
+  if (!afterDate) return true;
+  return istDate(occurredAt) > String(afterDate).slice(0, 10);
+}
+
+function istDate(value) {
+  const time = Date.parse(String(value || ""));
+  if (!Number.isFinite(time)) return "";
+  return new Date(time + 330 * 60 * 1000).toISOString().slice(0, 10);
 }
 
 function repairRetroactiveEntryFills(trades, repairedAt) {
