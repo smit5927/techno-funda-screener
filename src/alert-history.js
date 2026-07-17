@@ -3,6 +3,15 @@ import { tradeActionAllocation, tradeActionAllocationText } from "./alert-alloca
 const MAX_ALERTS = 500;
 const ALERT_RETENTION_DAYS = 30;
 const DAY_MS = 24 * 60 * 60 * 1000;
+const ACTIONABLE_ALERT_TYPES = new Set([
+  "ENTRY_SIGNAL_PENDING",
+  "EXIT_SIGNAL_PENDING",
+  "PORTFOLIO_EXIT_PENDING",
+  "ROTATION_EXIT_PENDING",
+  "PARTIAL_EXIT_PENDING",
+  "PYRAMID_ADD_PENDING",
+  "DIVIDEND_CREDIT"
+]);
 
 export function updateAlertHistory(existing = [], events = [], occurredAt = new Date().toISOString(), context = {}) {
   const referenceTime = normalizedTime(occurredAt);
@@ -24,6 +33,7 @@ export function updateAlertHistory(existing = [], events = [], occurredAt = new 
 
 export function alertFromTradeEvent(event = {}, occurredAt = new Date().toISOString(), context = {}) {
   const type = String(event.type || "").trim().toUpperCase();
+  if (!ACTIONABLE_ALERT_TYPES.has(type)) return null;
   const trade = event.trade || {};
   const candidate = event.candidate || {};
   const action = event.corporateAction || {};
@@ -192,7 +202,13 @@ function stableHash(value) {
 }
 
 function validAlert(alert) {
-  return Boolean(alert && typeof alert === "object" && alert.id && alert.type && alert.symbol);
+  return Boolean(
+    alert &&
+    typeof alert === "object" &&
+    alert.id &&
+    ACTIONABLE_ALERT_TYPES.has(String(alert.type || "").toUpperCase()) &&
+    alert.symbol
+  );
 }
 
 function normalizeTimestamp(value) {

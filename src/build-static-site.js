@@ -22,7 +22,9 @@ for (const filename of [
   "styles.css",
   "mobile-config.js",
   "manifest.webmanifest",
-  "app-icon.svg",
+  "app-icon-192.png",
+  "app-icon-512.png",
+  "app-icon-maskable-512.png",
   "service-worker.js"
 ]) {
   copyFile(filename);

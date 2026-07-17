@@ -111,7 +111,7 @@ async function login(event) {
   try {
     const payload = await apiPost({
       action: "login",
-      username: document.querySelector("#loginUsername").value,
+      identifier: document.querySelector("#loginUsername").value,
       password: document.querySelector("#loginPassword").value
     }, false);
     await client.auth.setSession({
@@ -252,15 +252,28 @@ async function showApplication(profile) {
   });
   if (!appLoaded) {
     appLoaded = true;
-    await import("./app.js?v=20260716-alert-order-sizing");
+    await import("./app.js?v=20260717-background-push-brand");
   }
 }
 
 async function logout() {
+  await unregisterPushBeforeLogout().catch(() => {});
   await client.auth.signOut({ scope: "local" });
   window.TF_ACCESS_TOKEN = "";
   localStorage.removeItem(PROFILE_STORAGE_KEY);
   window.location.reload();
+}
+
+async function unregisterPushBeforeLogout() {
+  if (!("serviceWorker" in navigator)) return;
+  const registration = await navigator.serviceWorker.ready;
+  const subscription = await registration.pushManager?.getSubscription();
+  if (!subscription) return;
+  await apiPost({
+    action: "unregister-push-subscription",
+    endpoint: subscription.endpoint
+  });
+  await subscription.unsubscribe();
 }
 
 async function createUser(event) {

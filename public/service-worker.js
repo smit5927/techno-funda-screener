@@ -1,4 +1,4 @@
-const CACHE = "techno-funda-shell-v21-alert-order-sizing";
+const CACHE = "techno-funda-shell-v22-background-push-brand";
 const SHELL = [
   "./",
   "./styles.css",
@@ -9,7 +9,9 @@ const SHELL = [
   "./decision-guide.js",
   "./mobile-config.js",
   "./manifest.webmanifest",
-  "./app-icon.svg",
+  "./app-icon-192.png",
+  "./app-icon-512.png",
+  "./app-icon-maskable-512.png",
   "./vendor/supabase.js",
   "./vendor/exceljs.min.js"
 ];
@@ -30,6 +32,31 @@ self.addEventListener("fetch", (event) => {
     caches.open(CACHE).then((cache) => cache.put(event.request, copy));
     return response;
   }).catch(() => caches.match(event.request)));
+});
+
+self.addEventListener("push", (event) => {
+  let payload = {};
+  try {
+    payload = event.data?.json() || {};
+  } catch {
+    payload = { body: event.data?.text() || "New portfolio action is available." };
+  }
+  const data = payload.data && typeof payload.data === "object" ? payload.data : {};
+  const options = {
+    body: payload.body || "New portfolio action is available.",
+    icon: payload.icon || "./app-icon-192.png",
+    badge: payload.badge || "./app-icon-192.png",
+    tag: payload.tag || data.alertId || `tf-push-${Date.now()}`,
+    data: { ...data, url: data.url || "./?view=alerts" },
+    requireInteraction: true,
+    renotify: false
+  };
+  event.waitUntil(Promise.all([
+    self.registration.showNotification(payload.title || "Techno Funda PMS", options),
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => Promise.all(
+      clients.map((client) => client.postMessage({ type: "TF_PUSH_DELIVERED", alertId: data.alertId || "" }))
+    ))
+  ]));
 });
 
 self.addEventListener("notificationclick", (event) => {

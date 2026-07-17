@@ -9,15 +9,16 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>Techno Funda PMS</title>
     <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="icon" href="app-icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css?v=20260716-alert-order-sizing" />
+    <link rel="icon" href="app-icon-192.png" type="image/png" />
+    <link rel="apple-touch-icon" href="app-icon-192.png" />
+    <link rel="stylesheet" href="styles.css?v=20260717-background-push-brand" />
   </head>
   <body>
     <section id="authGate" class="authGate" aria-live="polite">
-      <div class="authBrand"><span>TF</span><strong>Techno Funda</strong><small>Institutional Decision System</small></div>
+      <div class="authBrand"><img src="app-icon-192.png" alt="Techno Funda PMS bull mark" /><strong>Techno Funda PMS</strong><small>Institutional Decision System</small></div>
       <form id="loginForm" class="authPanel">
-        <div class="authPanelHeading"><span>SECURE ACCESS</span><h1>Sign in</h1><p>Use the ID issued by your administrator.</p></div>
-        <label>User ID<input id="loginUsername" name="username" autocomplete="username" required /></label>
+        <div class="authPanelHeading"><span>SECURE ACCESS</span><h1>Sign in</h1><p>Use your User ID, registered email or registered mobile number.</p></div>
+        <label>User ID, email or mobile<input id="loginUsername" name="username" autocomplete="username" inputmode="text" required /></label>
         <label>Password<input id="loginPassword" name="password" type="password" autocomplete="current-password" required /></label>
         <button class="authPrimary" type="submit">Continue</button>
         <button id="showBootstrapButton" class="authTextButton" type="button">First owner setup</button>
@@ -53,7 +54,7 @@
 
     <div id="appRoot" hidden>
     <header class="topbar">
-      <div class="brandMark">TF</div>
+      <div class="brandMark"><img src="app-icon-192.png" alt="" /></div>
       <div class="titleBlock">
         <h1>Techno Funda PMS</h1>
         <p id="scanMeta">Waiting for first scan</p>
@@ -262,10 +263,10 @@
           <div>
             <span>PORTFOLIO EVENT LEDGER</span>
             <h2>Alerts Center</h2>
-            <p>08:30 IST morning scan: entry, exit, risk reduction, winner adds and corporate actions. Alerts auto-clear after 30 days.</p>
+            <p>Actionable buy, sell, risk-reduction, winner-add and dividend decisions only. Alerts auto-clear after 30 days.</p>
           </div>
           <div class="alertsHeaderActions">
-            <button id="enableNotificationsButton" class="primaryAlertAction" type="button">Enable Notifications</button>
+            <button id="enableNotificationsButton" class="primaryAlertAction" type="button">Enable Background Alerts</button>
             <button id="markAlertsReadButton" type="button">Mark All Read</button>
             <button id="clearAlertsButton" class="dangerAction" type="button">Clear History</button>
             <span id="alertsActionStatus" class="alertsActionStatus" aria-live="polite"></span>

@@ -22,7 +22,8 @@ const state = {
   alertFilter: "ALL",
   alertSearch: "",
   selectedAlertId: new URLSearchParams(window.location.search).get("alert") || "",
-  alertPollTimer: null
+  alertPollTimer: null,
+  pushSyncPromise: null
 };
 
 const staticMode = Boolean(window.TF_STATIC_MODE);
@@ -238,6 +239,14 @@ document.querySelectorAll(".alertFilter").forEach((button) => {
   });
 });
 elements.enableNotificationsButton?.addEventListener("click", enableBrowserNotifications);
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.addEventListener("message", (event) => {
+    if (event.data?.type !== "TF_PUSH_DELIVERED" || !event.data.alertId) return;
+    const notified = readAlertIdSet("notified");
+    notified.add(String(event.data.alertId));
+    writeAlertIdSet("notified", notified);
+  });
+}
 elements.markAlertsReadButton?.addEventListener("click", markAllAlertsRead);
 elements.clearAlertsButton?.addEventListener("click", clearAlertHistory);
 
@@ -1808,10 +1817,13 @@ function updateNotificationStatus() {
   const supported = "Notification" in window && "serviceWorker" in navigator;
   const permission = supported ? Notification.permission : "unsupported";
   const enabled = localStorage.getItem(alertStorageKey("enabled")) === "true";
-  elements.notificationPermissionStatus.textContent = permission === "granted" && enabled
-    ? "Enabled"
+  const backgroundActive = localStorage.getItem(alertStorageKey("push-active")) === "true";
+  elements.notificationPermissionStatus.textContent = permission === "granted" && enabled && backgroundActive
+    ? "Background active"
     : permission === "denied" ? "Blocked in browser" : permission === "unsupported" ? "Not supported" : "Not enabled";
-  elements.enableNotificationsButton.textContent = permission === "granted" && enabled ? "Notifications Enabled" : "Enable Notifications";
+  elements.enableNotificationsButton.textContent = permission === "granted" && enabled && backgroundActive
+    ? "Background Alerts Active"
+    : "Enable Background Alerts";
   elements.enableNotificationsButton.disabled = false;
 }
 
@@ -1827,16 +1839,20 @@ async function enableBrowserNotifications() {
   try {
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
+      setAlertActionStatus("Securing this device for background alerts...");
+      await syncBackgroundPushSubscription();
       localStorage.setItem(alertStorageKey("enabled"), "true");
+      localStorage.setItem(alertStorageKey("push-active"), "true");
       writeAlertIdSet("notified", new Set((state.payload?.alertHistory || []).map((alert) => alert.id)));
       const registration = await navigator.serviceWorker.ready;
       await registration.showNotification("Techno Funda PMS alerts enabled", {
-        body: "New portfolio actions will open directly in Alerts Center.",
-        icon: "app-icon.svg",
+        body: "Background delivery is active even when the app is closed.",
+        icon: "app-icon-192.png",
+        badge: "app-icon-192.png",
         tag: "tf-alerts-enabled",
         data: { url: "./?view=alerts" }
       });
-      setAlertActionStatus("Website notifications enabled on this device.", "good");
+      setAlertActionStatus("Background alerts are active on this device.", "good");
     } else {
       setAlertActionStatus("Notification permission was not enabled.", "bad");
     }
@@ -1844,6 +1860,52 @@ async function enableBrowserNotifications() {
     setAlertActionStatus(`Notifications could not be enabled: ${error.message}`, "bad");
   }
   updateNotificationStatus();
+}
+
+async function syncBackgroundPushSubscription() {
+  if (!cloudMode || !window.TF_AUTH_MODE || !cloudApiUrl) {
+    throw new Error("Secure cloud mode is required for background alerts");
+  }
+  if (state.pushSyncPromise) return state.pushSyncPromise;
+  state.pushSyncPromise = (async () => {
+    const configResponse = await fetch(`${cloudApiUrl}?view=push-config`, { cache: "no-store" });
+    const config = await configResponse.json().catch(() => ({}));
+    if (!configResponse.ok || !config.enabled || !config.publicKey) {
+      throw new Error(config.error || "Background notification service is not ready");
+    }
+    const registration = await navigator.serviceWorker.ready;
+    let subscription = await registration.pushManager.getSubscription();
+    if (!subscription) {
+      subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(config.publicKey)
+      });
+    }
+    const response = await fetch(cloudApiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "register-push-subscription",
+        subscription: subscription.toJSON()
+      })
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || !result.ok) throw new Error(result.error || "Push registration failed");
+    localStorage.setItem(alertStorageKey("push-active"), "true");
+    return subscription;
+  })();
+  try {
+    return await state.pushSyncPromise;
+  } finally {
+    state.pushSyncPromise = null;
+  }
+}
+
+function urlBase64ToUint8Array(value) {
+  const padding = "=".repeat((4 - value.length % 4) % 4);
+  const base64 = (value + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const raw = atob(base64);
+  return Uint8Array.from(raw, (character) => character.charCodeAt(0));
 }
 
 function setAlertActionStatus(message, tone = "") {
@@ -1864,17 +1926,25 @@ async function processAlertNotifications(alerts) {
     return;
   }
   const enabled = localStorage.getItem(alertStorageKey("enabled")) === "true";
+  const backgroundActive = localStorage.getItem(alertStorageKey("push-active")) === "true";
+  const wantsBackground = enabled && Notification.permission === "granted";
+  if (wantsBackground && !backgroundActive) {
+    syncBackgroundPushSubscription().then(updateNotificationStatus).catch(() => {
+      localStorage.removeItem(alertStorageKey("push-active"));
+      updateNotificationStatus();
+    });
+  }
   const newAlerts = alerts.filter((alert) => !notified.has(alert.id));
   newAlerts.forEach((alert) => notified.add(alert.id));
   writeAlertIdSet("notified", notified);
-  if (!("Notification" in window) || !enabled || Notification.permission !== "granted" || !newAlerts.length) return;
+  if (!("Notification" in window) || !enabled || Notification.permission !== "granted" || !newAlerts.length || backgroundActive || wantsBackground) return;
   const registration = await navigator.serviceWorker.ready;
   for (const alert of newAlerts.slice(0, 8).reverse()) {
     await registration.showNotification(`${alert.symbol}: ${alert.title}`, {
       body: [alert.allocationSummary, alert.summary || alert.reasons?.[0] || "Portfolio action recorded"]
         .filter(Boolean).join(" | ").slice(0, 180),
-      icon: "app-icon.svg",
-      badge: "app-icon.svg",
+      icon: "app-icon-192.png",
+      badge: "app-icon-192.png",
       tag: alert.id,
       data: { url: `./?view=alerts&alert=${encodeURIComponent(alert.id)}` }
     });

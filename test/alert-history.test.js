@@ -82,10 +82,10 @@ test("dividend alert carries entitlement details while accounting stays in reali
   assert.equal(alert.details.entitledQuantity, 100);
 });
 
-test("alert history is duplicate-proof, newest-first and capped", () => {
+test("alert history is actionable-only, duplicate-proof, newest-first and capped", () => {
   const event = {
-    type: "ENTRY_TRADE_OPENED",
-    trade: { id: "ABC-1", symbol: "ABC", entryDate: "2026-07-16", entryPrice: 100, quantity: 100 }
+    type: "ENTRY_SIGNAL_PENDING",
+    trade: { id: "ABC-1", symbol: "ABC", entrySignalDate: "2026-07-16", plannedEntryPrice: 100, plannedQuantity: 100 }
   };
   const once = updateAlertHistory([], [event], "2026-07-16T03:47:00.000Z");
   const twice = updateAlertHistory(once, [event], "2026-07-16T03:48:00.000Z");
@@ -93,7 +93,7 @@ test("alert history is duplicate-proof, newest-first and capped", () => {
 
   const existing = Array.from({ length: 500 }, (_, index) => ({
     id: `existing-${index}`,
-    type: "ENTRY_TRADE_OPENED",
+    type: "ENTRY_SIGNAL_PENDING",
     symbol: `S${index}`,
     occurredAt: new Date(Date.UTC(2026, 6, 1, 0, index)).toISOString()
   }));
@@ -102,12 +102,27 @@ test("alert history is duplicate-proof, newest-first and capped", () => {
   assert.equal(capped[0].symbol, "ABC");
 });
 
+test("operational noise is not exposed as a user alert", () => {
+  for (const type of [
+    "ENTRY_SKIPPED",
+    "ENTRY_TRADE_OPENED",
+    "EXIT_TRADE_CLOSED",
+    "EXIT_SIGNAL_CANCELLED",
+    "PARTIAL_EXIT_FILLED",
+    "PYRAMID_ADD_FILLED",
+    "ROTATION_CANCELLED",
+    "CORPORATE_ACTION_REVIEW"
+  ]) {
+    assert.equal(alertFromTradeEvent({ type, trade: { id: "ABC-1", symbol: "ABC" } }), null);
+  }
+});
+
 test("alerts auto-expire permanently when they complete 30 days", () => {
   const reference = "2026-07-31T03:00:00.000Z";
   const existing = [
-    { id: "expired", type: "ENTRY_TRADE_OPENED", symbol: "OLD", occurredAt: "2026-07-01T03:00:00.000Z" },
-    { id: "fresh", type: "ENTRY_TRADE_OPENED", symbol: "FRESH", occurredAt: "2026-07-01T03:00:00.001Z" },
-    { id: "invalid-date", type: "ENTRY_TRADE_OPENED", symbol: "BAD", occurredAt: "not-a-date" }
+    { id: "expired", type: "ENTRY_SIGNAL_PENDING", symbol: "OLD", occurredAt: "2026-07-01T03:00:00.000Z" },
+    { id: "fresh", type: "ENTRY_SIGNAL_PENDING", symbol: "FRESH", occurredAt: "2026-07-01T03:00:00.001Z" },
+    { id: "invalid-date", type: "ENTRY_SIGNAL_PENDING", symbol: "BAD", occurredAt: "not-a-date" }
   ];
 
   const history = updateAlertHistory(existing, [], reference);

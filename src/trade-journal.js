@@ -6,6 +6,7 @@ import { fetchExecutionPrice } from "./yahoo.js";
 import { applyTradeChargeAccounting, chargeSettings } from "./charges.js";
 import { updateOpenPositionCorporateActions } from "./corporate-actions.js";
 import { updateAlertHistory } from "./alert-history.js";
+import { executionAfterDate, isRetroactiveExecution } from "./execution-policy.js";
 import {
   buildPositionPlan,
   buildPyramidAddPlan,
@@ -90,6 +91,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
   const rowBySymbol = indexRowsByInstrument(allScannedRows(scan));
 
   migrateTradeMetadata(trades);
+  repairRetroactiveEntryFills(trades, scan.scannedAt);
   if (portfolioUpgrade) {
     for (const trade of trades.filter((item) => item.status === "PENDING_ENTRY")) {
       trade.status = "SKIPPED_ENTRY";
@@ -640,6 +642,9 @@ function createPendingEntry(
   candidate = null
 ) {
   const sourceLists = row.sourceLists || [row.listLabel].filter(Boolean);
+  const entryExecutionAfterDate = rotationExecution
+    ? row.asOf
+    : executionAfterDate(row.asOf, scan.scannedAt);
   return {
     id: `${row.symbol}-${row.asOf}-${Date.now()}`,
     listId: settings.scopeListId,
@@ -656,6 +661,7 @@ function createPendingEntry(
     status: "PENDING_ENTRY",
     entrySignalDate: row.asOf,
     entrySignalScanAt: scan.scannedAt,
+    entryExecutionAfterDate,
     entryDate: null,
     entryTime: null,
     entryPrice: null,
@@ -698,7 +704,7 @@ function createPendingEntry(
       ...(rotationExecution ? [
         `Immediate quality rotation: ${rotationExecution.sourceSymbol} sold ${rotationExecution.exitDate} ${rotationExecution.exitTime}; released cash is reusable immediately and this replacement must fill in the same execution slot.`
       ] : []),
-      `Closing signal dated ${row.asOf}; buy fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays.`
+      `Closing signal dated ${row.asOf}; execution eligibility starts after ${entryExecutionAfterDate}. Buy fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays.`
     ],
     entrySnapshot: snapshot(row),
     exitSignalDate: null,
@@ -726,9 +732,10 @@ function prepareFullExit(trade, row, scan, reasons, exitType = "MODEL_EXIT", con
     ? scan.marketContext?.asOf || row.asOf
     : row.asOf;
   trade.exitSignalScanAt = scan.scannedAt;
+  trade.exitExecutionAfterDate = executionAfterDate(trade.exitSignalDate, scan.scannedAt);
   trade.exitReason = [
     ...(reasons || row.signalReason || row.exitReason || []),
-    `Closing exit signal dated ${trade.exitSignalDate}; sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays.`
+    `Closing exit signal dated ${trade.exitSignalDate}; execution eligibility starts after ${trade.exitExecutionAfterDate}. Sell fill must come from the next actual market session at exactly 09:17 IST, after skipping weekends and exchange holidays.`
   ];
   trade.exitSnapshot = snapshot(row);
   markToMarket(trade, row, config);
@@ -740,6 +747,7 @@ function preparePartialExit(trade, row, scan, decision, config) {
   trade.status = "PENDING_PARTIAL_EXIT";
   trade.partialExitSignalDate = row.asOf;
   trade.partialExitSignalScanAt = scan.scannedAt;
+  trade.partialExitExecutionAfterDate = executionAfterDate(row.asOf, scan.scannedAt);
   trade.pendingPartialExitPct = decision.partialPct || rules.partialExitPct;
   trade.pendingPartialExitTag = decision.tag || "RISK_REDUCTION";
   trade.pendingPartialExitReason = [
@@ -754,6 +762,7 @@ function preparePyramidAdd(trade, row, scan, decision) {
   trade.pendingAdd = {
     signalDate: row.asOf,
     signalScanAt: scan.scannedAt,
+    executionAfterDate: executionAfterDate(row.asOf, scan.scannedAt),
     plannedQuantity: decision.quantity,
     plannedAllocation: decision.allocation,
     plannedRisk: decision.plannedRisk,
@@ -984,7 +993,7 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
   try {
     const fill = await fetchExecutionPrice(
       trade.yahooSymbol || row.yahooSymbol,
-      pending.signalDate
+      pending.executionAfterDate || executionAfterDate(pending.signalDate, pending.signalScanAt)
     );
     if (!fill) {
       trade.executionError =
@@ -1108,9 +1117,12 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
 
 async function fillEntry(trade, row, config, trades, candidates) {
   try {
+    const afterDate = trade.rotationExecution
+      ? trade.entrySignalDate
+      : trade.entryExecutionAfterDate || executionAfterDate(trade.entrySignalDate, trade.entrySignalScanAt);
     const fill = await executionPriceFetcher(config)(
       trade.yahooSymbol || row.yahooSymbol,
-      trade.entrySignalDate
+      afterDate
     );
     if (!fill) {
       trade.executionError =
@@ -1210,9 +1222,13 @@ async function fillEntry(trade, row, config, trades, candidates) {
 
 async function fillExit(trade, row, config = appConfig) {
   try {
+    const afterDate = trade.exitExecutionAfterDate || executionAfterDate(
+      trade.exitSignalDate,
+      trade.exitSignalScanAt
+    );
     const fill = await executionPriceFetcher(config)(
       trade.yahooSymbol || row.yahooSymbol,
-      trade.exitSignalDate
+      afterDate
     );
     if (!fill) {
       trade.executionError =
@@ -1361,9 +1377,13 @@ function rewriteExecutionReasons(reasons) {
 
 async function fillPartialExit(trade, row, config = appConfig) {
   try {
+    const afterDate = trade.partialExitExecutionAfterDate || executionAfterDate(
+      trade.partialExitSignalDate,
+      trade.partialExitSignalScanAt
+    );
     const fill = await fetchExecutionPrice(
       trade.yahooSymbol || row.yahooSymbol,
-      trade.partialExitSignalDate
+      afterDate
     );
     if (!fill) {
       trade.executionError =
@@ -1460,6 +1480,50 @@ function migrateTradeMetadata(trades) {
     }
     trade.trailingStopPrice = trade.trailingStopPrice || trade.initialStopPrice || null;
   }
+}
+
+function repairRetroactiveEntryFills(trades, repairedAt) {
+  for (const trade of trades) {
+    if (!isRepairableRetroactiveEntry(trade)) continue;
+    const invalidFill = {
+      entryDate: trade.entryDate,
+      entryTime: trade.entryTime,
+      entryPrice: trade.entryPrice,
+      quantity: trade.quantity,
+      investedValue: trade.investedValue,
+      entrySignalScanAt: trade.entrySignalScanAt
+    };
+    trade.status = "PENDING_ENTRY";
+    trade.entryExecutionAfterDate = trade.entryDate;
+    trade.plannedQuantity = Number(trade.quantity) || Number(trade.originalQuantity) || null;
+    trade.plannedAllocation = Number(trade.investedValue) || Number(trade.originalInvestedValue) || null;
+    trade.plannedRisk = Number(trade.initialRiskAmount) || Number(trade.plannedRisk) || 0;
+    trade.entryDate = null;
+    trade.entryTime = null;
+    trade.entryActualFillTime = null;
+    trade.entryPrice = null;
+    trade.initialEntryPrice = null;
+    trade.quantity = null;
+    trade.originalQuantity = null;
+    trade.initialQuantity = null;
+    trade.investedValue = null;
+    trade.originalInvestedValue = null;
+    trade.currentValue = null;
+    trade.unrealizedPnl = null;
+    trade.unrealizedPnlPct = null;
+    trade.pnl = null;
+    trade.pnlPct = null;
+    trade.executionError =
+      `Impossible historical 09:17 fill was removed. This order can execute only after ${trade.entryExecutionAfterDate}.`;
+    trade.retroactiveFillRepair = { repairedAt, invalidFill };
+  }
+}
+
+function isRepairableRetroactiveEntry(trade) {
+  if (!["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(String(trade?.status || ""))) return false;
+  if (!isRetroactiveExecution(trade.entrySignalScanAt, trade.entryDate, trade.entryTime)) return false;
+  if ((trade.partialExits || []).length || (trade.addOns || []).length) return false;
+  return Math.abs(Number(trade.realizedPnlToDate) || 0) < 0.005;
 }
 
 function allScannedRows(scan) {

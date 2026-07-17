@@ -1,8 +1,17 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.110.4";
+import webpush from "npm:web-push@3.6.7";
 import { calculatePositionMtm, summarizeLivePositions } from "./live-mtm.js";
 import { sessionActivationUpdates, sessionIsRejected } from "./session-policy.js";
 import { resolveCapitalChange } from "./capital-policy.js";
+import { classifyLoginIdentifier } from "./login-identifier.js";
+import {
+  mayRetryDelivery,
+  normalizePushSubscription,
+  PUSH_TTL_SECONDS,
+  pushPayloadForAlert,
+  recentPushAlerts
+} from "./push-policy.js";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -34,6 +43,7 @@ async function handleGet(request: Request, url: URL) {
 
   if (view === "live-mtm") return json(await liveMtm(context.user.id));
   if (view === "meta") return json(await metadata(context));
+  if (view === "push-config") return json(await publicPushConfig());
   if (view === "admin-users") {
     requireAdmin(context);
     return json({ ok: true, users: await listUsers() });
@@ -59,6 +69,8 @@ async function handlePost(request: Request) {
   if (action === "save-custom-list") return json(await saveCustomList(context, body));
   if (action === "save-trade-settings") return json(await saveTradeSettings(context, body));
   if (action === "save-telegram-config") return json(await saveTelegram(context, body));
+  if (action === "register-push-subscription") return json(await registerPushSubscription(context, body));
+  if (action === "unregister-push-subscription") return json(await unregisterPushSubscription(context, body));
   if (action === "clear-alert-history") return json(await clearAlertHistory(context));
   if (action === "admin-create-user") {
     requireAdmin(context);
@@ -120,15 +132,11 @@ async function bootstrapOwner(body: any) {
 }
 
 async function passwordLogin(body: any) {
-  const username = normalizeUsername(body.username);
+  const identifier = classifyLoginIdentifier(body.identifier ?? body.username);
   const password = String(body.password || "");
-  if (!username || !password) throw httpError("Invalid ID or password", 401);
+  if (identifier.kind === "invalid" || !password) throw httpError("Invalid ID or password", 401);
 
-  const { data: profile } = await admin()
-    .from("app_profiles")
-    .select("user_id, auth_email, status, mfa_required")
-    .eq("username", username)
-    .maybeSingle();
+  const profile = await profileForLogin(identifier);
   if (!profile || profile.status !== "active") throw httpError("Invalid ID or password", 401);
 
   try {
@@ -161,6 +169,9 @@ async function activateSession(context: any, request: Request) {
     .eq("user_id", context.user.id)
     .eq("status", "active");
   if (error) throw error;
+  if (context.profile.role !== "admin") {
+    await disableUserPush(context.user.id, "Member account moved to another device.");
+  }
   await audit(context.user.id, context.user.id, "SESSION_ACTIVATED", {
     sessionId,
     deviceId: context.profile.role === "admin" ? null : deviceId,
@@ -232,6 +243,7 @@ async function updateMember(context: any, body: any) {
     const { error } = await admin().from("app_profiles").update(updates).eq("user_id", userId);
     if (error) throw error;
   }
+  if (updates.status === "suspended") await disableUserPush(userId, "Account suspended by owner.");
 
   if (body.settings && typeof body.settings === "object") {
     const settings = normalizeSettings(body.settings);
@@ -246,6 +258,7 @@ async function resetMemberSession(context: any, body: any) {
   const userId = requireUuid(body.userId);
   const { error } = await admin().from("app_profiles").update({ active_session_id: null, active_device_id: null }).eq("user_id", userId);
   if (error) throw error;
+  await disableUserPush(userId, "Device session reset by owner.");
   await audit(context.user.id, userId, "SESSION_REVOKED", {});
   return { ok: true };
 }
@@ -256,6 +269,7 @@ async function setMemberPassword(context: any, body: any) {
   const { error } = await admin().auth.admin.updateUserById(userId, { password });
   if (error) throw error;
   await admin().from("app_profiles").update({ active_session_id: null, active_device_id: null }).eq("user_id", userId);
+  await disableUserPush(userId, "Password reset by owner.");
   await audit(context.user.id, userId, "PASSWORD_RESET_BY_ADMIN", {});
   return { ok: true };
 }
@@ -322,6 +336,28 @@ async function saveTradeSettings(context: any, body: any) {
   return { ok: true, tradeSettings: publicSettings(data), capitalChange };
 }
 
+async function profileForLogin(identifier: { kind: string; value: string }) {
+  const fields = "user_id, auth_email, status, mfa_required";
+  if (identifier.kind === "username") {
+    const { data, error } = await admin().from("app_profiles").select(fields).eq("username", identifier.value).maybeSingle();
+    if (error) throw error;
+    return data;
+  }
+  if (identifier.kind === "mobile") {
+    const { data, error } = await admin().from("app_profiles").select(fields).eq("login_mobile", identifier.value).maybeSingle();
+    if (error) throw error;
+    return data;
+  }
+  const [authEmail, contactEmail] = await Promise.all([
+    admin().from("app_profiles").select(fields).eq("auth_email", identifier.value).maybeSingle(),
+    admin().from("app_profiles").select(fields).eq("contact_email", identifier.value).maybeSingle()
+  ]);
+  if (authEmail.error) throw authEmail.error;
+  if (contactEmail.error) throw contactEmail.error;
+  if (authEmail.data && contactEmail.data && authEmail.data.user_id !== contactEmail.data.user_id) return null;
+  return authEmail.data || contactEmail.data || null;
+}
+
 async function saveTelegram(context: any, body: any) {
   const existing = await admin().from("app_telegram_configs").select("*").eq("user_id", context.user.id).maybeSingle();
   const row = {
@@ -334,6 +370,67 @@ async function saveTelegram(context: any, body: any) {
   if (error) throw error;
   await audit(context.user.id, context.user.id, "TELEGRAM_SAVED", { configured: Boolean(row.bot_token && row.chat_id) });
   return { ok: true, telegram: publicTelegram(row) };
+}
+
+async function publicPushConfig() {
+  const config = await readPushConfig();
+  return {
+    ok: true,
+    enabled: Boolean(config?.vapid_public_key && config?.vapid_private_key),
+    publicKey: config?.vapid_public_key || null,
+    deliveryTtlSeconds: PUSH_TTL_SECONDS
+  };
+}
+
+async function registerPushSubscription(context: any, body: any) {
+  let subscription;
+  try {
+    subscription = normalizePushSubscription(body?.subscription);
+  } catch (error) {
+    throw httpError(error?.message || "Push subscription is invalid", 400);
+  }
+  const config = await readPushConfig();
+  if (!config?.vapid_public_key || !config?.vapid_private_key) {
+    throw httpError("Background notification service is not configured", 503);
+  }
+  const row = {
+    user_id: context.user.id,
+    device_id: context.deviceId || null,
+    endpoint: subscription.endpoint,
+    p256dh_key: subscription.keys.p256dh,
+    auth_key: subscription.keys.auth,
+    expiration_time: subscription.expirationTime,
+    enabled: true,
+    last_error: null
+  };
+  const { data, error } = await admin()
+    .from("app_push_subscriptions")
+    .upsert(row, { onConflict: "endpoint" })
+    .select("id, created_at")
+    .single();
+  if (error) throw error;
+  await audit(context.user.id, context.user.id, "PUSH_SUBSCRIPTION_ENABLED", {
+    subscriptionId: data.id,
+    deviceId: context.deviceId || null
+  });
+  return { ok: true, enabled: true, registeredAt: data.created_at, deliveryTtlSeconds: PUSH_TTL_SECONDS };
+}
+
+async function unregisterPushSubscription(context: any, body: any) {
+  const endpoint = String(body?.endpoint || "").trim();
+  let query = admin()
+    .from("app_push_subscriptions")
+    .update({ enabled: false, last_error: "Notifications disabled on this device." })
+    .eq("user_id", context.user.id);
+  query = endpoint
+    ? query.eq("endpoint", endpoint)
+    : query.eq("device_id", context.deviceId || "00000000-0000-0000-0000-000000000000");
+  const { error } = await query;
+  if (error) throw error;
+  await audit(context.user.id, context.user.id, "PUSH_SUBSCRIPTION_DISABLED", {
+    deviceId: context.deviceId || null
+  });
+  return { ok: true, enabled: false };
 }
 
 async function metadata(context: any) {
@@ -497,7 +594,125 @@ async function saveRuntimeUserState(body: any) {
   };
   const { error } = await admin().from("app_user_states").upsert(row);
   if (error) throw error;
-  return { ok: true };
+  const alerts = Array.isArray(state.alertHistory)
+    ? state.alertHistory
+    : Array.isArray(state.journal?.alertHistory) ? state.journal.alertHistory : [];
+  const push = await dispatchPushAlerts(userId, alerts).catch((error) => {
+    console.error(`Push dispatch failed for ${userId}:`, error);
+    return { sent: 0, failed: 0, skipped: alerts.length, error: error?.message || String(error) };
+  });
+  return { ok: true, push };
+}
+
+async function dispatchPushAlerts(userId: string, alerts: any[]) {
+  const pendingAlerts = recentPushAlerts(alerts);
+  if (!pendingAlerts.length) return { sent: 0, failed: 0, skipped: 0 };
+  const [config, subscriptionResult] = await Promise.all([
+    readPushConfig(),
+    admin()
+      .from("app_push_subscriptions")
+      .select("id, endpoint, p256dh_key, auth_key, created_at")
+      .eq("user_id", userId)
+      .eq("enabled", true)
+  ]);
+  if (subscriptionResult.error) throw subscriptionResult.error;
+  const subscriptions = subscriptionResult.data || [];
+  if (!config?.vapid_public_key || !config?.vapid_private_key || !subscriptions.length) {
+    return { sent: 0, failed: 0, skipped: pendingAlerts.length };
+  }
+  webpush.setVapidDetails(config.vapid_subject, config.vapid_public_key, config.vapid_private_key);
+
+  const alertIds = pendingAlerts.map((alert: any) => String(alert.id));
+  const { data: previous, error: deliveryError } = await admin()
+    .from("app_push_deliveries")
+    .select("subscription_id, alert_id, status, attempts, updated_at")
+    .eq("user_id", userId)
+    .in("alert_id", alertIds);
+  if (deliveryError) throw deliveryError;
+  const deliveryByKey = new Map((previous || []).map((delivery: any) => [
+    `${delivery.subscription_id}:${delivery.alert_id}`,
+    delivery
+  ]));
+  let sent = 0;
+  let failed = 0;
+  let skipped = 0;
+
+  for (const subscription of subscriptions) {
+    const registeredAt = Date.parse(String(subscription.created_at || ""));
+    for (const alert of pendingAlerts) {
+      const occurredAt = Date.parse(String(alert.occurredAt || ""));
+      if (Number.isFinite(registeredAt) && occurredAt < registeredAt) {
+        skipped += 1;
+        continue;
+      }
+      const key = `${subscription.id}:${alert.id}`;
+      const previousDelivery = deliveryByKey.get(key);
+      if (previousDelivery && !mayRetryDelivery(previousDelivery)) {
+        skipped += 1;
+        continue;
+      }
+      const attempts = (Number(previousDelivery?.attempts) || 0) + 1;
+      try {
+        await webpush.sendNotification(
+          {
+            endpoint: subscription.endpoint,
+            keys: { p256dh: subscription.p256dh_key, auth: subscription.auth_key }
+          },
+          JSON.stringify(pushPayloadForAlert(alert)),
+          { TTL: PUSH_TTL_SECONDS, urgency: "high" }
+        );
+        await savePushDelivery({
+          userId,
+          subscriptionId: subscription.id,
+          alertId: String(alert.id),
+          status: "sent",
+          attempts,
+          lastError: null,
+          sentAt: new Date().toISOString()
+        });
+        await admin()
+          .from("app_push_subscriptions")
+          .update({ last_success_at: new Date().toISOString(), last_error: null })
+          .eq("id", subscription.id);
+        sent += 1;
+      } catch (error) {
+        const statusCode = Number(error?.statusCode || error?.status);
+        const message = String(error?.body || error?.message || error).slice(0, 500);
+        if ([404, 410].includes(statusCode)) {
+          await admin().from("app_push_subscriptions").delete().eq("id", subscription.id);
+        } else {
+          await admin()
+            .from("app_push_subscriptions")
+            .update({ last_error: message })
+            .eq("id", subscription.id);
+          await savePushDelivery({
+            userId,
+            subscriptionId: subscription.id,
+            alertId: String(alert.id),
+            status: "failed",
+            attempts,
+            lastError: message,
+            sentAt: null
+          });
+        }
+        failed += 1;
+      }
+    }
+  }
+  return { sent, failed, skipped };
+}
+
+async function savePushDelivery(input: any) {
+  const { error } = await admin().from("app_push_deliveries").upsert({
+    user_id: input.userId,
+    subscription_id: input.subscriptionId,
+    alert_id: input.alertId,
+    status: input.status,
+    attempts: input.attempts,
+    last_error: input.lastError,
+    sent_at: input.sentAt
+  }, { onConflict: "subscription_id,alert_id" });
+  if (error) throw error;
 }
 
 async function liveMtm(userId: string) {
@@ -611,6 +826,28 @@ async function readTelegram(userId: string) {
   const { data, error } = await admin().from("app_telegram_configs").select("*").eq("user_id", userId).maybeSingle();
   if (error) throw error;
   return data || {};
+}
+
+async function readPushConfig() {
+  const { data, error } = await admin()
+    .from("app_push_config")
+    .select("vapid_subject, vapid_public_key, vapid_private_key")
+    .eq("singleton", true)
+    .maybeSingle();
+  if (error) {
+    if (String(error.code) === "42P01") return null;
+    throw error;
+  }
+  return data || null;
+}
+
+async function disableUserPush(userId: string, reason: string) {
+  const { error } = await admin()
+    .from("app_push_subscriptions")
+    .update({ enabled: false, last_error: String(reason || "Push disabled").slice(0, 500) })
+    .eq("user_id", userId)
+    .eq("enabled", true);
+  if (error && String(error.code) !== "42P01") throw error;
 }
 
 function withCustomList(lists: any, symbols: string[]) {
@@ -863,6 +1100,7 @@ async function clearAlertHistory(context: any) {
       state: nextState
     });
   if (updateError) throw updateError;
+  await admin().from("app_push_deliveries").delete().eq("user_id", context.user.id);
   await audit(context.user.id, context.user.id, "ALERT_HISTORY_CLEARED", { previousCount });
   return { ok: true, cleared: previousCount };
 }
