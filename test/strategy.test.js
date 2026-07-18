@@ -18,6 +18,7 @@ import {
 import {
   aggregateDailyToCompletedWeeks,
   backfillNifty500Benchmark,
+  fetchNifty500ArchiveCandle,
   parseNifty500ArchiveCandle,
   selectNextTradingSessionExecutionCandle
 } from "../src/yahoo.js";
@@ -33,6 +34,42 @@ test("official NSE archive fills a missing NIFTY 500 completed close", async () 
   assert.equal(merged.length, 2);
   assert.equal(merged.at(-1).date, "2026-07-14");
   assert.equal(merged.at(-1).close, 23199.45);
+});
+
+test("temporary NSE archive outage does not stop the screener", async () => {
+  const yahoo = [candle("2026-07-13", 23300, 23400, 23200, 23347.05, 1)];
+  const warnings = [];
+  const merged = await backfillNifty500Benchmark(yahoo, {
+    now: new Date("2026-07-15T03:00:00Z"),
+    archiveLoader: async () => {
+      throw new Error("NSE index archive failed 503 Service Unavailable");
+    },
+    onArchiveError: (warning) => warnings.push(warning)
+  });
+
+  assert.deepEqual(merged, yahoo);
+  assert.equal(warnings.length, 1);
+  assert.match(warnings[0], /503 Service Unavailable/);
+});
+
+test("NSE index archive retries a temporary 503 response", async () => {
+  let calls = 0;
+  const csv = [
+    "Index Name,Index Date,Open Index Value,High Index Value,Low Index Value,Closing Index Value,Volume",
+    "Nifty 500,14-07-2026,23235.25,23287.45,23167.85,23199.45,2142190771"
+  ].join("\n");
+  const candle = await fetchNifty500ArchiveCandle("2026-07-14", {
+    attempts: 2,
+    fetcher: async () => {
+      calls += 1;
+      return calls === 1
+        ? { ok: false, status: 503, statusText: "Service Unavailable" }
+        : { ok: true, status: 200, statusText: "OK", text: async () => csv };
+    }
+  });
+
+  assert.equal(calls, 2);
+  assert.equal(candle.close, 23199.45);
 });
 
 test("NSE index archive parser selects the NIFTY 500 row", () => {

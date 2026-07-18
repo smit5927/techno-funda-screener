@@ -73,8 +73,21 @@ export async function backfillNifty500Benchmark(candles, options = {}) {
 
   const dates = calendarDatesBetween(latestDate, targetDate, 14);
   const loader = options.archiveLoader || fetchNifty500ArchiveCandle;
-  const archiveCandles = (await Promise.all(dates.map((date) => loader(date))))
-    .filter(Boolean);
+  const archiveCandles = [];
+  const failures = [];
+  for (const date of dates) {
+    try {
+      const candle = await loader(date);
+      if (candle) archiveCandles.push(candle);
+    } catch (error) {
+      failures.push(`${date}: ${error?.message || error}`);
+    }
+  }
+  if (failures.length > 0) {
+    const warning = `NIFTY 500 archive backfill skipped ${failures.length} date(s): ${failures.join("; ")}`;
+    if (typeof options.onArchiveError === "function") options.onArchiveError(warning);
+    else console.warn(warning);
+  }
   return mergeCandleDates(candles, archiveCandles);
 }
 
@@ -82,16 +95,29 @@ export async function fetchNifty500ArchiveCandle(date, options = {}) {
   const compactDate = String(date).split("-").reverse().join("");
   const url = `${NSE_INDEX_ARCHIVE_BASE}/ind_close_all_${compactDate}.csv`;
   const fetcher = options.fetcher || fetch;
-  const response = await fetcher(url, {
-    headers: {
-      "User-Agent": "Mozilla/5.0",
-      "Accept-Language": "en-US,en;q=0.9",
-      Referer: "https://www.nseindia.com/all-reports"
+  const attempts = Math.max(1, Number(options.attempts) || 3);
+  let lastError = null;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const response = await fetcher(url, {
+        headers: {
+          "User-Agent": "Mozilla/5.0",
+          "Accept-Language": "en-US,en;q=0.9",
+          Referer: "https://www.nseindia.com/all-reports"
+        }
+      });
+      if (response.status === 404) return null;
+      if (response.ok) return parseNifty500ArchiveCandle(await response.text(), date);
+      const retryable = response.status === 429 || response.status >= 500;
+      lastError = new Error(`NSE index archive failed ${response.status} ${response.statusText}`);
+      if (!retryable || attempt === attempts) throw lastError;
+    } catch (error) {
+      lastError = error;
+      if (attempt === attempts) throw error;
     }
-  });
-  if (response.status === 404) return null;
-  if (!response.ok) throw new Error(`NSE index archive failed ${response.status} ${response.statusText}`);
-  return parseNifty500ArchiveCandle(await response.text(), date);
+    await delay(400 * 2 ** (attempt - 1));
+  }
+  throw lastError || new Error("NSE index archive failed");
 }
 
 export function parseNifty500ArchiveCandle(text, fallbackDate = "") {
