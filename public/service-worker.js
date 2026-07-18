@@ -1,4 +1,4 @@
-const CACHE = "techno-funda-shell-v25-open-lot-owner-control";
+const CACHE = "techno-funda-shell-v26-compact-financials";
 const SHELL = [
   "./",
   "./styles.css",

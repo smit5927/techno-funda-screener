@@ -267,7 +267,7 @@ async function showApplication(profile) {
   });
   if (!appLoaded) {
     appLoaded = true;
-    await import("./app.js?v=20260718-owner-control");
+    await import("./app.js?v=20260718-owner-control-2");
   }
 }
 

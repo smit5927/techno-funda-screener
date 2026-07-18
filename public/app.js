@@ -1184,7 +1184,7 @@ function renderDetail(row, trade = null, candidate = null) {
       ${setupCheckHtml("50/200 DMA", setupChecks.smaFastAboveSlow)}
       ${setupCheckHtml("Risk to ST", setupChecks.favorableRiskToSupertrend, setupValues.riskToSupertrendPct, "%")}
       ${setupCheckHtml("ATR control", setupChecks.controlledVolatility, setupValues.atrPct, "%")}
-      ${setupCheckHtml("Liquidity", setupChecks.liquidEnough, setupValues.averageTurnover)}
+      ${setupCheckHtml("Liquidity", setupChecks.liquidEnough, setupValues.averageTurnover, "", "currency")}
       ${setupCheckHtml("Candle", setupChecks.bullishCandleConfirmation || setupChecks.bullishEngulfing || setupChecks.hammer)}
       ${setupCheckHtml("Market regime", setupChecks.marketRegimeStrong)}
       ${setupCheckHtml("Sector breadth", sector.ok, sector.breadthPct, "%")}
@@ -2117,10 +2117,12 @@ function formatFundamentalValue(value, format = "number") {
   return compact(value);
 }
 
-function setupCheckHtml(label, ok, value, suffix = "") {
+function setupCheckHtml(label, ok, value, suffix = "", valueFormat = "number") {
   const css = ok === true ? "good" : ok === false ? "bad" : "neutral";
   const status = ok === true ? "Good" : ok === false ? "Weak" : "NA";
-  const number = Number.isFinite(value) ? `${compact(value)}${suffix}` : "";
+  const number = Number.isFinite(value)
+    ? `${valueFormat === "currency" ? formatFundamentalValue(value, "currency") : compact(value)}${suffix}`
+    : "";
   return `
     <div class="check">
       <span>${escapeHtml(label)}</span>
