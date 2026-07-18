@@ -5,6 +5,7 @@ import { calculatePositionMtm, summarizeLivePositions } from "./live-mtm.js";
 import { sessionActivationUpdates, sessionIsRejected } from "./session-policy.js";
 import { resolveCapitalChange } from "./capital-policy.js";
 import { classifyLoginIdentifier } from "./login-identifier.js";
+import { requireMasterResetConfirmation } from "./reset-policy.js";
 import {
   mayRetryDelivery,
   normalizePushSubscription,
@@ -93,6 +94,10 @@ async function handlePost(request: Request) {
   if (action === "admin-list-users") {
     requireAdmin(context);
     return json({ ok: true, users: await listUsers() });
+  }
+  if (action === "admin-reset-all-portfolios") {
+    requireAdmin(context);
+    return json(await resetAllPortfolios(context, body));
   }
 
   return json({ error: `Unknown action: ${action}` }, 400);
@@ -274,6 +279,16 @@ async function setMemberPassword(context: any, body: any) {
   await disableUserPush(userId, "Password reset by owner.");
   await audit(context.user.id, userId, "PASSWORD_RESET_BY_ADMIN", {});
   return { ok: true };
+}
+
+async function resetAllPortfolios(context: any, body: any) {
+  const confirmation = requireMasterResetConfirmation(body.confirmation);
+  const { data, error } = await admin().rpc("admin_reset_all_portfolios", {
+    p_actor_user_id: context.user.id,
+    p_confirmation: confirmation
+  });
+  if (error) throw error;
+  return data || { ok: true };
 }
 
 async function listUsers() {
@@ -590,6 +605,7 @@ async function runtimeUsers(body: any) {
       settings: publicSettings(settingsMap.get(profile.user_id) || {}),
       symbols: watchlistMap.get(profile.user_id)?.symbols || [],
       journal: stateMap.get(profile.user_id)?.state?.journal || {},
+      resetGeneration: stateMap.get(profile.user_id)?.reset_generation || null,
       telegram: telegramMap.get(profile.user_id) || null
     }))
   };
@@ -598,6 +614,7 @@ async function runtimeUsers(body: any) {
 async function saveRuntimeUserState(body: any) {
   await requireInternal(body);
   const userId = requireUuid(body.userId);
+  const resetGeneration = requireUuid(body.resetGeneration);
   const state = body.state && typeof body.state === "object" ? body.state : {};
   const row = {
     user_id: userId,
@@ -605,19 +622,38 @@ async function saveRuntimeUserState(body: any) {
     scan_at: state.scannedAt || new Date().toISOString(),
     state
   };
-  const { error } = await admin().from("app_user_states").upsert(row);
+  const { data: saved, error } = await admin()
+    .from("app_user_states")
+    .update(row)
+    .eq("user_id", userId)
+    .eq("reset_generation", resetGeneration)
+    .select("user_id, reset_generation")
+    .maybeSingle();
   if (error) throw error;
+  if (!saved) {
+    throw httpError("Portfolio was reset while this scan was running. Stale generated state was rejected; the next scan will start cleanly.", 409);
+  }
   const alerts = Array.isArray(state.alertHistory)
     ? state.alertHistory
     : Array.isArray(state.journal?.alertHistory) ? state.journal.alertHistory : [];
-  const push = await dispatchPushAlerts(userId, alerts).catch((error) => {
+  const push = await dispatchPushAlerts(userId, alerts, resetGeneration).catch((error) => {
     console.error(`Push dispatch failed for ${userId}:`, error);
     return { sent: 0, failed: 0, skipped: alerts.length, error: error?.message || String(error) };
   });
   return { ok: true, push };
 }
 
-async function dispatchPushAlerts(userId: string, alerts: any[]) {
+async function dispatchPushAlerts(userId: string, alerts: any[], resetGeneration: string) {
+  const { data: currentState, error: generationError } = await admin()
+    .from("app_user_states")
+    .select("reset_generation")
+    .eq("user_id", userId)
+    .eq("reset_generation", resetGeneration)
+    .maybeSingle();
+  if (generationError) throw generationError;
+  if (!currentState) {
+    return { sent: 0, failed: 0, skipped: alerts.length, reason: "portfolio-reset-superseded-scan" };
+  }
   const pendingAlerts = recentPushAlerts(alerts);
   if (!pendingAlerts.length) return { sent: 0, failed: 0, skipped: 0 };
   const [config, subscriptionResult] = await Promise.all([
@@ -1128,12 +1164,12 @@ async function clearAlertHistory(context: any) {
   const nextState = { ...state, alertHistory: [], ...(journal ? { journal } : {}) };
   const { error: updateError } = await admin()
     .from("app_user_states")
-    .upsert({
-      user_id: userId,
+    .update({
       strategy_version: String(data?.strategy_version || "alert-clear"),
       scan_at: data?.scan_at || state.scannedAt || new Date().toISOString(),
       state: nextState
-    });
+    })
+    .eq("user_id", userId);
   if (updateError) throw updateError;
   await admin().from("app_push_deliveries").delete().eq("user_id", userId);
   await audit(context.user.id, userId, "ALERT_HISTORY_CLEARED", {

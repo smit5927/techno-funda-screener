@@ -157,6 +157,16 @@ test("client portfolio never inherits the owner's legacy journal", () => {
   assert.equal(journalForUser({ role: "member", journal: current }, legacy), current);
 });
 
+test("master-reset owner journal cannot reimport legacy open positions", () => {
+  const resetJournal = {
+    systemResetAt: "2026-07-18T07:00:00.000Z",
+    legacyOwnerJournalMigratedAt: "2026-07-18T07:00:00.000Z",
+    trades: []
+  };
+  const legacy = { trades: [{ symbol: "OLD", status: "OPEN" }] };
+  assert.deepEqual(journalForUser({ role: "admin", journal: resetJournal }, legacy), resetJournal);
+});
+
 test("user portfolio summary uses only the selected visible trade book", () => {
   const visibleTrade = {
     status: "OPEN",

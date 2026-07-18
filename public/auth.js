@@ -19,6 +19,7 @@ const nativeFetch = window.fetch.bind(window);
 const DEVICE_STORAGE_KEY = "techno-funda-device-id";
 const PROFILE_STORAGE_KEY = "techno-funda-profile";
 const MANAGED_USER_STORAGE_KEY = "techno-funda-managed-user";
+const MASTER_RESET_CONFIRMATION = "RESET ALL PORTFOLIOS";
 const deviceId = readOrCreateDeviceId();
 let currentProfile = null;
 let pendingFactorId = null;
@@ -54,7 +55,15 @@ const elements = {
   adminStatus: document.querySelector("#adminStatus"),
   managedUserBanner: document.querySelector("#managedUserBanner"),
   managedUserName: document.querySelector("#managedUserName"),
-  exitManagedUserButton: document.querySelector("#exitManagedUserButton")
+  exitManagedUserButton: document.querySelector("#exitManagedUserButton"),
+  openMasterResetButton: document.querySelector("#openMasterResetButton"),
+  masterResetDialog: document.querySelector("#masterResetDialog"),
+  masterResetForm: document.querySelector("#masterResetForm"),
+  masterResetAcknowledge: document.querySelector("#masterResetAcknowledge"),
+  masterResetPhrase: document.querySelector("#masterResetPhrase"),
+  confirmMasterResetButton: document.querySelector("#confirmMasterResetButton"),
+  cancelMasterResetButton: document.querySelector("#cancelMasterResetButton"),
+  masterResetStatus: document.querySelector("#masterResetStatus")
 };
 
 window.TF_STATIC_MODE = true;
@@ -93,6 +102,11 @@ elements.adminUsersBody.addEventListener("click", handleAdminAction);
 elements.adminNavButton.addEventListener("click", loadUsers);
 elements.installAppButton.addEventListener("click", installApp);
 elements.exitManagedUserButton?.addEventListener("click", exitManagedUser);
+elements.openMasterResetButton?.addEventListener("click", openMasterResetDialog);
+elements.cancelMasterResetButton?.addEventListener("click", closeMasterResetDialog);
+elements.masterResetAcknowledge?.addEventListener("change", updateMasterResetConfirmation);
+elements.masterResetPhrase?.addEventListener("input", updateMasterResetConfirmation);
+elements.masterResetForm?.addEventListener("submit", performMasterReset);
 
 window.addEventListener("beforeinstallprompt", (event) => {
   event.preventDefault();
@@ -110,7 +124,7 @@ client.auth.onAuthStateChange((_event, session) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => navigator.serviceWorker.register(
-    "service-worker.js?v=20260718-owner-control",
+    "service-worker.js?v=20260718-master-reset",
     { updateViaCache: "none" }
   ).catch(() => {}));
 }
@@ -325,6 +339,59 @@ async function loadUsers() {
     setAdminStatus(`${payload.users?.length || 0} accounts`);
   } catch (error) {
     setAdminStatus(error.message, true);
+  }
+}
+
+function openMasterResetDialog() {
+  if (currentProfile?.role !== "admin") return;
+  elements.masterResetForm?.reset();
+  if (elements.masterResetStatus) elements.masterResetStatus.textContent = "";
+  updateMasterResetConfirmation();
+  elements.masterResetDialog?.showModal();
+}
+
+function closeMasterResetDialog() {
+  if (!elements.masterResetDialog?.open) return;
+  elements.masterResetDialog.close();
+}
+
+function updateMasterResetConfirmation() {
+  const confirmed = elements.masterResetAcknowledge?.checked === true &&
+    String(elements.masterResetPhrase?.value || "").trim() === MASTER_RESET_CONFIRMATION;
+  if (elements.confirmMasterResetButton) elements.confirmMasterResetButton.disabled = !confirmed;
+}
+
+async function performMasterReset(event) {
+  event.preventDefault();
+  if (currentProfile?.role !== "admin") return;
+  updateMasterResetConfirmation();
+  if (elements.confirmMasterResetButton?.disabled) return;
+  elements.confirmMasterResetButton.disabled = true;
+  elements.cancelMasterResetButton.disabled = true;
+  if (elements.masterResetStatus) {
+    elements.masterResetStatus.classList.remove("error");
+    elements.masterResetStatus.textContent = "Resetting every portfolio securely...";
+  }
+  try {
+    const result = await apiPost({
+      action: "admin-reset-all-portfolios",
+      confirmation: String(elements.masterResetPhrase.value || "").trim()
+    });
+    localStorage.removeItem(MANAGED_USER_STORAGE_KEY);
+    if (elements.masterResetStatus) {
+      elements.masterResetStatus.textContent = `${result.accountsReset || 0} accounts reset. Reloading the clean owner portfolio...`;
+    }
+    const url = new URL(window.location.href);
+    url.searchParams.set("view", "dashboard");
+    url.searchParams.set("reset", String(Date.now()));
+    window.location.replace(url);
+  } catch (error) {
+    if (elements.masterResetStatus) {
+      elements.masterResetStatus.classList.add("error");
+      elements.masterResetStatus.textContent = error.message;
+    }
+    elements.confirmMasterResetButton.disabled = false;
+    elements.cancelMasterResetButton.disabled = false;
   }
 }
 

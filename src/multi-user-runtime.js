@@ -62,6 +62,7 @@ export async function syncMultiUserRuntime(scan, options = {}) {
         internalKey: APP_INTERNAL_KEY,
         strategyVersion,
         userId: user.userId,
+        resetGeneration: user.resetGeneration,
         state: { ...state, journal: serializableJournal(journal) }
       });
       outcomes.push({ userId: user.userId, username: user.username, ok: true });

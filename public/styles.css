@@ -1253,6 +1253,25 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
 .adminWorkspace { padding: 0 0 40px; }
 .adminHeader { display: flex; align-items: end; justify-content: space-between; gap: 20px; padding: 24px 0 18px; }
 .adminHeader h2 { margin: 5px 0 0; font-size: 24px; }
+.adminHeaderActions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.dangerButton { border-color: rgba(255,107,119,.62) !important; background: rgba(255,107,119,.1) !important; color: #ff7a86 !important; }
+.dangerButton:hover:not(:disabled) { border-color: #ff6b77 !important; background: rgba(255,107,119,.2) !important; box-shadow: 0 0 24px rgba(255,107,119,.14); }
+.masterResetDialog { width: min(620px, calc(100vw - 28px)); padding: 0; border: 1px solid rgba(255,107,119,.5); border-radius: 6px; background: #11171c; color: var(--text); box-shadow: 0 24px 90px rgba(0,0,0,.7); }
+.masterResetDialog::backdrop { background: rgba(3,6,8,.82); backdrop-filter: blur(7px); }
+.masterResetDialog form { display: grid; gap: 17px; padding: 26px; animation: authPanelIn .25s ease both; }
+.masterResetDialog h2, .masterResetDialog p { margin: 0; }
+.masterResetDialog p { color: #c1cad2; line-height: 1.65; }
+.masterResetWarning { color: #ff7a86; font-size: 11px; font-weight: 900; letter-spacing: 1px; }
+.resetPreserveNote { display: grid; gap: 5px; padding: 13px 15px; border-left: 3px solid #4be0a7; background: rgba(75,224,167,.07); }
+.resetPreserveNote strong { color: #65e7b5; }
+.resetPreserveNote span { color: #b9c3cb; line-height: 1.5; }
+.resetAcknowledge { display: grid; grid-template-columns: 20px 1fr; align-items: start; gap: 10px; color: #d8dee4; }
+.resetAcknowledge input { width: 18px; height: 18px; margin: 1px 0 0; accent-color: #ff6b77; }
+.resetPhraseLabel { display: grid; gap: 8px; }
+.resetPhraseLabel span { color: #c5cdd5; font-size: 12px; }
+.resetPhraseLabel input { min-height: 46px; padding: 0 12px; border: 1px solid #3a454f; background: #0b1014; color: #fff; font: inherit; }
+.resetPhraseLabel input:focus { outline: 0; border-color: #ff6b77; box-shadow: 0 0 0 3px rgba(255,107,119,.12); }
+.masterResetActions { display: flex; justify-content: flex-end; gap: 9px; }
 .adminCreateForm { padding: 22px; margin-bottom: 18px; border: 1px solid var(--line); background: var(--surface); animation: authPanelIn .35s ease both; }
 .adminFormActions { display: flex; gap: 8px; }
 .adminUsersTable td strong, .adminUsersTable td small { display: block; }
@@ -1281,7 +1300,11 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
   .authStatus { position: static; text-align: center; min-height: 22px; }
   .topbar .actions { flex-wrap: wrap; justify-content: flex-end; }
   .accountName { width: 100%; text-align: right; }
-  .adminHeader { align-items: center; }
+  .adminHeader { align-items: stretch; flex-direction: column; }
+  .adminHeaderActions { justify-content: stretch; }
+  .adminHeaderActions button { flex: 1 1 150px; }
+  .masterResetDialog form { padding: 20px 16px; }
+  .masterResetActions { display: grid; grid-template-columns: 1fr; }
   .adminCreateForm { padding: 16px; }
   .adminTableShell { overflow-x: auto; }
   .adminUsersTable { min-width: 920px; }
