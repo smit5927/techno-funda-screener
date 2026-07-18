@@ -76,3 +76,18 @@ test("pending pyramid add is shown as an add-winner decision", () => {
   assert.equal(guide.label, "ADD WINNER");
   assert.match(guide.summary, /swing high/i);
 });
+
+test("pending controlled retest is clearly separated from winner pyramiding", () => {
+  const guide = buildDecisionGuide(strongRow({ close: 97 }), {
+    status: "OPEN",
+    entryPrice: 98,
+    initialEntryPrice: 100,
+    trailingStopPrice: 94,
+    pendingAdd: {
+      kind: "CONTROLLED_RETEST",
+      reason: ["Support and reclaim confirmation completed inside the 0.25R to 0.75R band."]
+    }
+  });
+  assert.equal(guide.label, "ADD RETEST");
+  assert.match(guide.summary, /Support and reclaim/i);
+});

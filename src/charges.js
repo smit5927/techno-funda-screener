@@ -230,7 +230,8 @@ function buildTransactions(trade, config) {
     transactions.push(transaction("ENTRY_BUY", "BUY", trade.entryDate, trade.entryTime, initialPrice, initialQuantity, config, 0));
   }
   addOns.forEach((item, index) => {
-    transactions.push(transaction("PYRAMID_BUY", "BUY", item.date, item.time, item.price, item.quantity, config, index));
+    const type = item.kind === "CONTROLLED_RETEST" ? "CONTROLLED_RETEST_BUY" : "PYRAMID_BUY";
+    transactions.push(transaction(type, "BUY", item.date, item.time, item.price, item.quantity, config, index));
   });
   partialExits.forEach((item, index) => {
     transactions.push(transaction("PARTIAL_EXIT", "SELL", item.date, item.time, item.price, item.quantity, config, index));
@@ -309,7 +310,7 @@ function emptyBreakdown(turnover, settings, side) {
 }
 
 function orderFor(type) {
-  return { CORPORATE_ADJUSTMENT: 0, DIVIDEND: 1, ENTRY_BUY: 2, PYRAMID_BUY: 3, PARTIAL_EXIT: 4, FULL_EXIT: 5 }[type] ?? 9;
+  return { CORPORATE_ADJUSTMENT: 0, DIVIDEND: 1, ENTRY_BUY: 2, CONTROLLED_RETEST_BUY: 3, PYRAMID_BUY: 4, PARTIAL_EXIT: 5, FULL_EXIT: 6 }[type] ?? 9;
 }
 
 function nonNegative(value, fallback = 0) {

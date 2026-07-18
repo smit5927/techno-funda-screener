@@ -8,10 +8,12 @@ import { updateOpenPositionCorporateActions } from "./corporate-actions.js";
 import { updateAlertHistory } from "./alert-history.js";
 import { executionAfterDate, isRetroactiveExecution } from "./execution-policy.js";
 import {
+  buildControlledRetestAddPlan,
   buildPositionPlan,
   buildPyramidAddPlan,
   candidateEntryDecision,
   candidateRank,
+  controlledRetestAddDecision,
   nextTrailingStop,
   portfolioConfig,
   portfolioSummary,
@@ -44,6 +46,7 @@ const PUBLISHABLE_ACTION_TYPES = new Set([
   "ROTATION_EXIT_PENDING",
   "PARTIAL_EXIT_PENDING",
   "PYRAMID_ADD_PENDING",
+  "CONTROLLED_RETEST_ADD_PENDING",
   "DIVIDEND_CREDIT"
 ]);
 const LEGACY_EXECUTION_METHODS = new Set([
@@ -61,6 +64,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
   const portfolioUpgrade = !journal.portfolioEngineStartedAt;
   const pyramidingUpgrade = !journal.pyramidingStartedAt;
   const swingPyramidingUpgrade = !journal.pyramidSwingEngineStartedAt;
+  const controlledRetestUpgrade = !journal.controlledRetestEngineStartedAt;
   const firstLiveScan = liveMode && !journal.liveModeStartedAt;
   const trades = firstLiveScan ? [] : Array.isArray(journal.trades) ? journal.trades : [];
   let candidates = firstLiveScan ? [] : Array.isArray(journal.candidates) ? journal.candidates : [];
@@ -136,9 +140,11 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
       recordRotationObservation(trade, row, trade.currentWeakness);
     }
     if (trade.status === "OPEN" && trade.pendingAdd && row) {
+      const pendingKind = trade.pendingAdd.kind;
       const outcome = await fillPyramidAdd(trade, row, config, trades, candidates);
-      if (outcome === "FILLED") events.push({ type: "PYRAMID_ADD_FILLED", trade });
-      if (outcome === "SKIPPED") events.push({ type: "PYRAMID_ADD_SKIPPED", trade });
+      const prefix = pendingKind === "CONTROLLED_RETEST" ? "CONTROLLED_RETEST_ADD" : "PYRAMID_ADD";
+      if (outcome === "FILLED") events.push({ type: `${prefix}_FILLED`, trade });
+      if (outcome === "SKIPPED") events.push({ type: `${prefix}_SKIPPED`, trade });
     }
     const exitCancellation = cancelInvalidPendingModelExit(trade, row, config);
     if (exitCancellation.cancelled) {
@@ -213,7 +219,27 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
       rowBySymbol.get(trade.yahooSymbol || trade.symbol),
       scan.marketContext?.asOf
     );
-    if (!row?.asOf || trade.pyramidState?.asOf === row.asOf) continue;
+    if (!row?.asOf) continue;
+    if (trade.controlledRetestState?.asOf !== row.asOf) {
+      const retestDecision = controlledRetestAddDecision(
+        trade,
+        row,
+        portfolioSummary(trades, candidates, config),
+        config
+      );
+      trade.lastControlledRetestDecision = {
+        asOf: row.asOf,
+        eligible: retestDecision.eligible,
+        reasons: retestDecision.reasons,
+        state: retestDecision.state
+      };
+      if (!controlledRetestUpgrade && retestDecision.eligible && !trade.pendingAdd) {
+        prepareControlledRetestAdd(trade, row, scan, retestDecision);
+        events.push({ type: "CONTROLLED_RETEST_ADD_PENDING", trade });
+      }
+      trade.controlledRetestState = { ...(retestDecision.state || {}), asOf: row.asOf };
+    }
+    if (trade.pyramidState?.asOf === row.asOf) continue;
     const currentState = { ...postEntryPyramidState(trade, row, config), asOf: row.asOf };
     const previousState = trade.pyramidState;
     const freshBreakout =
@@ -498,6 +524,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
     portfolioEngineStartedAt: journal.portfolioEngineStartedAt || scan.scannedAt,
     pyramidingStartedAt: journal.pyramidingStartedAt || scan.scannedAt,
     pyramidSwingEngineStartedAt: journal.pyramidSwingEngineStartedAt || scan.scannedAt,
+    controlledRetestEngineStartedAt: journal.controlledRetestEngineStartedAt || scan.scannedAt,
     liveModeStartedAt: journal.liveModeStartedAt || (liveMode ? new Date().toISOString() : null),
     baselineInitialized: true,
     baselineScanAt: journal.baselineScanAt || (firstLiveScan ? scan.scannedAt : null),
@@ -513,7 +540,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
       events: undefined
     },
     signalState: nextSignalState,
-    tradeCapitalPerStock: riskRules.totalCapital * riskRules.maxPositionPct / 100,
+    tradeCapitalPerStock: riskRules.totalCapital * riskRules.initialMaxPositionPct / 100,
     portfolioRules: riskRules,
     portfolioSummary: finalPortfolio,
     capitalTransactions,
@@ -642,6 +669,7 @@ export async function writeTradeSheets(journal, config = appConfig) {
 export function tradeSettingsSummary(config = appConfig) {
   const scopeListId = normalizeTradeScope(config.trade?.scopeListId);
   const qualityMode = normalizeTradeQuality(config.trade?.qualityMode);
+  const rules = portfolioConfig(config);
   return {
     scopeListId,
     scopeLabel: TRADE_SCOPE_LABELS[scopeListId],
@@ -650,6 +678,17 @@ export function tradeSettingsSummary(config = appConfig) {
     totalCapital: config.trade?.totalCapital ?? 1000000,
     minimumInitialAllocation: config.trade?.minimumInitialAllocation ?? 10000,
     capitalPerStock: config.trade?.capitalPerStock ?? 100000,
+    initialMaxPositionPct: rules.initialMaxPositionPct,
+    initialRiskPct: rules.initialRiskPct,
+    controlledRetestEnabled: rules.controlledRetestEnabled,
+    controlledRetestAddMaxPct: rules.controlledRetestAddMaxPct,
+    controlledRetestAddRiskPct: rules.controlledRetestAddRiskPct,
+    controlledRetestMaxPositionPct: rules.controlledRetestMaxPositionPct,
+    controlledRetestMinDrawdownR: rules.controlledRetestMinDrawdownR,
+    controlledRetestMaxDrawdownR: rules.controlledRetestMaxDrawdownR,
+    pyramidMaxAddOns: rules.pyramidMaxAddOns,
+    pyramidAddMaxPct: rules.pyramidAddMaxPct,
+    pyramidMaxPositionPct: rules.pyramidMaxPositionPct,
     chargesEnabled: config.trade?.chargesEnabled === true,
     brokerageMode: config.trade?.brokerageMode || "FLAT_PER_ORDER",
     brokerageFlatPerOrder: config.trade?.brokerageFlatPerOrder ?? 20,
@@ -796,6 +835,7 @@ function preparePartialExit(trade, row, scan, decision, config) {
 
 function preparePyramidAdd(trade, row, scan, decision) {
   trade.pendingAdd = {
+    kind: "PYRAMID",
     signalDate: row.asOf,
     signalScanAt: scan.scannedAt,
     executionAfterDate: executionAfterDate(row.asOf, scan.scannedAt),
@@ -816,6 +856,32 @@ function preparePyramidAdd(trade, row, scan, decision) {
     reason: [
       ...(decision.reasons || []),
       `Add only on the next actual market session at exactly 09:17 IST; weekends and exchange holidays are skipped. Maximum total stock allocation remains 15% of portfolio capital.`
+    ],
+    snapshot: snapshot(row)
+  };
+  trade.executionError = null;
+}
+
+function prepareControlledRetestAdd(trade, row, scan, decision) {
+  trade.pendingAdd = {
+    kind: "CONTROLLED_RETEST",
+    signalDate: row.asOf,
+    signalScanAt: scan.scannedAt,
+    executionAfterDate: executionAfterDate(row.asOf, scan.scannedAt),
+    plannedQuantity: decision.quantity,
+    plannedAllocation: decision.allocation,
+    plannedRisk: decision.plannedRisk,
+    plannedStop: decision.trailingStop,
+    drawdownR: decision.state?.drawdownR,
+    supportSource: decision.state?.supportSource,
+    supportReference: decision.state?.supportReference,
+    pullbackDepthPct: decision.state?.pullbackDepthPct,
+    pullbackVolumeRatio: decision.state?.pullbackVolumeRatio,
+    reclaimCloseLocationPct: decision.state?.reclaimCloseLocationPct,
+    rank: decision.rank,
+    reason: [
+      ...(decision.reasons || []),
+      "Buy the single controlled retest tranche only on the next actual market session at exactly 09:17 IST. Initial plus retest allocation remains capped at 10%, total stock risk at 1%, and the structural stop is never widened."
     ],
     snapshot: snapshot(row)
   };
@@ -1009,8 +1075,10 @@ export function sameExecutionSlot(rotationExecution, fill) {
 async function fillPyramidAdd(trade, row, config, trades, candidates) {
   const pending = trade.pendingAdd;
   if (!pending) return "WAITING";
+  const controlledRetest = pending.kind === "CONTROLLED_RETEST";
+  const actionLabel = controlledRetest ? "Controlled retest add" : "Winner add";
   if (pending.orderState !== "CONFIRMED_FOR_0917") {
-    trade.executionError = "Winner add is waiting for the 08:30 portfolio approval; an unannounced add cannot execute.";
+    trade.executionError = `${actionLabel} is waiting for the 08:30 portfolio approval; an unannounced add cannot execute.`;
     return "WAITING";
   }
   try {
@@ -1020,7 +1088,7 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
     );
     if (!fill) {
       trade.executionError =
-        "Winner add-on is pending until the next actual market-session exact 09:17 candle.";
+        `${actionLabel} is pending until the next actual market-session exact 09:17 candle.`;
       return "WAITING";
     }
     const summary = portfolioSummary(trades, candidates, config);
@@ -1030,7 +1098,7 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
       0,
       (adjustedSectorExposure[sector] || 0) - (Number(pending.plannedAllocation) || 0)
     );
-    let plan = buildPyramidAddPlan(
+    let plan = (controlledRetest ? buildControlledRetestAddPlan : buildPyramidAddPlan)(
       trade,
       row,
       fill.price,
@@ -1042,7 +1110,11 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
       },
       config
     );
-    if (!plan.eligible && pending.orderState === "CONFIRMED_FOR_0917") {
+    const retestExecutionStillValid = !controlledRetest || (
+      Number(fill.price) < Number(trade.initialEntryPrice || trade.entryPrice) &&
+      Number(fill.price) > Number(pending.plannedStop || trade.trailingStopPrice || trade.initialStopPrice)
+    );
+    if (!plan.eligible && pending.orderState === "CONFIRMED_FOR_0917" && retestExecutionStillValid) {
       const reservedQuantity = Number(pending.plannedQuantity) || 0;
       const reservedAllocation = Number(pending.plannedAllocation) || 0;
       const reservedRisk = Number(pending.plannedRisk) || 0;
@@ -1062,12 +1134,12 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
           trailingStop: Number(plan.trailingStop) || Number(pending.plannedStop) || Number(trade.trailingStopPrice)
         };
       } else {
-        trade.executionError = "Confirmed pyramid order is still waiting because its reserved cash/risk cannot fit one share at the exact 09:17 price.";
+        trade.executionError = `Confirmed ${actionLabel.toLowerCase()} is still waiting because its reserved cash/risk cannot fit one share at the exact 09:17 price.`;
         return "WAITING";
       }
     }
     if (!plan.eligible) {
-      const reason = `Winner add-on skipped at actual 09:17 fill: ${plan.reason}`;
+      const reason = `${actionLabel} skipped at actual 09:17 fill: ${plan.reason}`;
       trade.addOnSkips = Array.isArray(trade.addOnSkips) ? trade.addOnSkips : [];
       trade.addOnSkips.push({
         signalDate: pending.signalDate,
@@ -1075,8 +1147,9 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
         evaluatedPrice: round(fill.price),
         reason
       });
-      trade.lastPyramidDecision = {
-        ...trade.lastPyramidDecision,
+      const decisionKey = controlledRetest ? "lastControlledRetestDecision" : "lastPyramidDecision";
+      trade[decisionKey] = {
+        ...trade[decisionKey],
         eligible: false,
         fillDate: fill.date,
         fillPrice: round(fill.price),
@@ -1097,8 +1170,12 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
     trade.initialEntryPrice = trade.initialEntryPrice || previousAverage;
     trade.initialQuantity = trade.initialQuantity || trade.originalQuantity || previousQuantity;
     trade.addOns = Array.isArray(trade.addOns) ? trade.addOns : [];
+    for (const add of trade.addOns) add.kind = add.kind || "PYRAMID";
+    if (trade.pendingAdd) trade.pendingAdd.kind = trade.pendingAdd.kind || "PYRAMID";
+    const winnerAddCount = trade.addOns.filter((item) => item.kind !== "CONTROLLED_RETEST").length;
     const addOn = {
-      number: trade.addOns.length + 1,
+      kind: controlledRetest ? "CONTROLLED_RETEST" : "PYRAMID",
+      number: controlledRetest ? 1 : winnerAddCount + 1,
       signalDate: pending.signalDate,
       date: fill.date,
       time: fill.timeLabel || EXECUTION_TIME,
@@ -1117,6 +1194,11 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
       advancePct: pending.advancePct,
       structureAnchorDate: pending.structureAnchorDate,
       rewardRAtSignal: pending.rewardR,
+      drawdownRAtSignal: pending.drawdownR,
+      supportSource: pending.supportSource,
+      supportReference: pending.supportReference,
+      pullbackVolumeRatio: pending.pullbackVolumeRatio,
+      reclaimCloseLocationPct: pending.reclaimCloseLocationPct,
       rankAtSignal: pending.rank,
       executionMethod: fill.source,
       executionWindow: fill.window,
@@ -1140,8 +1222,9 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
     trade.lastAddDate = fill.date;
     trade.lastAddTime = addOn.time;
     trade.lastAddPrice = addOn.price;
-    trade.lastPyramidDecision = {
-      ...trade.lastPyramidDecision,
+    const decisionKey = controlledRetest ? "lastControlledRetestDecision" : "lastPyramidDecision";
+    trade[decisionKey] = {
+      ...trade[decisionKey],
       eligible: true,
       filled: true,
       fillDate: fill.date,
@@ -1150,7 +1233,9 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
     };
     trade.entryReason = [
       ...(trade.entryReason || []),
-      `Winner add-on ${addOn.number} filled ${fill.date} ${addOn.time} at Rs ${addOn.price}, quantity ${addQuantity}; blended average Rs ${trade.entryPrice}. Trailing stop remains ratcheted at Rs ${trade.trailingStopPrice}.`
+      controlledRetest
+        ? `Controlled retest add filled ${fill.date} ${addOn.time} at Rs ${addOn.price}, quantity ${addQuantity}; blended average Rs ${trade.entryPrice}. Combined stock risk stayed within 1% and the structural stop remained Rs ${trade.trailingStopPrice}.`
+        : `Winner add-on ${addOn.number} filled ${fill.date} ${addOn.time} at Rs ${addOn.price}, quantity ${addQuantity}; blended average Rs ${trade.entryPrice}. Trailing stop remains ratcheted at Rs ${trade.trailingStopPrice}.`
     ];
     trade.pendingAdd = null;
     trade.executionError = null;
@@ -1774,7 +1859,14 @@ function currentPendingActionEvents(trades = []) {
     } else if (trade.status === "PENDING_PARTIAL_EXIT") {
       output.push({ type: "PARTIAL_EXIT_PENDING", trade });
     }
-    if (trade.pendingAdd) output.push({ type: "PYRAMID_ADD_PENDING", trade });
+    if (trade.pendingAdd) {
+      output.push({
+        type: trade.pendingAdd.kind === "CONTROLLED_RETEST"
+          ? "CONTROLLED_RETEST_ADD_PENDING"
+          : "PYRAMID_ADD_PENDING",
+        trade
+      });
+    }
     for (const action of trade.corporateActions || []) {
       if (String(action.type || "").toUpperCase() === "DIVIDEND" && action.notificationPending === true) {
         output.push({ type: "DIVIDEND_CREDIT", trade, corporateAction: action });
@@ -1794,7 +1886,7 @@ function actionPublicationKey(event = {}) {
   const action = event.corporateAction || {};
   const actionDate = type === "ENTRY_SIGNAL_PENDING" ? trade.entrySignalDate
     : type === "PARTIAL_EXIT_PENDING" ? trade.partialExitSignalDate
-      : type === "PYRAMID_ADD_PENDING" ? trade.pendingAdd?.signalDate
+      : ["PYRAMID_ADD_PENDING", "CONTROLLED_RETEST_ADD_PENDING"].includes(type) ? trade.pendingAdd?.signalDate
         : type === "DIVIDEND_CREDIT" ? action.exDate
           : trade.exitSignalDate;
   const identity = action.id || trade.id || event.candidate?.id || event.candidate?.symbol;
@@ -1821,7 +1913,7 @@ function markActionPublished(event, key, occurredAt) {
     event.trade.exitOrderState = "CONFIRMED_FOR_0917";
   } else if (type === "PARTIAL_EXIT_PENDING") {
     event.trade.partialExitOrderState = "CONFIRMED_FOR_0917";
-  } else if (type === "PYRAMID_ADD_PENDING" && event.trade.pendingAdd) {
+  } else if (["PYRAMID_ADD_PENDING", "CONTROLLED_RETEST_ADD_PENDING"].includes(type) && event.trade.pendingAdd) {
     event.trade.pendingAdd.orderState = "CONFIRMED_FOR_0917";
   }
 }
@@ -1831,7 +1923,7 @@ function actionCanBePublished(event, occurredAt) {
   const trade = event.trade || {};
   const afterDate = type === "ENTRY_SIGNAL_PENDING" ? trade.entryExecutionAfterDate
     : type === "PARTIAL_EXIT_PENDING" ? trade.partialExitExecutionAfterDate
-      : type === "PYRAMID_ADD_PENDING" ? trade.pendingAdd?.executionAfterDate
+      : ["PYRAMID_ADD_PENDING", "CONTROLLED_RETEST_ADD_PENDING"].includes(type) ? trade.pendingAdd?.executionAfterDate
         : type === "DIVIDEND_CREDIT" ? null
           : trade.exitExecutionAfterDate;
   if (!afterDate) return true;
@@ -2625,18 +2717,23 @@ function tradeToRow(trade) {
         : "NA",
     "Initial Risk": trade.initialRiskAmount ?? trade.plannedRisk ?? "",
     "Current R": trade.currentRewardR ?? "",
+    "Controlled Retest Add Count": (trade.addOns || []).filter((add) => add.kind === "CONTROLLED_RETEST").length,
+    "Winner Pyramid Add Count": (trade.addOns || []).filter((add) => add.kind !== "CONTROLLED_RETEST").length,
     "Add-On Count": trade.addOns?.length || 0,
+    "Pending Add Type": trade.pendingAdd?.kind || "",
     "Pending Add": trade.pendingAdd ? "Yes" : "No",
     "Last Add Date": trade.lastAddDate || "",
     "Last Add Time": trade.lastAddTime || "",
     "Last Add Price": trade.lastAddPrice ?? "",
     "Last Add Quantity": trade.addOns?.at(-1)?.quantity ?? "",
     "Add-On History": (trade.addOns || []).map((add) =>
-      `#${add.number} signal ${add.signalDate}; fill ${add.date} ${add.time} @ ${add.price}; qty ${add.quantity}; stop ${add.trailingStop}; swing high ${add.swingHighDate || "NA"} @ ${add.breakoutLevel ?? "NA"}; pullback low ${add.pullbackLowDate || "NA"} @ ${add.pullbackLow ?? "NA"} (${add.pullbackDepthPct ?? "NA"}%); ${add.breakoutType || "breakout"}`
+      `${add.kind || "PYRAMID"} #${add.number} signal ${add.signalDate}; fill ${add.date} ${add.time} @ ${add.price}; qty ${add.quantity}; stop ${add.trailingStop}; drawdown ${add.drawdownRAtSignal ?? "NA"}R; support ${add.supportSource || "NA"} @ ${add.supportReference ?? "NA"}; swing high ${add.swingHighDate || "NA"} @ ${add.breakoutLevel ?? "NA"}; pullback low ${add.pullbackLowDate || "NA"} @ ${add.pullbackLow ?? "NA"} (${add.pullbackDepthPct ?? "NA"}%); ${add.breakoutType || "reclaim"}`
     ).join(" | "),
     "Add-On Decision": trade.pendingAdd
       ? (trade.pendingAdd.reason || []).join(" ")
-      : (trade.lastPyramidDecision?.reasons || []).join(" "),
+      : (trade.lastControlledRetestDecision?.eligible
+          ? trade.lastControlledRetestDecision?.reasons
+          : trade.lastPyramidDecision?.reasons || trade.lastControlledRetestDecision?.reasons || []).join(" "),
     "Partial Exit Count": trade.partialExits?.length || 0,
     "Partial Realized P&L": trade.tradeRealizedPnlToDate ?? trade.realizedPnlToDate ?? 0,
     "Trading Realized P&L": trade.tradeRealizedPnlToDate ?? 0,

@@ -16,7 +16,8 @@ test("trade events become reason-first alerts for every required portfolio actio
     ["ENTRY_SIGNAL_PENDING", "ENTRY"],
     ["EXIT_SIGNAL_PENDING", "EXIT"],
     ["PARTIAL_EXIT_PENDING", "PARTIAL_EXIT"],
-    ["PYRAMID_ADD_PENDING", "PYRAMID"]
+    ["PYRAMID_ADD_PENDING", "PYRAMID"],
+    ["CONTROLLED_RETEST_ADD_PENDING", "RETEST"]
   ];
   for (const [type, category] of cases) {
     const alert = alertFromTradeEvent({ type, trade: baseTrade }, "2026-07-16T03:00:00.000Z");
@@ -58,6 +59,18 @@ test("trade action alerts include quantity, value and configured total-fund perc
   assert.equal(partialExit.details.actionQuantity, 50);
   assert.equal(partialExit.details.actionValue, 6_000);
   assert.equal(partialExit.details.actionFundPct, 0.6);
+
+  const retestAdd = alertFromTradeEvent({
+    type: "CONTROLLED_RETEST_ADD_PENDING",
+    trade: {
+      id: "ABC-retest",
+      symbol: "ABC",
+      pendingAdd: { kind: "CONTROLLED_RETEST", plannedQuantity: 25, plannedAllocation: 24_250 }
+    }
+  }, "2026-07-16T03:00:00.000Z", { totalFund: 1_000_000 });
+  assert.equal(retestAdd.details.actionSide, "RETEST BUY");
+  assert.equal(retestAdd.details.actionQuantity, 25);
+  assert.equal(retestAdd.details.actionFundPct, 2.43);
 });
 
 test("dividend alert carries entitlement details while accounting stays in realized P&L", () => {

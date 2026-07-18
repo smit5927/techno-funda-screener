@@ -1,5 +1,6 @@
 import { buildDecisionGuide } from "./decision-guide.js?v=20260715-decision-desk";
 import { buildDetailEvidenceRow } from "./detail-evidence.js?v=20260715-detail-evidence";
+import { remainingOpenLotPerformance } from "./pnl-accounting.js?v=20260718-open-lot-pnl";
 
 const state = {
   payload: null,
@@ -573,7 +574,9 @@ function renderPositions(payload) {
       const stopRiskText = livePosition
         ? `${riskState.replace("_", " ")}${Number.isFinite(livePosition.distanceToStopPct) ? ` ${compact(livePosition.distanceToStopPct)}%` : ""}`
         : "EOD RISK";
-      const displayStatus = trade.pendingAdd ? "PENDING_ADD" : trade.status;
+      const displayStatus = trade.pendingAdd
+        ? trade.pendingAdd.kind === "CONTROLLED_RETEST" ? "PENDING_RETEST_ADD" : "PENDING_PYRAMID_ADD"
+        : trade.status;
       const signalDate = trade.exitSignalDate || trade.pendingAdd?.signalDate || trade.entrySignalDate || "";
       const reason =
         trade.status === "PENDING_ENTRY" && trade.executionError
@@ -586,7 +589,7 @@ function renderPositions(payload) {
       return `
         <tr class="${rowRiskClass}" data-position-index="${index}" title="Open details">
           <td><span class="pill ${escapeHtml(displayStatus)}">${escapeHtml(displayStatus.replaceAll("_", " "))}</span></td>
-          <td class="symbolCell"><strong>${escapeHtml(trade.symbol)}</strong><span>${escapeHtml(trade.tradeScopeLabel || trade.listLabel || "")}</span>${trade.addOns?.length ? `<span>${trade.addOns.length} winner add${trade.addOns.length === 1 ? "" : "s"}</span>` : ""}</td>
+          <td class="symbolCell"><strong>${escapeHtml(trade.symbol)}</strong><span>${escapeHtml(trade.tradeScopeLabel || trade.listLabel || "")}</span>${addHistoryLabel(trade)}</td>
           <td>${escapeHtml(signalDate)}</td>
           <td>${escapeHtml(trade.entryDate || "Waiting")}</td>
           <td>${fmt(trade.entryPrice)}</td>
@@ -756,8 +759,8 @@ function positionPerformance(trade, suppliedLivePosition = null) {
       state.payload.tradeSettings
     );
   }
-  const bookedRealizedPnl = Number(trade?.realizedPnlToDate) || 0;
-  const totalPnl = unrealizedPnl + bookedRealizedPnl;
+  // This row represents only the shares that are still held. Booked partial
+  // exits belong to portfolio realized P&L, not the remaining lot's MTM.
   const investedValue = Number.isFinite(livePosition?.investedValue)
     ? livePosition.investedValue
     : Number(trade?.investedValue);
@@ -768,8 +771,13 @@ function positionPerformance(trade, suppliedLivePosition = null) {
       : Number.isFinite(displayPrice) && Number.isFinite(quantity)
         ? displayPrice * quantity
         : null;
-  const totalBasis = Number(trade?.originalInvestedValue) || investedValue;
-  const totalPnlPct = Number.isFinite(totalBasis) && totalBasis > 0 ? totalPnl / totalBasis * 100 : null;
+  const openLot = remainingOpenLotPerformance(
+    unrealizedPnl,
+    investedValue,
+    Number(trade?.chargeSummary?.unallocatedBuyCharges) || 0
+  );
+  const totalPnl = openLot.pnl;
+  const totalPnlPct = openLot.pnlPct;
   const row = findStockRow(trade?.yahooSymbol || trade?.symbol);
   const fallbackPreviousClose = Number(row?.setupStrength?.pyramidStructure?.previousClose);
   const previousClose = Number.isFinite(livePosition?.previousClose)
@@ -892,6 +900,16 @@ function portfolioReturnPerformance(realizedPnl, unrealizedPnl, totalCapital, ca
     percentage: Number.isFinite(capital) && capital > 0 ? value / capital * 100 : null,
     flowAdjustedPercentage
   };
+}
+
+function addHistoryLabel(trade = {}) {
+  const adds = Array.isArray(trade.addOns) ? trade.addOns : [];
+  const retest = adds.filter((add) => add.kind === "CONTROLLED_RETEST").length;
+  const pyramids = adds.filter((add) => add.kind !== "CONTROLLED_RETEST").length;
+  const labels = [];
+  if (retest) labels.push(`${retest} retest add`);
+  if (pyramids) labels.push(`${pyramids} winner add${pyramids === 1 ? "" : "s"}`);
+  return labels.length ? `<span>${escapeHtml(labels.join(" | "))}</span>` : "";
 }
 
 function renderPortfolioReturnBasis(performance) {
@@ -1091,7 +1109,7 @@ function renderDetail(row, trade = null, candidate = null) {
         <div class="neutral">${escapeHtml(row.entryStyle?.label || "")}</div>
       </div>
       <div class="detailHeaderActions">
-        <span class="pill ${escapeHtml(trade?.pendingAdd ? "PENDING_ADD" : trade?.status || row.status)}">${escapeHtml((trade?.pendingAdd ? "PENDING_ADD" : trade?.status || row.status).replaceAll("_", " "))}</span>
+        <span class="pill ${escapeHtml(trade?.pendingAdd ? (trade.pendingAdd.kind === "CONTROLLED_RETEST" ? "PENDING_RETEST_ADD" : "PENDING_PYRAMID_ADD") : trade?.status || row.status)}">${escapeHtml((trade?.pendingAdd ? (trade.pendingAdd.kind === "CONTROLLED_RETEST" ? "PENDING_RETEST_ADD" : "PENDING_PYRAMID_ADD") : trade?.status || row.status).replaceAll("_", " "))}</span>
         <button class="detailClose" type="button" title="Close details" aria-label="Close details">&times;</button>
       </div>
     </div>
@@ -1111,7 +1129,7 @@ function renderDetail(row, trade = null, candidate = null) {
           <div>
             <span>Total P&amp;L Since Buy</span>
             <strong class="${signedClass(performance.totalPnl)}">${compact(performance.totalPnl)} (${compact(performance.totalPnlPct)}%)</strong>
-            <small>Includes trading realized P&amp;L, dividend income and remaining unrealized P&amp;L.</small>
+            <small>Remaining open quantity only. Booked partial exits and dividends stay in Realized P&amp;L.</small>
           </div>
         </div>
       ` : ""}
@@ -1138,8 +1156,8 @@ function renderDetail(row, trade = null, candidate = null) {
     ${trade ? `
       <div class="reasonBlock">
         <strong>Position Management</strong>
-        <p>Average ${fmt(trade.entryPrice)} | Initial ${fmt(trade.initialEntryPrice || trade.entryPrice)} | Quantity ${trade.quantity ?? "NA"} | Winner adds ${trade.addOns?.length || 0}/2 | Trailing stop ${fmt(trade.trailingStopPrice || trade.initialStopPrice)}</p>
-        ${trade.pendingAdd ? reasonListHtml(trade.pendingAdd.reason) : reasonListHtml(trade.lastPyramidDecision?.reasons)}
+        <p>Average ${fmt(trade.entryPrice)} | Initial ${fmt(trade.initialEntryPrice || trade.entryPrice)} | Quantity ${trade.quantity ?? "NA"} | Retest adds ${(trade.addOns || []).filter((add) => add.kind === "CONTROLLED_RETEST").length}/1 | Winner adds ${(trade.addOns || []).filter((add) => add.kind !== "CONTROLLED_RETEST").length}/2 | Trailing stop ${fmt(trade.trailingStopPrice || trade.initialStopPrice)}</p>
+        ${trade.pendingAdd ? reasonListHtml(trade.pendingAdd.reason) : reasonListHtml(trade.lastPyramidDecision?.reasons || trade.lastControlledRetestDecision?.reasons)}
       </div>
       ${corporateActionDetailHtml(trade)}
     ` : ""}
@@ -2014,11 +2032,11 @@ function decisionLevelHtml(level) {
   `;
 }
 
-function checkHtml(label, check, asPercent = false) {
+function checkHtml(label, check, valueFormat = "number") {
   const status = check?.ok === true ? "Good" : check?.ok === false ? "Weak" : "NA";
   const css = check?.ok === true ? "good" : check?.ok === false ? "bad" : "neutral";
-  const latest = asPercent ? pct(check?.latest) : compact(check?.latest);
-  const previous = asPercent ? pct(check?.previous) : compact(check?.previous);
+  const latest = formatFundamentalValue(check?.latest, valueFormat);
+  const previous = formatFundamentalValue(check?.previous, valueFormat);
   return `
     <div class="check">
       <span>${escapeHtml(label)}</span>
@@ -2077,16 +2095,26 @@ function fundamentalEvidenceHtml(row = {}) {
   const checks = fundamental?.checks || {};
   return `
     <div class="checkGrid">
-      ${checkHtml("Net income YoY", checks.netIncomeYoYUp)}
-      ${checkHtml("Quarterly sales YoY", checks.revenueQuarterYoYUp)}
+      ${checkHtml("Net income YoY", checks.netIncomeYoYUp, "currency")}
+      ${checkHtml("Quarterly sales YoY", checks.revenueQuarterYoYUp, "currency")}
       ${checkHtml("Quarterly EPS YoY", checks.epsQuarterYoYUp)}
-      ${checkHtml("Quarterly EBITDA YoY", checks.ebitdaQuarterYoYUp)}
-      ${checkHtml("Operating income YoY", checks.operatingIncomeYoYUp)}
-      ${checkHtml("EBITDA margin QoQ", checks.ebitdaMarginQoQUp, true)}
-      ${checkHtml("EBITDA margin YoY", checks.ebitdaMarginYoYUp, true)}
+      ${checkHtml("Quarterly EBITDA YoY", checks.ebitdaQuarterYoYUp, "currency")}
+      ${checkHtml("Operating income YoY", checks.operatingIncomeYoYUp, "currency")}
+      ${checkHtml("EBITDA margin QoQ", checks.ebitdaMarginQoQUp, "percent")}
+      ${checkHtml("EBITDA margin YoY", checks.ebitdaMarginYoYUp, "percent")}
       ${checkHtml("P/E rising", checks.peRising)}
     </div>
   `;
+}
+
+function formatFundamentalValue(value, format = "number") {
+  if (!Number.isFinite(value)) return "NA";
+  if (format === "percent") return pct(value);
+  if (format !== "currency") return compact(value);
+  const absolute = Math.abs(value);
+  if (absolute >= 10_000_000) return `${compact(value / 10_000_000)} Cr`;
+  if (absolute >= 100_000) return `${compact(value / 100_000)} L`;
+  return compact(value);
 }
 
 function setupCheckHtml(label, ok, value, suffix = "") {

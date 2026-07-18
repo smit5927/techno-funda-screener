@@ -54,6 +54,10 @@ function decisionAction(row, trade, candidate) {
     return actionSummary("PARTIAL EXIT", "partial", "Why reduce", compactReasons(trade?.pendingPartialExitReason, management.reasons) ||
       "Confirmed multi-factor deterioration requires risk reduction while the balance remains on a trailing stop.");
   }
+  if (trade?.pendingAdd?.kind === "CONTROLLED_RETEST") {
+    return actionSummary("ADD RETEST", "add", "Why add", compactReasons(trade?.pendingAdd?.reason, trade?.lastControlledRetestDecision?.reasons) ||
+      "A single planned retest tranche is confirmed after support and reclaim, with combined stock risk capped at 1%.");
+  }
   if (trade?.pendingAdd || management.action === "ADD") {
     return actionSummary("ADD WINNER", "add", "Why add", compactReasons(trade?.pendingAdd?.reason, trade?.lastPyramidDecision?.reasons) ||
       "A controlled post-entry pullback and fresh swing-high closing break are confirmed with risk capacity available.");
@@ -105,7 +109,7 @@ function entryGuide(row, trade, candidate, currentPrice) {
       .filter(finite))];
     return {
       value: range(fills),
-      note: fills.length > 1 ? "Actual base and winner-add fill range." : "Actual average/base fill price."
+      note: fills.length > 1 ? "Actual base, controlled-retest and winner-add fill range." : "Actual average/base fill price."
     };
   }
 

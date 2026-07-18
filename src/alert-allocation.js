@@ -5,6 +5,7 @@ const PENDING_TYPES = new Set([
   "ROTATION_EXIT_PENDING",
   "PARTIAL_EXIT_PENDING",
   "PYRAMID_ADD_PENDING",
+  "CONTROLLED_RETEST_ADD_PENDING",
   "ENTRY_SKIPPED"
 ]);
 
@@ -50,6 +51,10 @@ export function tradeActionAllocation(event = {}, totalFund = null) {
     value = multiply(quantity, partial.price);
   } else if (["PYRAMID_ADD_PENDING", "PYRAMID_ADD_FILLED"].includes(type)) {
     side = "PYRAMID BUY";
+    quantity = firstPositive(add.plannedQuantity, add.quantity);
+    value = firstPositive(add.plannedAllocation, add.allocation, multiply(quantity, add.price));
+  } else if (["CONTROLLED_RETEST_ADD_PENDING", "CONTROLLED_RETEST_ADD_FILLED"].includes(type)) {
+    side = "RETEST BUY";
     quantity = firstPositive(add.plannedQuantity, add.quantity);
     value = firstPositive(add.plannedAllocation, add.allocation, multiply(quantity, add.price));
   }

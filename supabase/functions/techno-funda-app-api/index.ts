@@ -15,7 +15,7 @@ import {
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info, x-device-id",
+  "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info, x-device-id, x-tf-managed-user-id",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Cache-Control": "no-store"
 };
@@ -39,17 +39,18 @@ Deno.serve(async (request: Request) => {
 
 async function handleGet(request: Request, url: URL) {
   const context = await requireUser(request, { activeSession: true });
+  const managedContext = await managedContextForRequest(context, request);
   const view = String(url.searchParams.get("view") || "state");
 
-  if (view === "live-mtm") return json(await liveMtm(context.user.id));
-  if (view === "meta") return json(await metadata(context));
+  if (view === "live-mtm") return json(await liveMtm(subjectUserId(managedContext)));
+  if (view === "meta") return json(await metadata(managedContext));
   if (view === "push-config") return json(await publicPushConfig());
   if (view === "admin-users") {
     requireAdmin(context);
     return json({ ok: true, users: await listUsers() });
   }
 
-  const payload = await userPayload(context);
+  const payload = await userPayload(managedContext);
   return json({ ok: true, ...payload });
 }
 
@@ -64,14 +65,15 @@ async function handlePost(request: Request) {
   if (action === "save-user-state") return json(await saveRuntimeUserState(body));
 
   const context = await requireUser(request, { activeSession: action !== "activate-session" });
+  const managedContext = await managedContextForRequest(context, request);
 
   if (action === "activate-session") return json(await activateSession(context, request));
-  if (action === "save-custom-list") return json(await saveCustomList(context, body));
-  if (action === "save-trade-settings") return json(await saveTradeSettings(context, body));
-  if (action === "save-telegram-config") return json(await saveTelegram(context, body));
+  if (action === "save-custom-list") return json(await saveCustomList(managedContext, body));
+  if (action === "save-trade-settings") return json(await saveTradeSettings(managedContext, body));
+  if (action === "save-telegram-config") return json(await saveTelegram(managedContext, body));
   if (action === "register-push-subscription") return json(await registerPushSubscription(context, body));
   if (action === "unregister-push-subscription") return json(await unregisterPushSubscription(context, body));
-  if (action === "clear-alert-history") return json(await clearAlertHistory(context));
+  if (action === "clear-alert-history") return json(await clearAlertHistory(managedContext));
   if (action === "admin-create-user") {
     requireAdmin(context);
     return json(await createMember(context, body));
@@ -289,17 +291,19 @@ async function listUsers() {
 }
 
 async function saveCustomList(context: any, body: any) {
+  const userId = subjectUserId(context);
   const symbols = normalizeSymbols(body.symbols).slice(0, 5000);
-  const { error } = await admin().from("app_watchlists").upsert({ user_id: context.user.id, symbols });
+  const { error } = await admin().from("app_watchlists").upsert({ user_id: userId, symbols });
   if (error) throw error;
-  await audit(context.user.id, context.user.id, "WATCHLIST_SAVED", { count: symbols.length });
+  await audit(context.user.id, userId, "WATCHLIST_SAVED", { count: symbols.length, managedByOwner: userId !== context.user.id });
   return { ok: true, count: symbols.length, updatedAt: new Date().toISOString() };
 }
 
 async function saveTradeSettings(context: any, body: any) {
+  const userId = subjectUserId(context);
   const [current, stateResult] = await Promise.all([
-    readSettings(context.user.id),
-    admin().from("app_user_states").select("state").eq("user_id", context.user.id).maybeSingle()
+    readSettings(userId),
+    admin().from("app_user_states").select("state").eq("user_id", userId).maybeSingle()
   ]);
   if (stateResult.error) throw stateResult.error;
   const previousCapital = Number(current.total_capital || 1000000);
@@ -325,13 +329,14 @@ async function saveTradeSettings(context: any, body: any) {
   const { data, error } = await admin()
     .from("app_user_settings")
     .update(requested)
-    .eq("user_id", context.user.id)
+    .eq("user_id", userId)
     .select("*")
     .single();
   if (error) throw error;
-  await audit(context.user.id, context.user.id, "TRADE_SETTINGS_SAVED", {
+  await audit(context.user.id, userId, "TRADE_SETTINGS_SAVED", {
     settings: publicSettings(data),
-    capitalChange: capitalChange.type ? capitalChange : null
+    capitalChange: capitalChange.type ? capitalChange : null,
+    managedByOwner: userId !== context.user.id
   });
   return { ok: true, tradeSettings: publicSettings(data), capitalChange };
 }
@@ -359,16 +364,20 @@ async function profileForLogin(identifier: { kind: string; value: string }) {
 }
 
 async function saveTelegram(context: any, body: any) {
-  const existing = await admin().from("app_telegram_configs").select("*").eq("user_id", context.user.id).maybeSingle();
+  const userId = subjectUserId(context);
+  const existing = await admin().from("app_telegram_configs").select("*").eq("user_id", userId).maybeSingle();
   const row = {
-    user_id: context.user.id,
+    user_id: userId,
     bot_token: String(body.botToken || existing.data?.bot_token || "").trim() || null,
     chat_id: String(body.chatId || existing.data?.chat_id || "").trim() || null,
     enabled: body.enabled !== false
   };
   const { error } = await admin().from("app_telegram_configs").upsert(row);
   if (error) throw error;
-  await audit(context.user.id, context.user.id, "TELEGRAM_SAVED", { configured: Boolean(row.bot_token && row.chat_id) });
+  await audit(context.user.id, userId, "TELEGRAM_SAVED", {
+    configured: Boolean(row.bot_token && row.chat_id),
+    managedByOwner: userId !== context.user.id
+  });
   return { ok: true, telegram: publicTelegram(row) };
 }
 
@@ -434,14 +443,16 @@ async function unregisterPushSubscription(context: any, body: any) {
 }
 
 async function metadata(context: any) {
+  const userId = subjectUserId(context);
   const [settings, watchlist, telegram] = await Promise.all([
-    readSettings(context.user.id),
-    readWatchlist(context.user.id),
-    readTelegram(context.user.id)
+    readSettings(userId),
+    readWatchlist(userId),
+    readTelegram(userId)
   ]);
   return {
     ok: true,
     profile: publicProfile(context.profile),
+    managedUser: context.managedProfile ? publicProfile(context.managedProfile) : null,
     tradeSettings: publicSettings(settings),
     customList: { count: watchlist.length },
     telegram: publicTelegram(telegram)
@@ -449,12 +460,13 @@ async function metadata(context: any) {
 }
 
 async function userPayload(context: any) {
+  const userId = subjectUserId(context);
   const [marketResult, stateResult, settings, symbols, telegram] = await Promise.all([
     admin().from("app_market_state").select("*").eq("singleton", true).maybeSingle(),
-    admin().from("app_user_states").select("*").eq("user_id", context.user.id).maybeSingle(),
-    readSettings(context.user.id),
-    readWatchlist(context.user.id),
-    readTelegram(context.user.id)
+    admin().from("app_user_states").select("*").eq("user_id", userId).maybeSingle(),
+    readSettings(userId),
+    readWatchlist(userId),
+    readTelegram(userId)
   ]);
   if (marketResult.error) throw marketResult.error;
   if (stateResult.error) throw stateResult.error;
@@ -472,6 +484,7 @@ async function userPayload(context: any) {
   return {
     state,
     profile: publicProfile(context.profile),
+    managedUser: context.managedProfile ? publicProfile(context.managedProfile) : null,
     tradeSettings,
     customList: { count: symbols.length },
     telegram: publicTelegram(telegram)
@@ -797,6 +810,27 @@ function requireAdmin(context: any) {
   if (context.claims.aal !== "aal2") throw httpError("Administrator OTP verification required", 403);
 }
 
+async function managedContextForRequest(context: any, request: Request) {
+  const requestedUserId = String(request.headers.get("x-tf-managed-user-id") || "").trim();
+  if (!requestedUserId || requestedUserId === context.user.id) {
+    return { ...context, subjectUserId: context.user.id, managedProfile: null };
+  }
+  if (!isUuid(requestedUserId)) throw httpError("Managed client ID is invalid", 400);
+  requireAdmin(context);
+  const { data: managedProfile, error } = await admin()
+    .from("app_profiles")
+    .select("*")
+    .eq("user_id", requestedUserId)
+    .maybeSingle();
+  if (error) throw error;
+  if (!managedProfile) throw httpError("Managed client account was not found", 404);
+  return { ...context, subjectUserId: requestedUserId, managedProfile };
+}
+
+function subjectUserId(context: any) {
+  return String(context?.subjectUserId || context?.user?.id || "");
+}
+
 async function requireInternal(body: any) {
   if (!(await verifySecret("workflow_ingest", String(body.internalKey || ""), false))) {
     throw httpError("Invalid workflow key", 401);
@@ -1079,10 +1113,11 @@ function clamp(value: number, min: number, max: number) {
 }
 
 async function clearAlertHistory(context: any) {
+  const userId = subjectUserId(context);
   const { data, error } = await admin()
     .from("app_user_states")
     .select("state, strategy_version, scan_at")
-    .eq("user_id", context.user.id)
+    .eq("user_id", userId)
     .maybeSingle();
   if (error) throw error;
   const state = data?.state && typeof data.state === "object" ? data.state : {};
@@ -1094,14 +1129,17 @@ async function clearAlertHistory(context: any) {
   const { error: updateError } = await admin()
     .from("app_user_states")
     .upsert({
-      user_id: context.user.id,
+      user_id: userId,
       strategy_version: String(data?.strategy_version || "alert-clear"),
       scan_at: data?.scan_at || state.scannedAt || new Date().toISOString(),
       state: nextState
     });
   if (updateError) throw updateError;
-  await admin().from("app_push_deliveries").delete().eq("user_id", context.user.id);
-  await audit(context.user.id, context.user.id, "ALERT_HISTORY_CLEARED", { previousCount });
+  await admin().from("app_push_deliveries").delete().eq("user_id", userId);
+  await audit(context.user.id, userId, "ALERT_HISTORY_CLEARED", {
+    previousCount,
+    managedByOwner: userId !== context.user.id
+  });
   return { ok: true, cleared: previousCount };
 }
 

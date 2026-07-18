@@ -1,4 +1,5 @@
 import { resolveRequestUrl } from "./auth-request.js?v=20260714-url-auth-fix";
+import { tradeSheetPositionPnl } from "./pnl-accounting.js?v=20260718-open-lot-pnl";
 
 const config = window.TF_MOBILE_CONFIG;
 if (!config?.supabaseUrl || !config?.publishableKey || !config?.apiUrl || !window.supabase?.createClient) {
@@ -17,6 +18,7 @@ const client = window.supabase.createClient(config.supabaseUrl, config.publishab
 const nativeFetch = window.fetch.bind(window);
 const DEVICE_STORAGE_KEY = "techno-funda-device-id";
 const PROFILE_STORAGE_KEY = "techno-funda-profile";
+const MANAGED_USER_STORAGE_KEY = "techno-funda-managed-user";
 const deviceId = readOrCreateDeviceId();
 let currentProfile = null;
 let pendingFactorId = null;
@@ -49,7 +51,10 @@ const elements = {
   createUserForm: document.querySelector("#createUserForm"),
   adminUsersBody: document.querySelector("#adminUsersBody"),
   adminUsersEmpty: document.querySelector("#adminUsersEmpty"),
-  adminStatus: document.querySelector("#adminStatus")
+  adminStatus: document.querySelector("#adminStatus"),
+  managedUserBanner: document.querySelector("#managedUserBanner"),
+  managedUserName: document.querySelector("#managedUserName"),
+  exitManagedUserButton: document.querySelector("#exitManagedUserButton")
 };
 
 window.TF_STATIC_MODE = true;
@@ -61,6 +66,10 @@ window.fetch = async (input, options = {}) => {
     const accessToken = await currentAccessToken();
     if (accessToken) headers.set("Authorization", `Bearer ${accessToken}`);
     headers.set("X-Device-ID", deviceId);
+    const managedUser = readManagedUser();
+    if (currentProfile?.role === "admin" && managedUser?.userId) {
+      headers.set("X-TF-Managed-User-ID", managedUser.userId);
+    }
     return nativeFetch(input, { ...options, headers });
   }
   return nativeFetch(input, options);
@@ -83,6 +92,7 @@ elements.createUserForm.addEventListener("submit", createUser);
 elements.adminUsersBody.addEventListener("click", handleAdminAction);
 elements.adminNavButton.addEventListener("click", loadUsers);
 elements.installAppButton.addEventListener("click", installApp);
+elements.exitManagedUserButton?.addEventListener("click", exitManagedUser);
 
 window.addEventListener("beforeinstallprompt", (event) => {
   event.preventDefault();
@@ -100,7 +110,7 @@ client.auth.onAuthStateChange((_event, session) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => navigator.serviceWorker.register(
-    "service-worker.js?v=20260717-bull-v2",
+    "service-worker.js?v=20260718-owner-control",
     { updateViaCache: "none" }
   ).catch(() => {}));
 }
@@ -242,11 +252,13 @@ async function resumeSession() {
 
 async function showApplication(profile) {
   currentProfile = profile;
+  if (profile.role !== "admin") localStorage.removeItem(MANAGED_USER_STORAGE_KEY);
   cacheProfile(profile);
   elements.authGate.hidden = true;
   elements.appRoot.hidden = false;
   elements.accountName.textContent = profile.displayName || profile.username;
   elements.adminNavButton.hidden = profile.role !== "admin";
+  renderManagedUserBanner();
   updateInstallButton();
   document.querySelector(".accessRow")?.setAttribute("hidden", "");
   ["tradeAccessCodeInput", "telegramAccessCodeInput"].forEach((id) => {
@@ -255,7 +267,7 @@ async function showApplication(profile) {
   });
   if (!appLoaded) {
     appLoaded = true;
-    await import("./app.js?v=20260717-bull-v2");
+    await import("./app.js?v=20260718-owner-control");
   }
 }
 
@@ -264,6 +276,7 @@ async function logout() {
   await client.auth.signOut({ scope: "local" });
   window.TF_ACCESS_TOKEN = "";
   localStorage.removeItem(PROFILE_STORAGE_KEY);
+  localStorage.removeItem(MANAGED_USER_STORAGE_KEY);
   window.location.reload();
 }
 
@@ -325,6 +338,7 @@ function renderUsers(users) {
       <td>${formatDate(user.lastLoginAt)}</td>
       <td>${user.hasActiveSession ? "Active device" : "Signed out"}</td>
       <td class="adminActions">
+        ${user.role === "admin" ? "" : `<button class="managePortfolioButton" data-admin-action="portfolio" data-user-id="${user.userId}" data-user-name="${escapeHtml(user.displayName)}">Open Portfolio</button>`}
         ${user.role === "admin" ? "" : `<button data-admin-action="toggle" data-user-id="${user.userId}" data-status="${user.status}">${user.status === "active" ? "Suspend" : "Activate"}</button>`}
         <button data-admin-action="revoke" data-user-id="${user.userId}">Log out</button>
         ${user.role === "admin" ? "" : `<button data-admin-action="password" data-user-id="${user.userId}">Password</button>`}
@@ -340,7 +354,16 @@ async function handleAdminAction(event) {
   button.disabled = true;
   try {
     const userId = button.dataset.userId;
-    if (button.dataset.adminAction === "toggle") {
+    if (button.dataset.adminAction === "portfolio") {
+      localStorage.setItem(MANAGED_USER_STORAGE_KEY, JSON.stringify({
+        userId,
+        displayName: button.dataset.userName || "Client portfolio"
+      }));
+      const url = new URL(window.location.href);
+      url.searchParams.set("view", "dashboard");
+      window.location.assign(url);
+      return;
+    } else if (button.dataset.adminAction === "toggle") {
       await apiPost({ action: "admin-update-user", userId, status: button.dataset.status === "active" ? "suspended" : "active" });
     } else if (button.dataset.adminAction === "revoke") {
       await apiPost({ action: "admin-reset-session", userId });
@@ -354,6 +377,32 @@ async function handleAdminAction(event) {
     setAdminStatus(error.message, true);
   } finally {
     button.disabled = false;
+  }
+}
+
+function renderManagedUserBanner() {
+  if (!elements.managedUserBanner) return;
+  const managedUser = currentProfile?.role === "admin" ? readManagedUser() : null;
+  elements.managedUserBanner.hidden = !managedUser?.userId;
+  if (managedUser?.userId && elements.managedUserName) {
+    elements.managedUserName.textContent = managedUser.displayName || "Client portfolio";
+  }
+}
+
+function exitManagedUser() {
+  localStorage.removeItem(MANAGED_USER_STORAGE_KEY);
+  const url = new URL(window.location.href);
+  url.searchParams.set("view", "dashboard");
+  window.location.assign(url);
+}
+
+function readManagedUser() {
+  try {
+    const value = JSON.parse(localStorage.getItem(MANAGED_USER_STORAGE_KEY) || "null");
+    return value?.userId ? value : null;
+  } catch {
+    localStorage.removeItem(MANAGED_USER_STORAGE_KEY);
+    return null;
   }
 }
 
@@ -460,7 +509,9 @@ function tradeSheetRow(trade, state = {}) {
     bookedPnlContribution,
     dayPnl,
     dayPnlPct,
-    totalPositionPnl: bookedPnlContribution + unrealizedPnl,
+    // Active rows report only the still-open lot. Booked partial legs remain
+    // in their realized columns and in the portfolio realized total.
+    totalPositionPnl: tradeSheetPositionPnl({ closed, finalRealizedPnl, unrealizedPnl }),
     managementDecision: trade.latestManagementDecision?.action || "",
     reason: tradeSheetReason(trade)
   };
@@ -576,6 +627,10 @@ async function apiPost(body, authenticated = true) {
   const headers = { "Content-Type": "application/json", "X-Device-ID": deviceId };
   const accessToken = authenticated ? await currentAccessToken() : "";
   if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
+  const managedUser = readManagedUser();
+  if (currentProfile?.role === "admin" && managedUser?.userId) {
+    headers["X-TF-Managed-User-ID"] = managedUser.userId;
+  }
   const response = await nativeFetch(config.apiUrl, { method: "POST", headers, body: JSON.stringify(body) });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok || payload.error) {

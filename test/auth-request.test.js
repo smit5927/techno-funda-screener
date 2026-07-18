@@ -25,6 +25,19 @@ test("static website build publishes the authentication helper", () => {
   assert.match(buildSource, /"auth-request\.js"/);
   assert.match(buildSource, /"detail-evidence\.js"/);
   assert.match(buildSource, /"decision-guide\.js"/);
+  assert.match(buildSource, /"pnl-accounting\.js"/);
+});
+
+test("owner can securely enter and leave a managed client portfolio", () => {
+  const html = fs.readFileSync(path.join(rootDir, "public", "index.html"), "utf8");
+  const auth = fs.readFileSync(path.join(rootDir, "public", "auth.js"), "utf8");
+  const api = fs.readFileSync(path.join(rootDir, "supabase", "functions", "techno-funda-app-api", "index.ts"), "utf8");
+  assert.match(html, /id="managedUserBanner"/);
+  assert.match(auth, /data-admin-action="portfolio"/);
+  assert.match(auth, /X-TF-Managed-User-ID/);
+  assert.match(api, /managedContextForRequest/);
+  assert.match(api, /requireAdmin\(context\)/);
+  assert.match(api, /managedByOwner/);
 });
 
 test("portfolio summary exposes live today and total unrealized P&L", () => {

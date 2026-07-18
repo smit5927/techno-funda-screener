@@ -626,6 +626,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .telegramInputs { grid-template-columns: .7fr 1.4fr .8fr; }
 .settingsInputs { grid-template-columns: repeat(5, minmax(140px, 1fr)); }
 .telegramInputs input, .settingsInputs input, .settingsInputs select { width: 100%; padding: 0 10px; background: var(--surface-muted); }
+.strategyPolicy { margin-top: 12px; padding: 12px 14px; display: grid; grid-template-columns: minmax(180px, 1.2fr) repeat(3, minmax(180px, 1fr)); gap: 10px; align-items: center; border: 1px solid var(--border); border-left: 3px solid var(--accent); background: color-mix(in srgb, var(--surface-muted) 82%, transparent); }
+.strategyPolicy strong { color: var(--text); }
+.strategyPolicy span { color: var(--muted); font-size: 0.86rem; }
 .settingsToggle { min-height: 42px; display: flex; align-items: center; gap: 9px; padding: 0 11px; border: 1px solid var(--border); background: var(--surface-muted); color: var(--text); }
 .settingsToggle input { width: 18px; height: 18px; accent-color: var(--accent); }
 .brokerageSettings { margin-top: 12px; padding: 14px; border: 1px solid var(--border); background: color-mix(in srgb, var(--surface-muted) 74%, transparent); }
@@ -789,7 +792,7 @@ tbody tr:hover, tbody tr:focus-within { box-shadow: inset 3px 0 var(--brand); }
 .pill.EXIT, .pill.ERROR { border-color: rgba(255, 102, 115, .16); background: var(--red-soft); color: var(--red); }
 .pill.WATCH { border-color: rgba(101, 181, 255, .16); background: var(--blue-soft); color: var(--blue); }
 .pill.DATA_GAP { min-width: 78px; border-color: rgba(239, 186, 82, .16); background: var(--amber-soft); color: var(--amber); }
-.pill.PENDING_ENTRY, .pill.PENDING_EXIT, .pill.PENDING_PARTIAL_EXIT, .pill.PENDING_ADD {
+.pill.PENDING_ENTRY, .pill.PENDING_EXIT, .pill.PENDING_PARTIAL_EXIT, .pill.PENDING_ADD, .pill.PENDING_RETEST_ADD, .pill.PENDING_PYRAMID_ADD {
   min-width: 90px;
   border-color: rgba(239, 186, 82, .16);
   background: var(--amber-soft);
@@ -968,6 +971,7 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
 
 @media (max-width: 1420px) {
   .settingsInputs { grid-template-columns: repeat(3, 1fr); }
+  .strategyPolicy { grid-template-columns: repeat(2, minmax(180px, 1fr)); }
   .brokerageInputs { grid-template-columns: repeat(2, minmax(150px, 1fr)); }
 }
 
@@ -1057,6 +1061,7 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
   .listActions { display: grid; width: 100%; grid-template-columns: repeat(3, minmax(0, 1fr)); align-self: stretch; }
   .listActions button { min-width: 0; padding: 0 4px; font-size: 10px; }
   .uploadRow, .telegramInputs, .settingsInputs { grid-template-columns: 1fr; }
+  .strategyPolicy { grid-template-columns: 1fr; }
   .brokerageSettingsHeader { align-items: stretch; flex-direction: column; }
   .brokerageInputs { grid-template-columns: 1fr; }
   .sectionHeading span { max-width: 54%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -1238,6 +1243,13 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
 .mfaEnrollment code { max-width: 100%; overflow-wrap: anywhere; color: #14171b; font-size: 12px; }
 
 .accountName { align-self: center; color: #c5cdd5; font-size: 13px; font-weight: 750; }
+.managedUserBanner { max-width: 1680px; margin: 14px auto 0; padding: 12px 18px; border: 1px solid rgba(255,159,67,.48); border-left: 4px solid #ff9f43; background: linear-gradient(90deg, rgba(255,159,67,.14), rgba(19,25,30,.96) 46%); display: flex; align-items: center; justify-content: space-between; gap: 18px; animation: authPanelIn .28s ease both; }
+.managedUserBanner[hidden] { display: none; }
+.managedUserBanner div { display: grid; grid-template-columns: auto auto; align-items: baseline; gap: 2px 10px; }
+.managedUserBanner span { color: #ffad5c; font-size: 10px; font-weight: 850; letter-spacing: 1px; }
+.managedUserBanner strong { color: #fff; font-size: 15px; }
+.managedUserBanner small { grid-column: 1 / -1; color: var(--muted); }
+.managedUserBanner button { flex: 0 0 auto; }
 .adminWorkspace { padding: 0 0 40px; }
 .adminHeader { display: flex; align-items: end; justify-content: space-between; gap: 20px; padding: 24px 0 18px; }
 .adminHeader h2 { margin: 5px 0 0; font-size: 24px; }
@@ -1248,7 +1260,8 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
 .adminState { display: inline-flex; padding: 5px 8px; border-radius: 3px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
 .adminState.active { color: #4be0a7; background: rgba(75,224,167,.12); }
 .adminState.suspended { color: #ff6b77; background: rgba(255,107,119,.12); }
-.adminActions { display: flex; gap: 6px; min-width: 220px; }
+.adminActions { display: flex; flex-wrap: wrap; gap: 6px; min-width: 300px; }
+.adminActions .managePortfolioButton { border-color: rgba(255,159,67,.58); color: #ffb56e; }
 .adminActions button { min-height: 34px; padding: 0 10px; font-size: 11px; }
 .adminStatus { min-height: 22px; color: var(--muted); padding-top: 10px; }
 
@@ -1272,6 +1285,8 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
   .adminCreateForm { padding: 16px; }
   .adminTableShell { overflow-x: auto; }
   .adminUsersTable { min-width: 920px; }
+  .managedUserBanner { margin: 10px 12px 0; align-items: stretch; flex-direction: column; }
+  .managedUserBanner button { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

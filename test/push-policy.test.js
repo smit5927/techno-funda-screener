@@ -26,12 +26,13 @@ test("background push includes only recent actionable decisions and dividend", (
   const now = Date.parse("2026-07-17T03:00:00.000Z");
   const alerts = [
     { id: "entry", type: "ENTRY_SIGNAL_PENDING", occurredAt: "2026-07-17T03:00:00.000Z" },
+    { id: "retest", type: "CONTROLLED_RETEST_ADD_PENDING", occurredAt: "2026-07-17T03:00:00.000Z" },
     { id: "dividend", type: "DIVIDEND_CREDIT", occurredAt: "2026-07-16T03:00:00.000Z" },
     { id: "skipped", type: "ENTRY_SKIPPED", occurredAt: "2026-07-17T03:00:00.000Z" },
     { id: "fill", type: "ENTRY_TRADE_OPENED", occurredAt: "2026-07-17T03:00:00.000Z" },
     { id: "old", type: "EXIT_SIGNAL_PENDING", occurredAt: "2026-07-14T03:00:00.000Z" }
   ];
-  assert.deepEqual(recentPushAlerts(alerts, now).map((alert) => alert.id), ["dividend", "entry"]);
+  assert.deepEqual(new Set(recentPushAlerts(alerts, now).map((alert) => alert.id)), new Set(["dividend", "entry", "retest"]));
   assert.equal(PUSH_TTL_SECONDS, 172800);
 });
 

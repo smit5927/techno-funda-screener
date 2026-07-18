@@ -1,10 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  buildControlledRetestAddPlan,
   buildPositionPlan,
   buildPyramidAddPlan,
   candidateEntryDecision,
   candidateRank,
+  controlledRetestAddDecision,
   nextTrailingStop,
   portfolioConfig,
   portfolioSummary,
@@ -24,6 +26,10 @@ test("portfolio defaults use ten lakh capital with institutional limits", () => 
   assert.equal(rules.maxOpenPositions, 15);
   assert.equal(rules.maxPositionPct, 10);
   assert.equal(rules.riskPerTradePct, 1);
+  assert.equal(rules.initialMaxPositionPct, 7.5);
+  assert.equal(rules.initialRiskPct, 0.7);
+  assert.equal(rules.controlledRetestAddMaxPct, 2.5);
+  assert.equal(rules.controlledRetestAddRiskPct, 0.3);
   assert.equal(rules.maxPortfolioRiskPct, 6);
   assert.equal(rules.pyramidMaxAddOns, 2);
   assert.equal(rules.pyramidMaxPositionPct, 15);
@@ -146,6 +152,96 @@ test("pyramiding never averages down or adds before stop protects cost", () => {
   assert.match(decision.reasons.join(" "), /protected/i);
 });
 
+test("one controlled retest tranche adds only after an A-grade reclaim inside the 0.25R to 0.75R band", () => {
+  const row = strongRow({ close: 97, dailySupertrend: 92 });
+  row.setupStrength.checks.retracementBuyZone = true;
+  row.setupStrength.values.retracementSupportSource = "50-DMA";
+  row.setupStrength.values.retracementSupportReference = 96;
+  row.setupStrength.values.retracementPullbackDepthPct = 4;
+  row.setupStrength.values.retracementPullbackVolumeRatio = 0.75;
+  row.setupStrength.values.retracementCloseLocationPct = 72;
+  const trade = openTrade({
+    entryDate: "2026-07-09",
+    initialEntryPrice: 100,
+    entryPrice: 100,
+    initialStopPrice: 94,
+    trailingStopPrice: 94,
+    quantity: 750,
+    originalQuantity: 750,
+    investedValue: 75_000,
+    originalInvestedValue: 75_000
+  });
+  const decision = controlledRetestAddDecision(
+    trade,
+    row,
+    { availableCash: 925_000, availableRisk: 55_500, sectorExposure: { Industrials: 75_000 } },
+    { trade: {} }
+  );
+  assert.equal(decision.eligible, true);
+  assert.equal(decision.state.drawdownR, 0.5);
+  assert.equal(decision.quantity, 257);
+  assert.ok(decision.allocation <= 25_000);
+  assert.ok(decision.plannedRisk <= 3_000);
+});
+
+test("qualified GTF demand structure raises controlled retest confidence without replacing compulsory rules", () => {
+  const row = strongRow({ close: 97, dailySupertrend: 92 });
+  row.setupStrength.checks.retracementBuyZone = true;
+  row.gtfContext = {
+    checks: { dailyDemandQualified: true, demandRetest: true },
+    supplyBlocked: false
+  };
+  const decision = controlledRetestAddDecision(
+    openTrade({
+      entryDate: "2026-07-09",
+      initialEntryPrice: 100,
+      entryPrice: 100,
+      initialStopPrice: 94,
+      trailingStopPrice: 94,
+      quantity: 750,
+      investedValue: 75_000
+    }),
+    row,
+    { availableCash: 925_000, availableRisk: 55_500, sectorExposure: { Industrials: 75_000 } },
+    { trade: {} }
+  );
+  assert.equal(decision.eligible, true);
+  assert.equal(decision.state.gtfDemandConfidence, true);
+  assert.equal(decision.state.confidenceGrade, "HIGH_GTF_CONFLUENCE");
+  assert.match(decision.reasons.join(" "), /GTF confidence is high/i);
+});
+
+test("controlled retest never rescues a broken trend or permits a second averaging add", () => {
+  const row = strongRow({ close: 97, dailyShortRs: -0.01 });
+  row.setupStrength.checks.retracementBuyZone = true;
+  const decision = controlledRetestAddDecision(
+    openTrade({
+      entryDate: "2026-07-09",
+      addOns: [{ kind: "CONTROLLED_RETEST", number: 1 }]
+    }),
+    row,
+    { availableCash: 900_000, availableRisk: 50_000, sectorExposure: {} },
+    { trade: {} }
+  );
+  assert.equal(decision.eligible, false);
+  assert.match(decision.reasons.join(" "), /one permitted|RS21/i);
+});
+
+test("actual retest sizing preserves the original stop and combined one-percent stock-risk cap", () => {
+  const row = strongRow({ close: 97, dailySupertrend: 92 });
+  const plan = buildControlledRetestAddPlan(
+    openTrade({ quantity: 750, investedValue: 75_000, initialStopPrice: 94, trailingStopPrice: 94 }),
+    row,
+    97,
+    { availableCash: 925_000, availableRisk: 55_500, sectorExposure: { Industrials: 75_000 } },
+    { trade: {} }
+  );
+  assert.equal(plan.eligible, true);
+  assert.equal(plan.trailingStop, 94);
+  assert.ok(plan.plannedRisk <= 3_000);
+  assert.ok(75_000 + plan.allocation <= 100_000);
+});
+
 test("pyramid add plan respects total stock, incremental risk and sector caps", () => {
   const row = strongRow({ close: 112, dailySupertrend: 101 });
   const trade = openTrade({
@@ -210,7 +306,7 @@ test("structural trailing stop never moves downward", () => {
   assert.equal(nextTrailingStop(trade, row, { trade: {} }), 105);
 });
 
-test("position sizing respects capital cap and one-percent risk budget", () => {
+test("initial position sizing reserves capital and risk for the controlled retest tranche", () => {
   const row = strongRow({ close: 100, dailySupertrend: 94 });
   const plan = buildPositionPlan(
     row,
@@ -225,9 +321,11 @@ test("position sizing respects capital cap and one-percent risk budget", () => {
   );
   assert.equal(plan.eligible, true);
   assert.equal(plan.stopPrice, 94);
-  assert.equal(plan.quantity, 1000);
-  assert.equal(plan.allocation, 100_000);
-  assert.equal(plan.plannedRisk, 6_000);
+  assert.equal(plan.quantity, 750);
+  assert.equal(plan.allocation, 75_000);
+  assert.equal(plan.plannedRisk, 4_500);
+  assert.equal(plan.riskBudget, 7_000);
+  assert.equal(plan.maxAllocation, 75_000);
 });
 
 test("position sizing blocks entries when portfolio capital is full", () => {

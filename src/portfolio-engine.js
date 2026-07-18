@@ -6,14 +6,18 @@ export function portfolioConfig(config = {}) {
   const trade = config.trade || config;
   const totalCapital = positive(trade.totalCapital, 1_000_000);
   const pyramidPullbackMinPct = positive(trade.pyramidPullbackMinPct, 2);
+  const maxPositionPct = positive(trade.maxPositionPct, 10);
+  const riskPerTradePct = positive(trade.riskPerTradePct, 1);
   return {
     totalCapital,
     minimumInitialAllocation: positive(trade.minimumInitialAllocation, 10_000),
     maxOpenPositions: trade.autoPositionBreadth === false
       ? integer(trade.maxOpenPositions, adaptivePositionCount(totalCapital))
       : adaptivePositionCount(totalCapital),
-    maxPositionPct: positive(trade.maxPositionPct, 10),
-    riskPerTradePct: positive(trade.riskPerTradePct, 1),
+    maxPositionPct,
+    riskPerTradePct,
+    initialMaxPositionPct: Math.min(positive(trade.initialMaxPositionPct, 7.5), maxPositionPct),
+    initialRiskPct: Math.min(positive(trade.initialRiskPct, 0.7), riskPerTradePct),
     maxPortfolioRiskPct: positive(trade.maxPortfolioRiskPct, 6),
     maxSectorExposurePct: positive(trade.maxSectorExposurePct, 25),
     minimumStopPct: positive(trade.minimumStopPct, 1.5),
@@ -38,6 +42,12 @@ export function portfolioConfig(config = {}) {
     candidateMaxAtrExtension: positive(trade.candidateMaxAtrExtension, 3),
     candidateMaxRankDecay: positive(trade.candidateMaxRankDecay, 15),
     pyramidingEnabled: trade.pyramidingEnabled !== false,
+    controlledRetestEnabled: trade.controlledRetestEnabled !== false,
+    controlledRetestAddMaxPct: positive(trade.controlledRetestAddMaxPct, 2.5),
+    controlledRetestAddRiskPct: positive(trade.controlledRetestAddRiskPct, 0.3),
+    controlledRetestMaxPositionPct: positive(trade.controlledRetestMaxPositionPct, 10),
+    controlledRetestMinDrawdownR: positive(trade.controlledRetestMinDrawdownR, 0.25),
+    controlledRetestMaxDrawdownR: positive(trade.controlledRetestMaxDrawdownR, 0.75),
     pyramidMaxAddOns: integer(trade.pyramidMaxAddOns, 2),
     pyramidMaxPositionPct: positive(trade.pyramidMaxPositionPct, 15),
     pyramidAddMaxPct: positive(trade.pyramidAddMaxPct, 2.5),
@@ -146,8 +156,8 @@ export function buildPositionPlan(row, price, portfolio = {}, config = {}) {
   const rules = portfolioConfig(config);
   const stopPrice = structuralStop(row, price, rules);
   const riskPerShare = Number.isFinite(stopPrice) ? price - stopPrice : null;
-  const maxAllocation = rules.totalCapital * rules.maxPositionPct / 100;
-  const riskBudget = rules.totalCapital * rules.riskPerTradePct / 100;
+  const maxAllocation = rules.totalCapital * rules.initialMaxPositionPct / 100;
+  const riskBudget = rules.totalCapital * rules.initialRiskPct / 100;
   const availableCash = Math.max(0, Number(portfolio.availableCash) || 0);
   const availableRisk = Math.max(0, Number(portfolio.availableRisk) || 0);
   const sector = normalizedSector(row.industry);
@@ -169,7 +179,7 @@ export function buildPositionPlan(row, price, portfolio = {}, config = {}) {
   const allocation = quantity * price;
   const plannedRisk = quantity * riskPerShare;
   const minimumAllocationMet = allocation >= rules.minimumInitialAllocation;
-  let reason = "Risk and capital limits allow entry.";
+  let reason = "Staged initial-entry risk and capital limits allow entry.";
   if ((Number(portfolio.openSlots) || 0) <= 0) reason = "Maximum open-position limit reached.";
   else if (availableCash < price) reason = "Available portfolio cash is insufficient.";
   else if (sectorAvailable < price) reason = `Sector exposure limit reached for ${sector}.`;
@@ -523,6 +533,181 @@ export function postEntryPyramidState(trade = {}, row = {}, config = {}) {
   return baseState;
 }
 
+export function controlledRetestAddDecision(trade, row, portfolio = {}, config = {}) {
+  const rules = portfolioConfig(config);
+  const checks = row?.setupStrength?.checks || {};
+  const values = row?.setupStrength?.values || {};
+  const close = Number(row?.close);
+  const initialEntry = Number(trade?.initialEntryPrice || trade?.entryPrice);
+  const initialStop = Number(trade?.initialStopPrice);
+  const initialRiskPerShare = initialEntry - initialStop;
+  const drawdownR = initialRiskPerShare > 0 ? (initialEntry - close) / initialRiskPerShare : null;
+  const retestAdds = controlledRetestAdds(trade);
+  const winnerAdds = winnerPyramidAdds(trade);
+  const entryFundamental = Number(trade?.entrySnapshot?.fundamentalScore);
+  const currentFundamental = Number(row?.fundamentalScore);
+  const fundamentalDeteriorated =
+    Number.isFinite(entryFundamental) &&
+    Number.isFinite(currentFundamental) &&
+    entryFundamental - currentFundamental >= 2 &&
+    currentFundamental <= 2;
+  const gtfChecks = row?.gtfContext?.checks || {};
+  const gtfDemandConfidence = Boolean(
+    gtfChecks.dailyDemandQualified === true ||
+    gtfChecks.weeklyDemandQualified === true ||
+    gtfChecks.demandRetest === true ||
+    gtfChecks.reactingFromHtf === true ||
+    row?.gtfContext?.reactingFromHtf?.active === true
+  );
+  const reasons = [];
+
+  if (!rules.controlledRetestEnabled) reasons.push("Controlled retest adds are disabled.");
+  if (trade?.status !== "OPEN") reasons.push("Only an open position can receive a controlled retest add.");
+  if (trade?.pendingAdd) reasons.push("Another add order is already pending.");
+  if (retestAdds.length >= 1) reasons.push("The one permitted controlled retest add has already been used.");
+  if (winnerAdds.length > 0) reasons.push("A controlled retest add cannot be introduced after winner pyramiding has started.");
+  if (!row?.asOf || dateOnly(row.asOf) <= dateOnly(trade?.entryDate)) {
+    reasons.push("Retest confirmation must occur on a completed close after the initial fill date.");
+  }
+  if (row?.status !== "ENTRY") reasons.push("All compulsory entry conditions are no longer valid.");
+  if (!['A+', 'A'].includes(String(row?.setupGrade || '').toUpperCase())) {
+    reasons.push("Current setup is below A grade.");
+  }
+  if (!(Number(row?.weeklyRsi) > 50 && Number(row?.dailyRsi) > 50)) {
+    reasons.push("Weekly and daily RSI must both remain above 50.");
+  }
+  if (!(Number(row?.weeklyRs) > 0 && Number(row?.dailyLongRs) > 0 && Number(row?.dailyShortRs) > 0)) {
+    reasons.push("Weekly RS, daily RS55 and daily RS21 must all remain above zero.");
+  }
+  if (!(Number(row?.close) > Number(row?.dailySupertrend))) {
+    reasons.push("Daily close must remain above Supertrend.");
+  }
+  if (!(Number(row?.weeklyClose) > Number(row?.weeklyEma13))) {
+    reasons.push("Completed weekly close must remain above weekly EMA13.");
+  }
+  if (!(close < initialEntry)) reasons.push("Retest price is not below the initial fill, so no averaging benefit exists.");
+  if (!Number.isFinite(drawdownR) || drawdownR < rules.controlledRetestMinDrawdownR) {
+    reasons.push(`Pullback has not reached the planned ${rules.controlledRetestMinDrawdownR}R retest depth.`);
+  }
+  if (Number.isFinite(drawdownR) && drawdownR > rules.controlledRetestMaxDrawdownR) {
+    reasons.push(`Pullback exceeds the safe ${rules.controlledRetestMaxDrawdownR}R retest limit.`);
+  }
+  if (checks.retracementBuyZone !== true) {
+    reasons.push("Support, controlled volume and bullish reclaim-candle confirmation are not complete.");
+  }
+  if (checks.marketRegimeStrong !== true || rules.marketRiskMode === "RISK_OFF") {
+    reasons.push("Broad-market regime is not supportive for averaging exposure.");
+  }
+  if (row?.sectorStrength?.ok === false) reasons.push("Sector breadth is weak.");
+  if (row?.gtfContext?.supplyBlocked) reasons.push("Fresh GTF opposing supply blocks the retest add.");
+  if (row?.institutionalContext?.operator?.distribution) {
+    reasons.push("Official NSE delivery evidence shows distribution.");
+  }
+  if (checks.liquidEnough === false) reasons.push("Compulsory liquidity is insufficient.");
+  if (row?.exchangeFallback === true) reasons.push("Cross-exchange fallback data cannot authorize an automated add.");
+  if (fundamentalDeteriorated) reasons.push("Material fundamental deterioration blocks additional exposure.");
+
+  const state = {
+    type: "CONTROLLED_RETEST_RECLAIM",
+    eligible: reasons.length === 0,
+    drawdownR: round(drawdownR),
+    initialEntry: round(initialEntry),
+    initialStop: round(initialStop),
+    supportSource: values.retracementSupportSource || null,
+    supportReference: round(Number(values.retracementSupportReference)),
+    pullbackDepthPct: round(Number(values.retracementPullbackDepthPct)),
+    pullbackVolumeRatio: round(Number(values.retracementPullbackVolumeRatio)),
+    reclaimCloseLocationPct: round(Number(values.retracementCloseLocationPct)),
+    gtfDemandConfidence,
+    confidenceGrade: gtfDemandConfidence ? "HIGH_GTF_CONFLUENCE" : "CORE_RETEST_CONFIRMED"
+  };
+  if (reasons.length) return { eligible: false, reasons, state };
+
+  const plan = buildControlledRetestAddPlan(trade, row, close, portfolio, rules);
+  return {
+    ...plan,
+    eligible: plan.eligible,
+    state,
+    reasons: plan.eligible ? [
+      `Controlled retest confirmed at ${round(drawdownR)}R below the initial fill while every compulsory weekly and daily entry rule remains valid.`,
+      `Support/reclaim confirmation is active${state.supportSource ? ` near ${state.supportSource}` : ""}; the add is not placed while price is falling.`,
+      gtfDemandConfidence
+        ? "GTF confidence is high: a qualified demand-zone/retest or higher-timeframe demand reaction supports the averaging entry."
+        : "GTF demand-zone confirmation is not present; sizing remains conservative and relies on the compulsory reclaim structure.",
+      "This is the single permitted retest tranche; total position risk remains capped at 1% and the structural stop is never widened."
+    ] : [plan.reason]
+  };
+}
+
+export function buildControlledRetestAddPlan(trade, row, price, portfolio = {}, config = {}) {
+  const rules = portfolioConfig(config);
+  const stop = Math.max(
+    Number(trade?.initialStopPrice) || 0,
+    Number(trade?.trailingStopPrice) || 0
+  );
+  const riskPerShare = Number(price) - stop;
+  const initialEntry = Number(trade?.initialEntryPrice || trade?.entryPrice);
+  const currentAllocation = Number(trade?.investedValue) || 0;
+  const maximumPositionAllocation = rules.totalCapital * rules.controlledRetestMaxPositionPct / 100;
+  const addAllocationCap = rules.totalCapital * rules.controlledRetestAddMaxPct / 100;
+  const positionCapacity = Math.max(0, maximumPositionAllocation - currentAllocation);
+  const availableCash = Math.max(0, Number(portfolio.availableCash) || 0);
+  const sector = normalizedSector(row?.industry || trade?.industry);
+  const sectorClassified = sector !== "Unclassified";
+  const sectorUsed = Number(portfolio.sectorExposure?.[sector]) || 0;
+  const sectorLimit = sectorClassified
+    ? rules.totalCapital * rules.maxSectorExposurePct / 100
+    : rules.totalCapital;
+  const sectorCapacity = Math.max(0, sectorLimit - sectorUsed);
+  const allocationBudget = Math.min(addAllocationCap, positionCapacity, availableCash, sectorCapacity);
+  const existingTradeRisk = remainingTradeRisk(trade);
+  const totalTradeRiskCapacity = Math.max(
+    0,
+    rules.totalCapital * rules.riskPerTradePct / 100 - existingTradeRisk
+  );
+  const incrementalRiskCapacity = rules.totalCapital * rules.controlledRetestAddRiskPct / 100;
+  const availablePortfolioRisk = Math.max(0, Number(portfolio.availableRisk) || 0);
+  const riskCapacity = Math.min(incrementalRiskCapacity, totalTradeRiskCapacity, availablePortfolioRisk);
+  const quantityByCapital = Number.isFinite(price) && price > 0
+    ? Math.floor(allocationBudget / price)
+    : 0;
+  const quantityByRisk = Number.isFinite(riskPerShare) && riskPerShare > 0
+    ? Math.floor(riskCapacity / riskPerShare)
+    : 0;
+  const quantity = Math.max(0, Math.min(quantityByCapital, quantityByRisk));
+  const allocation = quantity * price;
+  const plannedRisk = quantity * riskPerShare;
+  const minimumAllocationMet = allocation >= rules.minimumInitialAllocation;
+  let reason = "Cash, sector and combined 1% stock-risk limits allow one controlled retest add.";
+  if (!(Number(price) < initialEntry)) reason = "Actual 09:17 price no longer improves the initial average; retest add skipped.";
+  else if (!Number.isFinite(riskPerShare) || riskPerShare <= 0) reason = "Actual price is at or below the protected stop; add skipped.";
+  else if (positionCapacity < price) reason = "Position has reached its 10% initial-plus-retest cap.";
+  else if (availableCash < price) reason = "Available portfolio cash is insufficient for the retest add.";
+  else if (sectorCapacity < price) reason = `Sector exposure limit reached for ${sector}.`;
+  else if (availablePortfolioRisk < riskPerShare) reason = "Aggregate portfolio-risk room is insufficient.";
+  else if (totalTradeRiskCapacity < riskPerShare) reason = "Combined position risk would exceed the 1% stock-risk cap.";
+  else if (quantity < 1) reason = "Risk-sized retest quantity is below one share.";
+  else if (!minimumAllocationMet) {
+    reason = `Planned retest add Rs ${round(allocation)} is below the minimum order value Rs ${round(rules.minimumInitialAllocation)}.`;
+  }
+
+  return {
+    eligible: Number(price) < initialEntry && quantity > 0 && minimumAllocationMet,
+    kind: "CONTROLLED_RETEST",
+    quantity,
+    allocation: round(allocation),
+    plannedRisk: round(plannedRisk),
+    riskPerShare: round(riskPerShare),
+    trailingStop: round(stop),
+    maximumPositionAllocation: round(maximumPositionAllocation),
+    addAllocationCap: round(addAllocationCap),
+    minimumInitialAllocation: round(rules.minimumInitialAllocation),
+    sector,
+    rank: candidateRank(row),
+    reason
+  };
+}
+
 export function pyramidAddDecision(trade, row, portfolio = {}, config = {}) {
   const rules = portfolioConfig(config);
   const checks = row?.setupStrength?.checks || {};
@@ -541,7 +726,7 @@ export function pyramidAddDecision(trade, row, portfolio = {}, config = {}) {
   if (!rules.pyramidingEnabled) reasons.push("Winner pyramiding is disabled.");
   if (trade?.status !== "OPEN") reasons.push("Only an open position can be scaled up.");
   if (trade?.pendingAdd) reasons.push("An add-on order is already pending.");
-  if ((trade?.addOns?.length || 0) >= rules.pyramidMaxAddOns) {
+  if (winnerPyramidAdds(trade).length >= rules.pyramidMaxAddOns) {
     reasons.push(`Maximum ${rules.pyramidMaxAddOns} add-ons already used.`);
   }
   if (row?.status !== "ENTRY") reasons.push("All compulsory entry conditions are no longer valid.");
@@ -599,6 +784,14 @@ export function pyramidAddDecision(trade, row, portfolio = {}, config = {}) {
     breakout,
     rewardR: round(rewardR)
   };
+}
+
+function controlledRetestAdds(trade = {}) {
+  return (trade.addOns || []).filter((add) => add?.kind === "CONTROLLED_RETEST");
+}
+
+function winnerPyramidAdds(trade = {}) {
+  return (trade.addOns || []).filter((add) => add?.kind !== "CONTROLLED_RETEST");
 }
 
 function dateOnly(value) {

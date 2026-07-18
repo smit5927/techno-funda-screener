@@ -223,6 +223,8 @@ function testConfig({ strongPrice = 100 } = {}) {
       maxOpenPositions: 1,
       maxPositionPct: 100,
       riskPerTradePct: 100,
+      initialMaxPositionPct: 100,
+      initialRiskPct: 100,
       maxPortfolioRiskPct: 100,
       maxSectorExposurePct: 100,
       rotationMinRankAdvantage: 1,

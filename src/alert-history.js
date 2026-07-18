@@ -10,6 +10,7 @@ const ACTIONABLE_ALERT_TYPES = new Set([
   "ROTATION_EXIT_PENDING",
   "PARTIAL_EXIT_PENDING",
   "PYRAMID_ADD_PENDING",
+  "CONTROLLED_RETEST_ADD_PENDING",
   "DIVIDEND_CREDIT"
 ]);
 
@@ -90,6 +91,9 @@ function alertDefinition(type, trade) {
     PYRAMID_ADD_PENDING: ["PYRAMID", "info", "Pyramid add signal", "Winner add is waiting for 09:17 execution."],
     PYRAMID_ADD_FILLED: ["PYRAMID", "success", "Pyramid add filled", "The strong position was increased."],
     PYRAMID_ADD_SKIPPED: ["PYRAMID", "warning", "Pyramid add skipped", "Latest risk or execution checks rejected the add."],
+    CONTROLLED_RETEST_ADD_PENDING: ["RETEST", "info", "Controlled retest buy", "The single planned retest tranche is waiting for 09:17 execution."],
+    CONTROLLED_RETEST_ADD_FILLED: ["RETEST", "success", "Controlled retest filled", "The staged retest tranche was added within the 1% stock-risk cap."],
+    CONTROLLED_RETEST_ADD_SKIPPED: ["RETEST", "warning", "Controlled retest skipped", "Latest execution or risk checks rejected the retest add."],
     ROTATION_CANCELLED: ["PORTFOLIO", "info", "Rotation cancelled", "The existing position remains open."],
     DIVIDEND_CREDIT: ["CORPORATE", "success", "Dividend entitlement posted", "Dividend was included in booked realized P&L."],
     CORPORATE_ACTION_ADJUSTED: ["CORPORATE", "info", "Corporate action adjusted", "Open-position quantity and price references were adjusted."],
@@ -114,7 +118,7 @@ function alertReasons(type, event, trade, candidate, action) {
   } else if (type.includes("PARTIAL_EXIT")) {
     values.push(...asArray(trade.pendingPartialExitReason));
     values.push(...asArray(trade.partialExits?.at(-1)?.reason));
-  } else if (type.includes("PYRAMID_ADD")) {
+  } else if (type.includes("PYRAMID_ADD") || type.includes("CONTROLLED_RETEST_ADD")) {
     values.push(...asArray(trade.pendingAdd?.reason));
     values.push(...asArray(trade.addOns?.at(-1)?.reason));
     values.push(trade.executionError);
@@ -143,13 +147,13 @@ function alertDetails(type, trade, candidate, action, allocation) {
     reservedRisk: numeric(trade.plannedRisk),
     price: numeric(
       type === "PARTIAL_EXIT_FILLED" ? partial.price
-        : type === "PYRAMID_ADD_FILLED" ? add.price
+        : ["PYRAMID_ADD_FILLED", "CONTROLLED_RETEST_ADD_FILLED"].includes(type) ? add.price
           : type === "EXIT_TRADE_CLOSED" ? trade.exitPrice
             : trade.entryPrice
     ),
     quantity: numeric(
       type === "PARTIAL_EXIT_FILLED" ? partial.quantity
-        : type.includes("PYRAMID_ADD") ? (add.quantity ?? add.plannedQuantity)
+        : (type.includes("PYRAMID_ADD") || type.includes("CONTROLLED_RETEST_ADD")) ? (add.quantity ?? add.plannedQuantity)
           : trade.quantity
     ),
     pnl: numeric(type === "PARTIAL_EXIT_FILLED" ? partial.pnl : type === "EXIT_TRADE_CLOSED" ? trade.pnl : null),
@@ -174,7 +178,7 @@ function relevantDate(type, trade, action, fallback) {
   if (type === "ENTRY_TRADE_OPENED") return trade.entryDate || trade.entrySignalDate || dateOnly(fallback);
   if (type === "EXIT_TRADE_CLOSED") return trade.exitDate || trade.exitSignalDate || dateOnly(fallback);
   if (type === "PARTIAL_EXIT_FILLED") return trade.partialExits?.at(-1)?.date || trade.partialExitSignalDate || dateOnly(fallback);
-  if (type === "PYRAMID_ADD_FILLED") return trade.addOns?.at(-1)?.date || trade.pendingAdd?.signalDate || dateOnly(fallback);
+  if (["PYRAMID_ADD_FILLED", "CONTROLLED_RETEST_ADD_FILLED"].includes(type)) return trade.addOns?.at(-1)?.date || trade.pendingAdd?.signalDate || dateOnly(fallback);
   return trade.exitSignalDate || trade.partialExitSignalDate || trade.pendingAdd?.signalDate || trade.entrySignalDate || dateOnly(fallback);
 }
 
@@ -287,19 +291,24 @@ export function reconcileAlertLifecycle(alerts = [], trades = [], totalFund) {
       }
       continue;
     }
-    if (alert.type === "PYRAMID_ADD_PENDING") {
-      const fill = (trade.addOns || []).find((item) => item.date >= alert.actionDate);
+    if (["PYRAMID_ADD_PENDING", "CONTROLLED_RETEST_ADD_PENDING"].includes(alert.type)) {
+      const expectedKind = alert.type === "CONTROLLED_RETEST_ADD_PENDING" ? "CONTROLLED_RETEST" : "PYRAMID";
+      const fill = (trade.addOns || []).find((item) =>
+        item.date >= alert.actionDate && (item.kind || "PYRAMID") === expectedKind
+      );
       if (fill) {
         output.push({
           ...alert,
-          title: "Pyramid buy executed at 09:17",
+          title: expectedKind === "CONTROLLED_RETEST" ? "Retest buy executed at 09:17" : "Pyramid buy executed at 09:17",
           severity: "success",
           lifecycleStatus: "EXECUTED",
           actionable: false,
-          summary: `${trade.symbol} winner add filled: ${fill.quantity} shares at Rs ${roundMoney(fill.price)} on ${fill.date}.`,
+          summary: expectedKind === "CONTROLLED_RETEST"
+            ? `${trade.symbol} controlled retest filled: ${fill.quantity} shares at Rs ${roundMoney(fill.price)} on ${fill.date}.`
+            : `${trade.symbol} winner add filled: ${fill.quantity} shares at Rs ${roundMoney(fill.price)} on ${fill.date}.`,
           details: { ...(alert.details || {}), status: trade.status, price: numeric(fill.price), quantity: numeric(fill.quantity) }
         });
-      } else if (trade.pendingAdd) {
+      } else if (trade.pendingAdd && (trade.pendingAdd.kind || "PYRAMID") === expectedKind) {
         output.push({ ...alert, lifecycleStatus: "CONFIRMED", actionable: true });
       }
       continue;

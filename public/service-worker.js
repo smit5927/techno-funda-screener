@@ -1,4 +1,4 @@
-const CACHE = "techno-funda-shell-v23-bull-logo-v2";
+const CACHE = "techno-funda-shell-v25-open-lot-owner-control";
 const SHELL = [
   "./",
   "./styles.css",
@@ -7,6 +7,7 @@ const SHELL = [
   "./app.js",
   "./detail-evidence.js",
   "./decision-guide.js",
+  "./pnl-accounting.js",
   "./mobile-config.js",
   "./manifest.webmanifest",
   "./techno-funda-pms-bull-192-v2.png",

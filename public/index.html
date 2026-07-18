@@ -87,6 +87,11 @@
       </div>
     </nav>
 
+    <section id="managedUserBanner" class="managedUserBanner" hidden aria-live="polite">
+      <div><span>OWNER CONTROL</span><strong id="managedUserName">Client portfolio</strong><small>All portfolio views and settings are scoped to this client.</small></div>
+      <button id="exitManagedUserButton" type="button">Return to owner portfolio</button>
+    </section>
+
     <main class="layout">
       <div class="viewPanel" data-view-panel="dashboard">
       <section class="summaryGrid" aria-label="Scan summary">
@@ -285,6 +290,7 @@
             <button class="alertFilter" data-alert-filter="EXIT" type="button">Exit</button>
             <button class="alertFilter" data-alert-filter="PARTIAL_EXIT" type="button">Partial Exit</button>
             <button class="alertFilter" data-alert-filter="PYRAMID" type="button">Pyramiding</button>
+            <button class="alertFilter" data-alert-filter="RETEST" type="button">Retest Add</button>
             <button class="alertFilter" data-alert-filter="CORPORATE" type="button">Corporate</button>
           </div>
           <input id="alertsSearchInput" type="search" placeholder="Search symbol, action or reason" aria-label="Search alerts" />
@@ -345,6 +351,12 @@
           <input id="maxPositionInput" type="number" min="0.1" max="100" step="0.1" inputmode="decimal" placeholder="Position cap %" aria-label="Maximum position allocation percent" />
           <input id="maxSectorExposureInput" type="number" min="0.1" max="100" step="0.1" inputmode="decimal" placeholder="Sector cap %" aria-label="Maximum sector exposure percent" />
           <label class="settingsToggle"><input id="pyramidingEnabledInput" type="checkbox" checked /><span>Pyramiding</span></label>
+        </div>
+        <div class="strategyPolicy" aria-label="Staged position policy">
+          <strong>Controlled Retest Policy</strong>
+          <span>Initial: max 7.5% fund / 0.70% risk</span>
+          <span>One retest add: max 2.5% / 0.30% risk</span>
+          <span>Winner pyramiding: 2 adds / final stock cap 15%</span>
         </div>
         <div class="brokerageSettings">
           <div class="brokerageSettingsHeader">
@@ -582,6 +594,6 @@
     <script src="vendor/supabase.js"></script>
     <script src="vendor/exceljs.min.js"></script>
     <script src="mobile-config.js"></script>
-    <script src="auth.js?v=20260716-alert-order-sizing" type="module"></script>
+    <script src="auth.js?v=20260718-owner-control" type="module"></script>
   </body>
 </html>

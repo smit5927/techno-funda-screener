@@ -19,6 +19,7 @@ for (const filename of [
   "auth-request.js",
   "detail-evidence.js",
   "decision-guide.js",
+  "pnl-accounting.js",
   "styles.css",
   "mobile-config.js",
   "manifest.webmanifest",
