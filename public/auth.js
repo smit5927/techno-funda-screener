@@ -19,12 +19,13 @@ const nativeFetch = window.fetch.bind(window);
 const DEVICE_STORAGE_KEY = "techno-funda-device-id";
 const PROFILE_STORAGE_KEY = "techno-funda-profile";
 const MANAGED_USER_STORAGE_KEY = "techno-funda-managed-user";
-const MASTER_RESET_CONFIRMATION = "RESET ALL PORTFOLIOS";
+const MASTER_RESET_CONFIRMATION = "RESET SELECTED PORTFOLIO";
 const deviceId = readOrCreateDeviceId();
 let currentProfile = null;
 let pendingFactorId = null;
 let appLoaded = false;
 let installPrompt = null;
+let adminUsers = [];
 
 const elements = {
   authGate: document.querySelector("#authGate"),
@@ -59,6 +60,8 @@ const elements = {
   openMasterResetButton: document.querySelector("#openMasterResetButton"),
   masterResetDialog: document.querySelector("#masterResetDialog"),
   masterResetForm: document.querySelector("#masterResetForm"),
+  masterResetUser: document.querySelector("#masterResetUser"),
+  masterResetTarget: document.querySelector("#masterResetTarget"),
   masterResetAcknowledge: document.querySelector("#masterResetAcknowledge"),
   masterResetPhrase: document.querySelector("#masterResetPhrase"),
   confirmMasterResetButton: document.querySelector("#confirmMasterResetButton"),
@@ -102,8 +105,9 @@ elements.adminUsersBody.addEventListener("click", handleAdminAction);
 elements.adminNavButton.addEventListener("click", loadUsers);
 elements.installAppButton.addEventListener("click", installApp);
 elements.exitManagedUserButton?.addEventListener("click", exitManagedUser);
-elements.openMasterResetButton?.addEventListener("click", openMasterResetDialog);
+elements.openMasterResetButton?.addEventListener("click", () => openMasterResetDialog());
 elements.cancelMasterResetButton?.addEventListener("click", closeMasterResetDialog);
+elements.masterResetUser?.addEventListener("change", updateMasterResetConfirmation);
 elements.masterResetAcknowledge?.addEventListener("change", updateMasterResetConfirmation);
 elements.masterResetPhrase?.addEventListener("input", updateMasterResetConfirmation);
 elements.masterResetForm?.addEventListener("submit", performMasterReset);
@@ -124,7 +128,7 @@ client.auth.onAuthStateChange((_event, session) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => navigator.serviceWorker.register(
-    "service-worker.js?v=20260718-master-reset",
+    "service-worker.js?v=20260718-account-reset",
     { updateViaCache: "none" }
   ).catch(() => {}));
 }
@@ -342,9 +346,17 @@ async function loadUsers() {
   }
 }
 
-function openMasterResetDialog() {
+async function openMasterResetDialog(subjectUserId = "") {
   if (currentProfile?.role !== "admin") return;
+  if (!adminUsers.length) await loadUsers();
   elements.masterResetForm?.reset();
+  elements.masterResetUser.innerHTML = [
+    '<option value="">Choose owner or client...</option>',
+    ...adminUsers.map((user) => `<option value="${user.userId}">${escapeHtml(user.displayName)} (${escapeHtml(user.username)})${user.role === "admin" ? " - OWNER" : ""}</option>`)
+  ].join("");
+  if (subjectUserId && adminUsers.some((user) => user.userId === subjectUserId)) {
+    elements.masterResetUser.value = subjectUserId;
+  }
   if (elements.masterResetStatus) elements.masterResetStatus.textContent = "";
   updateMasterResetConfirmation();
   elements.masterResetDialog?.showModal();
@@ -356,7 +368,13 @@ function closeMasterResetDialog() {
 }
 
 function updateMasterResetConfirmation() {
-  const confirmed = elements.masterResetAcknowledge?.checked === true &&
+  const selectedUser = adminUsers.find((user) => user.userId === elements.masterResetUser?.value);
+  if (elements.masterResetTarget) {
+    elements.masterResetTarget.textContent = selectedUser
+      ? `${selectedUser.displayName} (${selectedUser.username})${selectedUser.role === "admin" ? " - OWNER" : ""}`
+      : "No account selected";
+  }
+  const confirmed = Boolean(selectedUser) && elements.masterResetAcknowledge?.checked === true &&
     String(elements.masterResetPhrase?.value || "").trim() === MASTER_RESET_CONFIRMATION;
   if (elements.confirmMasterResetButton) elements.confirmMasterResetButton.disabled = !confirmed;
 }
@@ -366,36 +384,49 @@ async function performMasterReset(event) {
   if (currentProfile?.role !== "admin") return;
   updateMasterResetConfirmation();
   if (elements.confirmMasterResetButton?.disabled) return;
+  const subjectUserId = String(elements.masterResetUser?.value || "");
+  const selectedUser = adminUsers.find((user) => user.userId === subjectUserId);
+  if (!selectedUser) return;
   elements.confirmMasterResetButton.disabled = true;
   elements.cancelMasterResetButton.disabled = true;
   if (elements.masterResetStatus) {
     elements.masterResetStatus.classList.remove("error");
-    elements.masterResetStatus.textContent = "Resetting every portfolio securely...";
+    elements.masterResetStatus.textContent = `Resetting only ${selectedUser.displayName}'s portfolio securely...`;
   }
   try {
     const result = await apiPost({
-      action: "admin-reset-all-portfolios",
+      action: "admin-reset-user-portfolio",
+      subjectUserId,
       confirmation: String(elements.masterResetPhrase.value || "").trim()
     });
-    localStorage.removeItem(MANAGED_USER_STORAGE_KEY);
+    const managedUser = readManagedUser();
+    const selectedAccountWasOpen = currentProfile.userId === subjectUserId || managedUser?.userId === subjectUserId;
+    if (managedUser?.userId === subjectUserId) localStorage.removeItem(MANAGED_USER_STORAGE_KEY);
     if (elements.masterResetStatus) {
-      elements.masterResetStatus.textContent = `${result.accountsReset || 0} accounts reset. Reloading the clean owner portfolio...`;
+      elements.masterResetStatus.textContent = `${result.displayName || selectedUser.displayName} reset successfully. Other accounts were not changed.`;
     }
-    const url = new URL(window.location.href);
-    url.searchParams.set("view", "dashboard");
-    url.searchParams.set("reset", String(Date.now()));
-    window.location.replace(url);
+    if (selectedAccountWasOpen) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("view", "dashboard");
+      url.searchParams.set("reset", String(Date.now()));
+      window.location.replace(url);
+      return;
+    }
+    closeMasterResetDialog();
+    setAdminStatus(`${result.displayName || selectedUser.displayName} portfolio reset. Other accounts were not changed.`);
+    await loadUsers();
   } catch (error) {
     if (elements.masterResetStatus) {
       elements.masterResetStatus.classList.add("error");
       elements.masterResetStatus.textContent = error.message;
     }
-    elements.confirmMasterResetButton.disabled = false;
     elements.cancelMasterResetButton.disabled = false;
+    updateMasterResetConfirmation();
   }
 }
 
 function renderUsers(users) {
+  adminUsers = Array.isArray(users) ? users : [];
   elements.adminUsersBody.innerHTML = users.map((user) => `
     <tr>
       <td><strong>${escapeHtml(user.displayName)}</strong><small>${escapeHtml(user.username)}${user.role === "admin" ? " | OWNER" : ""}</small></td>
@@ -409,6 +440,7 @@ function renderUsers(users) {
         ${user.role === "admin" ? "" : `<button data-admin-action="toggle" data-user-id="${user.userId}" data-status="${user.status}">${user.status === "active" ? "Suspend" : "Activate"}</button>`}
         <button data-admin-action="revoke" data-user-id="${user.userId}">Log out</button>
         ${user.role === "admin" ? "" : `<button data-admin-action="password" data-user-id="${user.userId}">Password</button>`}
+        <button class="dangerButton" data-admin-action="reset-portfolio" data-user-id="${user.userId}" data-user-name="${escapeHtml(user.displayName)}">Reset Portfolio</button>
       </td>
     </tr>
   `).join("");
@@ -429,6 +461,9 @@ async function handleAdminAction(event) {
       const url = new URL(window.location.href);
       url.searchParams.set("view", "dashboard");
       window.location.assign(url);
+      return;
+    } else if (button.dataset.adminAction === "reset-portfolio") {
+      await openMasterResetDialog(userId);
       return;
     } else if (button.dataset.adminAction === "toggle") {
       await apiPost({ action: "admin-update-user", userId, status: button.dataset.status === "active" ? "suspended" : "active" });

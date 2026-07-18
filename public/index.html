@@ -398,7 +398,7 @@
           <div><span>CENTRAL CONTROL</span><h2>User Administration</h2></div>
           <div class="adminHeaderActions">
             <button id="openCreateUserButton" type="button">Create User</button>
-            <button id="openMasterResetButton" class="dangerButton" type="button">Master Reset</button>
+            <button id="openMasterResetButton" class="dangerButton" type="button">Reset Portfolio</button>
           </div>
         </div>
         <form id="createUserForm" class="adminCreateForm" hidden>
@@ -425,8 +425,14 @@
       <dialog id="masterResetDialog" class="masterResetDialog" aria-labelledby="masterResetTitle">
         <form id="masterResetForm" method="dialog">
           <div class="masterResetWarning">OWNER-ONLY DESTRUCTIVE ACTION</div>
-          <h2 id="masterResetTitle">Reset every portfolio?</h2>
-          <p>This permanently clears the owner and every client's open, closed and pending trades, realized history, candidates, alerts, executions, corporate-action records and generated trade-sheet rows.</p>
+          <h2 id="masterResetTitle">Reset one selected portfolio?</h2>
+          <p>Only the account selected below will be reset. The owner and all other client portfolios will remain untouched.</p>
+          <label class="resetPhraseLabel">
+            <span>Select account</span>
+            <select id="masterResetUser" required aria-label="Select portfolio account"></select>
+          </label>
+          <div class="resetTargetNote">Selected: <strong id="masterResetTarget">No account selected</strong></div>
+          <p>This permanently clears that account's open, closed and pending trades, realized history, candidates, alerts, executions, corporate-action records and generated trade-sheet rows.</p>
           <div class="resetPreserveNote">
             <strong>Preserved</strong>
             <span>Accounts, passwords, current capital, risk/brokerage settings, selected lists, custom symbols, Telegram and notification subscriptions.</span>
@@ -436,12 +442,12 @@
             <span>I understand that portfolio history cannot be restored from the app.</span>
           </label>
           <label class="resetPhraseLabel">
-            <span>Type <strong>RESET ALL PORTFOLIOS</strong></span>
+            <span>Type <strong>RESET SELECTED PORTFOLIO</strong></span>
             <input id="masterResetPhrase" type="text" autocomplete="off" spellcheck="false" />
           </label>
           <div class="masterResetActions">
             <button id="cancelMasterResetButton" type="button">Cancel</button>
-            <button id="confirmMasterResetButton" class="dangerButton" type="submit" disabled>Reset All Portfolios</button>
+            <button id="confirmMasterResetButton" class="dangerButton" type="submit" disabled>Reset Selected Portfolio</button>
           </div>
           <p id="masterResetStatus" class="adminStatus"></p>
         </form>
@@ -622,6 +628,6 @@
     <script src="vendor/supabase.js"></script>
     <script src="vendor/exceljs.min.js"></script>
     <script src="mobile-config.js"></script>
-    <script src="auth.js?v=20260718-master-reset" type="module"></script>
+    <script src="auth.js?v=20260718-account-reset" type="module"></script>
   </body>
 </html>

@@ -95,9 +95,9 @@ async function handlePost(request: Request) {
     requireAdmin(context);
     return json({ ok: true, users: await listUsers() });
   }
-  if (action === "admin-reset-all-portfolios") {
+  if (action === "admin-reset-user-portfolio") {
     requireAdmin(context);
-    return json(await resetAllPortfolios(context, body));
+    return json(await resetUserPortfolio(context, body));
   }
 
   return json({ error: `Unknown action: ${action}` }, 400);
@@ -281,10 +281,12 @@ async function setMemberPassword(context: any, body: any) {
   return { ok: true };
 }
 
-async function resetAllPortfolios(context: any, body: any) {
+async function resetUserPortfolio(context: any, body: any) {
+  const subjectUserId = requireUuid(body.subjectUserId);
   const confirmation = requireMasterResetConfirmation(body.confirmation);
-  const { data, error } = await admin().rpc("admin_reset_all_portfolios", {
+  const { data, error } = await admin().rpc("admin_reset_user_portfolio", {
     p_actor_user_id: context.user.id,
+    p_subject_user_id: subjectUserId,
     p_confirmation: confirmation
   });
   if (error) throw error;

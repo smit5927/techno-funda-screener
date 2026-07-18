@@ -40,22 +40,28 @@ test("owner can securely enter and leave a managed client portfolio", () => {
   assert.match(api, /managedByOwner/);
 });
 
-test("owner master reset requires explicit confirmation and stale-scan protection", () => {
+test("owner account reset targets one selected portfolio with explicit confirmation", () => {
   const html = fs.readFileSync(path.join(rootDir, "public", "index.html"), "utf8");
   const auth = fs.readFileSync(path.join(rootDir, "public", "auth.js"), "utf8");
   const api = fs.readFileSync(path.join(rootDir, "supabase", "functions", "techno-funda-app-api", "index.ts"), "utf8");
   const runtime = fs.readFileSync(path.join(rootDir, "src", "multi-user-runtime.js"), "utf8");
-  const migration = fs.readFileSync(path.join(rootDir, "supabase", "migrations", "20260718070000_add_owner_portfolio_reset.sql"), "utf8");
+  const migration = fs.readFileSync(path.join(rootDir, "supabase", "migrations", "20260718090000_make_portfolio_reset_account_specific.sql"), "utf8");
   assert.match(html, /id="openMasterResetButton"/);
-  assert.match(html, /RESET ALL PORTFOLIOS/);
-  assert.match(auth, /admin-reset-all-portfolios/);
+  assert.match(html, /id="masterResetUser"/);
+  assert.match(html, /RESET SELECTED PORTFOLIO/);
+  assert.match(auth, /admin-reset-user-portfolio/);
+  assert.match(auth, /subjectUserId/);
+  assert.doesNotMatch(auth, /admin-reset-all-portfolios/);
   assert.match(api, /requireMasterResetConfirmation/);
+  assert.match(api, /admin_reset_user_portfolio/);
   assert.match(api, /eq\("reset_generation", resetGeneration\)/);
   assert.match(api, /portfolio-reset-superseded-scan/);
   assert.match(runtime, /resetGeneration: user\.resetGeneration/);
-  assert.match(migration, /MASTER_PORTFOLIO_RESET/);
+  assert.match(migration, /USER_PORTFOLIO_RESET/);
+  assert.match(migration, /where user_id = p_subject_user_id/);
   assert.match(migration, /legacyOwnerJournalMigratedAt/);
-  assert.match(migration, /grant execute on function public\.admin_reset_all_portfolios/);
+  assert.match(migration, /grant execute on function public\.admin_reset_user_portfolio/);
+  assert.match(migration, /drop function if exists public\.admin_reset_all_portfolios/);
   assert.match(migration, /to service_role/);
 });
 

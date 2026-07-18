@@ -7,6 +7,6 @@ import {
 
 test("master reset accepts only the exact destructive confirmation phrase", () => {
   assert.equal(requireMasterResetConfirmation(MASTER_RESET_CONFIRMATION), MASTER_RESET_CONFIRMATION);
-  assert.throws(() => requireMasterResetConfirmation("reset all portfolios"), /Type RESET ALL PORTFOLIOS exactly/);
-  assert.throws(() => requireMasterResetConfirmation("RESET ALL"), /Type RESET ALL PORTFOLIOS exactly/);
+  assert.throws(() => requireMasterResetConfirmation("reset selected portfolio"), /Type RESET SELECTED PORTFOLIO exactly/);
+  assert.throws(() => requireMasterResetConfirmation("RESET ALL"), /Type RESET SELECTED PORTFOLIO exactly/);
 });

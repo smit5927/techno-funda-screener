@@ -1269,8 +1269,10 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
 .resetAcknowledge input { width: 18px; height: 18px; margin: 1px 0 0; accent-color: #ff6b77; }
 .resetPhraseLabel { display: grid; gap: 8px; }
 .resetPhraseLabel span { color: #c5cdd5; font-size: 12px; }
-.resetPhraseLabel input { min-height: 46px; padding: 0 12px; border: 1px solid #3a454f; background: #0b1014; color: #fff; font: inherit; }
-.resetPhraseLabel input:focus { outline: 0; border-color: #ff6b77; box-shadow: 0 0 0 3px rgba(255,107,119,.12); }
+.resetPhraseLabel input, .resetPhraseLabel select { min-height: 46px; padding: 0 12px; border: 1px solid #3a454f; background: #0b1014; color: #fff; font: inherit; }
+.resetPhraseLabel input:focus, .resetPhraseLabel select:focus { outline: 0; border-color: #ff6b77; box-shadow: 0 0 0 3px rgba(255,107,119,.12); }
+.resetTargetNote { padding: 11px 13px; border: 1px solid rgba(255,107,119,.28); background: rgba(255,107,119,.06); color: #bdc6ce; }
+.resetTargetNote strong { color: #fff; }
 .masterResetActions { display: flex; justify-content: flex-end; gap: 9px; }
 .adminCreateForm { padding: 22px; margin-bottom: 18px; border: 1px solid var(--line); background: var(--surface); animation: authPanelIn .35s ease both; }
 .adminFormActions { display: flex; gap: 8px; }
