@@ -126,6 +126,12 @@ test("alert center supports durable history, account clear and notification deep
   assert.match(app, /Alert history is already empty/);
   assert.match(app, /No alerts are available to mark as read/);
   assert.match(app, /Notifications are blocked/);
+  assert.match(html, /Background Alerts: OFF/);
+  assert.match(html, /aria-pressed="false"/);
+  assert.match(app, /Background Alerts: ON/);
+  assert.match(app, /toggleBrowserNotifications/);
+  assert.match(app, /unregister-push-subscription/);
+  assert.match(app, /Background alerts are OFF on this device/);
   assert.match(fs.readFileSync(path.join(rootDir, "public", "styles.css"), "utf8"), /#alertsEmpty \{ position: static;/);
   assert.match(worker, /notificationclick/);
   assert.match(worker, /view=alerts/);

@@ -271,7 +271,7 @@
             <p>Actionable buy, sell, risk-reduction, winner-add and dividend decisions only. Alerts auto-clear after 30 days.</p>
           </div>
           <div class="alertsHeaderActions">
-            <button id="enableNotificationsButton" class="primaryAlertAction" type="button">Enable Background Alerts</button>
+            <button id="enableNotificationsButton" class="primaryAlertAction isOff" type="button" aria-pressed="false" title="Turn background alerts on or off">Background Alerts: OFF</button>
             <button id="markAlertsReadButton" type="button">Mark All Read</button>
             <button id="clearAlertsButton" class="dangerAction" type="button">Clear History</button>
             <span id="alertsActionStatus" class="alertsActionStatus" aria-live="polite"></span>
@@ -280,7 +280,7 @@
         <div class="alertsStatusBand">
           <div><span>Total Alerts</span><strong id="alertsTotalCount">0</strong></div>
           <div><span>Unread</span><strong id="alertsUnreadCount">0</strong></div>
-          <div><span>Notification Status</span><strong id="notificationPermissionStatus">Not enabled</strong></div>
+          <div><span>Notification Status</span><strong id="notificationPermissionStatus">Alerts OFF</strong></div>
           <div><span>Last Alert</span><strong id="alertsLastAt">NA</strong></div>
         </div>
         <div class="alertsToolbar">
@@ -628,6 +628,6 @@
     <script src="vendor/supabase.js"></script>
     <script src="vendor/exceljs.min.js"></script>
     <script src="mobile-config.js"></script>
-    <script src="auth.js?v=20260718-position-fit" type="module"></script>
+    <script src="auth.js?v=20260718-alert-toggle" type="module"></script>
   </body>
 </html>

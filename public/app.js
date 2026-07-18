@@ -240,7 +240,7 @@ document.querySelectorAll(".alertFilter").forEach((button) => {
     setAlertActionStatus(`${button.textContent.trim()} alerts selected.`);
   });
 });
-elements.enableNotificationsButton?.addEventListener("click", enableBrowserNotifications);
+elements.enableNotificationsButton?.addEventListener("click", toggleBrowserNotifications);
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.addEventListener("message", (event) => {
     if (event.data?.type !== "TF_PUSH_DELIVERED" || !event.data.alertId) return;
@@ -1851,13 +1851,28 @@ function updateNotificationStatus() {
   const permission = supported ? Notification.permission : "unsupported";
   const enabled = localStorage.getItem(alertStorageKey("enabled")) === "true";
   const backgroundActive = localStorage.getItem(alertStorageKey("push-active")) === "true";
-  elements.notificationPermissionStatus.textContent = permission === "granted" && enabled && backgroundActive
-    ? "Background active"
-    : permission === "denied" ? "Blocked in browser" : permission === "unsupported" ? "Not supported" : "Not enabled";
-  elements.enableNotificationsButton.textContent = permission === "granted" && enabled && backgroundActive
-    ? "Background Alerts Active"
-    : "Enable Background Alerts";
+  const active = permission === "granted" && enabled && backgroundActive;
+  elements.notificationPermissionStatus.textContent = active
+    ? "Alerts ON"
+    : permission === "denied" ? "Alerts OFF - blocked in browser" : permission === "unsupported" ? "Alerts OFF - not supported" : "Alerts OFF";
+  elements.enableNotificationsButton.textContent = active ? "Background Alerts: ON" : "Background Alerts: OFF";
+  elements.enableNotificationsButton.classList.toggle("isOn", active);
+  elements.enableNotificationsButton.classList.toggle("isOff", !active);
+  elements.enableNotificationsButton.setAttribute("aria-pressed", String(active));
+  elements.enableNotificationsButton.title = active
+    ? "Background alerts are ON. Click to turn them off."
+    : "Background alerts are OFF. Click to turn them on.";
   elements.enableNotificationsButton.disabled = false;
+}
+
+async function toggleBrowserNotifications() {
+  const enabled = localStorage.getItem(alertStorageKey("enabled")) === "true";
+  const backgroundActive = localStorage.getItem(alertStorageKey("push-active")) === "true";
+  if ("Notification" in window && Notification.permission === "granted" && enabled && backgroundActive) {
+    await disableBrowserNotifications();
+    return;
+  }
+  await enableBrowserNotifications();
 }
 
 async function enableBrowserNotifications() {
@@ -1893,6 +1908,34 @@ async function enableBrowserNotifications() {
     setAlertActionStatus(`Notifications could not be enabled: ${error.message}`, "bad");
   }
   updateNotificationStatus();
+}
+
+async function disableBrowserNotifications() {
+  elements.enableNotificationsButton.disabled = true;
+  setAlertActionStatus("Turning background alerts off...");
+  try {
+    const registration = await navigator.serviceWorker.ready;
+    const subscription = await registration.pushManager?.getSubscription();
+    if (cloudMode && window.TF_AUTH_MODE && cloudApiUrl) {
+      const response = await fetch(cloudApiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "unregister-push-subscription",
+          endpoint: subscription?.endpoint || ""
+        })
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.ok) throw new Error(result.error || "Push disable failed");
+    }
+    localStorage.removeItem(alertStorageKey("enabled"));
+    localStorage.removeItem(alertStorageKey("push-active"));
+    setAlertActionStatus("Background alerts are OFF on this device.", "good");
+  } catch (error) {
+    setAlertActionStatus(`Background alerts could not be turned off: ${error.message}`, "bad");
+  } finally {
+    updateNotificationStatus();
+  }
 }
 
 async function syncBackgroundPushSubscription() {

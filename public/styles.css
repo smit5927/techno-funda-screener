@@ -224,7 +224,25 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .alertsHeader p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
 .alertsHeaderActions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
 .alertsHeaderActions button { min-height: 38px; }
-.alertsHeaderActions .primaryAlertAction { border-color: rgba(255, 153, 67, .55); background: var(--brand); color: #090b0d; }
+.alertsHeaderActions .primaryAlertAction {
+  min-width: 218px;
+  border-width: 1px;
+  font-weight: 900;
+  letter-spacing: 0;
+  transition: border-color .18s ease, background-color .18s ease, color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.alertsHeaderActions .primaryAlertAction.isOn {
+  border-color: rgba(39, 214, 151, .72);
+  background: rgba(39, 214, 151, .16);
+  color: var(--green);
+  box-shadow: inset 0 0 0 1px rgba(39, 214, 151, .08), 0 0 18px rgba(39, 214, 151, .1);
+}
+.alertsHeaderActions .primaryAlertAction.isOff {
+  border-color: rgba(255, 92, 108, .48);
+  background: rgba(255, 92, 108, .1);
+  color: var(--red);
+}
+.alertsHeaderActions .primaryAlertAction:not(:disabled):active { transform: translateY(1px); }
 .alertsHeaderActions .dangerAction { border-color: rgba(255, 92, 108, .4); color: var(--red); }
 .alertsActionStatus { flex-basis: 100%; min-height: 18px; color: var(--muted); font-size: 11px; text-align: right; }
 .alertsActionStatus.good { color: var(--green); }
