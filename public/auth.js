@@ -128,7 +128,7 @@ client.auth.onAuthStateChange((_event, session) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => navigator.serviceWorker.register(
-    "service-worker.js?v=20260718-account-reset",
+    "service-worker.js?v=20260718-position-fit",
     { updateViaCache: "none" }
   ).catch(() => {}));
 }
@@ -285,7 +285,7 @@ async function showApplication(profile) {
   });
   if (!appLoaded) {
     appLoaded = true;
-    await import("./app.js?v=20260718-owner-control-2");
+    await import("./app.js?v=20260718-position-fit");
   }
 }
 

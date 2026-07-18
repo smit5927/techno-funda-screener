@@ -60,6 +60,7 @@ const elements = {
   chargesStatus: document.querySelector("#chargesStatus"),
   positionsBody: document.querySelector("#positionsBody"),
   positionsEmpty: document.querySelector("#positionsEmpty"),
+  openPositionsShell: document.querySelector("#openPositionsShell"),
   dashboardPositionsBody: document.querySelector("#dashboardPositionsBody"),
   dashboardPositionsEmpty: document.querySelector("#dashboardPositionsEmpty"),
   openPositionsViewButton: document.querySelector("#openPositionsViewButton"),
@@ -280,6 +281,8 @@ document.addEventListener("keydown", (event) => {
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden && cloudMode) fetchLiveMtm();
 });
+window.addEventListener("resize", fitOpenPositionsShell, { passive: true });
+window.visualViewport?.addEventListener("resize", fitOpenPositionsShell, { passive: true });
 
 configureMode();
 setMainView(state.currentView, { persist: false, scroll: false, animate: false });
@@ -315,6 +318,7 @@ function setMainView(view, options = {}) {
   const canAnimate = options.animate !== false && previousView !== nextView && typeof document.startViewTransition === "function";
   if (canAnimate) document.startViewTransition(applyView);
   else applyView();
+  if (nextView === "positions") requestAnimationFrame(fitOpenPositionsShell);
   if (options.scroll !== false) {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
@@ -616,6 +620,17 @@ function renderPositions(payload) {
     });
   });
   renderDashboardPositions(payload);
+  requestAnimationFrame(fitOpenPositionsShell);
+}
+
+function fitOpenPositionsShell() {
+  const shell = elements.openPositionsShell;
+  const panel = shell?.closest('[data-view-panel="positions"]');
+  if (!shell || panel?.hidden) return;
+  const viewportHeight = window.visualViewport?.height || document.documentElement.clientHeight || window.innerHeight;
+  const documentTop = shell.getBoundingClientRect().top + window.scrollY;
+  const availableHeight = Math.max(260, Math.floor(viewportHeight - documentTop - 12));
+  shell.style.setProperty("--open-positions-max-height", `${availableHeight}px`);
 }
 
 function aiReviewMeta(review) {

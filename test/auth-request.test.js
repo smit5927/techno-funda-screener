@@ -101,6 +101,18 @@ test("portfolio summary exposes live today and total unrealized P&L", () => {
   assert.match(app, /tfDashboardPositionFilter/);
 });
 
+test("open positions table expands to the available viewport before scrolling", () => {
+  const html = fs.readFileSync(path.join(rootDir, "public", "index.html"), "utf8");
+  const app = fs.readFileSync(path.join(rootDir, "public", "app.js"), "utf8");
+  const styles = fs.readFileSync(path.join(rootDir, "public", "styles.css"), "utf8");
+  assert.match(html, /id="openPositionsShell"/);
+  assert.match(app, /function fitOpenPositionsShell/);
+  assert.match(app, /viewportHeight - documentTop - 12/);
+  assert.match(app, /visualViewport\?\.addEventListener\("resize", fitOpenPositionsShell/);
+  assert.match(styles, /\.positionsShell\.openPositionsShell/);
+  assert.match(styles, /--open-positions-max-height/);
+});
+
 test("alert center supports durable history, account clear and notification deep links", () => {
   const html = fs.readFileSync(path.join(rootDir, "public", "index.html"), "utf8");
   const app = fs.readFileSync(path.join(rootDir, "public", "app.js"), "utf8");

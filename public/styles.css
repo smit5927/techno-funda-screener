@@ -726,6 +726,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   box-shadow: var(--shadow-sm);
 }
 .positionsShell { min-height: 96px; max-height: 390px; }
+.positionsShell.openPositionsShell { max-height: var(--open-positions-max-height, calc(100dvh - 235px)); }
 table { width: 100%; min-width: 1280px; border-collapse: collapse; table-layout: auto; }
 .positionsTable { min-width: 1080px; }
 .openPositionsTable { min-width: 1320px; }
