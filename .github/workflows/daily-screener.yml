@@ -2,6 +2,12 @@ name: Daily Techno Funda PMS
 
 on:
   workflow_dispatch:
+    inputs:
+      publish_morning_alerts:
+        description: "Emergency morning recovery: approve funded orders and publish alerts"
+        required: false
+        default: false
+        type: boolean
   push:
     branches:
       - main
@@ -15,6 +21,8 @@ on:
   schedule:
     # 08:30 IST: publish prior-close portfolio actions and alerts before the market opens.
     - cron: "0 3 * * 1-5"
+    # Free GitHub schedules can be delayed or skipped. These runs are deduplicated recovery scans.
+    - cron: "10,20,30 3 * * 1-5" # 08:40, 08:50 and 09:00 IST
     # Staggered lightweight retries tolerate delays in GitHub's free scheduled runners.
     - cron: "51 3 * * 1-5" # 09:21 IST
     - cron: "59 3 * * 1-5" # 09:29 IST
@@ -39,8 +47,8 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     env:
-      EXECUTION_ONLY: ${{ github.event_name == 'schedule' && github.event.schedule != '0 3 * * 1-5' }}
-      MORNING_ALERTS: ${{ github.event_name == 'schedule' && github.event.schedule == '0 3 * * 1-5' }}
+      EXECUTION_ONLY: ${{ github.event_name == 'schedule' && github.event.schedule != '0 3 * * 1-5' && github.event.schedule != '10,20,30 3 * * 1-5' }}
+      MORNING_ALERTS: ${{ (github.event_name == 'schedule' && (github.event.schedule == '0 3 * * 1-5' || github.event.schedule == '10,20,30 3 * * 1-5')) || (github.event_name == 'workflow_dispatch' && inputs.publish_morning_alerts == true) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5

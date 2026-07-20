@@ -113,11 +113,15 @@ test("Telegram ignores non-actionable fills while retaining the website actionab
   assert.match(result.reason, /no new actionable portfolio alerts/i);
 });
 
-test("workflow authorizes Telegram only for the scheduled 08:30 IST scan", () => {
+test("workflow authorizes Telegram for 08:30 and deduplicated morning recovery scans only", () => {
   const workflow = fs.readFileSync(path.join(rootDir, ".github", "workflows", "daily-screener.yml"), "utf8");
   const executionRunner = fs.readFileSync(path.join(rootDir, "src", "run-execution-pass.js"), "utf8");
   const cloudRunner = fs.readFileSync(path.join(rootDir, "src", "run-cloud-scan.js"), "utf8");
   assert.match(workflow, /MORNING_ALERTS:.*event_name == 'schedule'.*event\.schedule == '0 3 \* \* 1-5'/);
+  assert.match(workflow, /cron: "10,20,30 3 \* \* 1-5"/);
+  assert.match(workflow, /MORNING_ALERTS:.*event\.schedule == '10,20,30 3 \* \* 1-5'/);
+  assert.match(workflow, /inputs\.publish_morning_alerts == true/);
+  assert.match(workflow, /EXECUTION_ONLY:.*event\.schedule != '10,20,30 3 \* \* 1-5'/);
   assert.match(workflow, /TELEGRAM_MORNING_ONLY:.*MORNING_ALERTS/);
   assert.match(executionRunner, /runExecutionPass\(\{ sendTelegram: false \}\)/);
   assert.match(executionRunner, /executionOnly: true,[\s\S]*sendTelegram: false,[\s\S]*publishActionAlerts: false/);
