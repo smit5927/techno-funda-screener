@@ -4720,12 +4720,12 @@
     }
   },
   "CANHLIFE.NS": {
-    "updatedAt": "2026-07-13T10:51:06.645Z",
+    "updatedAt": "2026-07-20T11:18:30.290Z",
     "value": {
       "available": true,
       "score": 1,
       "maxScore": 8,
-      "currentPe": 108.293233,
+      "currentPe": 112.586466,
       "ebitdaMargin": null,
       "checks": {
         "netIncomeYoYUp": {
@@ -9076,12 +9076,12 @@
     }
   },
   "HEG.NS": {
-    "updatedAt": "2026-07-13T10:51:18.700Z",
+    "updatedAt": "2026-07-20T11:18:46.855Z",
     "value": {
       "available": true,
       "score": 3,
       "maxScore": 8,
-      "currentPe": 31.127927,
+      "currentPe": 33.543689,
       "ebitdaMargin": 0.18643590126158385,
       "checks": {
         "netIncomeYoYUp": {
@@ -15181,12 +15181,12 @@
     }
   },
   "MPHASIS.NS": {
-    "updatedAt": "2026-07-13T10:51:31.576Z",
+    "updatedAt": "2026-07-20T11:19:04.831Z",
     "value": {
       "available": true,
       "score": 6,
       "maxScore": 8,
-      "currentPe": 23.804593,
+      "currentPe": 24.545827,
       "ebitdaMargin": 0.2148296779290767,
       "checks": {
         "netIncomeYoYUp": {
@@ -16791,23 +16791,23 @@
     }
   },
   "PAGEIND.NS": {
-    "updatedAt": "2026-07-13T10:51:35.635Z",
+    "updatedAt": "2026-07-20T11:19:10.309Z",
     "value": {
       "available": true,
       "score": 4,
       "maxScore": 8,
-      "currentPe": 57.526905,
+      "currentPe": 58.264336,
       "ebitdaMargin": 0.22171501918330794,
       "checks": {
         "netIncomeYoYUp": {
           "ok": true,
-          "latest": 7638232000,
-          "previous": 7291419000
+          "latest": 7638230000,
+          "previous": 7291420000
         },
         "operatingIncomeYoYUp": {
           "ok": true,
-          "latest": 10462302000,
-          "previous": 9633236000
+          "latest": 10639290000,
+          "previous": 9706950000
         },
         "revenueQuarterYoYUp": {
           "ok": true,
@@ -16843,12 +16843,12 @@
     }
   },
   "PERSISTENT.NS": {
-    "updatedAt": "2026-07-13T10:51:36.527Z",
+    "updatedAt": "2026-07-20T11:19:11.558Z",
     "value": {
       "available": true,
       "score": 6,
       "maxScore": 8,
-      "currentPe": 42.516194,
+      "currentPe": 43.609826,
       "ebitdaMargin": 0.1975363522658266,
       "checks": {
         "netIncomeYoYUp": {
@@ -16858,8 +16858,8 @@
         },
         "operatingIncomeYoYUp": {
           "ok": true,
-          "latest": 23924930000,
-          "previous": 17512830000
+          "latest": 24139770000,
+          "previous": 16080380000
         },
         "revenueQuarterYoYUp": {
           "ok": true,
@@ -17719,12 +17719,12 @@
     }
   },
   "RRKABEL.NS": {
-    "updatedAt": "2026-07-13T10:51:41.143Z",
+    "updatedAt": "2026-07-20T11:19:18.204Z",
     "value": {
       "available": true,
       "score": 6,
       "maxScore": 8,
-      "currentPe": 51.142004,
+      "currentPe": 52.695313,
       "ebitdaMargin": 0.09327186932687723,
       "checks": {
         "netIncomeYoYUp": {
@@ -20686,13 +20686,13 @@
     }
   },
   "TECHM.NS": {
-    "updatedAt": "2026-07-13T10:51:49.369Z",
+    "updatedAt": "2026-07-20T11:19:30.261Z",
     "value": {
       "available": true,
-      "score": 5,
+      "score": 6,
       "maxScore": 8,
-      "currentPe": 26.846282,
-      "ebitdaMargin": 0.15657232308090288,
+      "currentPe": 27.198686,
+      "ebitdaMargin": 0.16750361191199029,
       "checks": {
         "netIncomeYoYUp": {
           "ok": true,
@@ -20706,8 +20706,8 @@
         },
         "revenueQuarterYoYUp": {
           "ok": true,
-          "latest": 150761000000,
-          "previous": 132856000000
+          "latest": 157119000000,
+          "previous": 133840000000
         },
         "epsQuarterYoYUp": {
           "ok": null,
@@ -20716,18 +20716,18 @@
         },
         "ebitdaQuarterYoYUp": {
           "ok": true,
-          "latest": 23605000000,
-          "previous": 18321000000
+          "latest": 26318000000,
+          "previous": 20116000000
         },
         "ebitdaMarginQoQUp": {
-          "ok": false,
-          "latest": 0.15657232308090288,
-          "previous": 0.16291026317983492
+          "ok": true,
+          "latest": 0.16750361191199029,
+          "previous": 0.15657232308090288
         },
         "ebitdaMarginYoYUp": {
           "ok": true,
-          "latest": 0.15657232308090288,
-          "previous": 0.13790118624676342
+          "latest": 0.16750361191199029,
+          "previous": 0.15029886431560072
         },
         "peRising": {
           "ok": false,
@@ -23008,12 +23008,12 @@
     }
   },
   "MIDHANI.NS": {
-    "updatedAt": "2026-07-13T10:51:30.860Z",
+    "updatedAt": "2026-07-20T11:19:03.597Z",
     "value": {
       "available": true,
       "score": 5,
       "maxScore": 8,
-      "currentPe": 59.245014,
+      "currentPe": 58.119658,
       "ebitdaMargin": 0.24582357414133701,
       "checks": {
         "netIncomeYoYUp": {
@@ -70034,12 +70034,12 @@
     }
   },
   "AJAXENGG.NS": {
-    "updatedAt": "2026-07-13T10:50:59.167Z",
+    "updatedAt": "2026-07-20T11:17:04.501Z",
     "value": {
       "available": true,
       "score": 4,
       "maxScore": 8,
-      "currentPe": 27.887468,
+      "currentPe": 30.419437,
       "ebitdaMargin": 0.1513282932803987,
       "checks": {
         "netIncomeYoYUp": {
@@ -70086,12 +70086,12 @@
     }
   },
   "ASHAPURMIN.NS": {
-    "updatedAt": "2026-07-13T10:51:01.861Z",
+    "updatedAt": "2026-07-20T11:17:08.357Z",
     "value": {
       "available": true,
       "score": 4,
       "maxScore": 8,
-      "currentPe": 15.381961,
+      "currentPe": 16.412423,
       "ebitdaMargin": 0.09172876568984523,
       "checks": {
         "netIncomeYoYUp": {
@@ -70138,12 +70138,12 @@
     }
   },
   "AUSOMENT.NS": {
-    "updatedAt": "2026-07-13T10:51:02.581Z",
+    "updatedAt": "2026-07-20T11:17:09.483Z",
     "value": {
       "available": true,
       "score": 2,
       "maxScore": 8,
-      "currentPe": 8.540559,
+      "currentPe": 8.954545,
       "ebitdaMargin": 0.001723092508129845,
       "checks": {
         "netIncomeYoYUp": {
@@ -70190,12 +70190,12 @@
     }
   },
   "BFUTILITIE.NS": {
-    "updatedAt": "2026-07-13T10:51:04.845Z",
+    "updatedAt": "2026-07-20T11:17:12.445Z",
     "value": {
       "available": true,
       "score": 6,
       "maxScore": 8,
-      "currentPe": 13.780952,
+      "currentPe": 14.692857,
       "ebitdaMargin": 0.7992161472475354,
       "checks": {
         "netIncomeYoYUp": {
@@ -70242,12 +70242,12 @@
     }
   },
   "FINOPB.NS": {
-    "updatedAt": "2026-07-13T10:51:14.072Z",
+    "updatedAt": "2026-07-20T11:18:40.546Z",
     "value": {
       "available": true,
       "score": 0,
       "maxScore": 8,
-      "currentPe": 21.526232,
+      "currentPe": 27.696343,
       "ebitdaMargin": null,
       "checks": {
         "netIncomeYoYUp": {
@@ -70398,12 +70398,12 @@
     }
   },
   "HARRMALAYA.NS": {
-    "updatedAt": "2026-07-13T10:51:17.956Z",
+    "updatedAt": "2026-07-20T11:18:45.973Z",
     "value": {
       "available": true,
       "score": 6,
       "maxScore": 8,
-      "currentPe": 12.863838,
+      "currentPe": 13.874604,
       "ebitdaMargin": 0.09639824316480457,
       "checks": {
         "netIncomeYoYUp": {
@@ -70450,7 +70450,7 @@
     }
   },
   "IMPEXFERRO.NS": {
-    "updatedAt": "2026-07-13T10:51:20.877Z",
+    "updatedAt": "2026-07-20T11:18:50.011Z",
     "value": {
       "available": true,
       "score": 2,
@@ -70554,12 +70554,12 @@
     }
   },
   "JKPAPER.NS": {
-    "updatedAt": "2026-07-13T10:51:23.782Z",
+    "updatedAt": "2026-07-20T11:18:54.082Z",
     "value": {
       "available": true,
       "score": 5,
       "maxScore": 8,
-      "currentPe": 24.924966,
+      "currentPe": 25.208049,
       "ebitdaMargin": 0.14195172817213053,
       "checks": {
         "netIncomeYoYUp": {
@@ -70658,23 +70658,23 @@
     }
   },
   "KANPRPLA.NS": {
-    "updatedAt": "2026-07-13T10:51:25.133Z",
+    "updatedAt": "2026-07-20T11:18:55.410Z",
     "value": {
       "available": true,
       "score": 6,
       "maxScore": 8,
-      "currentPe": 11.460519,
+      "currentPe": 11.497983,
       "ebitdaMargin": 0.1401131726301707,
       "checks": {
         "netIncomeYoYUp": {
           "ok": true,
-          "latest": 394961000,
+          "latest": 394946000,
           "previous": 111054000
         },
         "operatingIncomeYoYUp": {
           "ok": true,
-          "latest": 531094000,
-          "previous": 317377000
+          "latest": 546594000,
+          "previous": 344690000
         },
         "revenueQuarterYoYUp": {
           "ok": true,
@@ -70703,19 +70703,19 @@
         },
         "peRising": {
           "ok": false,
-          "latest": 21.982107295193682,
-          "previous": 236.8421052631579
+          "latest": 9.398214249383836,
+          "previous": 21.982107295193682
         }
       }
     }
   },
   "LUXIND.NS": {
-    "updatedAt": "2026-07-13T10:51:28.370Z",
+    "updatedAt": "2026-07-20T11:19:00.204Z",
     "value": {
       "available": true,
       "score": 2,
       "maxScore": 8,
-      "currentPe": 36.978563,
+      "currentPe": 37.02781,
       "ebitdaMargin": 0.08686296846053827,
       "checks": {
         "netIncomeYoYUp": {
@@ -70814,12 +70814,12 @@
     }
   },
   "METROBRAND.NS": {
-    "updatedAt": "2026-07-13T10:51:30.559Z",
+    "updatedAt": "2026-07-20T11:19:03.203Z",
     "value": {
       "available": true,
       "score": 5,
       "maxScore": 8,
-      "currentPe": 70.358566,
+      "currentPe": 71.135458,
       "ebitdaMargin": 0.34857305493026985,
       "checks": {
         "netIncomeYoYUp": {
@@ -70970,12 +70970,12 @@
     }
   },
   "ROSSARI.NS": {
-    "updatedAt": "2026-07-13T10:51:40.777Z",
+    "updatedAt": "2026-07-20T11:19:17.807Z",
     "value": {
       "available": true,
       "score": 6,
       "maxScore": 8,
-      "currentPe": 19.46528,
+      "currentPe": 19.734497,
       "ebitdaMargin": 0.14138614786628548,
       "checks": {
         "netIncomeYoYUp": {
@@ -71074,12 +71074,12 @@
     }
   },
   "TAINWALCHM.NS": {
-    "updatedAt": "2026-07-13T10:51:48.418Z",
+    "updatedAt": "2026-07-20T11:19:28.657Z",
     "value": {
       "available": true,
       "score": 4,
       "maxScore": 8,
-      "currentPe": 16.782986,
+      "currentPe": 18.71875,
       "ebitdaMargin": 0.6808127764864662,
       "checks": {
         "netIncomeYoYUp": {
@@ -71178,12 +71178,12 @@
     }
   },
   "TTKHLTCARE.NS": {
-    "updatedAt": "2026-07-13T10:51:51.151Z",
+    "updatedAt": "2026-07-20T11:19:32.809Z",
     "value": {
       "available": true,
       "score": 4,
       "maxScore": 8,
-      "currentPe": 19.802065,
+      "currentPe": 21.094019,
       "ebitdaMargin": 0.13210560190692283,
       "checks": {
         "netIncomeYoYUp": {
@@ -71230,7 +71230,7 @@
     }
   },
   "UNIVAFOODS.NS": {
-    "updatedAt": "2026-07-13T10:51:52.136Z",
+    "updatedAt": "2026-07-20T11:19:33.854Z",
     "value": {
       "available": true,
       "score": 4,
@@ -71282,12 +71282,12 @@
     }
   },
   "BRPL.BO": {
-    "updatedAt": "2026-07-13T10:51:56.883Z",
+    "updatedAt": "2026-07-20T11:19:40.281Z",
     "value": {
       "available": true,
       "score": 5,
       "maxScore": 8,
-      "currentPe": 15.1,
+      "currentPe": 14.94375,
       "ebitdaMargin": 0.11160548839671755,
       "checks": {
         "netIncomeYoYUp": {
