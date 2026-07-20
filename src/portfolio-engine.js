@@ -23,6 +23,7 @@ export function portfolioConfig(config = {}) {
   const pyramidPullbackMinPct = positive(trade.pyramidPullbackMinPct, 2);
   const maxPositionPct = positive(trade.maxPositionPct, 10);
   const riskPerTradePct = positive(trade.riskPerTradePct, 1);
+  const maximumStopPct = positive(trade.maximumStopPct, 8);
   return {
     totalCapital,
     minimumInitialAllocation: positive(trade.minimumInitialAllocation, 10_000),
@@ -36,7 +37,22 @@ export function portfolioConfig(config = {}) {
     maxPortfolioRiskPct: positive(trade.maxPortfolioRiskPct, 6),
     maxSectorExposurePct: positive(trade.maxSectorExposurePct, 25),
     minimumStopPct: positive(trade.minimumStopPct, 1.5),
-    maximumStopPct: positive(trade.maximumStopPct, 8),
+    maximumStopPct,
+    maximumStructuralStopPct: Math.max(
+      maximumStopPct,
+      positive(trade.maximumStructuralStopPct, 10)
+    ),
+    wideStopMaxPositionPct: Math.min(
+      positive(trade.wideStopMaxPositionPct, 5),
+      Math.min(positive(trade.initialMaxPositionPct, 7.5), maxPositionPct)
+    ),
+    wideStopRiskPct: Math.min(positive(trade.wideStopRiskPct, 0.5), riskPerTradePct),
+    weeklyEmaStopBufferPct: positive(trade.weeklyEmaStopBufferPct, 0.5),
+    weeklyEmaStopAtrFraction: positive(trade.weeklyEmaStopAtrFraction, 0.2),
+    structuralDefencePartialPct: Math.min(
+      50,
+      positive(trade.structuralDefencePartialPct, 33)
+    ),
     partialExitPct: positive(trade.partialExitPct, 50),
     partialProfitR: positive(trade.partialProfitR, 2),
     partialWeaknessConfirmationCloses: integer(trade.partialWeaknessConfirmationCloses, 3),
@@ -139,40 +155,76 @@ export function candidateRank(row = {}) {
 
 export function structuralStop(row = {}, price, config = {}) {
   const rules = portfolioConfig(config);
+  return structuralStopDetails(row, price, rules).stopPrice;
+}
+
+function structuralStopDetails(row = {}, price, config = {}) {
+  const rules = portfolioConfig(config);
   const values = row.setupStrength?.values || {};
   const closestAllowed = price * (1 - rules.minimumStopPct / 100);
+  const weeklyEma13 = Number(row.weeklyEma13 ?? values.weeklyEma13);
+  const weeklyAtr = Number(row.weeklyAtr ?? values.weeklyAtr);
+  const weeklyEmaSource = String(
+    row.weeklyEma13Source ?? values.weeklyEma13Source ?? "low"
+  ).trim().toLowerCase();
+  const weeklyBuffer = Math.max(
+    price * rules.weeklyEmaStopBufferPct / 100,
+    Number.isFinite(weeklyAtr) && weeklyAtr > 0
+      ? weeklyAtr * rules.weeklyEmaStopAtrFraction
+      : 0
+  );
+  const weeklyAnchorReady =
+    weeklyEmaSource === "low" &&
+    Number.isFinite(weeklyEma13) &&
+    weeklyEma13 > 0 &&
+    weeklyEma13 < price;
+
+  if (weeklyAnchorReady) {
+    const raw = weeklyEma13 - weeklyBuffer;
+    const stopPrice = round(Math.min(closestAllowed, raw));
+    return {
+      stopPrice,
+      stopDistancePct: round((price - stopPrice) / price * 100),
+      stopSource: "WEEKLY_EMA13_LOW",
+      stopBuffer: round(weeklyBuffer),
+      weeklyAnchorReady: true
+    };
+  }
+
   const furthestAllowed = price * (1 - rules.maximumStopPct / 100);
-  const candidates = [
+  const fallbackCandidates = [
     row.dailySupertrend,
     values.fourCandleLow,
     values.twoCandleLow,
     values.fibonacciSupportNearby ? values.fibonacciNearestPrice : null
   ].filter((value) => Number.isFinite(value) && value > 0 && value < price);
-  const breakoutStyle = [
-    "BREAKOUT_BUY",
-    "BREAKOUT_RECLAIM_BUY",
-    "WEEKLY_TREND_RECLAIM"
-  ].includes(row.entryStyle?.type);
-  const breakoutSupports = [
-    row.dailySupertrend,
-    row.weeklyEma13
-  ].filter((value) =>
-    Number.isFinite(value) && value >= furthestAllowed && value < price
-  );
-  const raw = breakoutStyle && breakoutSupports.length
-    ? Math.min(...breakoutSupports)
-    : candidates.length
-      ? Math.max(...candidates)
-      : price * (1 - rules.maximumStopPct / 100);
-  return round(Math.min(closestAllowed, Math.max(furthestAllowed, raw)));
+  const raw = fallbackCandidates.length
+    ? Math.max(...fallbackCandidates)
+    : furthestAllowed;
+  const stopPrice = round(Math.min(closestAllowed, Math.max(furthestAllowed, raw)));
+  return {
+    stopPrice,
+    stopDistancePct: round((price - stopPrice) / price * 100),
+    stopSource: "LEGACY_DAILY_STRUCTURE_FALLBACK",
+    stopBuffer: null,
+    weeklyAnchorReady: false
+  };
 }
 
 export function buildPositionPlan(row, price, portfolio = {}, config = {}) {
   const rules = portfolioConfig(config);
-  const stopPrice = structuralStop(row, price, rules);
+  const stopDetails = structuralStopDetails(row, price, rules);
+  const stopPrice = stopDetails.stopPrice;
   const riskPerShare = Number.isFinite(stopPrice) ? price - stopPrice : null;
-  const maxAllocation = rules.totalCapital * rules.initialMaxPositionPct / 100;
-  const riskBudget = rules.totalCapital * rules.initialRiskPct / 100;
+  const wideStructuralStop = stopDetails.stopDistancePct > rules.maximumStopPct;
+  const allocationPct = wideStructuralStop
+    ? rules.wideStopMaxPositionPct
+    : rules.initialMaxPositionPct;
+  const initialRiskPct = wideStructuralStop
+    ? Math.min(rules.initialRiskPct, rules.wideStopRiskPct)
+    : rules.initialRiskPct;
+  const maxAllocation = rules.totalCapital * allocationPct / 100;
+  const riskBudget = rules.totalCapital * initialRiskPct / 100;
   const availableCash = Math.max(0, Number(portfolio.availableCash) || 0);
   const availableRisk = Math.max(0, Number(portfolio.availableRisk) || 0);
   const sector = normalizedSector(row.industry);
@@ -194,8 +246,25 @@ export function buildPositionPlan(row, price, portfolio = {}, config = {}) {
   const allocation = quantity * price;
   const plannedRisk = quantity * riskPerShare;
   const minimumAllocationMet = allocation >= rules.minimumInitialAllocation;
+  const weeklyMomentumReady =
+    Number(row.weeklyRs) > 0 &&
+    Number(row.dailyLongRs) > 0 &&
+    Number(row.dailyShortRs) > 0;
+  const weeklyStructureReady =
+    stopDetails.weeklyAnchorReady &&
+    row.weeklyPriceAboveEma13 !== false &&
+    Number(row.weeklyClose) >= Number(row.weeklyEma13);
+  const structuralDistanceAllowed =
+    Number.isFinite(stopDetails.stopDistancePct) &&
+    stopDetails.stopDistancePct <= rules.maximumStructuralStopPct;
   let reason = "Staged initial-entry risk and capital limits allow entry.";
-  if ((Number(portfolio.openSlots) || 0) <= 0) reason = "Maximum open-position limit reached.";
+  if (!weeklyStructureReady) {
+    reason = "Fresh entry requires a completed weekly close above Weekly EMA13 calculated from weekly lows.";
+  } else if (!weeklyMomentumReady) {
+    reason = "Weekly RS21, daily RS55 and daily RS21 must all be above zero before capital is committed.";
+  } else if (!structuralDistanceAllowed) {
+    reason = `Weekly EMA13-Low structural stop is ${round(stopDetails.stopDistancePct)}% away, beyond the ${rules.maximumStructuralStopPct}% entry limit; wait for a retracement instead of using an artificial tight stop.`;
+  } else if ((Number(portfolio.openSlots) || 0) <= 0) reason = "Maximum open-position limit reached.";
   else if (availableCash < price) reason = "Available portfolio cash is insufficient.";
   else if (sectorAvailable < price) reason = `Sector exposure limit reached for ${sector}.`;
   else if (availableRisk < riskPerShare) reason = "Maximum aggregate portfolio risk reached.";
@@ -205,11 +274,24 @@ export function buildPositionPlan(row, price, portfolio = {}, config = {}) {
   }
 
   return {
-    eligible: quantity > 0 && minimumAllocationMet && (Number(portfolio.openSlots) || 0) > 0,
+    eligible:
+      weeklyStructureReady &&
+      weeklyMomentumReady &&
+      structuralDistanceAllowed &&
+      quantity > 0 &&
+      minimumAllocationMet &&
+      (Number(portfolio.openSlots) || 0) > 0,
     quantity,
     allocation: round(allocation),
     stopPrice,
-    stopDistancePct: round((price - stopPrice) / price * 100),
+    stopDistancePct: stopDetails.stopDistancePct,
+    stopSource: stopDetails.stopSource,
+    stopBuffer: stopDetails.stopBuffer,
+    wideStructuralStop,
+    maximumStructuralStopPct: rules.maximumStructuralStopPct,
+    weeklyStructureReady,
+    weeklyMomentumReady,
+    structuralDistanceAllowed,
     riskPerShare: round(riskPerShare),
     plannedRisk: round(plannedRisk),
     riskBudget: round(riskBudget),
@@ -930,31 +1012,19 @@ export function positionExitDecision(trade, row, config = {}) {
   const initialStop = Number(trade.initialStopPrice);
   const holdingCloses = completedHoldingCloses(trade, row);
   const managementReady = holdingCloses >= rules.minimumManagementCloses;
+  const weeklyStructureBroken =
+    row.weeklyPriceAboveEma13 === false &&
+    Number.isFinite(Number(row.weeklyClose)) &&
+    Number.isFinite(Number(row.weeklyEma13));
   const fullReasons = [];
   if (Number(row.weeklyRs) < 0) {
     fullReasons.push(`Completed-week RS ${formatRs(row.weeklyRs)} is below zero.`);
-  }
-  if (
-    row.weeklyPriceAboveEma13 === false &&
-    Number.isFinite(Number(row.weeklyClose)) &&
-    Number.isFinite(Number(row.weeklyEma13))
-  ) {
-    fullReasons.push(
-      `Completed weekly candle ${row.weeklyAsOf || ""} closed ${round(row.weeklyClose)} below low-source EMA13 ${round(row.weeklyEma13)}; weekly momentum structure is broken.`
-    );
   }
   const dailyLongRs = Number(row.dailyLongRs);
   const dailyLongRsBelowCloses = confirmedDailyLongRsBelowCloses(trade, row);
   if (dailyLongRs <= rules.dailyLongRsHardExitThreshold) {
     fullReasons.push(
       `Completed-close daily long RS55 ${formatRs(dailyLongRs)} is materially below the hard-exit threshold ${formatRs(rules.dailyLongRsHardExitThreshold)}.`
-    );
-  } else if (
-    dailyLongRs < 0 &&
-    dailyLongRsBelowCloses >= rules.dailyLongRsConfirmationCloses
-  ) {
-    fullReasons.push(
-      `Completed-close daily long RS55 remained below zero for ${dailyLongRsBelowCloses} confirmed closes.`
     );
   }
   if (Number.isFinite(initialStop) && close <= initialStop) {
@@ -997,7 +1067,40 @@ export function positionExitDecision(trade, row, config = {}) {
   const rewardR = initialRisk > 0 ? (close - Number(trade.entryPrice)) / initialRisk : null;
   const partialReasons = [];
   let partialTag = null;
+  let partialPct = rules.partialExitPct;
   if (
+    weeklyStructureBroken &&
+    Number(row.weeklyRs) >= 0 &&
+    !trade.partialExitTags?.includes("WEEKLY_STRUCTURE_DEFENCE")
+  ) {
+    partialReasons.push(
+      `Completed weekly candle ${row.weeklyAsOf || ""} closed ${round(row.weeklyClose)} below Weekly EMA13 calculated from weekly lows ${round(row.weeklyEma13)}, while Weekly RS21 remains ${formatRs(row.weeklyRs)}; reduce risk without declaring the entire trend dead.`
+    );
+    partialTag = "WEEKLY_STRUCTURE_DEFENCE";
+    partialPct = rules.structuralDefencePartialPct;
+  }
+  const dailyRs55Confirmed =
+    dailyLongRs < 0 &&
+    dailyLongRsBelowCloses >= rules.dailyLongRsConfirmationCloses;
+  const dailyRs55PriceConfirmation =
+    Number(row.dailyShortRs) < 0 ||
+    Number(row.dailyRsi) < 50 ||
+    close < Number(row.dailySupertrend) ||
+    weeklyStructureBroken;
+  if (
+    !partialTag &&
+    dailyRs55Confirmed &&
+    dailyRs55PriceConfirmation &&
+    !trade.partialExitTags?.includes("RS55_DEFENCE")
+  ) {
+    partialReasons.push(
+      `Daily RS55 remained below zero for ${dailyLongRsBelowCloses} completed closes and price/short-RS structure confirms deterioration; reduce exposure while Weekly RS21 and the original structural stop decide the remaining position.`
+    );
+    partialTag = "RS55_DEFENCE";
+    partialPct = rules.structuralDefencePartialPct;
+  }
+  if (
+    !partialTag &&
     Number.isFinite(rewardR) &&
     rewardR >= rules.partialProfitR &&
     managementReady &&
@@ -1033,7 +1136,7 @@ export function positionExitDecision(trade, row, config = {}) {
       reasons: partialReasons,
       trailingStop,
       rewardR: round(rewardR),
-      partialPct: rules.partialExitPct,
+      partialPct,
       tag: partialTag
     };
   }
@@ -1049,8 +1152,9 @@ export function positionExitDecision(trade, row, config = {}) {
     );
   }
   if (dailyLongRs < 0 && dailyLongRs > rules.dailyLongRsHardExitThreshold) {
-    holdReasons.push(
-      `RS55 EXIT CONFIRMATION: marginal reading ${formatRs(dailyLongRs)} has ${dailyLongRsBelowCloses}/${rules.dailyLongRsConfirmationCloses} completed below-zero closes; immediate weekly, Supertrend/structural and hard-threshold protections remain active.`
+    holdReasons.push(dailyRs55Confirmed
+      ? `RS55 WATCH: ${dailyLongRsBelowCloses} completed below-zero closes are confirmed, but no second price/RS weakness confirms a reduction yet.`
+      : `RS55 EXIT CONFIRMATION: marginal reading ${formatRs(dailyLongRs)} has ${dailyLongRsBelowCloses}/${rules.dailyLongRsConfirmationCloses} completed below-zero closes; immediate weekly and original-stop protections remain active.`
     );
   }
   if (weakness.primaryScore === 1) {

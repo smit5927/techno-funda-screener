@@ -700,6 +700,12 @@ export function tradeSettingsSummary(config = appConfig) {
     capitalPerStock: config.trade?.capitalPerStock ?? 100000,
     initialMaxPositionPct: rules.initialMaxPositionPct,
     initialRiskPct: rules.initialRiskPct,
+    weeklyEmaStopSource: "low",
+    weeklyEmaStopBufferPct: rules.weeklyEmaStopBufferPct,
+    weeklyEmaStopAtrFraction: rules.weeklyEmaStopAtrFraction,
+    maximumStructuralStopPct: rules.maximumStructuralStopPct,
+    wideStopMaxPositionPct: rules.wideStopMaxPositionPct,
+    wideStopRiskPct: rules.wideStopRiskPct,
     controlledRetestEnabled: rules.controlledRetestEnabled,
     controlledRetestAddMaxPct: rules.controlledRetestAddMaxPct,
     controlledRetestAddRiskPct: rules.controlledRetestAddRiskPct,
@@ -769,6 +775,9 @@ function createPendingEntry(
     plannedRisk: plan.plannedRisk,
     initialStopPrice: plan.stopPrice,
     trailingStopPrice: plan.stopPrice,
+    initialStopSource: plan.stopSource,
+    initialStopBuffer: plan.stopBuffer,
+    initialStopDistancePct: plan.stopDistancePct,
     riskPerShare: plan.riskPerShare,
     riskBudget: plan.riskBudget,
     positionRank: plan.rank,
@@ -795,7 +804,7 @@ function createPendingEntry(
     entryReason: [
       ...(row.signalReason || row.entryReason || []),
       `Trade sheet filter: ${settings.scopeLabel}, ${settings.qualityLabel}.`,
-      `Portfolio rank ${plan.rank}; planned allocation Rs ${plan.allocation}, quantity ${plan.quantity}, initial stop ${plan.stopPrice}, planned risk Rs ${plan.plannedRisk}.`,
+      `Portfolio rank ${plan.rank}; planned allocation Rs ${plan.allocation}, quantity ${plan.quantity}, initial stop ${plan.stopPrice} from Weekly EMA13-Low with buffer ${plan.stopBuffer ?? "NA"}, planned risk Rs ${plan.plannedRisk}.`,
       ...(rotationExecution ? [
         `Immediate quality rotation: ${rotationExecution.sourceSymbol} sold ${rotationExecution.exitDate} ${rotationExecution.exitTime}; released cash is reusable immediately and this replacement must fill in the same execution slot.`
       ] : []),
@@ -1359,6 +1368,21 @@ async function fillEntry(trade, row, config, trades, candidates) {
       },
       config
     );
+    if (
+      !dynamicPlan.weeklyStructureReady ||
+      !dynamicPlan.weeklyMomentumReady ||
+      !dynamicPlan.structuralDistanceAllowed
+    ) {
+      const reason = `Confirmed buy cancelled at the exact 09:17 safety recheck: ${dynamicPlan.reason}`;
+      trade.status = "SKIPPED_ENTRY";
+      trade.orderState = "CANCELLED_AT_0917_RISK_RECHECK";
+      trade.skipReason = reason;
+      trade.executionError = reason;
+      trade.plannedQuantity = null;
+      trade.plannedAllocation = null;
+      trade.plannedRisk = null;
+      return "SKIPPED";
+    }
     const reservedAllocation = Number(trade.plannedAllocation) || 0;
     const reservedRisk = Number(trade.plannedRisk) || 0;
     const reservedQuantity = Number(trade.plannedQuantity) || 0;
@@ -1400,6 +1424,9 @@ async function fillEntry(trade, row, config, trades, candidates) {
     trade.originalInvestedValue = trade.investedValue;
     trade.initialStopPrice = plan.stopPrice;
     trade.trailingStopPrice = plan.stopPrice;
+    trade.initialStopSource = plan.stopSource;
+    trade.initialStopBuffer = plan.stopBuffer;
+    trade.initialStopDistancePct = plan.stopDistancePct;
     trade.riskPerShare = plan.riskPerShare;
     trade.initialRiskAmount = plan.plannedRisk;
     trade.positionRank = plan.rank;
@@ -2915,9 +2942,13 @@ function tradeColumns() {
     { header: "Position Rank", key: "Position Rank", width: 14 },
     { header: "Current Rank", key: "Current Rank", width: 14 },
     { header: "Initial Stop", key: "Initial Stop", width: 14 },
+    { header: "Initial Stop Source", key: "Initial Stop Source", width: 24 },
+    { header: "Initial Stop Buffer", key: "Initial Stop Buffer", width: 20 },
+    { header: "Initial Stop Distance %", key: "Initial Stop Distance %", width: 24 },
     { header: "Trailing Stop", key: "Trailing Stop", width: 14 },
     { header: "Completed Weekly Close", key: "Completed Weekly Close", width: 24 },
     { header: "Weekly EMA13 (Low Source)", key: "Weekly EMA13 (Low Source)", width: 26 },
+    { header: "Weekly ATR", key: "Weekly ATR", width: 14 },
     { header: "Weekly Close vs EMA13 (Low)", key: "Weekly Close vs EMA13 (Low)", width: 30 },
     { header: "Initial Risk", key: "Initial Risk", width: 14 },
     { header: "Current R", key: "Current R", width: 12 },
@@ -3043,13 +3074,17 @@ function tradeToRow(trade) {
     "Position Rank": trade.positionRank ?? "",
     "Current Rank": trade.currentRank ?? "",
     "Initial Stop": trade.initialStopPrice ?? "",
+    "Initial Stop Source": trade.initialStopSource || "Legacy structural stop",
+    "Initial Stop Buffer": trade.initialStopBuffer ?? "",
+    "Initial Stop Distance %": trade.initialStopDistancePct ?? "",
     "Trailing Stop": trade.trailingStopPrice ?? "",
     "Completed Weekly Close": currentSnapshot.weeklyClose ?? "",
     "Weekly EMA13 (Low Source)": currentSnapshot.weeklyEma13 ?? "",
+    "Weekly ATR": currentSnapshot.weeklyAtr ?? "",
     "Weekly Close vs EMA13 (Low)": currentSnapshot.weeklyPriceAboveEma13 === true
       ? "Above"
       : currentSnapshot.weeklyPriceAboveEma13 === false
-        ? "Below - exit"
+        ? "Below - risk reduction"
         : "NA",
     "Initial Risk": trade.initialRiskAmount ?? trade.plannedRisk ?? "",
     "Current R": trade.currentRewardR ?? "",
@@ -3196,6 +3231,7 @@ function snapshot(row) {
     weeklyClose: row.weeklyClose,
     weeklyEma13: row.weeklyEma13,
     weeklyEma13Source: row.weeklyEma13Source || "low",
+    weeklyAtr: row.weeklyAtr,
     weeklyPriceAboveEma13: row.weeklyPriceAboveEma13,
     weeklyEma13Rising: row.weeklyEma13Rising,
     weeklyEma13Reclaim: row.weeklyEma13Reclaim,

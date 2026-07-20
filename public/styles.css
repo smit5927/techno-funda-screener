@@ -848,6 +848,17 @@ tbody tr:hover, tbody tr:focus-within { box-shadow: inset 3px 0 var(--brand); }
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
+.positionSignalLabel {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--blue);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0;
+}
+.positionSignalLabel.hold, .positionSignalLabel.buy, .positionSignalLabel.add { color: var(--green); }
+.positionSignalLabel.review, .positionSignalLabel.wait, .positionSignalLabel.partial { color: var(--amber); }
+.positionSignalLabel.exit { color: var(--red); }
 .good { color: var(--green); font-weight: 760; }
 .bad { color: var(--red); font-weight: 760; }
 .neutral { color: var(--muted); }

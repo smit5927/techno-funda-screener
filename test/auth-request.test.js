@@ -113,6 +113,16 @@ test("open positions table expands to the available viewport before scrolling", 
   assert.match(styles, /--open-positions-max-height/);
 });
 
+test("open positions restore a compact action label and readable signal reason", () => {
+  const app = fs.readFileSync(path.join(rootDir, "public", "app.js"), "utf8");
+  const styles = fs.readFileSync(path.join(rootDir, "public", "styles.css"), "utf8");
+  assert.match(app, /buildDecisionGuide\(detailRow, trade\)/);
+  assert.match(app, /positionSignalLabel/);
+  assert.match(app, /decisionGuide\.summary/);
+  assert.match(styles, /\.positionSignalLabel/);
+  assert.match(styles, /-webkit-line-clamp: 2/);
+});
+
 test("filled holdings and pending execution orders are presented separately", () => {
   const html = fs.readFileSync(path.join(rootDir, "public", "index.html"), "utf8");
   const app = fs.readFileSync(path.join(rootDir, "public", "app.js"), "utf8");

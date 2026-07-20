@@ -285,7 +285,7 @@ async function showApplication(profile) {
   });
   if (!appLoaded) {
     appLoaded = true;
-    await import("./app.js?v=20260720-pending-telegram");
+    await import("./app.js?v=20260720-weekly-risk");
   }
 }
 

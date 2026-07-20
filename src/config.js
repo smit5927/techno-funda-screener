@@ -97,6 +97,12 @@ export const appConfig = {
     maxSectorExposurePct: numberEnv("TRADE_MAX_SECTOR_EXPOSURE_PCT", 25),
     minimumStopPct: numberEnv("TRADE_MINIMUM_STOP_PCT", 1.5),
     maximumStopPct: numberEnv("TRADE_MAXIMUM_STOP_PCT", 8),
+    maximumStructuralStopPct: numberEnv("TRADE_MAXIMUM_STRUCTURAL_STOP_PCT", 10),
+    wideStopMaxPositionPct: numberEnv("TRADE_WIDE_STOP_MAX_POSITION_PCT", 5),
+    wideStopRiskPct: numberEnv("TRADE_WIDE_STOP_RISK_PCT", 0.5),
+    weeklyEmaStopBufferPct: numberEnv("TRADE_WEEKLY_EMA_STOP_BUFFER_PCT", 0.5),
+    weeklyEmaStopAtrFraction: numberEnv("TRADE_WEEKLY_EMA_STOP_ATR_FRACTION", 0.2),
+    structuralDefencePartialPct: numberEnv("TRADE_STRUCTURAL_DEFENCE_PARTIAL_PCT", 33),
     partialExitPct: numberEnv("TRADE_PARTIAL_EXIT_PCT", 50),
     partialProfitR: numberEnv("TRADE_PARTIAL_PROFIT_R", 2),
     partialWeaknessConfirmationCloses: Math.max(

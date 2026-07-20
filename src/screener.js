@@ -201,6 +201,7 @@ export function reconcileResultFreshness(currentRows = [], previousRows = []) {
           weeklyClose: current.weeklyClose,
           weeklyEma13: current.weeklyEma13,
           weeklyEma13Source: current.weeklyEma13Source || "low",
+          weeklyAtr: current.weeklyAtr,
           weeklyPriceAboveEma13: current.weeklyPriceAboveEma13,
           weeklyEma13Rising: current.weeklyEma13Rising,
           weeklyEma13Reclaim: current.weeklyEma13Reclaim,
@@ -212,18 +213,23 @@ export function reconcileResultFreshness(currentRows = [], previousRows = []) {
           }
         }
       : {};
-    const weeklyMomentumExit = hasWeeklyEmaEvidence && current.exitChecks?.weeklyEma13 === true;
-    const weeklyExitReasons = weeklyMomentumExit
-      ? (current.signalReason || []).filter((reason) => /weekly.*EMA13|weekly momentum/i.test(reason))
+    const weeklyStructureBreak = hasWeeklyEmaEvidence && current.exitChecks?.weeklyEma13 === true;
+    const weeklyMomentumExit = current.status === "EXIT";
+    const weeklyExitReasons = weeklyMomentumExit || weeklyStructureBreak
+      ? (current.signalReason || []).filter((reason) => /weekly.*(?:EMA13|RS)|weekly momentum/i.test(reason))
       : [];
     return {
       ...previous,
       ...weeklyFields,
-      status: weeklyMomentumExit ? "EXIT" : previous.status,
-      signalReason: weeklyMomentumExit
+      status: weeklyMomentumExit ? "EXIT" : weeklyStructureBreak ? "WATCH" : previous.status,
+      signalReason: weeklyMomentumExit || weeklyStructureBreak
         ? [...weeklyExitReasons, ...(previous.signalReason || []).filter((reason) => !/execution plan/i.test(reason))]
         : previous.signalReason,
-      executionPlan: weeklyMomentumExit ? "SELL_NEXT_SESSION_0915_IF_OPEN" : previous.executionPlan,
+      executionPlan: weeklyMomentumExit
+        ? "SELL_NEXT_SESSION_0915_IF_OPEN"
+        : weeklyStructureBreak
+          ? "NONE"
+          : previous.executionPlan,
       entryStyle: current.weeklyEma13Reclaim ? current.entryStyle : previous.entryStyle,
       listId: current.listId,
       listLabel: current.listLabel,
@@ -259,6 +265,7 @@ function mergeWeeklyEmaSetup(previousSetup = {}, currentSetup = {}) {
       weeklyClose: currentValues.weeklyClose,
       weeklyEma13: currentValues.weeklyEma13,
       weeklyEma13Source: currentValues.weeklyEma13Source || "low",
+      weeklyAtr: currentValues.weeklyAtr,
       weeklyEma13Previous: currentValues.weeklyEma13Previous,
       weeklyEma13DistancePct: currentValues.weeklyEma13DistancePct,
       weeklyEma13BelowCloses: currentValues.weeklyEma13BelowCloses,
@@ -577,6 +584,10 @@ async function scanSymbol(
     rules.exit?.weeklyEmaPeriod || rules.setupStrength?.weeklyEmaPeriod || 13,
     rules.exit?.weeklyEmaSource || rules.setupStrength?.weeklyEmaSource || "low"
   );
+  const weeklyAtr = latestValue(calculateAtr(
+    weeklyCandles,
+    rules.setupStrength?.atrPeriod || 14
+  ));
 
   const latestDailyIndex = dailyCandles.length - 1;
   const latestWeeklyIndex = weeklyCandles.length - 1;
@@ -596,6 +607,7 @@ async function scanSymbol(
     dailyLongRsSeries,
     dailyShortRsSeries,
     weeklyEmaContext,
+    weeklyAtr,
     marketContext,
     rules
   });
@@ -612,7 +624,9 @@ async function scanSymbol(
     weeklyRs,
     dailyLongRs,
     dailyShortRs,
-    dailySupertrend
+    dailySupertrend,
+    weeklyEmaContext.ema,
+    weeklyAtr
   ].every(Number.isFinite);
 
   const entryChecks = {
@@ -630,7 +644,7 @@ async function scanSymbol(
   };
 
   const entry = technicalReady && Object.values(entryChecks).every(Boolean);
-  const exit = technicalReady && Object.values(exitChecks).some(Boolean);
+  const exit = technicalReady && exitChecks.weeklyRs;
   const status = !technicalReady ? "DATA_GAP" : exit ? "EXIT" : entry ? "ENTRY" : "WATCH";
   const entryReason = buildEntryReasons(entryChecks, {
     weeklyRsi,
@@ -720,6 +734,7 @@ async function scanSymbol(
     weeklyClose: weeklyEmaContext.close,
     weeklyEma13: weeklyEmaContext.ema,
     weeklyEma13Source: weeklyEmaContext.source,
+    weeklyAtr,
     weeklyPriceAboveEma13: weeklyEmaContext.above,
     weeklyEma13Rising: weeklyEmaContext.rising,
     weeklyEma13Reclaim: weeklyEmaContext.reclaim,
@@ -797,6 +812,7 @@ function buildSetupStrength({
   dailyLongRsSeries,
   dailyShortRsSeries,
   weeklyEmaContext,
+  weeklyAtr,
   marketContext,
   rules
 }) {
@@ -968,6 +984,7 @@ function buildSetupStrength({
       weeklyClose: weeklyEmaContext?.close ?? null,
       weeklyEma13: weeklyEmaContext?.ema ?? null,
       weeklyEma13Source: weeklyEmaContext?.source || "low",
+      weeklyAtr: Number.isFinite(weeklyAtr) ? weeklyAtr : null,
       weeklyEma13Previous: weeklyEmaContext?.previousEma ?? null,
       weeklyEma13DistancePct: weeklyEmaContext?.distancePct ?? null,
       weeklyEma13BelowCloses: weeklyEmaContext?.consecutiveBelow ?? 0,

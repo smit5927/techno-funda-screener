@@ -1,4 +1,4 @@
-import { buildDecisionGuide } from "./decision-guide.js?v=20260715-decision-desk";
+import { buildDecisionGuide } from "./decision-guide.js?v=20260720-weekly-risk";
 import { buildDetailEvidenceRow } from "./detail-evidence.js?v=20260715-detail-evidence";
 import { remainingOpenLotPerformance } from "./pnl-accounting.js?v=20260718-open-lot-pnl";
 
@@ -721,7 +721,14 @@ function renderPositions(payload) {
         : "EOD RISK";
       const displayStatus = "OPEN";
       const signalDate = trade.entrySignalDate || "";
-      const reason = trade.currentWeakness?.reasons || trade.lastManagementDecision?.reasons || trade.entryReason || [];
+      const detailRow = detailRowForTrade(trade) || trade.currentSnapshot || trade.entrySnapshot || {};
+      const decisionGuide = buildDecisionGuide(detailRow, trade);
+      const managementReasons = trade.latestManagementDecision?.reasons || [];
+      const reason = [
+        decisionGuide.summary,
+        ...managementReasons,
+        ...(trade.currentWeakness?.reasons || [])
+      ].filter(Boolean);
       return `
         <tr class="${rowRiskClass}" data-position-index="${index}" title="Open details">
           <td><span class="pill ${escapeHtml(displayStatus)}">${escapeHtml(displayStatus.replaceAll("_", " "))}</span></td>
@@ -738,7 +745,7 @@ function renderPositions(payload) {
           <td>${fmt(trade.currentRank || trade.positionRank)}</td>
           <td>${fmt(trade.trailingStopPrice || trade.initialStopPrice)}<small class="riskState ${escapeHtml(riskState)}">${escapeHtml(stopRiskText)}</small></td>
           <td>${fmt(trade.currentRewardR)}</td>
-          <td class="reasonCell" title="${escapeHtml(reason.join(" "))}"><span class="signalPreview">${escapeHtml(reasonSummary(reason))}</span></td>
+          <td class="reasonCell positionSignal" title="${escapeHtml(reason.join(" "))}"><strong class="positionSignalLabel ${escapeHtml(decisionGuide.tone)}">${escapeHtml(decisionGuide.label)}</strong><span class="signalPreview">${escapeHtml(decisionGuide.summary || reasonSummary(reason))}</span></td>
         </tr>
       `;
     })

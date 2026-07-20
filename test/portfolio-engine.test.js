@@ -501,7 +501,7 @@ test("position sizing accepts an allocation at the ten thousand rupee floor", ()
   assert.equal(plan.eligible, true);
 });
 
-test("completed weekly close below low-source EMA13 creates a momentum-break full exit", () => {
+test("weekly EMA13-Low break with positive weekly RS reduces risk without killing the trend", () => {
   const row = strongRow({
     weeklyAsOf: "2026-07-10",
     weeklyClose: 92,
@@ -509,8 +509,10 @@ test("completed weekly close below low-source EMA13 creates a momentum-break ful
     weeklyPriceAboveEma13: false
   });
   const decision = positionExitDecision(openTrade(), row, { trade: {} });
-  assert.equal(decision.action, "FULL_EXIT");
-  assert.match(decision.reasons.join(" "), /completed weekly candle.*below low-source EMA13/i);
+  assert.equal(decision.action, "PARTIAL_EXIT");
+  assert.equal(decision.tag, "WEEKLY_STRUCTURE_DEFENCE");
+  assert.equal(decision.partialPct, 33);
+  assert.match(decision.reasons.join(" "), /Weekly EMA13 calculated from weekly lows/i);
 });
 
 test("fundamental deterioration cannot repeat an already-booked technical partial exit", () => {
@@ -1046,15 +1048,31 @@ test("a marginal first daily long RS55 cross waits for confirmation", () => {
   assert.match(decision.reasons.join(" "), /RS55 EXIT CONFIRMATION.*1\/2/i);
 });
 
-test("daily long RS55 below zero for two completed closes creates a full exit", () => {
+test("daily RS55 below zero waits when price and short RS do not confirm damage", () => {
   const row = strongRow({ asOf: "2026-07-14", dailyLongRs: -0.02 });
   const decision = positionExitDecision(openTrade({
     entryDate: "2026-07-10",
     dailyLongRsBelowZeroDates: ["2026-07-13"]
   }), row, { trade: {} });
 
-  assert.equal(decision.action, "FULL_EXIT");
-  assert.match(decision.reasons.join(" "), /RS55 remained below zero for 2 confirmed closes/i);
+  assert.equal(decision.action, "HOLD");
+  assert.match(decision.reasons.join(" "), /no second price\/RS weakness/i);
+});
+
+test("daily RS55 plus confirmed short-RS weakness creates a defensive partial exit", () => {
+  const row = strongRow({
+    asOf: "2026-07-14",
+    dailyLongRs: -0.02,
+    dailyShortRs: -0.01
+  });
+  const decision = positionExitDecision(openTrade({
+    entryDate: "2026-07-10",
+    dailyLongRsBelowZeroDates: ["2026-07-13"]
+  }), row, { trade: {} });
+
+  assert.equal(decision.action, "PARTIAL_EXIT");
+  assert.equal(decision.tag, "RS55_DEFENCE");
+  assert.equal(decision.partialPct, 33);
 });
 
 test("material daily long RS55 damage exits immediately", () => {
@@ -1082,18 +1100,60 @@ test("a raised trailing stop needs two confirmed closes before full exit", () =>
   assert.match(second.reasons.join(" "), /raised trailing stop/i);
 });
 
-test("structural stop remains inside configured risk band", () => {
+test("initial stop uses Weekly EMA13-Low plus volatility buffer instead of Supertrend", () => {
   const stop = structuralStop(strongRow({ dailySupertrend: 50 }), 100, { trade: {} });
-  assert.equal(stop, 95);
-  assert.ok(stop >= 92 && stop <= 98.5);
+  assert.equal(stop, 94);
 });
 
-test("weekly EMA13 reclaim and breakout use a wider structural stop with the same risk cap", () => {
+test("breakout and retracement styles share the same Weekly EMA13-Low structural anchor", () => {
   const row = strongRow({ weeklyEma13: 95 });
   row.entryStyle = { type: "BREAKOUT_RECLAIM_BUY", label: "Breakout after weekly EMA13 reclaim" };
   row.setupStrength.values.recentBaseLow = 93;
   row.setupStrength.values.fourCandleLow = 97;
   assert.equal(structuralStop(row, 100, { trade: {} }), 94);
+});
+
+test("an eight-to-ten percent Weekly EMA13-Low stop uses smaller capital and risk caps", () => {
+  const row = strongRow({ weeklyEma13: 91.5, weeklyAtr: 5 });
+  const plan = buildPositionPlan(
+    row,
+    100,
+    { availableCash: 1_000_000, availableRisk: 60_000, openSlots: 10, sectorExposure: {} },
+    { trade: {} }
+  );
+
+  assert.equal(plan.eligible, true);
+  assert.equal(plan.stopPrice, 90.5);
+  assert.equal(plan.wideStructuralStop, true);
+  assert.equal(plan.maxAllocation, 50_000);
+  assert.equal(plan.riskBudget, 5_000);
+});
+
+test("a structural stop wider than ten percent waits for retracement", () => {
+  const row = strongRow({ weeklyEma13: 89, weeklyAtr: 5 });
+  const plan = buildPositionPlan(
+    row,
+    100,
+    { availableCash: 1_000_000, availableRisk: 60_000, openSlots: 10, sectorExposure: {} },
+    { trade: {} }
+  );
+
+  assert.equal(plan.eligible, false);
+  assert.equal(plan.stopPrice, 88);
+  assert.match(plan.reason, /beyond the 10% entry limit/i);
+});
+
+test("a close-source weekly EMA cannot authorize a fresh position", () => {
+  const row = strongRow({ weeklyEma13Source: "close" });
+  const plan = buildPositionPlan(
+    row,
+    100,
+    { availableCash: 1_000_000, availableRisk: 60_000, openSlots: 10, sectorExposure: {} },
+    { trade: {} }
+  );
+
+  assert.equal(plan.eligible, false);
+  assert.match(plan.reason, /Weekly EMA13 calculated from weekly lows/i);
 });
 
 function strongRow(overrides = {}) {
@@ -1112,6 +1172,8 @@ function strongRow(overrides = {}) {
     weeklyAsOf: "2026-07-06",
     weeklyClose: 100,
     weeklyEma13: 95,
+    weeklyEma13Source: "low",
+    weeklyAtr: 5,
     weeklyPriceAboveEma13: true,
     dailySupertrend: 94,
     setupGrade: "A+",
@@ -1140,6 +1202,7 @@ function strongRow(overrides = {}) {
         smaFast: 90,
         smaSlow: 80,
         atrPct: 3,
+        weeklyAtr: 5,
         riskToSupertrendPct: 6
       }
     },

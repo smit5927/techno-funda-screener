@@ -44,7 +44,7 @@ test("a legacy marginal RS55 pending exit is cancelled before 09:17 execution", 
   assert.match(trade.riskActionNote, /balanced confirmation policy/i);
 });
 
-test("confirmed or material RS55 pending exit remains scheduled", () => {
+test("confirmed RS55 without price damage cancels full exit while material damage remains scheduled", () => {
   const base = {
     status: "PENDING_EXIT",
     exitType: "MODEL_EXIT",
@@ -72,8 +72,8 @@ test("confirmed or material RS55 pending exit remains scheduled", () => {
     ...base,
     dailyLongRsBelowZeroDates: ["2026-07-15", "2026-07-16"]
   };
-  assert.equal(cancelInvalidPendingModelExit(confirmed, row, { trade: {} }).cancelled, false);
-  assert.equal(confirmed.status, "PENDING_EXIT");
+  assert.equal(cancelInvalidPendingModelExit(confirmed, row, { trade: {} }).cancelled, true);
+  assert.equal(confirmed.status, "OPEN");
 
   const material = { ...base, dailyLongRsBelowZeroDates: ["2026-07-16"] };
   assert.equal(

@@ -25,7 +25,7 @@ export function buildDecisionGuide(row = {}, trade = null, candidate = null) {
       {
         label: "Stop-loss",
         value: finite(stop) ? money(stop) : "Not available",
-        note: finite(stop) ? "Structural trailing stop; it never moves downward." : "Awaiting a valid structural level.",
+      note: finite(stop) ? "Weekly EMA13-Low structural stop at entry; any later trailing stop never moves downward." : "Awaiting a valid Weekly EMA13-Low structural level.",
         tone: "stop"
       },
       {
@@ -179,6 +179,7 @@ function reviewGuide(row, stop, currentPrice) {
   }
   const candidates = [
     [stop, "stop"],
+    [row.weeklyEma13, "Weekly EMA13-Low"],
     [row.dailySupertrend, "Supertrend"],
     [values.smaFast, "50-DMA"],
     [values.fourCandleLow, "4-candle low"],
@@ -203,11 +204,20 @@ function reviewGuide(row, stop, currentPrice) {
 
 function buySummary(row, candidate = null) {
   const style = candidate?.entryStyle?.label || row.entryStyle?.label || "qualified setup";
-  return `Compulsory momentum is valid: weekly/daily RSI above 50, weekly RS and daily RS55/RS21 above zero, with price above Supertrend. ${style}; actual entry still requires the latest ENTRY status and 09:17 risk recheck.`;
+  return `Compulsory momentum is valid: weekly/daily RSI above 50, Weekly RS21 and Daily RS55/RS21 above zero, price above Supertrend, and the completed week above Weekly EMA13-Low. ${style}; actual entry still requires the 09:17 structural-risk recheck.`;
 }
 
 function structuralReference(row, currentPrice) {
   const values = row.setupStrength?.values || {};
+  const weeklyEma = number(row.weeklyEma13 ?? values.weeklyEma13);
+  const weeklyAtr = number(row.weeklyAtr ?? values.weeklyAtr);
+  if (finite(weeklyEma) && (!finite(currentPrice) || weeklyEma < currentPrice)) {
+    const buffer = Math.max(
+      finite(currentPrice) ? currentPrice * 0.005 : 0,
+      finite(weeklyAtr) ? weeklyAtr * 0.2 : 0
+    );
+    return weeklyEma - buffer;
+  }
   const supports = [row.dailySupertrend, values.fourCandleLow, values.twoCandleLow, values.fibonacciSupportNearby ? values.fibonacciNearestPrice : null]
     .map(number)
     .filter((value) => finite(value) && (!finite(currentPrice) || value < currentPrice));
@@ -218,10 +228,14 @@ function healthyTrend(row) {
   const values = row.setupStrength?.values || {};
   const smaFast = number(values.smaFast);
   const smaSlow = number(values.smaSlow);
+  const weeklyClose = number(row.weeklyClose);
+  const weeklyEma = number(row.weeklyEma13);
   return Number(row.weeklyRs) > 0 &&
     Number(row.dailyLongRs) > 0 &&
+    Number(row.dailyShortRs) > 0 &&
     Number(row.dailyRsi) >= 50 &&
     Number(row.close) > Number(row.dailySupertrend) &&
+    (!finite(weeklyClose) || !finite(weeklyEma) || weeklyClose >= weeklyEma) &&
     (!finite(smaFast) || Number(row.close) > smaFast) &&
     (!finite(smaSlow) || Number(row.close) > smaSlow);
 }

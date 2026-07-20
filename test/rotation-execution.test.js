@@ -299,6 +299,12 @@ function strongRow() {
     dailyLongRs: 0.3,
     dailyShortRs: 0.2,
     dailySupertrend: 96,
+    weeklyAsOf: "2026-07-10",
+    weeklyClose: 100,
+    weeklyEma13: 95,
+    weeklyEma13Source: "low",
+    weeklyAtr: 5,
+    weeklyPriceAboveEma13: true,
     setupGrade: "A+",
     setupStrengthScore: 20,
     fundamentalScore: 5,
@@ -318,7 +324,16 @@ function strongRow() {
         bullishCandleConfirmation: true,
         marketRegimeStrong: true
       },
-      values: { smaFast: 95, smaSlow: 90, twoCandleLow: 97, fourCandleLow: 96, atrPct: 2 }
+      values: {
+        smaFast: 95,
+        smaSlow: 90,
+        twoCandleLow: 97,
+        fourCandleLow: 96,
+        atrPct: 2,
+        weeklyEma13: 95,
+        weeklyEma13Source: "low",
+        weeklyAtr: 5
+      }
     },
     gtfContext: { rankAdjustment: 3, supplyBlocked: false, checks: { roomForTwoR: true } },
     signalReason: ["All six compulsory video-derived entry checks pass."]
