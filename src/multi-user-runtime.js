@@ -350,15 +350,14 @@ function serializableJournal(journal) {
 
 function summarizeTrades(trades = []) {
   const byStatus = (status) => trades.filter((trade) => trade.status === status);
-  const open = byStatus("OPEN");
   const active = trades.filter((trade) => ["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status));
   const closed = byStatus("CLOSED");
   return {
-    open: open.length,
+    open: active.length,
     closed: closed.length,
-    pendingEntry: byStatus("PENDING_ENTRY").length,
-    pendingExit: byStatus("PENDING_EXIT").length,
-    pendingPartialExit: byStatus("PENDING_PARTIAL_EXIT").length,
+    pendingEntry: byStatus("PENDING_ENTRY").filter((trade) => trade.orderState === "CONFIRMED_FOR_0917").length,
+    pendingExit: byStatus("PENDING_EXIT").filter((trade) => trade.exitOrderState === "CONFIRMED_FOR_0917").length,
+    pendingPartialExit: byStatus("PENDING_PARTIAL_EXIT").filter((trade) => trade.partialExitOrderState === "CONFIRMED_FOR_0917").length,
     realizedPnl: totalRealizedPnl(trades),
     tradeRealizedPnl: round(trades.reduce((sum, trade) => {
       if (trade.status === "CLOSED") return sum + (Number(trade.pnl) || 0) - (Number(trade.dividendRealizedPnl) || 0);

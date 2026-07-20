@@ -17,12 +17,16 @@ import {
   nextTrailingStop,
   portfolioConfig,
   portfolioSummary,
+  isFilledHolding,
+  isConfirmedPendingAdd,
+  isConfirmedPendingEntry,
   positionExitDecision,
   positionWeakness,
   postEntryPyramidState,
   pyramidAddDecision,
   rotationSourceDecision,
   rotationDecision,
+  remainingTradeRisk,
   totalRealizedPnl
 } from "./portfolio-engine.js";
 
@@ -508,6 +512,17 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
     }
   }
 
+  if (options.publishActionAlerts === true) {
+    candidates = approveMorningOrders({
+      trades,
+      candidates,
+      rowBySymbol,
+      scan,
+      settings,
+      config,
+      events
+    });
+  }
   for (const trade of trades) applyTradeChargeAccounting(trade, config, trade.lastPrice);
   const finalPortfolio = portfolioSummary(trades, candidates, config);
   const publishedEvents = publishPortfolioActionEvents(events, trades, scan.scannedAt, {
@@ -802,10 +817,7 @@ function prepareFullExit(trade, row, scan, reasons, exitType = "MODEL_EXIT", con
   cancelPendingAdd(trade, `Cancelled because ${exitType} sell takes priority.`);
   trade.status = "PENDING_EXIT";
   trade.exitType = exitType;
-  const portfolioDriven = ["SCOPE_REBALANCE", "CAPITAL_REBALANCE", "QUALITY_ROTATION"].includes(exitType);
-  trade.exitSignalDate = portfolioDriven
-    ? scan.marketContext?.asOf || row.asOf
-    : row.asOf;
+  trade.exitSignalDate = row.asOf;
   trade.exitSignalScanAt = scan.scannedAt;
   trade.exitExecutionAfterDate = executionAfterDate(trade.exitSignalDate, scan.scannedAt);
   trade.exitReason = [
@@ -1817,6 +1829,169 @@ export function projectedSellFunding(trades = []) {
   };
 }
 
+export function approveMorningOrders({
+  trades = [],
+  candidates = [],
+  rowBySymbol = new Map(),
+  scan = {},
+  settings = tradeSettingsSummary(appConfig),
+  config = appConfig,
+  events = []
+} = {}) {
+  for (const trade of trades) {
+    if (trade.status === "PENDING_EXIT" && trade.exitOrderState !== "CONFIRMED_FOR_0917") {
+      trade.exitOrderState = "APPROVED_FOR_0917";
+    }
+    if (trade.status === "PENDING_PARTIAL_EXIT" && trade.partialExitOrderState !== "CONFIRMED_FOR_0917") {
+      trade.partialExitOrderState = "APPROVED_FOR_0917";
+    }
+  }
+
+  const rules = portfolioConfig(config);
+  const funding = projectedSellFunding(trades);
+  const summary = portfolioSummary(trades, candidates, config);
+  const releasedExposure = funding.sources.reduce((sum, source) => sum + (Number(source.exposureRelease) || 0), 0);
+  const releasedRisk = funding.sources.reduce((sum, source) => {
+    const trade = trades.find((item) => item.id === source.tradeId);
+    if (!trade) return sum;
+    const heldQuantity = Math.max(1, Number(trade.quantity) || 1);
+    return sum + remainingTradeRisk(trade) * (Number(source.expectedQuantity) || 0) / heldQuantity;
+  }, 0);
+  let remainingCash = Math.max(0, summary.actualCash - summary.reservedCapital + funding.expectedProceeds);
+  let remainingExposure = Math.max(
+    0,
+    summary.exposureLimit - summary.deployedCapital - summary.reservedCapital + releasedExposure
+  );
+  let remainingRisk = Math.max(0, summary.availableRisk + releasedRisk);
+  let remainingSlots = Math.max(0, summary.openSlots + funding.fullExitCount);
+  const sectorExposure = { ...summary.sectorExposure };
+  for (const source of funding.sources) {
+    sectorExposure[source.sector] = Math.max(
+      0,
+      (Number(sectorExposure[source.sector]) || 0) - (Number(source.exposureRelease) || 0)
+    );
+  }
+
+  const proposals = [];
+  for (const trade of trades) {
+    if (trade.status === "PENDING_ENTRY" && !isConfirmedPendingEntry(trade)) {
+      proposals.push({ kind: "ENTRY", trade, rank: Number(trade.currentRank || trade.positionRank) || 0 });
+    }
+    if (trade.pendingAdd && !isConfirmedPendingAdd(trade)) {
+      proposals.push({ kind: "ADD", trade, rank: Number(trade.currentRank || trade.positionRank) || 0 });
+    }
+  }
+  proposals.sort((left, right) => right.rank - left.rank || String(left.trade.symbol).localeCompare(String(right.trade.symbol)));
+
+  for (const proposal of proposals) {
+    const trade = proposal.trade;
+    const row = executionRow(
+      trade,
+      rowBySymbol.get(trade.yahooSymbol || trade.symbol),
+      scan.marketContext?.asOf
+    );
+    if (!row) {
+      candidates = rejectMorningEntry(proposal, candidates, row, scan, settings, events, "No current completed-close row is available for the 08:30 approval recheck.");
+      continue;
+    }
+    const sector = String(trade.industry || row.industry || "Unknown");
+    const sectorRoom = Math.max(0, rules.totalCapital * rules.maxSectorExposurePct / 100 - (Number(sectorExposure[sector]) || 0));
+    const capitalRoom = Math.max(0, Math.min(remainingCash, remainingExposure, sectorRoom));
+
+    if (proposal.kind === "ENTRY") {
+      const candidate = trade.candidateContext || {
+        firstSignalDate: trade.entrySignalDate,
+        firstSignalClose: trade.entrySnapshot?.close,
+        peakRank: trade.positionRank,
+        entryCloseDates: [trade.entrySignalDate]
+      };
+      const decision = candidateEntryDecision(candidate, row, config, {
+        qualityPass: rowPassesTradeQuality(row, settings)
+      });
+      const plan = decision.actionable
+        ? buildPositionPlan(row, row.close, {
+          ...summary,
+          availableCash: capitalRoom,
+          availableRisk: remainingRisk,
+          openSlots: remainingSlots,
+          sectorExposure
+        }, config)
+        : { eligible: false, reason: decision.reasons.join(" ") };
+      if (!plan.eligible) {
+        candidates = rejectMorningEntry(proposal, candidates, row, scan, settings, events, plan.reason || "08:30 cash, risk or entry recheck failed.");
+        continue;
+      }
+      trade.plannedQuantity = plan.quantity;
+      trade.plannedAllocation = plan.allocation;
+      trade.plannedRisk = plan.plannedRisk;
+      trade.initialStopPrice = plan.stopPrice;
+      trade.trailingStopPrice = plan.stopPrice;
+      trade.riskPerShare = plan.riskPerShare;
+      trade.riskBudget = plan.riskBudget;
+      trade.orderState = "APPROVED_FOR_0917";
+      trade.portfolioApprovedAt = scan.scannedAt;
+      trade.entryReason = [
+        ...(trade.entryReason || []),
+        `08:30 portfolio approval: quantity ${plan.quantity}, allocation Rs ${plan.allocation}, risk Rs ${plan.plannedRisk}; funded only by free cash plus confirmed same-batch sells.`
+      ];
+      remainingCash = Math.max(0, remainingCash - plan.allocation);
+      remainingExposure = Math.max(0, remainingExposure - plan.allocation);
+      remainingRisk = Math.max(0, remainingRisk - plan.plannedRisk);
+      remainingSlots -= 1;
+      sectorExposure[sector] = (Number(sectorExposure[sector]) || 0) + plan.allocation;
+      continue;
+    }
+
+    const pending = trade.pendingAdd;
+    const plannedQuantity = Number(pending?.plannedQuantity) || 0;
+    const plannedAllocation = Number(pending?.plannedAllocation) || 0;
+    const plannedRisk = Number(pending?.plannedRisk) || 0;
+    const price = Number(row.close) || Number(trade.lastPrice) || Number(trade.entryPrice) || 0;
+    const riskPerShare = plannedQuantity > 0 ? Math.max(0.01, plannedRisk / plannedQuantity) : 0.01;
+    const quantity = price > 0
+      ? Math.min(plannedQuantity, Math.floor(capitalRoom / price), Math.floor(remainingRisk / riskPerShare))
+      : 0;
+    const allocation = round(quantity * price);
+    if (quantity < 1 || allocation < rules.minimumInitialAllocation) {
+      rejectMorningEntry(proposal, candidates, row, scan, settings, events, "Add order does not fit the 08:30 cash, sector, minimum-allocation and risk budget.");
+      continue;
+    }
+    pending.plannedQuantity = quantity;
+    pending.plannedAllocation = allocation;
+    pending.plannedRisk = round(quantity * riskPerShare);
+    pending.orderState = "APPROVED_FOR_0917";
+    pending.portfolioApprovedAt = scan.scannedAt;
+    remainingCash = Math.max(0, remainingCash - pending.plannedAllocation);
+    remainingExposure = Math.max(0, remainingExposure - pending.plannedAllocation);
+    remainingRisk = Math.max(0, remainingRisk - pending.plannedRisk);
+    sectorExposure[sector] = (Number(sectorExposure[sector]) || 0) + pending.plannedAllocation;
+  }
+  return candidates;
+}
+
+function rejectMorningEntry(proposal, candidates, row, scan, settings, events, reason) {
+  const trade = proposal.trade;
+  if (proposal.kind === "ADD") {
+    trade.addOnSkips = Array.isArray(trade.addOnSkips) ? trade.addOnSkips : [];
+    trade.addOnSkips.push({ signalDate: trade.pendingAdd?.signalDate, evaluatedDate: row?.asOf, reason });
+    trade.pendingAdd = null;
+    trade.executionError = reason;
+    return candidates;
+  }
+  trade.status = "SKIPPED_ENTRY";
+  trade.orderState = "CANCELLED_BEFORE_ALERT";
+  trade.skipReason = reason;
+  trade.executionError = reason;
+  if (row) {
+    const existing = candidates.find((item) => sameInstrument(item, row));
+    const candidate = upsertCandidate(candidates, row, scan, settings, existing, trade.candidateContext);
+    candidate.status = "WAITING_CAPITAL";
+    candidate.skipReason = reason;
+    events.push({ type: "ENTRY_SKIPPED", trade, candidate });
+  }
+  return candidates;
+}
+
 export function publishPortfolioActionEvents(events = [], trades = [], occurredAt, options = {}) {
   const operationalEvents = (events || []).filter((event) => !isPublishableAction(event));
   if (options.enabled !== true) {
@@ -1921,6 +2096,22 @@ function markActionPublished(event, key, occurredAt) {
 function actionCanBePublished(event, occurredAt) {
   const type = String(event.type || "").toUpperCase();
   const trade = event.trade || {};
+  if (type === "ENTRY_SIGNAL_PENDING" && (
+    trade.status !== "PENDING_ENTRY" ||
+    !["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.orderState || ""))
+  )) return false;
+  if (["EXIT_SIGNAL_PENDING", "PORTFOLIO_EXIT_PENDING", "ROTATION_EXIT_PENDING"].includes(type) && (
+    trade.status !== "PENDING_EXIT" ||
+    !["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.exitOrderState || ""))
+  )) return false;
+  if (type === "PARTIAL_EXIT_PENDING" && (
+    trade.status !== "PENDING_PARTIAL_EXIT" ||
+    !["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.partialExitOrderState || ""))
+  )) return false;
+  if (["PYRAMID_ADD_PENDING", "CONTROLLED_RETEST_ADD_PENDING"].includes(type) && (
+    !trade.pendingAdd ||
+    !["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.pendingAdd.orderState || ""))
+  )) return false;
   const afterDate = type === "ENTRY_SIGNAL_PENDING" ? trade.entryExecutionAfterDate
     : type === "PARTIAL_EXIT_PENDING" ? trade.partialExitExecutionAfterDate
       : ["PYRAMID_ADD_PENDING", "CONTROLLED_RETEST_ADD_PENDING"].includes(type) ? trade.pendingAdd?.executionAfterDate
@@ -2345,9 +2536,14 @@ async function writeXlsx(journal, filePath) {
   workbook.created = new Date();
 
   const pending = journal.trades.filter(
-    (trade) => trade.status.startsWith("PENDING_") || Boolean(trade.pendingAdd)
+    (trade) => isConfirmedPendingEntry(trade) ||
+      (trade.status === "PENDING_EXIT" && trade.exitOrderState === "CONFIRMED_FOR_0917") ||
+      (trade.status === "PENDING_PARTIAL_EXIT" && trade.partialExitOrderState === "CONFIRMED_FOR_0917") ||
+      isConfirmedPendingAdd(trade)
   );
-  const open = journal.trades.filter((trade) => trade.status === "OPEN");
+  const open = journal.trades
+    .filter(isFilledHolding)
+    .map((trade) => ({ ...trade, status: "OPEN" }));
   const closed = journal.trades.filter((trade) => trade.status === "CLOSED");
   const realizedPnl = totalRealizedPnl(journal.trades);
   const dividendPnl = journal.trades.reduce((sum, trade) => sum + (Number(trade.dividendRealizedPnl) || 0), 0);
@@ -2364,7 +2560,9 @@ async function writeXlsx(journal, filePath) {
     { metric: "Total Capital", value: portfolio.totalCapital },
     { metric: "Total Equity", value: portfolio.totalEquity },
     { metric: "Invested Capital", value: portfolio.investedCapital },
+    { metric: "Deployed Capital (Filled Holdings)", value: portfolio.deployedCapital },
     { metric: "Reserved Capital", value: portfolio.reservedCapital },
+    { metric: "Committed Capital (Deployed + Reserved)", value: portfolio.committedCapital },
     { metric: "Available Cash", value: portfolio.availableCash },
     { metric: "Actual Cash", value: portfolio.actualCash },
     { metric: "Market Risk Mode", value: portfolio.marketRiskMode },

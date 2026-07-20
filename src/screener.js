@@ -339,8 +339,10 @@ export async function runExecutionPass(options = {}) {
 
 export function hasPendingExecutionWork(trades = []) {
   return trades.some((trade) =>
-    ["PENDING_ENTRY", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status) ||
-    Boolean(trade.pendingAdd)
+    (trade.status === "PENDING_ENTRY" && trade.orderState === "CONFIRMED_FOR_0917") ||
+    (trade.status === "PENDING_EXIT" && trade.exitOrderState === "CONFIRMED_FOR_0917") ||
+    (trade.status === "PENDING_PARTIAL_EXIT" && trade.partialExitOrderState === "CONFIRMED_FOR_0917") ||
+    trade.pendingAdd?.orderState === "CONFIRMED_FOR_0917"
   );
 }
 
@@ -385,14 +387,13 @@ export function visiblePortfolioSummary(journal = {}, config = appConfig) {
 }
 
 export function summarizeTrades(trades) {
-  const open = trades.filter((trade) => trade.status === "OPEN");
   const active = trades.filter((trade) => ["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status));
   const closed = trades.filter((trade) => trade.status === "CLOSED");
-  const pendingEntry = trades.filter((trade) => trade.status === "PENDING_ENTRY");
-  const pendingExit = trades.filter((trade) => trade.status === "PENDING_EXIT");
-  const pendingPartialExit = trades.filter((trade) => trade.status === "PENDING_PARTIAL_EXIT");
+  const pendingEntry = trades.filter((trade) => trade.status === "PENDING_ENTRY" && trade.orderState === "CONFIRMED_FOR_0917");
+  const pendingExit = trades.filter((trade) => trade.status === "PENDING_EXIT" && trade.exitOrderState === "CONFIRMED_FOR_0917");
+  const pendingPartialExit = trades.filter((trade) => trade.status === "PENDING_PARTIAL_EXIT" && trade.partialExitOrderState === "CONFIRMED_FOR_0917");
   return {
-    open: open.length,
+    open: active.length,
     closed: closed.length,
     pendingEntry: pendingEntry.length,
     pendingExit: pendingExit.length,

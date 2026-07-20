@@ -19,7 +19,7 @@ const state = {
   hasAnimatedCounts: false,
   positionSort: new URLSearchParams(window.location.search).get("sort") || localStorage.getItem("tfPositionSort") || "default",
   positionSortDirection: new URLSearchParams(window.location.search).get("direction") || localStorage.getItem("tfPositionSortDirection") || "desc",
-  dashboardPositionFilter: localStorage.getItem("tfDashboardPositionFilter") || "ALL",
+  dashboardPositionFilter: "ALL",
   alertFilter: "ALL",
   alertSearch: "",
   selectedAlertId: new URLSearchParams(window.location.search).get("alert") || "",
@@ -53,6 +53,7 @@ const elements = {
   tradeQualityText: document.querySelector("#tradeQualityText"),
   totalCapital: document.querySelector("#totalCapital"),
   deployedCapital: document.querySelector("#deployedCapital"),
+  reservedCapital: document.querySelector("#reservedCapital"),
   availableCash: document.querySelector("#availableCash"),
   portfolioRisk: document.querySelector("#portfolioRisk"),
   liveStopRisk: document.querySelector("#liveStopRisk"),
@@ -60,6 +61,8 @@ const elements = {
   chargesStatus: document.querySelector("#chargesStatus"),
   positionsBody: document.querySelector("#positionsBody"),
   positionsEmpty: document.querySelector("#positionsEmpty"),
+  pendingOrdersBody: document.querySelector("#pendingOrdersBody"),
+  pendingOrdersEmpty: document.querySelector("#pendingOrdersEmpty"),
   openPositionsShell: document.querySelector("#openPositionsShell"),
   dashboardPositionsBody: document.querySelector("#dashboardPositionsBody"),
   dashboardPositionsEmpty: document.querySelector("#dashboardPositionsEmpty"),
@@ -442,6 +445,7 @@ async function runScan(listId = state.currentList) {
 
 function applyPayload(payload) {
   state.payload = payload || {};
+  state.payload.portfolioSummary = normalizePortfolioSummary(state.payload);
   state.rows = rowsForCurrentList(state.payload);
   renderSummary(state.payload);
   renderTradeSettings(state.payload.tradeSettings);
@@ -492,11 +496,8 @@ function renderSummary(payload) {
   } else {
     summaryCounts.forEach(([element, value]) => { element.textContent = value; });
   }
-  elements.openTradesCount.textContent = payload.tradeSummary?.open || 0;
-  elements.pendingTradesCount.textContent =
-    (payload.tradeSummary?.pendingEntry || 0) +
-    (payload.tradeSummary?.pendingExit || 0) +
-    (payload.tradeSummary?.pendingPartialExit || 0);
+  elements.openTradesCount.textContent = filledHoldings(payload?.trades).length;
+  elements.pendingTradesCount.textContent = pendingOrderItems(payload?.trades).length;
   elements.closedTradesCount.textContent = payload.tradeSummary?.closed || 0;
   renderSummaryPnl(elements.realizedPnl, Number(payload.tradeSummary?.realizedPnl) || 0, null);
   renderRealizedBreakdown(payload);
@@ -518,6 +519,9 @@ function renderSummary(payload) {
   elements.tradeQualityText.textContent = payload.tradeSettings?.qualityLabel || "Best only";
   elements.totalCapital.textContent = compact(portfolio.totalCapital || payload.tradeSettings?.totalCapital || 1000000);
   elements.deployedCapital.textContent = compact(portfolio.deployedCapital || 0);
+  elements.deployedCapital.title = "Capital actually used by successfully filled, currently open holdings. Pending orders are excluded.";
+  elements.reservedCapital.textContent = compact(portfolio.reservedCapital || 0);
+  elements.reservedCapital.title = "Capital reserved for confirmed buy and add orders that have not executed yet.";
   elements.availableCash.textContent = compact(portfolio.availableCash || 0);
   elements.availableCash.title = `Cash remaining after confirmed 09:17 orders reserve Rs ${compact(portfolio.reservedCapital || 0)}. Actual cash before reservations: Rs ${compact(portfolio.actualCash || portfolio.availableCash || 0)}. Market ${portfolio.marketRiskMode || "NA"}, exposure cap ${compact(portfolio.effectiveExposureCapPct ?? 100)}%.`;
   if (elements.removeCapitalInput) {
@@ -551,10 +555,136 @@ function institutionalMeta(context) {
   return ` | Institutional ${indexBias}, F&O ${fnoCount}, Options ${optionStatus}, Commodity ${commodityStatus}`;
 }
 
+function normalizePortfolioSummary(payload = {}) {
+  const summary = payload.portfolioSummary || {};
+  const holdings = (payload.trades || []).filter((trade) =>
+    ["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(String(trade?.status || ""))
+  );
+  const ledgerInvested = holdings.reduce((sum, trade) => sum + (Number(trade.investedValue) || 0), 0);
+  const investedCapital = ledgerInvested > 0 ? ledgerInvested : Number(summary.investedCapital) || 0;
+  const openBuyCharges = Number(summary.openBuyCharges) || 0;
+  const deployedCapital = investedCapital + openBuyCharges;
+  const reservedCapital = Number(summary.reservedCapital) || 0;
+  const totalCapital = Number(summary.totalCapital || payload.tradeSettings?.totalCapital) || 1_000_000;
+  const realizedPnl = Number(summary.realizedPnl ?? payload.tradeSummary?.realizedPnl) || 0;
+  const actualCash = Math.max(0, totalCapital + realizedPnl - deployedCapital);
+  const exposureLimit = Number(summary.exposureLimit) || totalCapital;
+  const availableCash = Math.min(
+    Math.max(0, actualCash - reservedCapital),
+    Math.max(0, exposureLimit - deployedCapital - reservedCapital)
+  );
+  return {
+    ...summary,
+    totalCapital,
+    investedCapital,
+    deployedCapital,
+    reservedCapital,
+    committedCapital: deployedCapital + reservedCapital,
+    actualCash,
+    availableCash,
+    openPositions: holdings.length,
+    capitalUtilizationPct: totalCapital > 0 ? deployedCapital / totalCapital * 100 : 0,
+    committedCapitalPct: totalCapital > 0 ? (deployedCapital + reservedCapital) / totalCapital * 100 : 0,
+    overallocatedCapital: Math.max(0, deployedCapital - totalCapital)
+  };
+}
+
+function filledHoldings(trades = []) {
+  return (trades || []).filter((trade) =>
+    ["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(String(trade?.status || "")) &&
+    Number(trade?.quantity) > 0 &&
+    Number(trade?.investedValue) > 0
+  );
+}
+
+function pendingOrderItems(trades = []) {
+  const items = [];
+  for (const trade of trades || []) {
+    const lastPrice = Number(trade.lastPrice) || Number(trade.currentSnapshot?.close) || Number(trade.entryPrice) || 0;
+    if (trade.status === "PENDING_ENTRY" && ["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.orderState || ""))) {
+      items.push({
+        trade,
+        type: "BUY ENTRY",
+        css: "PENDING_ENTRY",
+        signalDate: trade.entrySignalDate,
+        quantity: Number(trade.plannedQuantity) || null,
+        value: Number(trade.plannedAllocation) || 0,
+        executionAfterDate: trade.entryExecutionAfterDate,
+        reason: [trade.executionError, ...(trade.entryReason || [])].filter(Boolean)
+      });
+    } else if (trade.status === "PENDING_EXIT" && ["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.exitOrderState || ""))) {
+      const quantity = Number(trade.quantity) || 0;
+      items.push({
+        trade,
+        type: "SELL EXIT",
+        css: "PENDING_EXIT",
+        signalDate: trade.exitSignalDate,
+        quantity,
+        value: lastPrice * quantity,
+        executionAfterDate: trade.exitExecutionAfterDate,
+        reason: trade.exitReason || []
+      });
+    } else if (trade.status === "PENDING_PARTIAL_EXIT" && ["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.partialExitOrderState || ""))) {
+      const heldQuantity = Number(trade.quantity) || 0;
+      const quantity = heldQuantity >= 2
+        ? Math.max(1, Math.min(heldQuantity - 1, Math.floor(heldQuantity * (Number(trade.pendingPartialExitPct) || 50) / 100)))
+        : heldQuantity;
+      items.push({
+        trade,
+        type: "SELL PARTIAL",
+        css: "PENDING_PARTIAL_EXIT",
+        signalDate: trade.partialExitSignalDate,
+        quantity,
+        value: lastPrice * quantity,
+        executionAfterDate: trade.partialExitExecutionAfterDate,
+        reason: trade.pendingPartialExitReason || []
+      });
+    }
+    if (trade.pendingAdd && ["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.pendingAdd.orderState || ""))) {
+      items.push({
+        trade,
+        type: trade.pendingAdd.kind === "CONTROLLED_RETEST" ? "BUY RETEST ADD" : "BUY PYRAMID ADD",
+        css: trade.pendingAdd.kind === "CONTROLLED_RETEST" ? "PENDING_RETEST_ADD" : "PENDING_PYRAMID_ADD",
+        signalDate: trade.pendingAdd.signalDate,
+        quantity: Number(trade.pendingAdd.plannedQuantity) || null,
+        value: Number(trade.pendingAdd.plannedAllocation) || 0,
+        executionAfterDate: trade.pendingAdd.executionAfterDate,
+        reason: trade.pendingAdd.reason || []
+      });
+    }
+  }
+  return items.sort((left, right) => String(right.signalDate || "").localeCompare(String(left.signalDate || "")));
+}
+
+function renderPendingOrders(payload) {
+  const orders = pendingOrderItems(payload?.trades);
+  elements.pendingOrdersBody.innerHTML = orders.map((order, index) => {
+    const reason = Array.isArray(order.reason) ? order.reason : [String(order.reason || "")];
+    const execution = `${order.executionAfterDate ? `After ${order.executionAfterDate}` : "Next valid session"} at 09:17 IST`;
+    return `
+      <tr data-pending-order-index="${index}" title="Pending order details">
+        <td><span class="pill ${escapeHtml(order.css)}">${escapeHtml(order.type)}</span></td>
+        <td class="symbolCell"><strong>${escapeHtml(order.trade.symbol)}</strong><span>${escapeHtml(order.trade.tradeScopeLabel || order.trade.listLabel || "")}</span></td>
+        <td>${escapeHtml(order.signalDate || "NA")}</td>
+        <td>${order.quantity ?? "NA"}</td>
+        <td>${compact(order.value || 0)}</td>
+        <td>${escapeHtml(execution)}</td>
+        <td class="reasonCell" title="${escapeHtml(reason.join(" "))}"><span class="signalPreview">${escapeHtml(reasonSummary(reason))}</span></td>
+      </tr>
+    `;
+  }).join("");
+  elements.pendingOrdersEmpty.classList.toggle("visible", orders.length === 0);
+  elements.pendingOrdersBody.querySelectorAll("tr").forEach((rowElement) => {
+    rowElement.addEventListener("click", () => {
+      const trade = orders[Number(rowElement.dataset.pendingOrderIndex)]?.trade;
+      const row = detailRowForTrade(trade);
+      if (row) renderDetail(row, trade);
+    });
+  });
+}
+
 function renderPositions(payload) {
-  const trades = sortPositionTrades((payload?.trades || []).filter((trade) =>
-    ["PENDING_ENTRY", "OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status)
-  ));
+  const trades = sortPositionTrades(filledHoldings(payload?.trades));
   elements.positionsBody.innerHTML = trades
     .map((trade, index) => {
       const livePosition = findLivePosition(trade);
@@ -578,18 +708,9 @@ function renderPositions(payload) {
       const stopRiskText = livePosition
         ? `${riskState.replace("_", " ")}${Number.isFinite(livePosition.distanceToStopPct) ? ` ${compact(livePosition.distanceToStopPct)}%` : ""}`
         : "EOD RISK";
-      const displayStatus = trade.pendingAdd
-        ? trade.pendingAdd.kind === "CONTROLLED_RETEST" ? "PENDING_RETEST_ADD" : "PENDING_PYRAMID_ADD"
-        : trade.status;
-      const signalDate = trade.exitSignalDate || trade.pendingAdd?.signalDate || trade.entrySignalDate || "";
-      const reason =
-        trade.status === "PENDING_ENTRY" && trade.executionError
-          ? [trade.executionError, ...(trade.entryReason || [])]
-          : trade.status === "PENDING_EXIT"
-          ? trade.exitReason || []
-          : trade.status === "PENDING_PARTIAL_EXIT"
-            ? trade.pendingPartialExitReason || []
-            : trade.pendingAdd?.reason || trade.entryReason || [];
+      const displayStatus = "OPEN";
+      const signalDate = trade.entrySignalDate || "";
+      const reason = trade.currentWeakness?.reasons || trade.lastManagementDecision?.reasons || trade.entryReason || [];
       return `
         <tr class="${rowRiskClass}" data-position-index="${index}" title="Open details">
           <td><span class="pill ${escapeHtml(displayStatus)}">${escapeHtml(displayStatus.replaceAll("_", " "))}</span></td>
@@ -619,6 +740,7 @@ function renderPositions(payload) {
       if (row) renderDetail(row, trade);
     });
   });
+  renderPendingOrders(payload);
   renderDashboardPositions(payload);
   requestAnimationFrame(fitOpenPositionsShell);
 }
@@ -640,13 +762,7 @@ function aiReviewMeta(review) {
 }
 
 function renderDashboardPositions(payload) {
-  const activeTrades = (payload?.trades || []).filter((trade) =>
-    ["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status)
-  );
-  const filteredTrades = state.dashboardPositionFilter === "ALL"
-    ? activeTrades
-    : activeTrades.filter((trade) => trade.status === state.dashboardPositionFilter);
-  const trades = sortPositionTrades(filteredTrades);
+  const trades = sortPositionTrades(filledHoldings(payload?.trades));
   elements.dashboardPositionsBody.innerHTML = trades
     .map((trade, index) => {
       const livePosition = findLivePosition(trade);
@@ -662,7 +778,7 @@ function renderDashboardPositions(payload) {
         : "EOD RISK";
       return `
         <tr class="${rowRiskClass}" data-dashboard-position-index="${index}" title="Open position details">
-          <td><span class="pill ${escapeHtml(trade.status)}">${escapeHtml(trade.status.replaceAll("_", " "))}</span></td>
+          <td><span class="pill OPEN">OPEN</span></td>
           <td class="symbolCell"><strong>${escapeHtml(trade.symbol)}</strong><span>${escapeHtml(trade.tradeScopeLabel || trade.listLabel || "")}</span></td>
           <td>${fmt(trade.entryPrice)}</td>
           <td>${trade.quantity ?? "NA"}</td>
@@ -2112,7 +2228,9 @@ function reconcilePortfolioCapital(summary, configuredCapital) {
   if (Math.abs(delta) < 0.005) return summary;
   const invested = Number(summary.investedCapital) || 0;
   const reserved = Number(summary.reservedCapital) || 0;
-  const actualCash = Math.max(0, (Number(summary.actualCash) || 0) + delta);
+  const openBuyCharges = Number(summary.openBuyCharges) || 0;
+  const deployedCapital = invested + openBuyCharges;
+  const actualCash = Math.max(0, totalCapital + (Number(summary.realizedPnl) || 0) - deployedCapital);
   const exposureCapPct = Number(summary.effectiveExposureCapPct);
   const exposureLimit = Number.isFinite(exposureCapPct) ? totalCapital * exposureCapPct / 100 : totalCapital;
   const portfolioRisk = Number(summary.portfolioRisk) || 0;
@@ -2125,15 +2243,18 @@ function reconcilePortfolioCapital(summary, configuredCapital) {
     ...summary,
     totalCapital,
     actualCash,
-    availableCash: Math.min(actualCash, Math.max(0, exposureLimit - invested - reserved)),
+    deployedCapital,
+    committedCapital: deployedCapital + reserved,
+    availableCash: Math.min(Math.max(0, actualCash - reserved), Math.max(0, exposureLimit - deployedCapital - reserved)),
     exposureLimit,
     totalEquity,
     drawdownPct: totalCapital > 0 ? Math.max(0, (totalCapital - totalEquity) / totalCapital * 100) : 0,
     portfolioRiskPct: totalCapital > 0 ? portfolioRisk / totalCapital * 100 : 0,
     riskLimit,
     availableRisk: Math.max(0, riskLimit - portfolioRisk),
-    capitalUtilizationPct: totalCapital > 0 ? (invested + reserved) / totalCapital * 100 : 0,
-    overallocatedCapital: Math.max(0, invested + reserved - totalCapital)
+    capitalUtilizationPct: totalCapital > 0 ? deployedCapital / totalCapital * 100 : 0,
+    committedCapitalPct: totalCapital > 0 ? (deployedCapital + reserved) / totalCapital * 100 : 0,
+    overallocatedCapital: Math.max(0, deployedCapital - totalCapital)
   };
 }
 

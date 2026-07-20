@@ -159,7 +159,7 @@
 
       <section class="tradeBand" aria-label="Trade summary">
         <div>
-          <span>Open Trades</span>
+          <span>Open Holdings</span>
           <strong id="openTradesCount">0</strong>
         </div>
         <div>
@@ -183,8 +183,12 @@
           <strong id="totalCapital">0</strong>
         </div>
         <div>
-          <span>Deployed</span>
+          <span>Deployed in Filled Holdings</span>
           <strong id="deployedCapital">0</strong>
+        </div>
+        <div>
+          <span>Reserved Buy Orders</span>
+          <strong id="reservedCapital">0</strong>
         </div>
         <div>
           <span>Cash After Reservations</span>
@@ -218,10 +222,7 @@
           <label class="sortControl">
             <span>Status</span>
             <select id="dashboardPositionFilter" aria-label="Filter dashboard positions by status">
-              <option value="ALL">All Active</option>
-              <option value="OPEN">Open</option>
-              <option value="PENDING_EXIT">Exit Pending</option>
-              <option value="PENDING_PARTIAL_EXIT">Partial Exit Pending</option>
+              <option value="ALL">All Open Holdings</option>
             </select>
           </label>
           <label class="sortControl">
@@ -453,7 +454,7 @@
         </form>
       </dialog>
 
-      <section class="positionsSection viewPanel" data-view-panel="positions" aria-label="Open positions and pending orders" hidden>
+      <section class="positionsSection viewPanel" data-view-panel="positions" aria-label="Open positions" hidden>
         <div class="sectionHeading">
           <h2>Open Positions</h2>
           <div class="sectionTools">
@@ -498,7 +499,30 @@
             </thead>
             <tbody id="positionsBody"></tbody>
           </table>
-          <div id="positionsEmpty" class="emptyState">No open or pending positions</div>
+          <div id="positionsEmpty" class="emptyState">No executed open holdings</div>
+        </div>
+        <div class="sectionHeading pendingOrdersHeading">
+          <div>
+            <h2>Pending Orders</h2>
+            <span>Confirmed actions waiting for successful 09:17 execution</span>
+          </div>
+        </div>
+        <div class="tableShell positionsShell pendingOrdersShell">
+          <table class="positionsTable pendingOrdersTable">
+            <thead>
+              <tr>
+                <th>Order</th>
+                <th>Symbol</th>
+                <th>Signal Date</th>
+                <th>Qty</th>
+                <th>Reserved / Est. Value</th>
+                <th>Execution</th>
+                <th>Reason</th>
+              </tr>
+            </thead>
+            <tbody id="pendingOrdersBody"></tbody>
+          </table>
+          <div id="pendingOrdersEmpty" class="emptyState">No pending buy, sell or add orders</div>
         </div>
       </section>
 
@@ -628,6 +652,6 @@
     <script src="vendor/supabase.js"></script>
     <script src="vendor/exceljs.min.js"></script>
     <script src="mobile-config.js"></script>
-    <script src="auth.js?v=20260720-ema13-low" type="module"></script>
+    <script src="auth.js?v=20260720-capital-orders" type="module"></script>
   </body>
 </html>

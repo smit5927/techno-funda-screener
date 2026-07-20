@@ -2,6 +2,20 @@ import { portfolioChargeSummary } from "./charges.js";
 
 const ACTIVE_STATUSES = new Set(["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"]);
 
+export function isFilledHolding(trade = {}) {
+  return ACTIVE_STATUSES.has(String(trade.status || ""));
+}
+
+export function isConfirmedPendingEntry(trade = {}) {
+  return trade.status === "PENDING_ENTRY" &&
+    ["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.orderState || ""));
+}
+
+export function isConfirmedPendingAdd(trade = {}) {
+  return Boolean(trade.pendingAdd) &&
+    ["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.pendingAdd.orderState || ""));
+}
+
 export function portfolioConfig(config = {}) {
   const trade = config.trade || config;
   const totalCapital = positive(trade.totalCapital, 1_000_000);
@@ -210,14 +224,15 @@ export function buildPositionPlan(row, price, portfolio = {}, config = {}) {
 
 export function portfolioSummary(trades = [], candidates = [], config = {}) {
   const rules = portfolioConfig(config);
-  const active = trades.filter((trade) => ACTIVE_STATUSES.has(trade.status));
-  const pendingEntries = trades.filter((trade) => trade.status === "PENDING_ENTRY");
+  const active = trades.filter(isFilledHolding);
+  const proposedEntries = trades.filter((trade) => trade.status === "PENDING_ENTRY");
+  const pendingEntries = proposedEntries.filter(isConfirmedPendingEntry);
   const investedCapital = active.reduce(
     (sum, trade) => sum + (Number(trade.investedValue) || 0),
     0
   );
   const pendingAddCapital = active.reduce(
-    (sum, trade) => sum + (Number(trade.pendingAdd?.plannedAllocation) || 0),
+    (sum, trade) => sum + (isConfirmedPendingAdd(trade) ? Number(trade.pendingAdd?.plannedAllocation) || 0 : 0),
     0
   );
   const reservedCapital = pendingEntries.reduce(
@@ -235,11 +250,12 @@ export function portfolioSummary(trades = [], candidates = [], config = {}) {
   const portfolioRisk =
     active.reduce((sum, trade) => sum + remainingTradeRisk(trade), 0) +
     pendingEntries.reduce((sum, trade) => sum + (Number(trade.plannedRisk) || 0), 0) +
-    active.reduce((sum, trade) => sum + (Number(trade.pendingAdd?.plannedRisk) || 0), 0);
+    active.reduce((sum, trade) => sum + (isConfirmedPendingAdd(trade) ? Number(trade.pendingAdd?.plannedRisk) || 0 : 0), 0);
   const riskLimit = rules.totalCapital * rules.maxPortfolioRiskPct / 100;
+  const deployedCapital = investedCapital + charges.openBuyCharges;
   const actualCash = Math.max(
     0,
-    rules.totalCapital + realizedPnl - investedCapital - reservedCapital - charges.openBuyCharges
+    rules.totalCapital + realizedPnl - deployedCapital
   );
   const totalEquity = rules.totalCapital + realizedPnl + unrealizedPnl;
   const drawdownPct = Math.max(0, ((rules.totalCapital - totalEquity) / rules.totalCapital) * 100);
@@ -249,22 +265,23 @@ export function portfolioSummary(trades = [], candidates = [], config = {}) {
     drawdownExposureCapPct
   );
   const exposureLimit = rules.totalCapital * effectiveExposureCapPct / 100;
-  const exposureRoom = Math.max(0, exposureLimit - investedCapital - reservedCapital);
-  const availableCash = Math.min(actualCash, exposureRoom);
+  const exposureRoom = Math.max(0, exposureLimit - deployedCapital - reservedCapital);
+  const availableCash = Math.min(Math.max(0, actualCash - reservedCapital), exposureRoom);
   const sectorExposure = {};
   for (const trade of [...active, ...pendingEntries]) {
     const sector = normalizedSector(trade.industry || trade.entrySnapshot?.industry);
     sectorExposure[sector] =
       (sectorExposure[sector] || 0) +
       (Number(trade.investedValue) || Number(trade.plannedAllocation) || 0) +
-      (Number(trade.pendingAdd?.plannedAllocation) || 0);
+      (isConfirmedPendingAdd(trade) ? Number(trade.pendingAdd?.plannedAllocation) || 0 : 0);
   }
 
   return {
     totalCapital: round(rules.totalCapital),
     investedCapital: round(investedCapital),
     reservedCapital: round(reservedCapital),
-    deployedCapital: round(investedCapital + reservedCapital + charges.openBuyCharges),
+    deployedCapital: round(deployedCapital),
+    committedCapital: round(deployedCapital + reservedCapital),
     availableCash: round(availableCash),
     actualCash: round(actualCash),
     realizedPnl: round(realizedPnl),
@@ -291,11 +308,13 @@ export function portfolioSummary(trades = [], candidates = [], config = {}) {
     availableRisk: round(Math.max(0, riskLimit - portfolioRisk)),
     openPositions: active.length,
     pendingEntries: pendingEntries.length,
-    pendingAdds: active.filter((trade) => trade.pendingAdd).length,
+    proposedEntries: proposedEntries.length,
+    pendingAdds: active.filter(isConfirmedPendingAdd).length,
     openSlots: Math.max(0, rules.maxOpenPositions - active.length - pendingEntries.length),
     maxOpenPositions: rules.maxOpenPositions,
-    capitalUtilizationPct: round((investedCapital + reservedCapital) / rules.totalCapital * 100),
-    overallocatedCapital: round(Math.max(0, investedCapital + reservedCapital - rules.totalCapital)),
+    capitalUtilizationPct: round(deployedCapital / rules.totalCapital * 100),
+    committedCapitalPct: round((deployedCapital + reservedCapital) / rules.totalCapital * 100),
+    overallocatedCapital: round(Math.max(0, deployedCapital - rules.totalCapital)),
     waitingCandidates: candidates.length,
     sectorExposure
   };
@@ -1220,7 +1239,7 @@ export function rotationSourceDecision(trade = {}, row = {}, config = {}) {
   };
 }
 
-function remainingTradeRisk(trade) {
+export function remainingTradeRisk(trade) {
   const entry = Number(trade.entryPrice);
   const stop = Number(trade.trailingStopPrice || trade.initialStopPrice);
   const quantity = Number(trade.quantity);

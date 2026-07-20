@@ -113,6 +113,19 @@ test("open positions table expands to the available viewport before scrolling", 
   assert.match(styles, /--open-positions-max-height/);
 });
 
+test("filled holdings and pending execution orders are presented separately", () => {
+  const html = fs.readFileSync(path.join(rootDir, "public", "index.html"), "utf8");
+  const app = fs.readFileSync(path.join(rootDir, "public", "app.js"), "utf8");
+  assert.match(html, /Deployed in Filled Holdings/);
+  assert.match(html, /id="reservedCapital"/);
+  assert.match(html, /id="pendingOrdersBody"/);
+  assert.match(html, /No executed open holdings/);
+  assert.match(app, /function filledHoldings/);
+  assert.match(app, /function pendingOrderItems/);
+  assert.match(app, /const displayStatus = "OPEN"/);
+  assert.doesNotMatch(app, /\["PENDING_ENTRY", "OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"\]/);
+});
+
 test("alert center supports durable history, account clear and notification deep links", () => {
   const html = fs.readFileSync(path.join(rootDir, "public", "index.html"), "utf8");
   const app = fs.readFileSync(path.join(rootDir, "public", "app.js"), "utf8");

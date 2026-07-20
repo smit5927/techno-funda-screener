@@ -515,6 +515,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .tradeBand strong.pnlGainPulse { animation: pnlGainPulse .7s cubic-bezier(.2, .8, .2, 1); }
 .tradeBand strong.pnlLossPulse { animation: pnlLossPulse .7s cubic-bezier(.2, .8, .2, 1); }
 .tradeBand #availableCash { color: var(--green); }
+.tradeBand #reservedCapital { color: var(--blue); }
 .tradeBand #portfolioRisk, .tradeBand #liveStopRisk { color: var(--amber); }
 .downloadButton {
   display: grid;
@@ -745,6 +746,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 }
 .positionsShell { min-height: 96px; max-height: 390px; }
 .positionsShell.openPositionsShell { max-height: var(--open-positions-max-height, calc(100dvh - 235px)); }
+.pendingOrdersHeading { margin-top: 18px; }
+.pendingOrdersHeading h2::before { background: var(--amber); box-shadow: 0 0 12px rgba(255, 189, 74, .28); }
+.pendingOrdersShell { min-height: 96px; max-height: 310px; }
+.pendingOrdersTable { min-width: 980px; }
 table { width: 100%; min-width: 1280px; border-collapse: collapse; table-layout: auto; }
 .positionsTable { min-width: 1080px; }
 .openPositionsTable { min-width: 1320px; }

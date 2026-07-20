@@ -10,6 +10,7 @@ const visibleTrades = [
 
 test("booked partial and full exits stay realized while only active remainder stays unrealized", () => {
   const summary = summarizeTrades(visibleTrades);
+  assert.equal(summary.open, 2);
   assert.equal(summary.realizedPnl, 380);
   assert.equal(summary.unrealizedPnl, 350);
 });

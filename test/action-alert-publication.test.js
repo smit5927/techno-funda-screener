@@ -7,6 +7,7 @@ function pendingTrade() {
     id: "BHEL-2026-07-16",
     symbol: "BHEL",
     status: "PENDING_ENTRY",
+    orderState: "APPROVED_FOR_0917",
     entrySignalDate: "2026-07-16",
     plannedQuantity: 229,
     plannedAllocation: 99_706.6,

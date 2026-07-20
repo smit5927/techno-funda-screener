@@ -18,6 +18,7 @@ import {
   structuralStop
 } from "../src/portfolio-engine.js";
 import { buildPyramidStructure } from "../src/screener.js";
+import { approveMorningOrders, publishPortfolioActionEvents } from "../src/trade-journal.js";
 
 test("portfolio defaults use ten lakh capital with institutional limits", () => {
   const rules = portfolioConfig({ trade: {} });
@@ -288,12 +289,13 @@ test("maximum add-on count blocks further pyramiding", () => {
 
 test("pending winner add reserves cash, risk and sector capacity", () => {
   const trade = openTrade({
-    pendingAdd: { plannedAllocation: 25_000, plannedRisk: 2_000 },
+    pendingAdd: { plannedAllocation: 25_000, plannedRisk: 2_000, orderState: "CONFIRMED_FOR_0917" },
     industry: "Industrials"
   });
   const summary = portfolioSummary([trade], [], { trade: {} });
   assert.equal(summary.reservedCapital, 25_000);
-  assert.equal(summary.deployedCapital, 125_000);
+  assert.equal(summary.deployedCapital, 100_000);
+  assert.equal(summary.committedCapital, 125_000);
   assert.equal(summary.availableCash, 875_000);
   assert.equal(summary.portfolioRisk, 8_000);
   assert.equal(summary.pendingAdds, 1);
@@ -665,15 +667,137 @@ test("portfolio summary reserves pending capital and reports cash", () => {
     openTrade({ investedValue: 100_000, quantity: 1000 }),
     {
       status: "PENDING_ENTRY",
+      orderState: "CONFIRMED_FOR_0917",
       plannedAllocation: 80_000,
       plannedRisk: 4_000,
       industry: "IT"
     }
   ];
   const summary = portfolioSummary(trades, [], { trade: {} });
-  assert.equal(summary.deployedCapital, 180_000);
+  assert.equal(summary.deployedCapital, 100_000);
+  assert.equal(summary.reservedCapital, 80_000);
+  assert.equal(summary.committedCapital, 180_000);
+  assert.equal(summary.actualCash, 900_000);
   assert.equal(summary.availableCash, 820_000);
   assert.equal(summary.openSlots, 13);
+});
+
+test("pending orders never inflate deployed capital above actual filled holdings", () => {
+  const trades = [
+    openTrade({ investedValue: 868_124.15, quantity: 1000 }),
+    {
+      status: "PENDING_ENTRY",
+      orderState: "CONFIRMED_FOR_0917",
+      plannedAllocation: 317_070.8,
+      plannedRisk: 5_000,
+      industry: "IT"
+    }
+  ];
+  const summary = portfolioSummary(trades, [], { trade: { totalCapital: 1_000_000 } });
+
+  assert.equal(summary.deployedCapital, 868_124.15);
+  assert.equal(summary.reservedCapital, 317_070.8);
+  assert.equal(summary.committedCapital, 1_185_194.95);
+  assert.equal(summary.actualCash, 131_875.85);
+  assert.equal(summary.availableCash, 0);
+  assert.equal(summary.overallocatedCapital, 0);
+  assert.equal(summary.capitalUtilizationPct, 86.81);
+});
+
+test("08:30 approval resizes the best buy to cash released by a confirmed exit and publishes both alerts", () => {
+  const row = strongRow({ asOf: "2026-07-17" });
+  const fundingTrade = openTrade({
+    id: "EXIT-1",
+    symbol: "WEAK",
+    yahooSymbol: "WEAK.NS",
+    status: "PENDING_EXIT",
+    exitSignalDate: "2026-07-17",
+    exitExecutionAfterDate: "2026-07-17",
+    quantity: 100,
+    investedValue: 10_000,
+    lastPrice: 100
+  });
+  const capitalTrade = openTrade({ id: "CORE", quantity: 9_900, investedValue: 990_000 });
+  const proposal = {
+    id: "STRONG-PROPOSAL",
+    symbol: row.symbol,
+    yahooSymbol: row.yahooSymbol,
+    industry: row.industry,
+    status: "PENDING_ENTRY",
+    entrySignalDate: "2026-07-17",
+    entryExecutionAfterDate: "2026-07-17",
+    plannedQuantity: 750,
+    plannedAllocation: 75_000,
+    plannedRisk: 4_500,
+    positionRank: 200,
+    candidateContext: {
+      firstSignalDate: "2026-07-16",
+      firstSignalClose: 98,
+      peakRank: 200,
+      entryCloseDates: ["2026-07-16", "2026-07-17"]
+    },
+    entryReason: [],
+    entrySnapshot: row
+  };
+  const trades = [capitalTrade, fundingTrade, proposal];
+  const events = [
+    { type: "EXIT_SIGNAL_PENDING", trade: fundingTrade },
+    { type: "ENTRY_SIGNAL_PENDING", trade: proposal }
+  ];
+  approveMorningOrders({
+    trades,
+    candidates: [],
+    rowBySymbol: new Map([[row.yahooSymbol, row], [fundingTrade.yahooSymbol, strongRow({ symbol: "WEAK", yahooSymbol: "WEAK.NS" })]]),
+    scan: { scannedAt: "2026-07-20T03:00:00.000Z" },
+    settings: { scopeListId: "all-market", scopeLabel: "All Indian Market", qualityMode: "BEST_ONLY" },
+    config: { trade: { totalCapital: 1_000_000 } },
+    events
+  });
+
+  assert.equal(proposal.orderState, "APPROVED_FOR_0917");
+  assert.equal(proposal.plannedAllocation, 10_000);
+  assert.equal(proposal.plannedQuantity, 100);
+  const published = publishPortfolioActionEvents(events, trades, "2026-07-20T03:00:00.000Z", { enabled: true });
+  assert.deepEqual(published.map((event) => event.type).sort(), ["ENTRY_SIGNAL_PENDING", "EXIT_SIGNAL_PENDING"]);
+  assert.equal(proposal.orderState, "CONFIRMED_FOR_0917");
+  assert.equal(fundingTrade.exitOrderState, "CONFIRMED_FOR_0917");
+});
+
+test("08:30 approval removes an unfunded buy instead of leaving a pending order or alert", () => {
+  const row = strongRow({ asOf: "2026-07-17" });
+  const fullCapital = openTrade({ id: "CORE", quantity: 10_000, investedValue: 1_000_000 });
+  const proposal = {
+    id: "NO-CASH",
+    symbol: row.symbol,
+    yahooSymbol: row.yahooSymbol,
+    industry: row.industry,
+    status: "PENDING_ENTRY",
+    entrySignalDate: "2026-07-17",
+    entryExecutionAfterDate: "2026-07-17",
+    plannedQuantity: 750,
+    plannedAllocation: 75_000,
+    plannedRisk: 4_500,
+    positionRank: 200,
+    candidateContext: { firstSignalDate: "2026-07-16", firstSignalClose: 98, peakRank: 200, entryCloseDates: ["2026-07-16", "2026-07-17"] },
+    entryReason: [],
+    entrySnapshot: row
+  };
+  const events = [{ type: "ENTRY_SIGNAL_PENDING", trade: proposal }];
+  const candidates = approveMorningOrders({
+    trades: [fullCapital, proposal],
+    candidates: [],
+    rowBySymbol: new Map([[row.yahooSymbol, row]]),
+    scan: { scannedAt: "2026-07-20T03:00:00.000Z" },
+    settings: { scopeListId: "all-market", scopeLabel: "All Indian Market", qualityMode: "BEST_ONLY" },
+    config: { trade: { totalCapital: 1_000_000 } },
+    events
+  });
+
+  assert.equal(proposal.status, "SKIPPED_ENTRY");
+  assert.equal(proposal.orderState, "CANCELLED_BEFORE_ALERT");
+  assert.equal(candidates[0]?.status, "WAITING_CAPITAL");
+  const published = publishPortfolioActionEvents(events, [fullCapital, proposal], "2026-07-20T03:00:00.000Z", { enabled: true });
+  assert.equal(published.some((event) => event.type === "ENTRY_SIGNAL_PENDING"), false);
 });
 
 test("illiquid candidate cannot become an automated entry", () => {

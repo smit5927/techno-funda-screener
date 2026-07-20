@@ -29,7 +29,10 @@ test("full-capital quality rotation reuses sell cash in the same exact 09:17 slo
     const approved = await updateTradeJournal(morningScan, config, { publishActionAlerts: true });
     assert.equal(approved.trades.find((trade) => trade.symbol === "WEAK").status, "PENDING_EXIT");
     assert.equal(approved.trades.find((trade) => trade.symbol === "STRONG").status, "PENDING_ENTRY");
-    assert.ok(approved.events.some((event) => event.type === "ROTATION_EXIT_PENDING"));
+    assert.ok(
+      approved.events.some((event) => event.type === "ROTATION_EXIT_PENDING"),
+      JSON.stringify({ events: approved.events.map((event) => event.type), weak: approved.trades.find((trade) => trade.symbol === "WEAK") }, null, 2)
+    );
     assert.ok(approved.events.some((event) => event.type === "ENTRY_SIGNAL_PENDING"));
 
     const journal = await updateTradeJournal(scanFixture(), config);
