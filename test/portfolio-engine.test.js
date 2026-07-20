@@ -763,6 +763,38 @@ test("08:30 approval resizes the best buy to cash released by a confirmed exit a
   assert.equal(fundingTrade.exitOrderState, "CONFIRMED_FOR_0917");
 });
 
+test("08:30 publishes a standalone full exit even when there is no replacement buy", () => {
+  const exitTrade = openTrade({
+    id: "EXIT-ONLY",
+    symbol: "WEAKONLY",
+    yahooSymbol: "WEAKONLY.NS",
+    status: "PENDING_EXIT",
+    exitSignalDate: "2026-07-17",
+    exitExecutionAfterDate: "2026-07-17",
+    quantity: 50,
+    investedValue: 50_000,
+    lastPrice: 960
+  });
+  const events = [{ type: "EXIT_SIGNAL_PENDING", trade: exitTrade }];
+
+  approveMorningOrders({
+    trades: [exitTrade],
+    candidates: [],
+    scan: { scannedAt: "2026-07-20T03:00:00.000Z" },
+    settings: { scopeListId: "all-market", scopeLabel: "All Indian Market", qualityMode: "BEST_ONLY" },
+    config: { trade: { totalCapital: 1_000_000 } },
+    events
+  });
+
+  assert.equal(exitTrade.exitOrderState, "APPROVED_FOR_0917");
+  const published = publishPortfolioActionEvents(events, [exitTrade], "2026-07-20T03:00:00.000Z", { enabled: true });
+  assert.deepEqual(published.map((event) => event.type), ["EXIT_SIGNAL_PENDING"]);
+  assert.equal(exitTrade.exitOrderState, "CONFIRMED_FOR_0917");
+
+  const duplicate = publishPortfolioActionEvents([], [exitTrade], "2026-07-20T03:01:00.000Z", { enabled: true });
+  assert.equal(duplicate.length, 0);
+});
+
 test("08:30 approval removes an unfunded buy instead of leaving a pending order or alert", () => {
   const row = strongRow({ asOf: "2026-07-17" });
   const fullCapital = openTrade({ id: "CORE", quantity: 10_000, investedValue: 1_000_000 });

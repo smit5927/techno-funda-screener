@@ -53,6 +53,34 @@ test("Telegram sends one minimal stock-wise message for each buy entry and full 
   }
 });
 
+test("Telegram sends a standalone full exit when no buy entry exists", async () => {
+  const originalFetch = globalThis.fetch;
+  const requests = [];
+  globalThis.fetch = async (_url, options) => {
+    requests.push(JSON.parse(options.body));
+    return { ok: true };
+  };
+  try {
+    const result = await sendTelegramSummary({
+      portfolioSummary: { totalCapital: 1_000_000 },
+      tradeEvents: [{
+        type: "EXIT_SIGNAL_PENDING",
+        trade: { symbol: "EXITONLY", quantity: 40, lastPrice: 2_500 }
+      }]
+    }, {
+      telegram: { botToken: "test-token", chatId: "test-chat" }
+    });
+
+    assert.equal(result.sent, true);
+    assert.equal(result.messages, 1);
+    assert.equal(requests.length, 1);
+    assert.match(requests[0].text, /CONFIRMED FULL EXIT \| EXITONLY/);
+    assert.doesNotMatch(requests[0].text, /BUY ORDER/);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test("Telegram ignores fills, partial exits, pyramids and corporate events", async () => {
   const result = await sendTelegramSummary({
     portfolioSummary: { totalEquity: 1_000_000 },
