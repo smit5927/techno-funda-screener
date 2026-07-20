@@ -63,6 +63,8 @@ const elements = {
   positionsEmpty: document.querySelector("#positionsEmpty"),
   pendingOrdersBody: document.querySelector("#pendingOrdersBody"),
   pendingOrdersEmpty: document.querySelector("#pendingOrdersEmpty"),
+  dashboardPendingOrdersBody: document.querySelector("#dashboardPendingOrdersBody"),
+  dashboardPendingOrdersEmpty: document.querySelector("#dashboardPendingOrdersEmpty"),
   openPositionsShell: document.querySelector("#openPositionsShell"),
   dashboardPositionsBody: document.querySelector("#dashboardPositionsBody"),
   dashboardPositionsEmpty: document.querySelector("#dashboardPositionsEmpty"),
@@ -658,7 +660,7 @@ function pendingOrderItems(trades = []) {
 
 function renderPendingOrders(payload) {
   const orders = pendingOrderItems(payload?.trades);
-  elements.pendingOrdersBody.innerHTML = orders.map((order, index) => {
+  const markup = orders.map((order, index) => {
     const reason = Array.isArray(order.reason) ? order.reason : [String(order.reason || "")];
     const execution = `${order.executionAfterDate ? `After ${order.executionAfterDate}` : "Next valid session"} at 09:17 IST`;
     return `
@@ -673,14 +675,22 @@ function renderPendingOrders(payload) {
       </tr>
     `;
   }).join("");
-  elements.pendingOrdersEmpty.classList.toggle("visible", orders.length === 0);
-  elements.pendingOrdersBody.querySelectorAll("tr").forEach((rowElement) => {
-    rowElement.addEventListener("click", () => {
-      const trade = orders[Number(rowElement.dataset.pendingOrderIndex)]?.trade;
-      const row = detailRowForTrade(trade);
-      if (row) renderDetail(row, trade);
+  const targets = [
+    [elements.pendingOrdersBody, elements.pendingOrdersEmpty],
+    [elements.dashboardPendingOrdersBody, elements.dashboardPendingOrdersEmpty]
+  ];
+  for (const [body, empty] of targets) {
+    if (!body || !empty) continue;
+    body.innerHTML = markup;
+    empty.classList.toggle("visible", orders.length === 0);
+    body.querySelectorAll("tr").forEach((rowElement) => {
+      rowElement.addEventListener("click", () => {
+        const trade = orders[Number(rowElement.dataset.pendingOrderIndex)]?.trade;
+        const row = detailRowForTrade(trade);
+        if (row) renderDetail(row, trade);
+      });
     });
-  });
+  }
 }
 
 function renderPositions(payload) {

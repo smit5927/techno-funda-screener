@@ -7,7 +7,7 @@ import { sendTelegramSummary } from "../src/telegram.js";
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-test("Telegram sends one minimal stock-wise message for each buy entry and full exit", async () => {
+test("Telegram mirrors every website actionable alert as a separate stock-wise message", async () => {
   const originalFetch = globalThis.fetch;
   const requests = [];
   globalThis.fetch = async (_url, options) => {
@@ -28,7 +28,20 @@ test("Telegram sends one minimal stock-wise message for each buy entry and full 
         },
         {
           type: "PARTIAL_EXIT_PENDING",
-          trade: { symbol: "NOISY", quantity: 100, lastPrice: 100, pendingPartialExitPct: 50 }
+          trade: { symbol: "TRIM", quantity: 100, lastPrice: 100, pendingPartialExitPct: 50 }
+        },
+        {
+          type: "PYRAMID_ADD_PENDING",
+          trade: { symbol: "PYRAMID", pendingAdd: { plannedQuantity: 20, plannedAllocation: 20_000 } }
+        },
+        {
+          type: "CONTROLLED_RETEST_ADD_PENDING",
+          trade: { symbol: "RETEST", pendingAdd: { plannedQuantity: 10, plannedAllocation: 10_000 } }
+        },
+        {
+          type: "DIVIDEND_CREDIT",
+          trade: { symbol: "DIV" },
+          corporateAction: { exDate: "2026-07-21", entitledQuantity: 50, dividendPerShare: 5, amount: 250 }
         }
       ]
     };
@@ -36,8 +49,8 @@ test("Telegram sends one minimal stock-wise message for each buy entry and full 
       telegram: { botToken: "test-token", chatId: "test-chat", sendEmpty: false }
     });
     assert.equal(result.sent, true);
-    assert.equal(result.messages, 2);
-    assert.equal(requests.length, 2);
+    assert.equal(result.messages, 6);
+    assert.equal(requests.length, 6);
     assert.match(requests[0].text, /<b>CONFIRMED BUY ORDER \| ABC<\/b>/);
     assert.match(requests[0].text, /Approx Buy Qty: <b>100<\/b>/);
     assert.match(requests[0].text, /Order Value: <b>Rs 99,500<\/b>/);
@@ -45,9 +58,14 @@ test("Telegram sends one minimal stock-wise message for each buy entry and full 
     assert.match(requests[1].text, /<b>CONFIRMED FULL EXIT \| XYZ<\/b>/);
     assert.match(requests[1].text, /Approx Sell Qty: <b>50<\/b>/);
     assert.match(requests[1].text, /Fund Allocation: <b>11%<\/b>/);
+    assert.match(requests[2].text, /CONFIRMED PARTIAL EXIT \| TRIM/);
+    assert.match(requests[2].text, /Approx Sell Qty: <b>50<\/b>/);
+    assert.match(requests[3].text, /CONFIRMED PYRAMID ADD \| PYRAMID/);
+    assert.match(requests[4].text, /CONFIRMED RETEST ADD \| RETEST/);
+    assert.match(requests[5].text, /DIVIDEND CREDIT \| DIV/);
+    assert.match(requests[5].text, /Ex-date: <b>2026-07-21<\/b>/);
+    assert.match(requests[5].text, /Realized Dividend: <b>Rs 250<\/b>/);
     assert.ok(requests.every((request) => request.parse_mode === "HTML"));
-    assert.ok(requests.every((request) => !/P&L|reason|market snapshot/i.test(request.text)));
-    assert.ok(requests.every((request) => !request.text.includes("NOISY")));
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -81,18 +99,18 @@ test("Telegram sends a standalone full exit when no buy entry exists", async () 
   }
 });
 
-test("Telegram ignores fills, partial exits, pyramids and corporate events", async () => {
+test("Telegram ignores non-actionable fills while retaining the website actionable set", async () => {
   const result = await sendTelegramSummary({
     portfolioSummary: { totalEquity: 1_000_000 },
     tradeEvents: [
       { type: "ENTRY_TRADE_OPENED", trade: { symbol: "ABC", quantity: 100, investedValue: 100_000 } },
-      { type: "PARTIAL_EXIT_PENDING", trade: { symbol: "XYZ", quantity: 100, lastPrice: 100 } },
-      { type: "PYRAMID_ADD_PENDING", trade: { symbol: "ADD", pendingAdd: { plannedQuantity: 20, plannedAllocation: 20_000 } } },
-      { type: "DIVIDEND_CREDIT", trade: { symbol: "DIV" } }
+      { type: "PARTIAL_EXIT_FILLED", trade: { symbol: "XYZ", quantity: 100, lastPrice: 100 } },
+      { type: "PYRAMID_ADD_FILLED", trade: { symbol: "ADD", quantity: 20, investedValue: 20_000 } },
+      { type: "CORPORATE_ACTION_REVIEW", trade: { symbol: "CORP" } }
     ]
   }, { telegram: { botToken: "test-token", chatId: "test-chat" } });
   assert.equal(result.sent, false);
-  assert.match(result.reason, /no new buy entry or full exit/i);
+  assert.match(result.reason, /no new actionable portfolio alerts/i);
 });
 
 test("workflow authorizes Telegram only for the scheduled 08:30 IST scan", () => {

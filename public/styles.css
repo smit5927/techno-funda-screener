@@ -748,6 +748,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .positionsShell.openPositionsShell { max-height: var(--open-positions-max-height, calc(100dvh - 235px)); }
 .pendingOrdersHeading { margin-top: 18px; }
 .pendingOrdersHeading h2::before { background: var(--amber); box-shadow: 0 0 12px rgba(255, 189, 74, .28); }
+.dashboardPendingOrders { margin-top: 14px; }
+.dashboardPendingOrders .pendingOrdersHeading { margin-top: 0; }
+.dashboardPendingOrders .pendingOrdersShell { max-height: 270px; }
 .pendingOrdersShell { min-height: 96px; max-height: 310px; }
 .pendingOrdersTable { min-width: 980px; }
 table { width: 100%; min-width: 1280px; border-collapse: collapse; table-layout: auto; }

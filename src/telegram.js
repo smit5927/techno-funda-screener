@@ -4,7 +4,11 @@ const MORNING_TELEGRAM_TYPES = new Set([
   "ENTRY_SIGNAL_PENDING",
   "EXIT_SIGNAL_PENDING",
   "PORTFOLIO_EXIT_PENDING",
-  "ROTATION_EXIT_PENDING"
+  "ROTATION_EXIT_PENDING",
+  "PARTIAL_EXIT_PENDING",
+  "PYRAMID_ADD_PENDING",
+  "CONTROLLED_RETEST_ADD_PENDING",
+  "DIVIDEND_CREDIT"
 ]);
 
 export function isTelegramConfigured(config) {
@@ -20,7 +24,7 @@ export async function sendTelegramSummary(scan, config) {
     MORNING_TELEGRAM_TYPES.has(String(event.type || "").toUpperCase())
   );
   if (events.length === 0) {
-    return { sent: false, reason: "no new buy entry or full exit alerts" };
+    return { sent: false, reason: "no new actionable portfolio alerts" };
   }
 
   const totalFund = scan.portfolioSummary?.totalCapital;
@@ -49,28 +53,76 @@ export async function sendTelegramSummary(scan, config) {
   }
   return sent > 0
     ? { sent: true, messages: sent, chunks: sent }
-    : { sent: false, reason: "no sizeable buy entry or full exit alerts" };
+    : { sent: false, reason: "no actionable portfolio alerts with usable details" };
 }
 
 function buildStockActionMessage(event, totalFund) {
   const type = String(event.type || "").toUpperCase();
   const trade = event.trade || {};
   const symbol = escapeTelegramHtml(trade.symbol || event.candidate?.symbol || "NA");
+  if (type === "DIVIDEND_CREDIT") return buildDividendMessage(event, symbol);
   const allocation = tradeActionAllocation(event, totalFund);
   if (!allocation) return "";
-  const isBuy = type === "ENTRY_SIGNAL_PENDING";
-  const action = isBuy ? "CONFIRMED BUY ORDER" : "CONFIRMED FULL EXIT";
-  const quantityLabel = isBuy ? "Approx Buy Qty" : "Approx Sell Qty";
+  const action = actionLabel(type);
+  const quantityLabel = allocation.side.includes("BUY") ? "Approx Buy Qty" : "Approx Sell Qty";
   const percentage = Number.isFinite(allocation.fundPct)
     ? `${formatNumber(allocation.fundPct)}%`
     : "NA";
-  return [
+  const lines = [
     `<b>${action} | ${symbol}</b>`,
     `${quantityLabel}: <b>${formatNumber(allocation.quantity)}</b>`,
     `Order Value: <b>Rs ${formatNumber(allocation.value)}</b>`,
-    `Fund Allocation: <b>${percentage}</b>`,
-    `<i>Capital/risk reserved | Execution: next valid session 09:17 IST</i>`
-  ].join("\n");
+    `Fund Allocation: <b>${percentage}</b>`
+  ];
+  const reason = actionReason(type, event);
+  if (reason) lines.push(`Reason: ${escapeTelegramHtml(reason)}`);
+  lines.push(`<i>Approved at 08:30 | Execution: next valid session 09:17 IST</i>`);
+  return lines.join("\n");
+}
+
+function actionLabel(type) {
+  return {
+    ENTRY_SIGNAL_PENDING: "CONFIRMED BUY ORDER",
+    EXIT_SIGNAL_PENDING: "CONFIRMED FULL EXIT",
+    PORTFOLIO_EXIT_PENDING: "CONFIRMED PORTFOLIO EXIT",
+    ROTATION_EXIT_PENDING: "CONFIRMED ROTATION EXIT",
+    PARTIAL_EXIT_PENDING: "CONFIRMED PARTIAL EXIT",
+    PYRAMID_ADD_PENDING: "CONFIRMED PYRAMID ADD",
+    CONTROLLED_RETEST_ADD_PENDING: "CONFIRMED RETEST ADD"
+  }[type] || "CONFIRMED PORTFOLIO ACTION";
+}
+
+function actionReason(type, event) {
+  const trade = event.trade || {};
+  const values = type === "PARTIAL_EXIT_PENDING"
+    ? trade.pendingPartialExitReason
+    : ["PYRAMID_ADD_PENDING", "CONTROLLED_RETEST_ADD_PENDING"].includes(type)
+      ? trade.pendingAdd?.reason
+      : type.includes("EXIT")
+        ? trade.exitReason
+        : trade.entryReason;
+  const first = (Array.isArray(values) ? values : [values]).find((value) => String(value || "").trim());
+  return first ? String(first).trim().slice(0, 240) : "";
+}
+
+function buildDividendMessage(event, symbol) {
+  const action = event.corporateAction || {};
+  const trade = event.trade || {};
+  const lines = [`<b>DIVIDEND CREDIT | ${symbol}</b>`];
+  if (action.exDate) lines.push(`Ex-date: <b>${escapeTelegramHtml(action.exDate)}</b>`);
+  if (Number.isFinite(Number(action.entitledQuantity))) {
+    lines.push(`Entitled Qty: <b>${formatNumber(action.entitledQuantity)}</b>`);
+  }
+  if (Number.isFinite(Number(action.dividendPerShare))) {
+    lines.push(`Dividend/Share: <b>Rs ${formatNumber(action.dividendPerShare)}</b>`);
+  }
+  if (Number.isFinite(Number(action.amount))) {
+    lines.push(`Realized Dividend: <b>Rs ${formatNumber(action.amount)}</b>`);
+  }
+  const reason = action.purpose || action.accountingNote || trade.dividendNote;
+  if (reason) lines.push(`Details: ${escapeTelegramHtml(String(reason).slice(0, 240))}`);
+  lines.push(`<i>Included separately in booked realized P&amp;L</i>`);
+  return lines.join("\n");
 }
 
 function escapeTelegramHtml(value) {

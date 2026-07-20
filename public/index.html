@@ -11,7 +11,7 @@
     <link rel="manifest" href="manifest.webmanifest?v=20260717-bull-v2" />
     <link rel="icon" href="techno-funda-pms-bull-192-v2.png" type="image/png" />
     <link rel="apple-touch-icon" href="techno-funda-pms-bull-192-v2.png" />
-    <link rel="stylesheet" href="styles.css?v=20260717-bull-v2" />
+    <link rel="stylesheet" href="styles.css?v=20260720-pending-telegram" />
   </head>
   <body>
     <section id="authGate" class="authGate" aria-live="polite">
@@ -204,6 +204,32 @@
         </div>
         <a id="excelDownloadLink" class="downloadButton" href="/api/trades/download">Excel</a>
         <a id="csvDownloadLink" class="downloadButton" href="/api/trades/download.csv">CSV</a>
+      </section>
+
+      <section class="dashboardPendingOrders" aria-label="Approved pending orders">
+        <div class="sectionHeading pendingOrdersHeading">
+          <div>
+            <h2>Pending Orders</h2>
+            <span>08:30 approved actions waiting for successful 09:17 execution</span>
+          </div>
+        </div>
+        <div class="tableShell positionsShell pendingOrdersShell">
+          <table class="positionsTable pendingOrdersTable">
+            <thead>
+              <tr>
+                <th>Order</th>
+                <th>Symbol</th>
+                <th>Signal Date</th>
+                <th>Qty</th>
+                <th>Reserved / Est. Value</th>
+                <th>Execution</th>
+                <th>Reason</th>
+              </tr>
+            </thead>
+            <tbody id="dashboardPendingOrdersBody"></tbody>
+          </table>
+          <div id="dashboardPendingOrdersEmpty" class="emptyState visible">No approved 09:17 orders. The next 08:30 decision cycle will publish eligible actions here.</div>
+        </div>
       </section>
 
       <section class="dashboardPositions" aria-label="Portfolio positions snapshot">
@@ -522,7 +548,7 @@
             </thead>
             <tbody id="pendingOrdersBody"></tbody>
           </table>
-          <div id="pendingOrdersEmpty" class="emptyState">No pending buy, sell or add orders</div>
+          <div id="pendingOrdersEmpty" class="emptyState visible">No approved 09:17 orders. The next 08:30 decision cycle will publish eligible actions here.</div>
         </div>
       </section>
 
@@ -652,6 +678,6 @@
     <script src="vendor/supabase.js"></script>
     <script src="vendor/exceljs.min.js"></script>
     <script src="mobile-config.js"></script>
-    <script src="auth.js?v=20260720-capital-orders" type="module"></script>
+    <script src="auth.js?v=20260720-pending-telegram" type="module"></script>
   </body>
 </html>

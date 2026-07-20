@@ -119,9 +119,12 @@ test("filled holdings and pending execution orders are presented separately", ()
   assert.match(html, /Deployed in Filled Holdings/);
   assert.match(html, /id="reservedCapital"/);
   assert.match(html, /id="pendingOrdersBody"/);
+  assert.match(html, /id="dashboardPendingOrdersBody"/);
+  assert.match(html, /No approved 09:17 orders/);
   assert.match(html, /No executed open holdings/);
   assert.match(app, /function filledHoldings/);
   assert.match(app, /function pendingOrderItems/);
+  assert.match(app, /dashboardPendingOrdersBody/);
   assert.match(app, /const displayStatus = "OPEN"/);
   assert.doesNotMatch(app, /\["PENDING_ENTRY", "OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"\]/);
 });
