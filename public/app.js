@@ -642,7 +642,7 @@ function pendingOrderItems(trades = []) {
         reason: trade.pendingPartialExitReason || []
       });
     }
-    if (trade.pendingAdd && ["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.pendingAdd.orderState || ""))) {
+    if (trade.status === "OPEN" && trade.pendingAdd && ["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.pendingAdd.orderState || ""))) {
       items.push({
         trade,
         type: trade.pendingAdd.kind === "CONTROLLED_RETEST" ? "BUY RETEST ADD" : "BUY PYRAMID ADD",

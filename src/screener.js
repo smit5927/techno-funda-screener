@@ -342,7 +342,7 @@ export function hasPendingExecutionWork(trades = []) {
     (trade.status === "PENDING_ENTRY" && trade.orderState === "CONFIRMED_FOR_0917") ||
     (trade.status === "PENDING_EXIT" && trade.exitOrderState === "CONFIRMED_FOR_0917") ||
     (trade.status === "PENDING_PARTIAL_EXIT" && trade.partialExitOrderState === "CONFIRMED_FOR_0917") ||
-    trade.pendingAdd?.orderState === "CONFIRMED_FOR_0917"
+    (trade.status === "OPEN" && trade.pendingAdd?.orderState === "CONFIRMED_FOR_0917")
   );
 }
 

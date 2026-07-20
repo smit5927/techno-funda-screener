@@ -12,7 +12,8 @@ export function isConfirmedPendingEntry(trade = {}) {
 }
 
 export function isConfirmedPendingAdd(trade = {}) {
-  return Boolean(trade.pendingAdd) &&
+  return trade.status === "OPEN" &&
+    Boolean(trade.pendingAdd) &&
     ["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.pendingAdd.orderState || ""));
 }
 

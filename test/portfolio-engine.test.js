@@ -795,6 +795,82 @@ test("08:30 publishes a standalone full exit even when there is no replacement b
   assert.equal(duplicate.length, 0);
 });
 
+test("one-stock one-action interlock cancels an add when risk reduction is the final decision", () => {
+  const trade = openTrade({
+    id: "CONFLICT",
+    symbol: "CONFLICT",
+    yahooSymbol: "CONFLICT.NS",
+    status: "PENDING_EXIT",
+    exitSignalDate: "2026-07-17",
+    exitExecutionAfterDate: "2026-07-17",
+    pendingAdd: {
+      kind: "CONTROLLED_RETEST",
+      signalDate: "2026-07-17",
+      executionAfterDate: "2026-07-17",
+      plannedQuantity: 100,
+      plannedAllocation: 10_000,
+      plannedRisk: 500,
+      orderState: "CONFIRMED_FOR_0917"
+    }
+  });
+  const events = [
+    { type: "EXIT_SIGNAL_PENDING", trade },
+    { type: "CONTROLLED_RETEST_ADD_PENDING", trade }
+  ];
+
+  approveMorningOrders({
+    trades: [trade],
+    candidates: [],
+    scan: { scannedAt: "2026-07-20T03:00:00.000Z" },
+    settings: { scopeListId: "all-market", scopeLabel: "All Indian Market", qualityMode: "BEST_ONLY" },
+    config: { trade: { totalCapital: 1_000_000 } },
+    events
+  });
+
+  assert.equal(trade.pendingAdd, null);
+  assert.equal(trade.exitOrderState, "APPROVED_FOR_0917");
+  assert.equal(portfolioSummary([trade], [], { trade: { totalCapital: 1_000_000 } }).reservedCapital, 0);
+  const published = publishPortfolioActionEvents(events, [trade], "2026-07-20T03:00:00.000Z", { enabled: true });
+  assert.deepEqual(published.map((event) => event.type), ["EXIT_SIGNAL_PENDING"]);
+});
+
+test("one-stock one-action interlock preserves a funded add when the final action is not risk reduction", () => {
+  const row = strongRow({ symbol: "HEALTHY", yahooSymbol: "HEALTHY.NS", asOf: "2026-07-17" });
+  const trade = openTrade({
+    id: "HEALTHY",
+    symbol: row.symbol,
+    yahooSymbol: row.yahooSymbol,
+    status: "OPEN",
+    currentRank: 190,
+    pendingAdd: {
+      kind: "CONTROLLED_RETEST",
+      signalDate: "2026-07-17",
+      executionAfterDate: "2026-07-17",
+      plannedQuantity: 100,
+      plannedAllocation: 10_000,
+      plannedRisk: 500,
+      reason: ["Trend intact and the controlled retest reclaim is valid."]
+    }
+  });
+  const events = [{ type: "CONTROLLED_RETEST_ADD_PENDING", trade }];
+
+  approveMorningOrders({
+    trades: [trade],
+    candidates: [],
+    rowBySymbol: new Map([[row.yahooSymbol, row]]),
+    scan: { scannedAt: "2026-07-20T03:00:00.000Z" },
+    settings: { scopeListId: "all-market", scopeLabel: "All Indian Market", qualityMode: "BEST_ONLY" },
+    config: { trade: { totalCapital: 1_000_000 } },
+    events
+  });
+
+  assert.equal(trade.status, "OPEN");
+  assert.equal(trade.pendingAdd?.orderState, "APPROVED_FOR_0917");
+  const published = publishPortfolioActionEvents(events, [trade], "2026-07-20T03:00:00.000Z", { enabled: true });
+  assert.deepEqual(published.map((event) => event.type), ["CONTROLLED_RETEST_ADD_PENDING"]);
+  assert.equal(trade.pendingAdd?.orderState, "CONFIRMED_FOR_0917");
+});
+
 test("08:30 approval removes an unfunded buy instead of leaving a pending order or alert", () => {
   const row = strongRow({ asOf: "2026-07-17" });
   const fullCapital = openTrade({ id: "CORE", quantity: 10_000, investedValue: 1_000_000 });

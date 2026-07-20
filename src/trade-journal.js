@@ -1089,6 +1089,19 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
   if (!pending) return "WAITING";
   const controlledRetest = pending.kind === "CONTROLLED_RETEST";
   const actionLabel = controlledRetest ? "Controlled retest add" : "Winner add";
+  const riskDecision = positionExitDecision(trade, row, config);
+  if (["FULL_EXIT", "PARTIAL_EXIT"].includes(riskDecision.action)) {
+    const reason = `${actionLabel} cancelled at the final decision recheck because ${riskDecision.action === "FULL_EXIT" ? "confirmed structural damage requires a full exit" : "confirmed deterioration requires risk reduction"}. The system never buys and sells the same stock in one decision cycle.`;
+    cancelPendingAdd(trade, reason);
+    trade.latestManagementDecision = {
+      asOf: row.asOf,
+      action: riskDecision.action,
+      reasons: riskDecision.reasons || [],
+      hierarchy: "CLASSIFY STRUCTURE > CHOOSE ONE ACTION > EXECUTE"
+    };
+    trade.executionError = reason;
+    return "SKIPPED";
+  }
   if (pending.orderState !== "CONFIRMED_FOR_0917") {
     trade.executionError = `${actionLabel} is waiting for the 08:30 portfolio approval; an unannounced add cannot execute.`;
     return "WAITING";
@@ -1839,6 +1852,9 @@ export function approveMorningOrders({
   events = []
 } = {}) {
   for (const trade of trades) {
+    if (["PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status) && trade.pendingAdd) {
+      cancelPendingAdd(trade, "Cancelled by the 08:30 one-stock/one-action interlock because the final portfolio decision is risk reduction, not an add.");
+    }
     if (trade.status === "PENDING_EXIT" && trade.exitOrderState !== "CONFIRMED_FOR_0917") {
       trade.exitOrderState = "APPROVED_FOR_0917";
     }
@@ -1877,7 +1893,7 @@ export function approveMorningOrders({
     if (trade.status === "PENDING_ENTRY" && !isConfirmedPendingEntry(trade)) {
       proposals.push({ kind: "ENTRY", trade, rank: Number(trade.currentRank || trade.positionRank) || 0 });
     }
-    if (trade.pendingAdd && !isConfirmedPendingAdd(trade)) {
+    if (trade.status === "OPEN" && trade.pendingAdd && !isConfirmedPendingAdd(trade)) {
       proposals.push({ kind: "ADD", trade, rank: Number(trade.currentRank || trade.positionRank) || 0 });
     }
   }
@@ -2034,7 +2050,7 @@ function currentPendingActionEvents(trades = []) {
     } else if (trade.status === "PENDING_PARTIAL_EXIT") {
       output.push({ type: "PARTIAL_EXIT_PENDING", trade });
     }
-    if (trade.pendingAdd) {
+    if (trade.status === "OPEN" && trade.pendingAdd) {
       output.push({
         type: trade.pendingAdd.kind === "CONTROLLED_RETEST"
           ? "CONTROLLED_RETEST_ADD_PENDING"
@@ -2109,6 +2125,7 @@ function actionCanBePublished(event, occurredAt) {
     !["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.partialExitOrderState || ""))
   )) return false;
   if (["PYRAMID_ADD_PENDING", "CONTROLLED_RETEST_ADD_PENDING"].includes(type) && (
+    trade.status !== "OPEN" ||
     !trade.pendingAdd ||
     !["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.pendingAdd.orderState || ""))
   )) return false;
