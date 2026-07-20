@@ -124,6 +124,8 @@ test("filled holdings and pending execution orders are presented separately", ()
   assert.match(html, /No executed open holdings/);
   assert.match(app, /function filledHoldings/);
   assert.match(app, /function pendingOrderItems/);
+  assert.match(app, /trade\.orderState === "CONFIRMED_FOR_0917"/);
+  assert.doesNotMatch(app, /\["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"\]\.includes/);
   assert.match(app, /dashboardPendingOrdersBody/);
   assert.match(app, /const displayStatus = "OPEN"/);
   assert.doesNotMatch(app, /\["PENDING_ENTRY", "OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"\]/);
@@ -146,6 +148,8 @@ test("alert center supports durable history, account clear and notification deep
   assert.match(html, /aria-pressed="false"/);
   assert.match(app, /Background Alerts: ON/);
   assert.match(app, /toggleBrowserNotifications/);
+  assert.match(app, /pushVerifiedAt/);
+  assert.match(app, /Date\.now\(\) - state\.pushVerifiedAt/);
   assert.match(app, /unregister-push-subscription/);
   assert.match(app, /Background alerts are OFF on this device/);
   assert.match(fs.readFileSync(path.join(rootDir, "public", "styles.css"), "utf8"), /#alertsEmpty \{ position: static;/);

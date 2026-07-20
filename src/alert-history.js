@@ -1,4 +1,5 @@
 import { tradeActionAllocation, tradeActionAllocationText } from "./alert-allocation.js";
+import { canReachExecutionDate } from "./morning-cycle.js";
 
 const MAX_ALERTS = 500;
 const ALERT_RETENTION_DAYS = 30;
@@ -53,6 +54,7 @@ export function alertFromTradeEvent(event = {}, occurredAt = new Date().toISOStr
     symbol,
     action.id || "",
     eventDate || "",
+    isPendingActionType(type) ? dateOnly(occurredAt) : "",
     details.price ?? "",
     details.quantity ?? "",
     details.addNumber ?? ""
@@ -74,6 +76,18 @@ export function alertFromTradeEvent(event = {}, occurredAt = new Date().toISOStr
     allocationSummary: allocationSummary || null,
     details
   };
+}
+
+function isPendingActionType(type) {
+  return [
+    "ENTRY_SIGNAL_PENDING",
+    "EXIT_SIGNAL_PENDING",
+    "PORTFOLIO_EXIT_PENDING",
+    "ROTATION_EXIT_PENDING",
+    "PARTIAL_EXIT_PENDING",
+    "PYRAMID_ADD_PENDING",
+    "CONTROLLED_RETEST_ADD_PENDING"
+  ].includes(type);
 }
 
 function alertDefinition(type, trade) {
@@ -323,14 +337,7 @@ export function reconcileAlertLifecycle(alerts = [], trades = [], totalFund) {
 }
 
 function pendingAlertCanReachNextExecution(alert, executionAfterDate) {
-  if (!executionAfterDate) return true;
-  return istDate(alert.occurredAt) > String(executionAfterDate).slice(0, 10);
-}
-
-function istDate(value) {
-  const time = Date.parse(String(value || ""));
-  if (!Number.isFinite(time)) return "";
-  return new Date(time + 330 * 60 * 1000).toISOString().slice(0, 10);
+  return canReachExecutionDate(alert.occurredAt, executionAfterDate);
 }
 
 function allocationText(quantity, value, totalFund, side) {

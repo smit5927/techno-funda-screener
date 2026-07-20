@@ -126,5 +126,7 @@ test("workflow authorizes Telegram for 08:30 and deduplicated morning recovery s
   assert.match(executionRunner, /runExecutionPass\(\{ sendTelegram: false \}\)/);
   assert.match(executionRunner, /executionOnly: true,[\s\S]*sendTelegram: false,[\s\S]*publishActionAlerts: false/);
   assert.match(cloudRunner, /TELEGRAM_MORNING_ONLY === "true"/);
+  assert.match(cloudRunner, /morningApprovalStatus/);
+  assert.match(cloudRunner, /morningCycle\.allowed/);
   assert.match(cloudRunner, /publishActionAlerts/);
 });

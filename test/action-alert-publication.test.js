@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { projectedSellFunding, publishPortfolioActionEvents } from "../src/trade-journal.js";
+import {
+  invalidateLateMorningApprovals,
+  projectedSellFunding,
+  publishPortfolioActionEvents
+} from "../src/trade-journal.js";
 
 function pendingTrade() {
   return {
@@ -39,6 +43,50 @@ test("one reserved order publishes only once even across repeated 08:30 scans", 
   const retry = publishPortfolioActionEvents([], [trade], "2026-07-21T03:00:00.000Z", { enabled: true });
   assert.equal(first.length, 1);
   assert.equal(retry.length, 0);
+});
+
+test("next-session order can publish on its execution date instead of waiting one extra day", () => {
+  const trade = { ...pendingTrade(), entryExecutionAfterDate: "2026-07-20" };
+  const events = publishPortfolioActionEvents([], [trade], "2026-07-20T03:00:00.000Z", { enabled: true });
+  assert.equal(events.length, 1);
+  assert.equal(trade.orderState, "CONFIRMED_FOR_0917");
+});
+
+test("late recovery approval and its alert are revoked before any execution pass", () => {
+  const approvedAt = "2026-07-20T06:16:26.684Z";
+  const trade = {
+    ...pendingTrade(),
+    orderState: "CONFIRMED_FOR_0917",
+    portfolioApprovedAt: approvedAt,
+    capitalReservedAt: approvedAt,
+    riskReservedAt: approvedAt,
+    actionAlertPublications: {
+      "ENTRY_SIGNAL_PENDING:BHEL-2026-07-16:2026-07-16": approvedAt
+    }
+  };
+  const cleanup = invalidateLateMorningApprovals([trade], [{
+    id: "late-alert",
+    tradeId: trade.id,
+    type: "ENTRY_SIGNAL_PENDING",
+    occurredAt: approvedAt
+  }]);
+  assert.equal(trade.orderState, "WAITING_FOR_0830");
+  assert.equal(trade.capitalReservedAt, null);
+  assert.equal(trade.actionAlertPublications, undefined);
+  assert.equal(cleanup.alertHistory.length, 0);
+  assert.equal(cleanup.invalidated.length, 1);
+});
+
+test("an unpublished internal approval is never a durable pending order", () => {
+  const trade = {
+    ...pendingTrade(),
+    portfolioApprovedAt: null,
+    orderState: "APPROVED_FOR_0917"
+  };
+  const cleanup = invalidateLateMorningApprovals([trade], []);
+  assert.equal(trade.orderState, "WAITING_FOR_0830");
+  assert.equal(cleanup.invalidated.length, 1);
+  assert.match(trade.executionError, /Unpublished internal approval/);
 });
 
 test("a dividend discovered outside 08:30 is deferred without replaying old corporate history", () => {

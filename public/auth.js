@@ -128,7 +128,7 @@ client.auth.onAuthStateChange((_event, session) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => navigator.serviceWorker.register(
-    "service-worker.js?v=20260720-capital-orders",
+    "service-worker.js?v=20260720-morning-push-sync",
     { updateViaCache: "none" }
   ).catch(() => {}));
 }

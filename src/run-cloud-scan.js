@@ -2,12 +2,22 @@ import { pushCloudState } from "./cloud-sync.js";
 import { attemptCloud, hydrateCloudRuntime } from "./cloud-runtime.js";
 import { runScreener } from "./screener.js";
 import { multiUserRuntimeEnabled, syncMultiUserRuntime } from "./multi-user-runtime.js";
+import { morningApprovalStatus } from "./morning-cycle.js";
 
 try {
   await hydrateCloudRuntime({ includeCustomList: true });
 
-  const morningTelegram = process.env.TELEGRAM_MORNING_ONLY === "true";
-  const publishActionAlerts = process.env.MORNING_ALERTS === "true" || morningTelegram;
+  const requestedMorningCycle = process.env.MORNING_ALERTS === "true" ||
+    process.env.TELEGRAM_MORNING_ONLY === "true";
+  const morningCycle = morningApprovalStatus(requestedMorningCycle, new Date());
+  const publishActionAlerts = morningCycle.allowed;
+  const morningTelegram = morningCycle.allowed && process.env.TELEGRAM_MORNING_ONLY === "true";
+  if (morningCycle.requested && !morningCycle.allowed) {
+    console.log(
+      `Morning approval request ignored at ${morningCycle.clock?.time || "unknown"} IST (${morningCycle.reason}); ` +
+      "no orders, Telegram alerts or push alerts will be published by this late run."
+    );
+  }
   const result = await runScreener({
     sendTelegram: morningTelegram && !multiUserRuntimeEnabled(),
     publishActionAlerts

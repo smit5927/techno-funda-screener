@@ -24,7 +24,8 @@ const state = {
   alertSearch: "",
   selectedAlertId: new URLSearchParams(window.location.search).get("alert") || "",
   alertPollTimer: null,
-  pushSyncPromise: null
+  pushSyncPromise: null,
+  pushVerifiedAt: 0
 };
 
 const staticMode = Boolean(window.TF_STATIC_MODE);
@@ -603,7 +604,7 @@ function pendingOrderItems(trades = []) {
   const items = [];
   for (const trade of trades || []) {
     const lastPrice = Number(trade.lastPrice) || Number(trade.currentSnapshot?.close) || Number(trade.entryPrice) || 0;
-    if (trade.status === "PENDING_ENTRY" && ["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.orderState || ""))) {
+    if (trade.status === "PENDING_ENTRY" && trade.orderState === "CONFIRMED_FOR_0917") {
       items.push({
         trade,
         type: "BUY ENTRY",
@@ -614,7 +615,7 @@ function pendingOrderItems(trades = []) {
         executionAfterDate: trade.entryExecutionAfterDate,
         reason: [trade.executionError, ...(trade.entryReason || [])].filter(Boolean)
       });
-    } else if (trade.status === "PENDING_EXIT" && ["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.exitOrderState || ""))) {
+    } else if (trade.status === "PENDING_EXIT" && trade.exitOrderState === "CONFIRMED_FOR_0917") {
       const quantity = Number(trade.quantity) || 0;
       items.push({
         trade,
@@ -626,7 +627,7 @@ function pendingOrderItems(trades = []) {
         executionAfterDate: trade.exitExecutionAfterDate,
         reason: trade.exitReason || []
       });
-    } else if (trade.status === "PENDING_PARTIAL_EXIT" && ["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.partialExitOrderState || ""))) {
+    } else if (trade.status === "PENDING_PARTIAL_EXIT" && trade.partialExitOrderState === "CONFIRMED_FOR_0917") {
       const heldQuantity = Number(trade.quantity) || 0;
       const quantity = heldQuantity >= 2
         ? Math.max(1, Math.min(heldQuantity - 1, Math.floor(heldQuantity * (Number(trade.pendingPartialExitPct) || 50) / 100)))
@@ -642,7 +643,7 @@ function pendingOrderItems(trades = []) {
         reason: trade.pendingPartialExitReason || []
       });
     }
-    if (trade.status === "OPEN" && trade.pendingAdd && ["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.pendingAdd.orderState || ""))) {
+    if (trade.status === "OPEN" && trade.pendingAdd?.orderState === "CONFIRMED_FOR_0917") {
       items.push({
         trade,
         type: trade.pendingAdd.kind === "CONTROLLED_RETEST" ? "BUY RETEST ADD" : "BUY PYRAMID ADD",
@@ -2128,14 +2129,18 @@ async function processAlertNotifications(alerts) {
     return;
   }
   const enabled = localStorage.getItem(alertStorageKey("enabled")) === "true";
-  const backgroundActive = localStorage.getItem(alertStorageKey("push-active")) === "true";
   const wantsBackground = enabled && Notification.permission === "granted";
-  if (wantsBackground && !backgroundActive) {
-    syncBackgroundPushSubscription().then(updateNotificationStatus).catch(() => {
+  if (wantsBackground && Date.now() - state.pushVerifiedAt > 15 * 60 * 1000) {
+    state.pushVerifiedAt = Date.now();
+    syncBackgroundPushSubscription().then(() => {
+      localStorage.setItem(alertStorageKey("push-active"), "true");
+      updateNotificationStatus();
+    }).catch(() => {
       localStorage.removeItem(alertStorageKey("push-active"));
       updateNotificationStatus();
     });
   }
+  const backgroundActive = localStorage.getItem(alertStorageKey("push-active")) === "true";
   const newAlerts = alerts.filter((alert) => !notified.has(alert.id));
   newAlerts.forEach((alert) => notified.add(alert.id));
   writeAlertIdSet("notified", notified);

@@ -7,6 +7,7 @@ import { applyTradeChargeAccounting, chargeSettings } from "./charges.js";
 import { updateOpenPositionCorporateActions } from "./corporate-actions.js";
 import { updateAlertHistory } from "./alert-history.js";
 import { executionAfterDate, isRetroactiveExecution } from "./execution-policy.js";
+import { canReachExecutionDate, isMorningApprovalWindow, istClock } from "./morning-cycle.js";
 import {
   buildControlledRetestAddPlan,
   buildPositionPlan,
@@ -79,6 +80,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
     journal.signalState && typeof journal.signalState === "object" ? journal.signalState : {};
   const nextSignalState = { ...signalState };
   const events = [];
+  let existingAlertHistory = Array.isArray(journal.alertHistory) ? journal.alertHistory : [];
   const capitalTransactions = Array.isArray(journal.capitalTransactions)
     ? [...journal.capitalTransactions]
     : [];
@@ -109,6 +111,9 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
 
   migrateTradeMetadata(trades);
   repairRetroactiveEntryFills(trades, scan.scannedAt);
+  const lateApprovalCleanup = invalidateLateMorningApprovals(trades, existingAlertHistory);
+  existingAlertHistory = lateApprovalCleanup.alertHistory;
+  events.push(...lateApprovalCleanup.events);
   if (portfolioUpgrade) {
     for (const trade of trades.filter((item) => item.status === "PENDING_ENTRY")) {
       trade.status = "SKIPPED_ENTRY";
@@ -528,7 +533,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
   const publishedEvents = publishPortfolioActionEvents(events, trades, scan.scannedAt, {
     enabled: options.publishActionAlerts === true
   });
-  const alertHistory = updateAlertHistory(journal.alertHistory, publishedEvents, scan.scannedAt, {
+  const alertHistory = updateAlertHistory(existingAlertHistory, publishedEvents, scan.scannedAt, {
     totalFund: finalPortfolio.totalCapital || riskRules.totalCapital,
     trades
   });
@@ -1857,9 +1862,11 @@ export function approveMorningOrders({
     }
     if (trade.status === "PENDING_EXIT" && trade.exitOrderState !== "CONFIRMED_FOR_0917") {
       trade.exitOrderState = "APPROVED_FOR_0917";
+      trade.exitPortfolioApprovedAt = scan.scannedAt;
     }
     if (trade.status === "PENDING_PARTIAL_EXIT" && trade.partialExitOrderState !== "CONFIRMED_FOR_0917") {
       trade.partialExitOrderState = "APPROVED_FOR_0917";
+      trade.partialExitPortfolioApprovedAt = scan.scannedAt;
     }
   }
 
@@ -1983,6 +1990,118 @@ export function approveMorningOrders({
     sectorExposure[sector] = (Number(sectorExposure[sector]) || 0) + pending.plannedAllocation;
   }
   return candidates;
+}
+
+export function invalidateLateMorningApprovals(trades = [], alertHistory = []) {
+  const invalidated = [];
+  for (const trade of trades || []) {
+    clearOrphanApprovalState(trade);
+    invalidateLateApproval({
+      trade,
+      stateOwner: trade,
+      stateKey: "orderState",
+      approvalKey: "portfolioApprovedAt",
+      expectedStatus: "PENDING_ENTRY",
+      publicationPrefix: "ENTRY_SIGNAL_PENDING:",
+      invalidated
+    });
+    invalidateLateApproval({
+      trade,
+      stateOwner: trade,
+      stateKey: "exitOrderState",
+      approvalKey: "exitPortfolioApprovedAt",
+      expectedStatus: "PENDING_EXIT",
+      publicationPrefixes: ["EXIT_SIGNAL_PENDING:", "PORTFOLIO_EXIT_PENDING:", "ROTATION_EXIT_PENDING:"],
+      invalidated
+    });
+    invalidateLateApproval({
+      trade,
+      stateOwner: trade,
+      stateKey: "partialExitOrderState",
+      approvalKey: "partialExitPortfolioApprovedAt",
+      expectedStatus: "PENDING_PARTIAL_EXIT",
+      publicationPrefix: "PARTIAL_EXIT_PENDING:",
+      invalidated
+    });
+    if (trade.pendingAdd) {
+      invalidateLateApproval({
+        trade,
+        stateOwner: trade.pendingAdd,
+        stateKey: "orderState",
+        approvalKey: "portfolioApprovedAt",
+        expectedStatus: "OPEN",
+        publicationPrefixes: ["PYRAMID_ADD_PENDING:", "CONTROLLED_RETEST_ADD_PENDING:"],
+        invalidated
+      });
+    }
+  }
+  const invalidatedKeys = new Set(invalidated.map((item) => `${item.tradeId}:${item.approvedAt}`));
+  const filteredAlerts = (Array.isArray(alertHistory) ? alertHistory : []).filter((alert) =>
+    !invalidatedKeys.has(`${alert.tradeId}:${alert.occurredAt}`)
+  );
+  return {
+    alertHistory: filteredAlerts,
+    invalidated,
+    events: invalidated.map((item) => ({
+      type: "LATE_MORNING_APPROVAL_REVOKED",
+      trade: item.trade,
+      reason: item.reason
+    }))
+  };
+}
+
+function invalidateLateApproval({
+  trade,
+  stateOwner,
+  stateKey,
+  approvalKey,
+  expectedStatus,
+  publicationPrefix,
+  publicationPrefixes = publicationPrefix ? [publicationPrefix] : [],
+  invalidated
+}) {
+  if (trade.status !== expectedStatus) return;
+  const orderState = String(stateOwner?.[stateKey] || "");
+  if (!["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(orderState)) return;
+  const approvedAt = String(stateOwner?.[approvalKey] || "");
+  const unpublishedInternalApproval = orderState === "APPROVED_FOR_0917";
+  if (!unpublishedInternalApproval && (!approvedAt || isMorningApprovalWindow(approvedAt))) return;
+  const clock = istClock(approvedAt);
+  const reason = unpublishedInternalApproval
+    ? "Unpublished internal approval was revoked. Only an order confirmed to the user during a valid morning cycle may reserve capital or execute."
+    : `Late ${clock?.time || "out-of-window"} IST approval was revoked. The order must pass a fresh 08:30 cash, risk and signal recheck before it can alert or execute.`;
+  stateOwner[stateKey] = "WAITING_FOR_0830";
+  stateOwner[approvalKey] = null;
+  trade.executionError = reason;
+  if (stateOwner === trade) {
+    trade.capitalReservedAt = null;
+    trade.riskReservedAt = null;
+    if (expectedStatus === "PENDING_ENTRY") {
+      trade.entryReason = (trade.entryReason || []).filter((item) =>
+        !String(item).startsWith("08:30 portfolio approval:")
+      );
+    }
+  }
+  if (trade.actionAlertPublications && typeof trade.actionAlertPublications === "object") {
+    for (const [key, value] of Object.entries(trade.actionAlertPublications)) {
+      if (publicationPrefixes.some((prefix) => key.startsWith(prefix)) && String(value) === approvedAt) {
+        delete trade.actionAlertPublications[key];
+      }
+    }
+    if (!Object.keys(trade.actionAlertPublications).length) delete trade.actionAlertPublications;
+  }
+  invalidated.push({ trade, tradeId: trade.id, approvedAt, reason });
+}
+
+function clearOrphanApprovalState(trade) {
+  if (trade.status !== "PENDING_EXIT" && ["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.exitOrderState || ""))) {
+    trade.exitOrderState = null;
+    trade.exitPortfolioApprovedAt = null;
+  }
+  if (trade.status !== "PENDING_PARTIAL_EXIT" && ["APPROVED_FOR_0917", "CONFIRMED_FOR_0917"].includes(String(trade.partialExitOrderState || ""))) {
+    trade.partialExitOrderState = null;
+    trade.partialExitPortfolioApprovedAt = null;
+  }
 }
 
 function rejectMorningEntry(proposal, candidates, row, scan, settings, events, reason) {
@@ -2135,13 +2254,7 @@ function actionCanBePublished(event, occurredAt) {
         : type === "DIVIDEND_CREDIT" ? null
           : trade.exitExecutionAfterDate;
   if (!afterDate) return true;
-  return istDate(occurredAt) > String(afterDate).slice(0, 10);
-}
-
-function istDate(value) {
-  const time = Date.parse(String(value || ""));
-  if (!Number.isFinite(time)) return "";
-  return new Date(time + 330 * 60 * 1000).toISOString().slice(0, 10);
+  return canReachExecutionDate(occurredAt, afterDate);
 }
 
 function repairRetroactiveEntryFills(trades, repairedAt) {
@@ -2153,9 +2266,12 @@ function repairRetroactiveEntryFills(trades, repairedAt) {
       entryPrice: trade.entryPrice,
       quantity: trade.quantity,
       investedValue: trade.investedValue,
-      entrySignalScanAt: trade.entrySignalScanAt
+      entrySignalScanAt: trade.entrySignalScanAt,
+      portfolioApprovedAt: trade.portfolioApprovedAt,
+      capitalReservedAt: trade.capitalReservedAt
     };
     trade.status = "PENDING_ENTRY";
+    trade.orderState = "CONFIRMED_FOR_0917";
     trade.entryExecutionAfterDate = trade.entryDate;
     trade.plannedQuantity = Number(trade.quantity) || Number(trade.originalQuantity) || null;
     trade.plannedAllocation = Number(trade.investedValue) || Number(trade.originalInvestedValue) || null;
@@ -2183,7 +2299,12 @@ function repairRetroactiveEntryFills(trades, repairedAt) {
 
 function isRepairableRetroactiveEntry(trade) {
   if (!["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(String(trade?.status || ""))) return false;
-  if (!isRetroactiveExecution(trade.entrySignalScanAt, trade.entryDate, trade.entryTime)) return false;
+  const authorizationTimes = [
+    trade.portfolioApprovedAt,
+    trade.capitalReservedAt,
+    trade.entrySignalScanAt
+  ].filter(Boolean);
+  if (!authorizationTimes.some((time) => isRetroactiveExecution(time, trade.entryDate, trade.entryTime))) return false;
   if ((trade.partialExits || []).length || (trade.addOns || []).length) return false;
   return Math.abs(Number(trade.realizedPnlToDate) || 0) < 0.005;
 }

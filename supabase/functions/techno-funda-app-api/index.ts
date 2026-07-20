@@ -429,6 +429,15 @@ async function registerPushSubscription(context: any, body: any) {
     enabled: true,
     last_error: null
   };
+  if (context.deviceId) {
+    const { error: staleError } = await admin()
+      .from("app_push_subscriptions")
+      .delete()
+      .eq("user_id", context.user.id)
+      .eq("device_id", context.deviceId)
+      .neq("endpoint", subscription.endpoint);
+    if (staleError) throw staleError;
+  }
   const { data, error } = await admin()
     .from("app_push_subscriptions")
     .upsert(row, { onConflict: "endpoint" })
