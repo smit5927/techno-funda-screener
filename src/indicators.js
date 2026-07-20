@@ -140,16 +140,16 @@ export function simpleMovingAverage(candles, period) {
   return output;
 }
 
-export function exponentialMovingAverage(candles, period) {
+export function exponentialMovingAverage(candles, period, source = "close") {
   const output = Array(candles.length).fill(null);
   if (candles.length < period || period < 1) return output;
   let seed = 0;
-  for (let index = 0; index < period; index += 1) seed += candles[index].close;
+  for (let index = 0; index < period; index += 1) seed += Number(candles[index]?.[source]);
   let value = seed / period;
   output[period - 1] = value;
   const multiplier = 2 / (period + 1);
   for (let index = period; index < candles.length; index += 1) {
-    value = (candles[index].close - value) * multiplier + value;
+    value = (Number(candles[index]?.[source]) - value) * multiplier + value;
     output[index] = value;
   }
   return output;

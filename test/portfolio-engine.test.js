@@ -499,7 +499,7 @@ test("position sizing accepts an allocation at the ten thousand rupee floor", ()
   assert.equal(plan.eligible, true);
 });
 
-test("completed weekly close below EMA13 creates a momentum-break full exit", () => {
+test("completed weekly close below low-source EMA13 creates a momentum-break full exit", () => {
   const row = strongRow({
     weeklyAsOf: "2026-07-10",
     weeklyClose: 92,
@@ -508,7 +508,7 @@ test("completed weekly close below EMA13 creates a momentum-break full exit", ()
   });
   const decision = positionExitDecision(openTrade(), row, { trade: {} });
   assert.equal(decision.action, "FULL_EXIT");
-  assert.match(decision.reasons.join(" "), /completed weekly candle.*below EMA13/i);
+  assert.match(decision.reasons.join(" "), /completed weekly candle.*below low-source EMA13/i);
 });
 
 test("fundamental deterioration cannot repeat an already-booked technical partial exit", () => {

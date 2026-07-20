@@ -2581,8 +2581,8 @@ function tradeColumns() {
     { header: "Initial Stop", key: "Initial Stop", width: 14 },
     { header: "Trailing Stop", key: "Trailing Stop", width: 14 },
     { header: "Completed Weekly Close", key: "Completed Weekly Close", width: 24 },
-    { header: "Weekly EMA13", key: "Weekly EMA13", width: 16 },
-    { header: "Weekly EMA13 State", key: "Weekly EMA13 State", width: 24 },
+    { header: "Weekly EMA13 (Low Source)", key: "Weekly EMA13 (Low Source)", width: 26 },
+    { header: "Weekly Close vs EMA13 (Low)", key: "Weekly Close vs EMA13 (Low)", width: 30 },
     { header: "Initial Risk", key: "Initial Risk", width: 14 },
     { header: "Current R", key: "Current R", width: 12 },
     { header: "Add-On Count", key: "Add-On Count", width: 14 },
@@ -2709,8 +2709,8 @@ function tradeToRow(trade) {
     "Initial Stop": trade.initialStopPrice ?? "",
     "Trailing Stop": trade.trailingStopPrice ?? "",
     "Completed Weekly Close": currentSnapshot.weeklyClose ?? "",
-    "Weekly EMA13": currentSnapshot.weeklyEma13 ?? "",
-    "Weekly EMA13 State": currentSnapshot.weeklyPriceAboveEma13 === true
+    "Weekly EMA13 (Low Source)": currentSnapshot.weeklyEma13 ?? "",
+    "Weekly Close vs EMA13 (Low)": currentSnapshot.weeklyPriceAboveEma13 === true
       ? "Above"
       : currentSnapshot.weeklyPriceAboveEma13 === false
         ? "Below - exit"
@@ -2859,6 +2859,7 @@ function snapshot(row) {
     dailySupertrend: row.dailySupertrend,
     weeklyClose: row.weeklyClose,
     weeklyEma13: row.weeklyEma13,
+    weeklyEma13Source: row.weeklyEma13Source || "low",
     weeklyPriceAboveEma13: row.weeklyPriceAboveEma13,
     weeklyEma13Rising: row.weeklyEma13Rising,
     weeklyEma13Reclaim: row.weeklyEma13Reclaim,

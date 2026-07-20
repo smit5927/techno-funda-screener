@@ -128,7 +128,7 @@ client.auth.onAuthStateChange((_event, session) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => navigator.serviceWorker.register(
-    "service-worker.js?v=20260718-alert-toggle",
+    "service-worker.js?v=20260720-ema13-low",
     { updateViaCache: "none" }
   ).catch(() => {}));
 }
@@ -285,7 +285,7 @@ async function showApplication(profile) {
   });
   if (!appLoaded) {
     appLoaded = true;
-    await import("./app.js?v=20260718-alert-toggle");
+    await import("./app.js?v=20260720-ema13-low");
   }
 }
 

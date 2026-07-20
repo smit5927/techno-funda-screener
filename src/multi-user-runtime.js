@@ -144,7 +144,7 @@ function compactMobileRow(row = {}) {
     "symbol", "requestedYahooSymbol", "yahooSymbol", "exchangeFallback", "name", "industry", "searchAliases", "asOf", "weeklyAsOf", "status", "close",
     "dailySupertrend", "dailyPriceAboveSupertrend", "weeklyRsi", "weeklyRs",
     "dailyLongRs", "dailyShortRs", "dailyRsi", "fundamentalScore", "score",
-    "weeklyClose", "weeklyEma13", "weeklyPriceAboveEma13", "weeklyEma13Rising",
+    "weeklyClose", "weeklyEma13", "weeklyEma13Source", "weeklyPriceAboveEma13", "weeklyEma13Rising",
     "weeklyEma13Reclaim", "weeklyEma13BelowCloses", "setupGrade", "entryStyle",
     "aiReview", "aiScore"
   ]);
@@ -163,7 +163,7 @@ function compactMobileRow(row = {}) {
       "retracementVolumePatternOk", "retracementPullbackVolumeRatio",
       "retracementReclaimCandleOk", "retracementCloseLocationPct",
       "riskToSupertrendPct", "atrPct", "averageTurnover", "previousLow",
-      "weeklyClose", "weeklyEma13", "weeklyEma13Previous",
+      "weeklyClose", "weeklyEma13", "weeklyEma13Source", "weeklyEma13Previous",
       "weeklyEma13DistancePct", "weeklyEma13BelowCloses", "weeklyEma13Period"
     ])
   };

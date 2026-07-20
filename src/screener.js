@@ -200,6 +200,7 @@ export function reconcileResultFreshness(currentRows = [], previousRows = []) {
           weeklyAsOf: current.weeklyAsOf || previous.weeklyAsOf,
           weeklyClose: current.weeklyClose,
           weeklyEma13: current.weeklyEma13,
+          weeklyEma13Source: current.weeklyEma13Source || "low",
           weeklyPriceAboveEma13: current.weeklyPriceAboveEma13,
           weeklyEma13Rising: current.weeklyEma13Rising,
           weeklyEma13Reclaim: current.weeklyEma13Reclaim,
@@ -257,6 +258,7 @@ function mergeWeeklyEmaSetup(previousSetup = {}, currentSetup = {}) {
       ...(previousSetup?.values || {}),
       weeklyClose: currentValues.weeklyClose,
       weeklyEma13: currentValues.weeklyEma13,
+      weeklyEma13Source: currentValues.weeklyEma13Source || "low",
       weeklyEma13Previous: currentValues.weeklyEma13Previous,
       weeklyEma13DistancePct: currentValues.weeklyEma13DistancePct,
       weeklyEma13BelowCloses: currentValues.weeklyEma13BelowCloses,
@@ -571,7 +573,8 @@ async function scanSymbol(
   );
   const weeklyEmaContext = buildWeeklyEmaContext(
     weeklyCandles,
-    rules.exit?.weeklyEmaPeriod || rules.setupStrength?.weeklyEmaPeriod || 13
+    rules.exit?.weeklyEmaPeriod || rules.setupStrength?.weeklyEmaPeriod || 13,
+    rules.exit?.weeklyEmaSource || rules.setupStrength?.weeklyEmaSource || "low"
   );
 
   const latestDailyIndex = dailyCandles.length - 1;
@@ -715,6 +718,7 @@ async function scanSymbol(
     dailySupertrend,
     weeklyClose: weeklyEmaContext.close,
     weeklyEma13: weeklyEmaContext.ema,
+    weeklyEma13Source: weeklyEmaContext.source,
     weeklyPriceAboveEma13: weeklyEmaContext.above,
     weeklyEma13Rising: weeklyEmaContext.rising,
     weeklyEma13Reclaim: weeklyEmaContext.reclaim,
@@ -746,15 +750,17 @@ async function scanSymbol(
   };
 }
 
-export function buildWeeklyEmaContext(weeklyCandles = [], period = 13) {
+export function buildWeeklyEmaContext(weeklyCandles = [], period = 13, source = "low") {
   const normalizedPeriod = Math.max(2, Math.floor(Number(period) || 13));
-  const series = exponentialMovingAverage(weeklyCandles, normalizedPeriod);
+  const normalizedSource = String(source || "low").trim().toLowerCase();
+  if (normalizedSource !== "low") throw new Error("Weekly EMA13 source must be low");
+  const series = exponentialMovingAverage(weeklyCandles, normalizedPeriod, normalizedSource);
   const latestIndex = weeklyCandles.length - 1;
   const previousIndex = latestIndex - 1;
   const close = Number(weeklyCandles[latestIndex]?.close);
-  const ema = Number(series[latestIndex]);
+  const ema = Number.isFinite(series[latestIndex]) ? Number(series[latestIndex]) : Number.NaN;
   const previousClose = Number(weeklyCandles[previousIndex]?.close);
-  const previousEma = Number(series[previousIndex]);
+  const previousEma = Number.isFinite(series[previousIndex]) ? Number(series[previousIndex]) : Number.NaN;
   const available = Number.isFinite(close) && Number.isFinite(ema);
   const previousAvailable = Number.isFinite(previousClose) && Number.isFinite(previousEma);
   let consecutiveBelow = 0;
@@ -768,6 +774,7 @@ export function buildWeeklyEmaContext(weeklyCandles = [], period = 13) {
 
   return {
     period: normalizedPeriod,
+    source: normalizedSource,
     asOf: weeklyCandles[latestIndex]?.date || null,
     close: available ? close : null,
     ema: available ? ema : null,
@@ -959,6 +966,7 @@ function buildSetupStrength({
       riskToPreviousLowPct,
       weeklyClose: weeklyEmaContext?.close ?? null,
       weeklyEma13: weeklyEmaContext?.ema ?? null,
+      weeklyEma13Source: weeklyEmaContext?.source || "low",
       weeklyEma13Previous: weeklyEmaContext?.previousEma ?? null,
       weeklyEma13DistancePct: weeklyEmaContext?.distancePct ?? null,
       weeklyEma13BelowCloses: weeklyEmaContext?.consecutiveBelow ?? 0,
@@ -1274,10 +1282,10 @@ function buildEntryStyle(setupStrength) {
   const values = setupStrength?.values || {};
   const breakout = checks.yearHighBreakout || checks.recentHighBreakout || checks.baseBreakout;
   if (checks.weeklyEma13Reclaim && breakout) {
-    return { type: "BREAKOUT_RECLAIM_BUY", label: "Breakout after weekly EMA13 reclaim" };
+    return { type: "BREAKOUT_RECLAIM_BUY", label: "Breakout after weekly EMA13 (Low) reclaim" };
   }
   if (checks.weeklyEma13Reclaim) {
-    return { type: "WEEKLY_TREND_RECLAIM", label: "Weekly EMA13 reclaim buy" };
+    return { type: "WEEKLY_TREND_RECLAIM", label: "Weekly EMA13 (Low) reclaim buy" };
   }
   if (checks.retracementBuyZone) {
     return {
@@ -1424,7 +1432,7 @@ function buildConceptCoverage(row) {
     Number.isFinite(row.dailySupertrend)
   );
   addConcept(
-    "Weekly EMA13 trend health/reclaim",
+    "Weekly EMA13 (Low source) trend health/reclaim",
     checks.weeklyCloseAboveEma13 || checks.weeklyEma13Reclaim,
     Number.isFinite(values.weeklyClose) && Number.isFinite(values.weeklyEma13)
   );
@@ -1611,7 +1619,7 @@ function buildExitReasons(checks, values) {
   if (checks.weeklyRs) reasons.push(`Weekly RS ${fmtRs(values.weeklyRs)} is below 0 on closed weekly candle.`);
   if (checks.weeklyEma13) {
     reasons.push(
-      `Completed weekly candle ${values.weeklyAsOf || ""} closed ${fmt(values.weeklyClose)} below EMA13 ${fmt(values.weeklyEma13)}; weekly momentum structure is broken.`
+      `Completed weekly candle ${values.weeklyAsOf || ""} closed ${fmt(values.weeklyClose)} below low-source EMA13 ${fmt(values.weeklyEma13)}; weekly momentum structure is broken.`
     );
   }
   if (reasons.length === 0) reasons.push("No exit condition is triggered.");
@@ -1681,15 +1689,15 @@ function buildSetupStrengthReasons(setupStrength) {
   }
   if (checks.weeklyCloseAboveEma13) {
     reasons.push(
-      `Weekly trend health: completed weekly close ${fmt(values.weeklyClose)} is above weekly EMA13 ${fmt(values.weeklyEma13)}${checks.weeklyEma13Rising ? " and the EMA is rising" : ""}.`
+      `Weekly trend health: completed weekly close ${fmt(values.weeklyClose)} is above weekly EMA13 (Low source) ${fmt(values.weeklyEma13)}${checks.weeklyEma13Rising ? " and the EMA is rising" : ""}.`
     );
   } else if (Number.isFinite(values.weeklyClose) && Number.isFinite(values.weeklyEma13)) {
     reasons.push(
-      `Weekly momentum break: completed weekly close ${fmt(values.weeklyClose)} is below weekly EMA13 ${fmt(values.weeklyEma13)}; intraweek dips are ignored, but this completed-week close is an exit condition.`
+      `Weekly momentum break: completed weekly close ${fmt(values.weeklyClose)} is below weekly EMA13 (Low source) ${fmt(values.weeklyEma13)}; intraweek dips are ignored, but this completed-week close is an exit condition.`
     );
   }
   if (checks.weeklyEma13Reclaim) {
-    reasons.push("Weekly EMA13 reclaim: the completed week closed back above the trend average after the prior week was below it.");
+    reasons.push("Weekly EMA13 (Low source) reclaim: the completed week closed back above the low-source trend average after the prior week was below it.");
   }
   if (checks.closeAboveSmaFast && checks.closeAboveSmaSlow && checks.smaFastAboveSlow) {
     reasons.push(
@@ -1738,7 +1746,7 @@ function buildWeaknessReasons({
   }
   if (weeklyEmaContext?.above === false) {
     reasons.push(
-      `Weekly trend warning: completed weekly close ${fmt(weeklyEmaContext.close)} is below EMA13 ${fmt(weeklyEmaContext.ema)} for ${weeklyEmaContext.consecutiveBelow || 1} week(s).`
+      `Weekly trend warning: completed weekly close ${fmt(weeklyEmaContext.close)} is below low-source EMA13 ${fmt(weeklyEmaContext.ema)} for ${weeklyEmaContext.consecutiveBelow || 1} week(s).`
     );
   }
   const previousLow = setupStrength?.values?.previousLow;

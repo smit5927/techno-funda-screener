@@ -43,11 +43,13 @@
   "exit": {
     "weeklyRsBelow": 0,
     "weeklyEmaPeriod": 13,
-    "logic": "weekly_rs_below_zero_or_completed_weekly_close_below_ema13"
+    "weeklyEmaSource": "low",
+    "logic": "weekly_rs_below_zero_or_completed_weekly_close_below_low_source_ema13"
   },
   "setupStrength": {
     "compulsory": false,
     "weeklyEmaPeriod": 13,
+    "weeklyEmaSource": "low",
     "dailyRecentHighPeriod": 55,
     "baseBreakoutPeriod": 20,
     "dailyYearHighPeriod": 252,

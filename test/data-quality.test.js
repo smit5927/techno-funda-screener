@@ -111,15 +111,16 @@ test("an older provider row still enriches the preserved close with completed we
     dailyShortRs: 0.02,
     weeklyClose: 4100,
     weeklyEma13: 4200,
+    weeklyEma13Source: "low",
     weeklyPriceAboveEma13: false,
     weeklyEma13Rising: true,
     weeklyEma13Reclaim: false,
     weeklyEma13BelowCloses: 1,
     exitChecks: { weeklyRs: false, weeklyEma13: true },
-    signalReason: ["Completed weekly candle closed below EMA13; weekly momentum structure is broken."],
+    signalReason: ["Completed weekly candle closed below low-source EMA13; weekly momentum structure is broken."],
     setupStrength: {
       checks: { weeklyCloseAboveEma13: false, weeklyEma13Rising: true, weeklyEma13Reclaim: false },
-      values: { weeklyClose: 4100, weeklyEma13: 4200, weeklyEma13Period: 13 }
+      values: { weeklyClose: 4100, weeklyEma13: 4200, weeklyEma13Source: "low", weeklyEma13Period: 13 }
     },
     listId: "custom",
     listLabel: "My List"
@@ -129,8 +130,10 @@ test("an older provider row still enriches the preserved close with completed we
   assert.equal(row.asOf, "2026-07-15");
   assert.equal(row.dailyShortRs, -0.01);
   assert.equal(row.weeklyEma13, 4200);
+  assert.equal(row.weeklyEma13Source, "low");
   assert.equal(row.setupStrength.values.previousLow, 4300);
   assert.equal(row.setupStrength.values.weeklyEma13, 4200);
+  assert.equal(row.setupStrength.values.weeklyEma13Source, "low");
   assert.equal(row.status, "EXIT");
   assert.match(row.signalReason.join(" "), /weekly.*EMA13/i);
 });

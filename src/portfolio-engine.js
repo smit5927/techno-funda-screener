@@ -413,7 +413,7 @@ export function candidateEntryDecision(candidate = {}, row = {}, config = {}, op
   }
   if (row.weeklyPriceAboveEma13 === false) {
     warnings.push(
-      `Completed weekly close ${round(row.weeklyClose)} is below EMA13 ${round(row.weeklyEma13)}; fresh entry requires extra caution until a weekly reclaim.`
+      `Completed weekly close ${round(row.weeklyClose)} is below low-source EMA13 ${round(row.weeklyEma13)}; fresh entry requires extra caution until a weekly reclaim.`
     );
   }
   if (
@@ -436,7 +436,7 @@ export function candidateEntryDecision(candidate = {}, row = {}, config = {}, op
       if (disposition === "ACTIONABLE") disposition = "WAITING_CONFIRMATION";
     }
     if (row.weeklyPriceAboveEma13 === false) {
-      reasons.push("Optional rotation is blocked because the completed weekly candle is below EMA13.");
+      reasons.push("Optional rotation is blocked because the completed weekly candle is below low-source EMA13.");
       if (disposition === "ACTIONABLE") disposition = "WAITING_CONFIRMATION";
     }
   }
@@ -583,7 +583,7 @@ export function controlledRetestAddDecision(trade, row, portfolio = {}, config =
     reasons.push("Daily close must remain above Supertrend.");
   }
   if (!(Number(row?.weeklyClose) > Number(row?.weeklyEma13))) {
-    reasons.push("Completed weekly close must remain above weekly EMA13.");
+    reasons.push("Completed weekly close must remain above weekly EMA13 (Low source).");
   }
   if (!(close < initialEntry)) reasons.push("Retest price is not below the initial fill, so no averaging benefit exists.");
   if (!Number.isFinite(drawdownR) || drawdownR < rules.controlledRetestMinDrawdownR) {
@@ -920,7 +920,7 @@ export function positionExitDecision(trade, row, config = {}) {
     Number.isFinite(Number(row.weeklyEma13))
   ) {
     fullReasons.push(
-      `Completed weekly candle ${row.weeklyAsOf || ""} closed ${round(row.weeklyClose)} below EMA13 ${round(row.weeklyEma13)}; weekly momentum structure is broken.`
+      `Completed weekly candle ${row.weeklyAsOf || ""} closed ${round(row.weeklyClose)} below low-source EMA13 ${round(row.weeklyEma13)}; weekly momentum structure is broken.`
     );
   }
   const dailyLongRs = Number(row.dailyLongRs);
@@ -1095,7 +1095,7 @@ export function positionWeakness(row = {}) {
     primaryReasons.push("close below 50-DMA");
   }
   if (row.weeklyPriceAboveEma13 === false && Number.isFinite(Number(row.weeklyEma13))) {
-    primaryReasons.push("completed weekly close below EMA13");
+    primaryReasons.push("completed weekly close below low-source EMA13");
   }
   const contextReasons = [];
   if (checks.marketRegimeStrong === false) contextReasons.push("broad-market regime not strong");

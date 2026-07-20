@@ -224,7 +224,7 @@ test("a 09:17 market order uses the first actual traded candle in the controlled
   assert.equal(fill.open, 102);
 });
 
-test("weekly EMA13 uses completed weekly closes and identifies a reclaim", () => {
+test("weekly EMA13 uses completed weekly lows and identifies a close reclaim", () => {
   const stable = Array.from({ length: 13 }, (_, index) => {
     const date = new Date("2026-01-05T00:00:00Z");
     date.setUTCDate(date.getUTCDate() + index * 7);
@@ -234,6 +234,8 @@ test("weekly EMA13 uses completed weekly closes and identifies a reclaim", () =>
     ...stable,
     candle("2026-04-06", 100, 101, 89, 90, 10)
   ]);
+  assert.equal(broken.source, "low");
+  assert.ok(Math.abs(broken.ema - 97.57142857142857) < 1e-10);
   assert.equal(broken.above, false);
   assert.equal(broken.consecutiveBelow, 1);
   assert.equal(broken.reclaim, false);
@@ -246,6 +248,34 @@ test("weekly EMA13 uses completed weekly closes and identifies a reclaim", () =>
   assert.equal(reclaimed.above, true);
   assert.equal(reclaimed.reclaim, true);
   assert.equal(reclaimed.consecutiveBelow, 0);
+});
+
+test("weekly EMA13 decision differs from a close-source EMA and follows Low input", () => {
+  const stable = Array.from({ length: 13 }, (_, index) => {
+    const date = new Date("2026-01-05T00:00:00Z");
+    date.setUTCDate(date.getUTCDate() + index * 7);
+    return candle(date.toISOString().slice(0, 10), 95, 101, 90, 100, 10);
+  });
+  const context = buildWeeklyEmaContext([
+    ...stable,
+    candle("2026-04-06", 90, 92, 80, 91, 10)
+  ]);
+
+  assert.equal(context.source, "low");
+  assert.ok(Math.abs(context.ema - 88.57142857142857) < 1e-10);
+  assert.equal(context.close, 91);
+  assert.equal(context.above, true);
+});
+
+test("weekly low-source EMA13 remains unavailable until 13 completed weeks exist", () => {
+  const context = buildWeeklyEmaContext([
+    candle("2026-01-05", 95, 101, 90, 100, 10),
+    candle("2026-01-12", 96, 102, 91, 101, 10)
+  ]);
+
+  assert.equal(context.source, "low");
+  assert.equal(context.ema, null);
+  assert.equal(context.above, null);
 });
 
 test("a missing execution window cannot be replaced with a later session's fictional fill", () => {
