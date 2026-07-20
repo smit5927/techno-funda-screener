@@ -1,6 +1,87 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { cancelInvalidPendingModelExit } from "../src/trade-journal.js";
+import {
+  applyLegacyStructuralStopUpgrade,
+  cancelInvalidPendingModelExit
+} from "../src/trade-journal.js";
+
+test("healthy MAYURUNIQ-like legacy holding migrates off the old daily stop before exit", () => {
+  const trade = {
+    id: "MAYURUNIQ-test",
+    symbol: "MAYURUNIQ",
+    status: "PENDING_EXIT",
+    exitType: "MODEL_EXIT",
+    exitSignalDate: "2026-07-20",
+    exitReason: ["Daily close 794.55 breached original structural stop 805.6."],
+    entryDate: "2026-07-14",
+    entryPrice: 853,
+    initialEntryPrice: 853,
+    quantity: 68,
+    originalQuantity: 68,
+    initialStopPrice: 805.6,
+    trailingStopPrice: 805.6,
+    managementCloseDates: ["2026-07-14", "2026-07-15", "2026-07-16", "2026-07-17", "2026-07-20"],
+    partialExitTags: []
+  };
+  const row = {
+    asOf: "2026-07-20",
+    close: 794.55,
+    weeklyClose: 785.25,
+    weeklyEma13: 702.02,
+    weeklyEma13Source: "low",
+    weeklyAtr: 34,
+    weeklyPriceAboveEma13: true,
+    weeklyRs: 0.48,
+    dailyLongRs: 0.47,
+    dailyShortRs: 0.04,
+    dailyRsi: 61,
+    dailySupertrend: 780.78,
+    setupStrength: { checks: {}, values: {} }
+  };
+
+  const migration = applyLegacyStructuralStopUpgrade(
+    trade,
+    row,
+    { trade: { totalCapital: 1_000_000, riskPerTradePct: 1 } },
+    "2026-07-20T16:30:00.000Z"
+  );
+
+  assert.equal(migration.upgraded, true);
+  assert.equal(trade.initialStopMigration.previousStopPrice, 805.6);
+  assert.equal(trade.initialStopSource, "WEEKLY_EMA13_LOW");
+  assert.ok(trade.initialStopPrice < row.close);
+  assert.ok(migration.currentStopRisk <= migration.maximumStopRisk);
+  assert.equal(cancelInvalidPendingModelExit(trade, row, { trade: {} }).cancelled, true);
+  assert.equal(trade.status, "OPEN");
+});
+
+test("published 09:17 exit is not silently changed by a stop-policy migration", () => {
+  const trade = {
+    status: "PENDING_EXIT",
+    exitOrderState: "CONFIRMED_FOR_0917",
+    entryPrice: 100,
+    quantity: 100,
+    initialStopPrice: 95,
+    trailingStopPrice: 95
+  };
+  const row = {
+    close: 94,
+    weeklyClose: 94,
+    weeklyEma13: 85,
+    weeklyEma13Source: "low",
+    weeklyAtr: 4,
+    weeklyPriceAboveEma13: true,
+    weeklyRs: 0.2,
+    dailyLongRs: 0.1,
+    dailySupertrend: 90,
+    setupStrength: { values: {} }
+  };
+
+  const migration = applyLegacyStructuralStopUpgrade(trade, row, { trade: {} });
+
+  assert.equal(migration.upgraded, false);
+  assert.equal(trade.initialStopPrice, 95);
+});
 
 test("a legacy marginal RS55 pending exit is cancelled before 09:17 execution", () => {
   const trade = {

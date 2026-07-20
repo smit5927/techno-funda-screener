@@ -1,6 +1,7 @@
 import { portfolioChargeSummary } from "./charges.js";
 
 const ACTIVE_STATUSES = new Set(["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"]);
+export const STRUCTURAL_STOP_POLICY_VERSION = "WEEKLY_EMA13_LOW_V1";
 
 export function isFilledHolding(trade = {}) {
   return ACTIVE_STATUSES.has(String(trade.status || ""));
@@ -156,6 +157,62 @@ export function candidateRank(row = {}) {
 export function structuralStop(row = {}, price, config = {}) {
   const rules = portfolioConfig(config);
   return structuralStopDetails(row, price, rules).stopPrice;
+}
+
+export function legacyStructuralStopUpgradePlan(trade = {}, row = {}, config = {}) {
+  const rules = portfolioConfig(config);
+  const currentSource = String(trade.initialStopSource || "").trim().toUpperCase();
+  if (
+    currentSource === "WEEKLY_EMA13_LOW" ||
+    trade.initialStopPolicyVersion === STRUCTURAL_STOP_POLICY_VERSION
+  ) {
+    return { eligible: false, reason: "Position already uses the Weekly EMA13-Low stop policy." };
+  }
+  if (trade.exitOrderState === "CONFIRMED_FOR_0917") {
+    return { eligible: false, reason: "A published 09:17 exit cannot be silently changed." };
+  }
+
+  const close = Number(row.close);
+  const quantity = Number(trade.quantity) || 0;
+  const details = structuralStopDetails(row, close, rules);
+  const weeklyStructureHealthy =
+    row.weeklyPriceAboveEma13 !== false &&
+    Number(row.weeklyClose) >= Number(row.weeklyEma13);
+  const leadershipHealthy = Number(row.weeklyRs) > 0 && Number(row.dailyLongRs) > 0;
+  const dailySupertrend = Number(row.dailySupertrend);
+  const priceStructureHealthy =
+    Number.isFinite(dailySupertrend) &&
+    dailySupertrend > 0 &&
+    close > dailySupertrend;
+  const currentStopRisk = Number.isFinite(details.stopPrice)
+    ? Math.max(0, close - details.stopPrice) * quantity
+    : Number.POSITIVE_INFINITY;
+  const maximumStopRisk = rules.totalCapital * rules.riskPerTradePct / 100;
+  const riskWithinLimit = currentStopRisk <= maximumStopRisk;
+  const eligible =
+    Number.isFinite(close) &&
+    close > 0 &&
+    quantity > 0 &&
+    details.weeklyAnchorReady &&
+    close > details.stopPrice &&
+    weeklyStructureHealthy &&
+    leadershipHealthy &&
+    priceStructureHealthy &&
+    riskWithinLimit;
+
+  return {
+    eligible,
+    stopPrice: details.stopPrice,
+    stopSource: details.stopSource,
+    stopBuffer: details.stopBuffer,
+    stopDistancePct: details.stopDistancePct,
+    currentStopRisk: round(currentStopRisk),
+    maximumStopRisk: round(maximumStopRisk),
+    policyVersion: STRUCTURAL_STOP_POLICY_VERSION,
+    reason: eligible
+      ? `Legacy daily stop can migrate to Weekly EMA13-Low because completed-week structure, Weekly RS21, Daily RS55 and Supertrend remain healthy; current stop risk Rs ${round(currentStopRisk)} stays within the Rs ${round(maximumStopRisk)} stock-risk cap.`
+      : "Legacy stop remains unchanged because the Weekly EMA13-Low structure, leadership, Supertrend or current-risk gate is not fully valid."
+  };
 }
 
 function structuralStopDetails(row = {}, price, config = {}) {

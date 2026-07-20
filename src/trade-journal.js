@@ -21,6 +21,8 @@ import {
   isFilledHolding,
   isConfirmedPendingAdd,
   isConfirmedPendingEntry,
+  legacyStructuralStopUpgradePlan,
+  STRUCTURAL_STOP_POLICY_VERSION,
   positionExitDecision,
   positionWeakness,
   postEntryPyramidState,
@@ -140,6 +142,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
       scan.marketContext?.asOf
     );
     if (row && ["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"].includes(trade.status)) {
+      applyLegacyStructuralStopUpgrade(trade, row, config, scan.scannedAt);
       trade.currentSnapshot = snapshot(row);
       markToMarket(trade, row, config);
       trade.currentRank = candidateRank(row);
@@ -776,6 +779,9 @@ function createPendingEntry(
     initialStopPrice: plan.stopPrice,
     trailingStopPrice: plan.stopPrice,
     initialStopSource: plan.stopSource,
+    initialStopPolicyVersion: plan.stopSource === "WEEKLY_EMA13_LOW"
+      ? STRUCTURAL_STOP_POLICY_VERSION
+      : null,
     initialStopBuffer: plan.stopBuffer,
     initialStopDistancePct: plan.stopDistancePct,
     riskPerShare: plan.riskPerShare,
@@ -840,6 +846,42 @@ function prepareFullExit(trade, row, scan, reasons, exitType = "MODEL_EXIT", con
   ];
   trade.exitSnapshot = snapshot(row);
   markToMarket(trade, row, config);
+}
+
+export function applyLegacyStructuralStopUpgrade(trade, row, config = appConfig, upgradedAt = null) {
+  const plan = legacyStructuralStopUpgradePlan(trade, row, config);
+  if (!plan.eligible) return { upgraded: false, ...plan };
+
+  const previousInitialStop = Number(trade.initialStopPrice);
+  const previousTrailingStop = Number(trade.trailingStopPrice);
+  const trailingWasNotRaised =
+    !Number.isFinite(previousTrailingStop) ||
+    !Number.isFinite(previousInitialStop) ||
+    previousTrailingStop <= previousInitialStop;
+  trade.initialStopMigration = {
+    upgradedAt: upgradedAt || new Date().toISOString(),
+    previousStopPrice: Number.isFinite(previousInitialStop) ? previousInitialStop : null,
+    previousStopSource: trade.initialStopSource || "LEGACY_DAILY_STRUCTURE",
+    stopPrice: plan.stopPrice,
+    stopSource: plan.stopSource,
+    currentStopRisk: plan.currentStopRisk,
+    maximumStopRisk: plan.maximumStopRisk,
+    reason: plan.reason
+  };
+  trade.initialStopPrice = plan.stopPrice;
+  trade.trailingStopPrice = trailingWasNotRaised
+    ? plan.stopPrice
+    : Math.max(plan.stopPrice, previousTrailingStop);
+  trade.initialStopSource = plan.stopSource;
+  trade.initialStopPolicyVersion = plan.policyVersion;
+  trade.initialStopBuffer = plan.stopBuffer;
+  trade.initialStopDistancePct = plan.stopDistancePct;
+  const entryPrice = Number(trade.initialEntryPrice || trade.entryPrice);
+  const originalQuantity = Number(trade.originalQuantity || trade.quantity) || 0;
+  trade.riskPerShare = round(Math.max(0, entryPrice - plan.stopPrice));
+  trade.initialRiskAmount = round(trade.riskPerShare * originalQuantity);
+  trade.riskActionNote = plan.reason;
+  return { upgraded: true, ...plan };
 }
 
 function preparePartialExit(trade, row, scan, decision, config) {
@@ -2945,6 +2987,8 @@ function tradeColumns() {
     { header: "Initial Stop Source", key: "Initial Stop Source", width: 24 },
     { header: "Initial Stop Buffer", key: "Initial Stop Buffer", width: 20 },
     { header: "Initial Stop Distance %", key: "Initial Stop Distance %", width: 24 },
+    { header: "Previous Stop (Policy Migration)", key: "Previous Stop (Policy Migration)", width: 30 },
+    { header: "Stop Policy Migration Reason", key: "Stop Policy Migration Reason", width: 60 },
     { header: "Trailing Stop", key: "Trailing Stop", width: 14 },
     { header: "Completed Weekly Close", key: "Completed Weekly Close", width: 24 },
     { header: "Weekly EMA13 (Low Source)", key: "Weekly EMA13 (Low Source)", width: 26 },
@@ -3077,6 +3121,8 @@ function tradeToRow(trade) {
     "Initial Stop Source": trade.initialStopSource || "Legacy structural stop",
     "Initial Stop Buffer": trade.initialStopBuffer ?? "",
     "Initial Stop Distance %": trade.initialStopDistancePct ?? "",
+    "Previous Stop (Policy Migration)": trade.initialStopMigration?.previousStopPrice ?? "",
+    "Stop Policy Migration Reason": trade.initialStopMigration?.reason || "",
     "Trailing Stop": trade.trailingStopPrice ?? "",
     "Completed Weekly Close": currentSnapshot.weeklyClose ?? "",
     "Weekly EMA13 (Low Source)": currentSnapshot.weeklyEma13 ?? "",
