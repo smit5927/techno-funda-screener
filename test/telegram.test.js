@@ -113,16 +113,23 @@ test("Telegram ignores non-actionable fills while retaining the website actionab
   assert.match(result.reason, /no new actionable portfolio alerts/i);
 });
 
-test("workflow authorizes Telegram for 08:30 and deduplicated morning recovery scans only", () => {
-  const workflow = fs.readFileSync(path.join(rootDir, ".github", "workflows", "daily-screener.yml"), "utf8");
+test("time-critical approval and execution use isolated lightweight workflows", () => {
+  const fullScanWorkflow = fs.readFileSync(path.join(rootDir, ".github", "workflows", "daily-screener.yml"), "utf8");
+  const approvalWorkflow = fs.readFileSync(path.join(rootDir, ".github", "workflows", "morning-approval.yml"), "utf8");
+  const executionWorkflow = fs.readFileSync(path.join(rootDir, ".github", "workflows", "execution-pass.yml"), "utf8");
   const executionRunner = fs.readFileSync(path.join(rootDir, "src", "run-execution-pass.js"), "utf8");
   const cloudRunner = fs.readFileSync(path.join(rootDir, "src", "run-cloud-scan.js"), "utf8");
   const approvalRunner = fs.readFileSync(path.join(rootDir, "src", "run-morning-approval.js"), "utf8");
-  assert.match(workflow, /MORNING_APPROVAL:.*event_name == 'schedule'.*event\.schedule == '0,5,15,30,40 3 \* \* 1-5'/);
-  assert.match(workflow, /cron: "55 2 \* \* 1-5"/);
-  assert.match(workflow, /cron: "0,5,15,30,40 3 \* \* 1-5"/);
-  assert.match(workflow, /inputs\.publish_morning_alerts == true/);
-  assert.match(workflow, /run: npm run approve:cloud/);
+  assert.doesNotMatch(fullScanWorkflow, /run: npm run (approve|execute):cloud/);
+  assert.match(fullScanWorkflow, /group: techno-funda-full-scan/);
+  assert.match(approvalWorkflow, /cron: "50 2 \* \* 1-5"/);
+  assert.match(approvalWorkflow, /wait-until-ist\.js 08:30/);
+  assert.match(approvalWorkflow, /run: npm run approve:cloud/);
+  assert.doesNotMatch(approvalWorkflow, /npm test|build:static|deploy-pages|git push/);
+  assert.match(executionWorkflow, /cron: "40 3 \* \* 1-5"/);
+  assert.match(executionWorkflow, /wait-until-ist\.js 09:18/);
+  assert.match(executionWorkflow, /run: npm run execute:cloud/);
+  assert.doesNotMatch(executionWorkflow, /npm test|build:static|deploy-pages|git push/);
   assert.match(approvalRunner, /approvalOnly: true/);
   assert.match(approvalRunner, /publishActionAlerts: true/);
   assert.match(approvalRunner, /sendTelegram: true/);
