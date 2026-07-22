@@ -2,12 +2,6 @@ name: Daily Techno Funda PMS
 
 on:
   workflow_dispatch:
-    inputs:
-      publish_morning_alerts:
-        description: "Emergency morning recovery: approve funded orders and publish alerts"
-        required: false
-        default: false
-        type: boolean
   push:
     branches:
       - main
@@ -22,15 +16,6 @@ on:
     # Full close-basis scans are prepared outside the time-critical order window.
     - cron: "30 13 * * 1-5" # 19:00 IST after market close
     - cron: "0 1 * * 1-5" # 06:30 IST pre-market recovery
-    # Fast, idempotent approvals reuse the latest cloud scan and publish only funded actions.
-    - cron: "55 2 * * 1-5" # 08:25 IST warm-up
-    - cron: "0,5,15,30,40 3 * * 1-5" # 08:30, 08:35, 08:45, 09:00, 09:10 IST
-    # Staggered lightweight retries tolerate delays in GitHub's free scheduled runners.
-    - cron: "51 3 * * 1-5" # 09:21 IST
-    - cron: "59 3 * * 1-5" # 09:29 IST
-    - cron: "11 4 * * 1-5" # 09:41 IST
-    - cron: "25 4 * * 1-5" # 09:55 IST
-    - cron: "40 4 * * 1-5" # 10:10 IST
 
 permissions:
   contents: write
@@ -39,7 +24,7 @@ permissions:
   models: read
 
 concurrency:
-  group: techno-funda-screener
+  group: techno-funda-full-scan
   cancel-in-progress: false
 
 jobs:
@@ -48,9 +33,6 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    env:
-      MORNING_APPROVAL: ${{ (github.event_name == 'schedule' && (github.event.schedule == '55 2 * * 1-5' || github.event.schedule == '0,5,15,30,40 3 * * 1-5')) || (github.event_name == 'workflow_dispatch' && inputs.publish_morning_alerts == true) }}
-      EXECUTION_ONLY: ${{ github.event_name == 'schedule' && (github.event.schedule == '51 3 * * 1-5' || github.event.schedule == '59 3 * * 1-5' || github.event.schedule == '11 4 * * 1-5' || github.event.schedule == '25 4 * * 1-5' || github.event.schedule == '40 4 * * 1-5') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -68,17 +50,14 @@ jobs:
         run: npm test
 
       - name: Refresh Nifty 500 universe
-        if: env.EXECUTION_ONLY != 'true' && env.MORNING_APPROVAL != 'true'
         run: npm run update:universe
         continue-on-error: true
 
       - name: Refresh all Indian equity universe and new listings
-        if: env.EXECUTION_ONLY != 'true' && env.MORNING_APPROVAL != 'true'
         run: npm run update:all-market
         continue-on-error: true
 
       - name: Run completed-close cloud screener
-        if: env.EXECUTION_ONLY != 'true' && env.MORNING_APPROVAL != 'true'
         run: npm run scan:cloud
         env:
           DATA_DIR: data
@@ -115,42 +94,6 @@ jobs:
           TECHNO_FUNDA_APP_INTERNAL_KEY: ${{ secrets.TECHNO_FUNDA_APP_INTERNAL_KEY }}
           AI_REVIEW_ENABLED: "true"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Approve funded 09:17 orders and publish 08:30 alerts
-        if: env.MORNING_APPROVAL == 'true'
-        run: npm run approve:cloud
-        env:
-          DATA_DIR: data
-          TECHNO_FUNDA_APP_API_URL: https://nsqcjzwfacthxcwguhzw.supabase.co/functions/v1/techno-funda-app-api
-          TECHNO_FUNDA_APP_INTERNAL_KEY: ${{ secrets.TECHNO_FUNDA_APP_INTERNAL_KEY }}
-
-      - name: Process pending 09:17 executions without Telegram
-        if: env.EXECUTION_ONLY == 'true'
-        run: npm run execute:cloud
-        env:
-          DATA_DIR: data
-          DEFAULT_WATCHLIST_PATH: config/universe.csv
-          ALL_MARKET_WATCHLIST_PATH: config/all-market.csv
-          CUSTOM_WATCHLIST_PATH: config/custom-list.csv
-          BENCHMARK_SYMBOL: ^CRSLDX
-          CORPORATE_ACTIONS_ENABLED: "true"
-          CORPORATE_ACTIONS_LOOKBACK_DAYS: "400"
-          TRADE_CAPITAL_PER_STOCK: "100000"
-          TRADE_TOTAL_CAPITAL: "1000000"
-          TRADE_MINIMUM_INITIAL_ALLOCATION: "10000"
-          TRADE_MAX_OPEN_POSITIONS: "15"
-          TRADE_AUTO_POSITION_BREADTH: "true"
-          TRADE_PARTIAL_PROFIT_R: "2"
-          TRADE_MAX_POSITION_PCT: "10"
-          TRADE_RISK_PER_TRADE_PCT: "1"
-          TRADE_MAX_PORTFOLIO_RISK_PCT: "6"
-          TRADE_MAX_SECTOR_EXPOSURE_PCT: "25"
-          TRADE_SCOPE_LIST_ID: "all-market"
-          TRADE_QUALITY_MODE: "BEST_ONLY"
-          TECHNO_FUNDA_CLOUD_API_URL: https://ywvwsumwhmfkqrqrxsvs.supabase.co/functions/v1/techno-funda-api
-          TECHNO_FUNDA_INTERNAL_KEY: ${{ secrets.TECHNO_FUNDA_INTERNAL_KEY }}
-          TECHNO_FUNDA_APP_API_URL: https://nsqcjzwfacthxcwguhzw.supabase.co/functions/v1/techno-funda-app-api
-          TECHNO_FUNDA_APP_INTERNAL_KEY: ${{ secrets.TECHNO_FUNDA_APP_INTERNAL_KEY }}
 
       - name: Build mobile website
         run: npm run build:static
