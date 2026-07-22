@@ -1,7 +1,7 @@
 import { portfolioChargeSummary } from "./charges.js";
 
 const ACTIVE_STATUSES = new Set(["OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"]);
-export const STRUCTURAL_STOP_POLICY_VERSION = "WEEKLY_EMA13_LOW_V1";
+export const STRUCTURAL_STOP_POLICY_VERSION = "WEEKLY_EMA13_LOW_V2";
 
 export function isFilledHolding(trade = {}) {
   return ACTIVE_STATUSES.has(String(trade.status || ""));
@@ -179,16 +179,15 @@ export function legacyStructuralStopUpgradePlan(trade = {}, row = {}, config = {
     row.weeklyPriceAboveEma13 !== false &&
     Number(row.weeklyClose) >= Number(row.weeklyEma13);
   const leadershipHealthy = Number(row.weeklyRs) > 0 && Number(row.dailyLongRs) > 0;
-  const dailySupertrend = Number(row.dailySupertrend);
-  const priceStructureHealthy =
-    Number.isFinite(dailySupertrend) &&
-    dailySupertrend > 0 &&
-    close > dailySupertrend;
   const currentStopRisk = Number.isFinite(details.stopPrice)
     ? Math.max(0, close - details.stopPrice) * quantity
     : Number.POSITIVE_INFINITY;
   const maximumStopRisk = rules.totalCapital * rules.riskPerTradePct / 100;
   const riskWithinLimit = currentStopRisk <= maximumStopRisk;
+  const riskSizedQuantity = Number.isFinite(currentStopRisk) && close > details.stopPrice
+    ? Math.max(0, Math.floor(maximumStopRisk / (close - details.stopPrice)))
+    : 0;
+  const suggestedRiskReductionQuantity = Math.max(0, quantity - riskSizedQuantity);
   const eligible =
     Number.isFinite(close) &&
     close > 0 &&
@@ -196,9 +195,7 @@ export function legacyStructuralStopUpgradePlan(trade = {}, row = {}, config = {
     details.weeklyAnchorReady &&
     close > details.stopPrice &&
     weeklyStructureHealthy &&
-    leadershipHealthy &&
-    priceStructureHealthy &&
-    riskWithinLimit;
+    leadershipHealthy;
 
   return {
     eligible,
@@ -208,10 +205,18 @@ export function legacyStructuralStopUpgradePlan(trade = {}, row = {}, config = {
     stopDistancePct: details.stopDistancePct,
     currentStopRisk: round(currentStopRisk),
     maximumStopRisk: round(maximumStopRisk),
+    riskWithinLimit,
+    riskSizedQuantity,
+    suggestedRiskReductionQuantity,
     policyVersion: STRUCTURAL_STOP_POLICY_VERSION,
     reason: eligible
-      ? `Legacy daily stop can migrate to Weekly EMA13-Low because completed-week structure, Weekly RS21, Daily RS55 and Supertrend remain healthy; current stop risk Rs ${round(currentStopRisk)} stays within the Rs ${round(maximumStopRisk)} stock-risk cap.`
-      : "Legacy stop remains unchanged because the Weekly EMA13-Low structure, leadership, Supertrend or current-risk gate is not fully valid."
+      ? [
+          "Legacy daily stop can migrate to Weekly EMA13-Low because the completed weekly close remains above EMA13-Low and Weekly RS21 plus Daily RS55 leadership remain positive.",
+          riskWithinLimit
+            ? `Current structural-stop risk Rs ${round(currentStopRisk)} is within the Rs ${round(maximumStopRisk)} stock-risk cap.`
+            : `Current structural-stop risk Rs ${round(currentStopRisk)} is above the Rs ${round(maximumStopRisk)} cap; record a controlled risk review for approximately ${suggestedRiskReductionQuantity} shares instead of forcing a full exit at the obsolete daily stop.`
+        ].join(" ")
+      : "Legacy stop remains unchanged because the completed-week EMA13-Low anchor or compulsory Weekly RS21/Daily RS55 leadership is not valid."
   };
 }
 

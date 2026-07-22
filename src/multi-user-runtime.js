@@ -18,7 +18,8 @@ export async function syncMultiUserRuntime(scan, options = {}) {
   }
 
   const strategyVersion = process.env.GITHUB_SHA || process.env.npm_package_version || "local";
-  if (!options.executionOnly) {
+  if (!options.executionOnly && !options.approvalOnly) {
+    if (!scan?.lists) throw new Error("A completed market scan is required for market-state ingestion.");
     const marketState = marketOnlyState(scan);
     await postApp({
       action: "ingest-market-state",
@@ -34,15 +35,31 @@ export async function syncMultiUserRuntime(scan, options = {}) {
     internalKey: APP_INTERNAL_KEY
   });
   const users = Array.isArray(runtime.users) ? runtime.users : [];
+  const runtimeMarket = runtime.encodedMarketState
+    ? decodeMarketState(runtime.encodedMarketState)
+    : null;
+  const effectiveMarket = selectFreshMarketState(scan, runtimeMarket, {
+    preferRuntime: options.executionOnly === true || options.approvalOnly === true
+  });
+  if (!effectiveMarket?.lists) {
+    throw new Error("Multi-user cycle requires the latest completed cloud market scan.");
+  }
   const outcomes = [];
   const legacyOwnerJournal = readTrades();
 
   for (const user of users) {
     try {
-      const userScan = scanForUser(scan, user.symbols || []);
+      const userScan = scanForUser(effectiveMarket, user.symbols || []);
+      if (options.executionOnly === true || options.approvalOnly === true) {
+        const cycleAt = options.cycleAt || new Date().toISOString();
+        userScan.fullScanAt = effectiveMarket.fullScanAt || effectiveMarket.scannedAt;
+        userScan.scannedAt = cycleAt;
+        userScan.executionPassAt = options.executionOnly === true ? cycleAt : userScan.executionPassAt;
+        userScan.scanMode = options.executionOnly === true ? "EXECUTION_PASS" : "MORNING_APPROVAL";
+      }
       const config = configForUser(user.settings || {}, user.telegram || {});
       const journal = await updateTradeJournal(userScan, config, {
-        journal: journalForUser(user, legacyOwnerJournal, scan.scannedAt),
+        journal: journalForUser(user, legacyOwnerJournal, userScan.scannedAt),
         persist: false,
         writeSheets: false,
         publishActionAlerts: options.publishActionAlerts === true
@@ -83,6 +100,19 @@ export async function syncMultiUserRuntime(scan, options = {}) {
     failed: outcomes.filter((item) => !item.ok).length,
     outcomes
   };
+}
+
+export function selectFreshMarketState(scan, runtimeMarket, { preferRuntime = false } = {}) {
+  if (!runtimeMarket?.lists) return scan;
+  if (!scan?.lists || preferRuntime) return runtimeMarket;
+  const inputTime = completedScanTime(scan);
+  const runtimeTime = completedScanTime(runtimeMarket);
+  return runtimeTime >= inputTime ? runtimeMarket : scan;
+}
+
+function completedScanTime(scan = {}) {
+  const value = Date.parse(String(scan.fullScanAt || scan.scannedAt || ""));
+  return Number.isFinite(value) ? value : 0;
 }
 
 export function journalForUser(user = {}, legacyJournal = {}, migratedAt = new Date().toISOString()) {
@@ -317,6 +347,7 @@ export function portfolioState(scan, journal, settings, config = appConfig) {
   return {
     scannedAt: scan.scannedAt,
     fullScanAt: scan.fullScanAt,
+    marketScanAt: scan.fullScanAt || scan.scannedAt,
     executionPassAt: scan.executionPassAt,
     scanMode: scan.scanMode,
     executionPass: scan.executionPass,

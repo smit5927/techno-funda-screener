@@ -1,6 +1,6 @@
 const IST_OFFSET_MINUTES = 330;
 const MORNING_START_MINUTE = 8 * 60 + 20;
-const MORNING_END_MINUTE = 9 * 60 + 5;
+const MORNING_END_MINUTE = 9 * 60 + 15;
 const EXECUTION_MINUTE = 9 * 60 + 17;
 
 export function istClock(value = new Date()) {
@@ -34,7 +34,7 @@ export function morningApprovalStatus(requested, value = new Date()) {
     return { requested: true, allowed: false, clock, reason: "non-trading-weekday" };
   }
   if (!isMorningApprovalWindow(value)) {
-    return { requested: true, allowed: false, clock, reason: "outside-08:20-to-09:05-IST" };
+    return { requested: true, allowed: false, clock, reason: "outside-08:20-to-09:15-IST" };
   }
   return { requested: true, allowed: true, clock, reason: "morning-window" };
 }

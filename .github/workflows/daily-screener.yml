@@ -19,10 +19,12 @@ on:
       - "config/universe.csv"
       - "config/custom-list.csv"
   schedule:
-    # 08:30 IST: publish prior-close portfolio actions and alerts before the market opens.
-    - cron: "0 3 * * 1-5"
-    # Free GitHub schedules can be delayed or skipped. These runs are deduplicated recovery scans.
-    - cron: "10,20,30 3 * * 1-5" # 08:40, 08:50 and 09:00 IST
+    # Full close-basis scans are prepared outside the time-critical order window.
+    - cron: "30 13 * * 1-5" # 19:00 IST after market close
+    - cron: "0 1 * * 1-5" # 06:30 IST pre-market recovery
+    # Fast, idempotent approvals reuse the latest cloud scan and publish only funded actions.
+    - cron: "55 2 * * 1-5" # 08:25 IST warm-up
+    - cron: "0,5,15,30,40 3 * * 1-5" # 08:30, 08:35, 08:45, 09:00, 09:10 IST
     # Staggered lightweight retries tolerate delays in GitHub's free scheduled runners.
     - cron: "51 3 * * 1-5" # 09:21 IST
     - cron: "59 3 * * 1-5" # 09:29 IST
@@ -47,8 +49,8 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     env:
-      EXECUTION_ONLY: ${{ github.event_name == 'schedule' && github.event.schedule != '0 3 * * 1-5' && github.event.schedule != '10,20,30 3 * * 1-5' }}
-      MORNING_ALERTS: ${{ (github.event_name == 'schedule' && (github.event.schedule == '0 3 * * 1-5' || github.event.schedule == '10,20,30 3 * * 1-5')) || (github.event_name == 'workflow_dispatch' && inputs.publish_morning_alerts == true) }}
+      MORNING_APPROVAL: ${{ (github.event_name == 'schedule' && (github.event.schedule == '55 2 * * 1-5' || github.event.schedule == '0,5,15,30,40 3 * * 1-5')) || (github.event_name == 'workflow_dispatch' && inputs.publish_morning_alerts == true) }}
+      EXECUTION_ONLY: ${{ github.event_name == 'schedule' && (github.event.schedule == '51 3 * * 1-5' || github.event.schedule == '59 3 * * 1-5' || github.event.schedule == '11 4 * * 1-5' || github.event.schedule == '25 4 * * 1-5' || github.event.schedule == '40 4 * * 1-5') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -56,24 +58,27 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v5
         with:
-          node-version: "20"
+          node-version: "22"
           cache: npm
 
       - name: Install dependencies
         run: npm ci
 
+      - name: Run regression tests
+        run: npm test
+
       - name: Refresh Nifty 500 universe
-        if: env.EXECUTION_ONLY != 'true'
+        if: env.EXECUTION_ONLY != 'true' && env.MORNING_APPROVAL != 'true'
         run: npm run update:universe
         continue-on-error: true
 
       - name: Refresh all Indian equity universe and new listings
-        if: env.EXECUTION_ONLY != 'true'
+        if: env.EXECUTION_ONLY != 'true' && env.MORNING_APPROVAL != 'true'
         run: npm run update:all-market
         continue-on-error: true
 
-      - name: Run cloud screener and 08:30 Telegram alerts
-        if: env.EXECUTION_ONLY != 'true'
+      - name: Run completed-close cloud screener
+        if: env.EXECUTION_ONLY != 'true' && env.MORNING_APPROVAL != 'true'
         run: npm run scan:cloud
         env:
           DATA_DIR: data
@@ -91,7 +96,7 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_SEND_EMPTY: "false"
           TELEGRAM_RETRY_FAILED_EVENTS_MAX_HOURS: "12"
-          TELEGRAM_MORNING_ONLY: ${{ env.MORNING_ALERTS }}
+          TELEGRAM_MORNING_ONLY: "false"
           TRADE_CAPITAL_PER_STOCK: "100000"
           TRADE_TOTAL_CAPITAL: "1000000"
           TRADE_MINIMUM_INITIAL_ALLOCATION: "10000"
@@ -110,6 +115,14 @@ jobs:
           TECHNO_FUNDA_APP_INTERNAL_KEY: ${{ secrets.TECHNO_FUNDA_APP_INTERNAL_KEY }}
           AI_REVIEW_ENABLED: "true"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Approve funded 09:17 orders and publish 08:30 alerts
+        if: env.MORNING_APPROVAL == 'true'
+        run: npm run approve:cloud
+        env:
+          DATA_DIR: data
+          TECHNO_FUNDA_APP_API_URL: https://nsqcjzwfacthxcwguhzw.supabase.co/functions/v1/techno-funda-app-api
+          TECHNO_FUNDA_APP_INTERNAL_KEY: ${{ secrets.TECHNO_FUNDA_APP_INTERNAL_KEY }}
 
       - name: Process pending 09:17 executions without Telegram
         if: env.EXECUTION_ONLY == 'true'

@@ -7,6 +7,7 @@ import {
   candidateEntryDecision,
   candidateRank,
   controlledRetestAddDecision,
+  legacyStructuralStopUpgradePlan,
   nextTrailingStop,
   portfolioConfig,
   portfolioSummary,
@@ -34,6 +35,57 @@ test("portfolio defaults use ten lakh capital with institutional limits", () => 
   assert.equal(rules.maxPortfolioRiskPct, 6);
   assert.equal(rules.pyramidMaxAddOns, 2);
   assert.equal(rules.pyramidMaxPositionPct, 15);
+});
+
+test("legacy daily stop migrates system-wide when weekly EMA13-low and RS leadership survive", () => {
+  const plan = legacyStructuralStopUpgradePlan(
+    {
+      status: "OPEN",
+      entryPrice: 1381.9,
+      quantity: 72,
+      initialStopPrice: 1361.17,
+      trailingStopPrice: 1361.17
+    },
+    {
+      close: 1341.3,
+      weeklyClose: 1341.3,
+      weeklyEma13: 1210.65,
+      weeklyEma13Source: "low",
+      weeklyPriceAboveEma13: true,
+      weeklyRs: 0.33,
+      dailyLongRs: 0.15,
+      dailySupertrend: 1400,
+      setupStrength: { values: { weeklyAtr: 58 } }
+    },
+    { trade: { totalCapital: 1_000_000, riskPerTradePct: 1 } }
+  );
+
+  assert.equal(plan.eligible, true);
+  assert.equal(plan.policyVersion, "WEEKLY_EMA13_LOW_V2");
+  assert.ok(plan.stopPrice < 1341.3);
+  assert.match(plan.reason, /Weekly RS21 plus Daily RS55/i);
+});
+
+test("excess risk at the migrated weekly stop requests controlled sizing, not an old-stop full exit", () => {
+  const plan = legacyStructuralStopUpgradePlan(
+    { status: "OPEN", quantity: 100, initialStopPrice: 99, trailingStopPrice: 99 },
+    {
+      close: 100,
+      weeklyClose: 100,
+      weeklyEma13: 80,
+      weeklyEma13Source: "low",
+      weeklyPriceAboveEma13: true,
+      weeklyRs: 0.2,
+      dailyLongRs: 0.1,
+      setupStrength: { values: { weeklyAtr: 5 } }
+    },
+    { trade: { totalCapital: 100_000, riskPerTradePct: 1 } }
+  );
+
+  assert.equal(plan.eligible, true);
+  assert.equal(plan.riskWithinLimit, false);
+  assert.ok(plan.suggestedRiskReductionQuantity > 0);
+  assert.match(plan.reason, /instead of forcing a full exit/i);
 });
 
 test("only a protected A-grade winner on a fresh breakout can be scaled up", () => {

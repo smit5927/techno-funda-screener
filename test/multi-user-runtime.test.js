@@ -7,7 +7,8 @@ import {
   journalForUser,
   marketOnlyState,
   portfolioState,
-  scanForUser
+  scanForUser,
+  selectFreshMarketState
 } from "../src/multi-user-runtime.js";
 
 test("compressed market state round-trips without losing screener evidence", () => {
@@ -30,6 +31,14 @@ test("compressed market state round-trips without losing screener evidence", () 
   assert.equal(encoded.encoding, "gzip-base64");
   assert.ok(encoded.compressedBytes < encoded.rawBytes);
   assert.deepEqual(decodeMarketState(encoded), state);
+});
+
+test("execution and approval cycles cannot regress to an older local full scan", () => {
+  const local = { scannedAt: "2026-07-16T11:03:30.470Z", lists: { "all-market": { results: [] } } };
+  const cloud = { scannedAt: "2026-07-21T06:07:01.633Z", lists: { "all-market": { results: [] } } };
+  assert.equal(selectFreshMarketState(local, cloud), cloud);
+  assert.equal(selectFreshMarketState(cloud, local), cloud);
+  assert.equal(selectFreshMarketState(local, cloud, { preferRuntime: true }), cloud);
 });
 
 test("multi-user runtime derives a private custom list without changing common market data", () => {

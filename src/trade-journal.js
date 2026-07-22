@@ -866,6 +866,9 @@ export function applyLegacyStructuralStopUpgrade(trade, row, config = appConfig,
     stopSource: plan.stopSource,
     currentStopRisk: plan.currentStopRisk,
     maximumStopRisk: plan.maximumStopRisk,
+    riskWithinLimit: plan.riskWithinLimit,
+    riskSizedQuantity: plan.riskSizedQuantity,
+    suggestedRiskReductionQuantity: plan.suggestedRiskReductionQuantity,
     reason: plan.reason
   };
   trade.initialStopPrice = plan.stopPrice;
@@ -881,6 +884,17 @@ export function applyLegacyStructuralStopUpgrade(trade, row, config = appConfig,
   trade.riskPerShare = round(Math.max(0, entryPrice - plan.stopPrice));
   trade.initialRiskAmount = round(trade.riskPerShare * originalQuantity);
   trade.riskActionNote = plan.reason;
+  trade.structuralStopRiskReview = plan.riskWithinLimit
+    ? null
+    : {
+        reviewedAt: upgradedAt || new Date().toISOString(),
+        currentStopRisk: plan.currentStopRisk,
+        maximumStopRisk: plan.maximumStopRisk,
+        riskSizedQuantity: plan.riskSizedQuantity,
+        suggestedRiskReductionQuantity: plan.suggestedRiskReductionQuantity,
+        action: "REVIEW_CONTROLLED_RISK_REDUCTION",
+        reason: "The obsolete daily stop was removed. Any reduction must be sized from the new weekly structural risk and must not become an automatic full exit."
+      };
   return { upgraded: true, ...plan };
 }
 
