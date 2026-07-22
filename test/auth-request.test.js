@@ -151,9 +151,21 @@ test("cloud state bypasses stale caches and refreshes when the installed app ret
   assert.match(app, /visibilitychange[\s\S]*refreshCloudState/);
   assert.match(app, /setInterval[\s\S]*refreshCloudState/);
   assert.match(app, /Portfolio cycle[\s\S]*Market scan/);
-  assert.match(auth, /20260722-scan-freshness/);
+  assert.match(auth, /20260722-fast-dashboard/);
   assert.match(auth, /registration\.update\(\)/);
-  assert.match(worker, /techno-funda-shell-v35-scan-freshness/);
+  assert.match(worker, /techno-funda-shell-v36-fast-dashboard/);
+});
+
+test("authenticated dashboard loads a lightweight portfolio first and full market rows only inside Screener", () => {
+  const app = fs.readFileSync(path.join(rootDir, "public", "app.js"), "utf8");
+  const api = fs.readFileSync(path.join(rootDir, "supabase", "functions", "techno-funda-app-api", "index.ts"), "utf8");
+  assert.match(app, /fetchSecureCloudState\("dashboard"\)/);
+  assert.match(app, /nextView === "screener"[\s\S]*ensureFullMarketState/);
+  assert.match(app, /fetchSecureCloudState\("state"\)/);
+  assert.match(api, /dashboardOnly: view === "dashboard"/);
+  assert.match(api, /journal: _privateJournal/);
+  assert.match(api, /"OPEN", "PENDING_ENTRY", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"/);
+  assert.match(api, /function dashboardLists/);
 });
 
 test("alert center supports durable history, account clear and notification deep links", () => {

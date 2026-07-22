@@ -130,7 +130,7 @@ if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
       const registration = await navigator.serviceWorker.register(
-        "service-worker.js?v=20260722-scan-freshness",
+        "service-worker.js?v=20260722-fast-dashboard",
         { updateViaCache: "none" }
       );
       await registration.update();

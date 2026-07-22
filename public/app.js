@@ -27,7 +27,10 @@ const state = {
   pushSyncPromise: null,
   pushVerifiedAt: 0,
   cloudRefreshTimer: null,
-  cloudRefreshInFlight: null
+  cloudRefreshInFlight: null,
+  fullMarketLists: null,
+  fullMarketScanAt: null,
+  fullMarketLoading: null
 };
 
 const staticMode = Boolean(window.TF_STATIC_MODE);
@@ -300,6 +303,7 @@ if (![...elements.dashboardPositionFilter.options].some((option) => option.value
 elements.dashboardPositionFilter.value = state.dashboardPositionFilter;
 updatePositionSortDirection();
 await loadResults();
+if (state.currentView === "screener") ensureFullMarketState();
 if (cloudMode) {
   state.cloudRefreshTimer = window.setInterval(() => {
     if (!document.hidden) refreshCloudState({ includeLiveMtm: false });
@@ -332,6 +336,7 @@ function setMainView(view, options = {}) {
   if (canAnimate) document.startViewTransition(applyView);
   else applyView();
   if (nextView === "positions") requestAnimationFrame(fitOpenPositionsShell);
+  if (nextView === "screener" && state.payload) ensureFullMarketState();
   if (options.scroll !== false) {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
@@ -340,19 +345,8 @@ function setMainView(view, options = {}) {
 
 async function loadResults() {
   if (cloudMode && window.TF_AUTH_MODE) {
-    const payload = await fetchSecureCloudState();
-    applyPayload(payload.state);
-    if (payload.customList?.count != null) {
-      elements.customListStatus.textContent = `${payload.customList.count} stocks in My List`;
-    }
-    if (payload.telegram || payload.state?.telegram) {
-      state.cloudTelegram = payload.telegram || state.cloudTelegram;
-      renderTelegramStatus(payload.telegram, payload.state?.telegram);
-    }
-    if (payload.tradeSettings || payload.state?.tradeSettings) {
-      state.cloudTradeSettings = payload.tradeSettings || payload.state?.tradeSettings;
-      renderTradeSettings(state.cloudTradeSettings, { updateBadges: false });
-    }
+    const payload = await fetchSecureCloudState("dashboard");
+    applyCloudEnvelope(payload, { dashboardOnly: true });
     return;
   }
 
@@ -445,12 +439,12 @@ async function runScan(listId = state.currentList) {
   }
 }
 
-async function fetchSecureCloudState(attempts = 3) {
+async function fetchSecureCloudState(view = "dashboard", attempts = 3) {
   let lastError;
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     try {
       const url = new URL(cloudApiUrl, window.location.href);
-      url.searchParams.set("view", "state");
+      url.searchParams.set("view", view);
       url.searchParams.set("tf_refresh", String(Date.now()));
       const response = await fetch(url, { cache: "no-store" });
       const payload = await response.json().catch(() => ({}));
@@ -467,6 +461,57 @@ async function fetchSecureCloudState(attempts = 3) {
     }
   }
   throw lastError;
+}
+
+function applyCloudEnvelope(payload, options = {}) {
+  let nextState = payload.state || {};
+  const marketScanAt = nextState.fullScanAt || nextState.marketScanAt || nextState.scannedAt || null;
+  if (options.dashboardOnly) {
+    if (state.fullMarketScanAt && marketScanAt && state.fullMarketScanAt !== marketScanAt) {
+      state.fullMarketLists = null;
+      state.fullMarketScanAt = null;
+    }
+    if (state.fullMarketLists) nextState = { ...nextState, lists: state.fullMarketLists };
+  } else {
+    state.fullMarketLists = nextState.lists || null;
+    state.fullMarketScanAt = marketScanAt;
+  }
+  applyPayload(nextState);
+  if (payload.customList?.count != null) {
+    elements.customListStatus.textContent = `${payload.customList.count} stocks in My List`;
+  }
+  if (payload.telegram || nextState.telegram) {
+    state.cloudTelegram = payload.telegram || state.cloudTelegram;
+    renderTelegramStatus(payload.telegram, nextState.telegram);
+  }
+  if (payload.tradeSettings || nextState.tradeSettings) {
+    state.cloudTradeSettings = payload.tradeSettings || nextState.tradeSettings;
+    renderTradeSettings(state.cloudTradeSettings, { updateBadges: false });
+  }
+}
+
+async function ensureFullMarketState(options = {}) {
+  if (!cloudMode || !window.TF_AUTH_MODE) return;
+  const marketScanAt = state.payload?.fullScanAt || state.payload?.marketScanAt || state.payload?.scannedAt || null;
+  if (!options.force && state.fullMarketLists && state.fullMarketScanAt === marketScanAt) return;
+  if (state.fullMarketLoading) return state.fullMarketLoading;
+  if (elements.scanMeta) elements.scanMeta.dataset.loadingMarket = "true";
+  if (elements.emptyState && !state.rows.length) {
+    elements.emptyState.textContent = "Loading full market screener...";
+    elements.emptyState.classList.add("visible");
+  }
+  state.fullMarketLoading = fetchSecureCloudState("state")
+    .then((payload) => applyCloudEnvelope(payload, { dashboardOnly: false }))
+    .catch((error) => {
+      if (elements.scanMeta) elements.scanMeta.textContent = `Screener data temporarily unavailable: ${error.message}`;
+      if (elements.emptyState) elements.emptyState.textContent = "Full screener is temporarily unavailable. Portfolio data remains current.";
+    })
+    .finally(() => {
+      if (elements.scanMeta) delete elements.scanMeta.dataset.loadingMarket;
+      if (elements.emptyState && state.rows.length) elements.emptyState.textContent = "No rows to show";
+      state.fullMarketLoading = null;
+    });
+  return state.fullMarketLoading;
 }
 
 async function refreshCloudState(options = {}) {
@@ -1589,6 +1634,8 @@ async function saveCloudCustomList(symbols) {
   });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok || payload.error) throw new Error(payload.error || "Cloud upload failed");
+  state.fullMarketLists = null;
+  state.fullMarketScanAt = null;
   localStorage.setItem("tfAccessCode", accessCode);
   syncAccessCodeInputs(accessCode);
   elements.customListStatus.textContent = `${payload.count} stocks saved in cloud`;
@@ -1626,6 +1673,7 @@ async function refreshPublishedData() {
   elements.refreshButton.textContent = "Checking...";
   try {
     await loadResults();
+    if (state.currentView === "screener") await ensureFullMarketState({ force: true });
   } catch (error) {
     elements.scanMeta.textContent = `Update check failed: ${error.message}`;
   } finally {

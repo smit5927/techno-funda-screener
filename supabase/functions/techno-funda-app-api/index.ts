@@ -51,7 +51,7 @@ async function handleGet(request: Request, url: URL) {
     return json({ ok: true, users: await listUsers() });
   }
 
-  const payload = await userPayload(managedContext);
+  const payload = await userPayload(managedContext, { dashboardOnly: view === "dashboard" });
   return json({ ok: true, ...payload });
 }
 
@@ -485,7 +485,7 @@ async function metadata(context: any) {
   };
 }
 
-async function userPayload(context: any) {
+async function userPayload(context: any, options: { dashboardOnly?: boolean } = {}) {
   const userId = subjectUserId(context);
   const [marketResult, stateResult, settings, symbols, telegram] = await Promise.all([
     admin().from("app_market_state").select("*").eq("singleton", true).maybeSingle(),
@@ -497,8 +497,11 @@ async function userPayload(context: any) {
   if (marketResult.error) throw marketResult.error;
   if (stateResult.error) throw stateResult.error;
   const market = await decodeMarketPayload(marketResult.data?.payload || {});
-  const userState = stateResult.data?.state || {};
-  const lists = withCustomList(market.lists || {}, symbols);
+  const storedUserState = stateResult.data?.state || {};
+  const userState = publicUserState(storedUserState, options);
+  const lists = options.dashboardOnly
+    ? dashboardLists(market.lists || {}, symbols)
+    : withCustomList(market.lists || {}, symbols);
   const tradeSettings = publicSettings(settings);
   const marketScanAt = market.fullScanAt || market.scannedAt || marketResult.data?.scan_at || null;
   const portfolioScanAt = userState.scannedAt || stateResult.data?.scan_at || null;
@@ -522,6 +525,52 @@ async function userPayload(context: any) {
     tradeSettings,
     customList: { count: symbols.length },
     telegram: publicTelegram(telegram)
+  };
+}
+
+function publicUserState(state: any, options: { dashboardOnly?: boolean } = {}) {
+  const sourceState = state && typeof state === "object" ? state : {};
+  const { journal: _privateJournal, ...publicState } = sourceState;
+  if (!options.dashboardOnly) return publicState;
+  const visibleStatuses = new Set(["OPEN", "PENDING_ENTRY", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"]);
+  return {
+    ...publicState,
+    trades: (Array.isArray(publicState.trades) ? publicState.trades : [])
+      .filter((trade: any) => visibleStatuses.has(String(trade?.status || "")))
+  };
+}
+
+function dashboardLists(lists: any, symbols: string[]) {
+  const allMarket = lists["all-market"] || { id: "all-market", label: "All Indian Market", results: [] };
+  const allRows = Array.isArray(allMarket.results) ? allMarket.results : [];
+  const defaultList = lists.default || { id: "default", label: "Nifty 500", symbols: [] };
+  const wanted = new Set(symbols.map(normalizeSymbol));
+  const customSummary = summarizeRows(
+    allRows.filter((row: any) => wanted.has(normalizeSymbol(row.symbol || row.yahooSymbol)))
+  );
+  return {
+    "all-market": {
+      id: allMarket.id || "all-market",
+      label: allMarket.label || "All Indian Market",
+      editable: false,
+      summary: allMarket.summary || summarizeRows(allRows),
+      results: []
+    },
+    default: {
+      id: defaultList.id || "default",
+      label: defaultList.label || "Nifty 500",
+      editable: false,
+      summary: defaultList.summary || {},
+      symbols: defaultList.symbols || [],
+      results: []
+    },
+    custom: {
+      id: "custom",
+      label: "My Custom List",
+      editable: true,
+      summary: customSummary,
+      results: []
+    }
   };
 }
 
