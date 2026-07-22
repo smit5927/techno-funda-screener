@@ -141,6 +141,20 @@ test("filled holdings and pending execution orders are presented separately", ()
   assert.doesNotMatch(app, /\["PENDING_ENTRY", "OPEN", "PENDING_EXIT", "PENDING_PARTIAL_EXIT"\]/);
 });
 
+test("cloud state bypasses stale caches and refreshes when the installed app returns to foreground", () => {
+  const app = fs.readFileSync(path.join(rootDir, "public", "app.js"), "utf8");
+  const auth = fs.readFileSync(path.join(rootDir, "public", "auth.js"), "utf8");
+  const worker = fs.readFileSync(path.join(rootDir, "public", "service-worker.js"), "utf8");
+  assert.match(app, /tf_refresh/);
+  assert.match(app, /Cache-Control": "no-cache"/);
+  assert.match(app, /visibilitychange[\s\S]*refreshCloudState/);
+  assert.match(app, /setInterval[\s\S]*refreshCloudState/);
+  assert.match(app, /Portfolio cycle[\s\S]*Market scan/);
+  assert.match(auth, /20260722-scan-freshness/);
+  assert.match(auth, /registration\.update\(\)/);
+  assert.match(worker, /techno-funda-shell-v35-scan-freshness/);
+});
+
 test("alert center supports durable history, account clear and notification deep links", () => {
   const html = fs.readFileSync(path.join(rootDir, "public", "index.html"), "utf8");
   const app = fs.readFileSync(path.join(rootDir, "public", "app.js"), "utf8");

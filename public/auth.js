@@ -127,10 +127,17 @@ client.auth.onAuthStateChange((_event, session) => {
 });
 
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => navigator.serviceWorker.register(
-    "service-worker.js?v=20260720-morning-push-sync",
-    { updateViaCache: "none" }
-  ).catch(() => {}));
+  window.addEventListener("load", async () => {
+    try {
+      const registration = await navigator.serviceWorker.register(
+        "service-worker.js?v=20260722-scan-freshness",
+        { updateViaCache: "none" }
+      );
+      await registration.update();
+    } catch {
+      // The website remains usable when service-worker updates are unavailable.
+    }
+  });
 }
 
 wireDownloads();

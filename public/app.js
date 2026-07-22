@@ -25,7 +25,9 @@ const state = {
   selectedAlertId: new URLSearchParams(window.location.search).get("alert") || "",
   alertPollTimer: null,
   pushSyncPromise: null,
-  pushVerifiedAt: 0
+  pushVerifiedAt: 0,
+  cloudRefreshTimer: null,
+  cloudRefreshInFlight: null
 };
 
 const staticMode = Boolean(window.TF_STATIC_MODE);
@@ -285,7 +287,7 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") closeDetail();
 });
 document.addEventListener("visibilitychange", () => {
-  if (!document.hidden && cloudMode) fetchLiveMtm();
+  if (!document.hidden && cloudMode) refreshCloudState({ includeLiveMtm: true });
 });
 window.addEventListener("resize", fitOpenPositionsShell, { passive: true });
 window.visualViewport?.addEventListener("resize", fitOpenPositionsShell, { passive: true });
@@ -298,6 +300,11 @@ if (![...elements.dashboardPositionFilter.options].some((option) => option.value
 elements.dashboardPositionFilter.value = state.dashboardPositionFilter;
 updatePositionSortDirection();
 await loadResults();
+if (cloudMode) {
+  state.cloudRefreshTimer = window.setInterval(() => {
+    if (!document.hidden) refreshCloudState({ includeLiveMtm: false });
+  }, 60_000);
+}
 
 function setMainView(view, options = {}) {
   const allowedViews = ["dashboard", "alerts", "positions", "candidates", "screener", "settings", "admin"];
@@ -333,11 +340,7 @@ function setMainView(view, options = {}) {
 
 async function loadResults() {
   if (cloudMode && window.TF_AUTH_MODE) {
-    const response = await fetch(cloudApiUrl, { cache: "no-store" });
-    const payload = await response.json();
-    if (!response.ok || payload.error || !payload.state) {
-      throw new Error(payload.error || "Secure cloud results unavailable");
-    }
+    const payload = await fetchSecureCloudState();
     applyPayload(payload.state);
     if (payload.customList?.count != null) {
       elements.customListStatus.textContent = `${payload.customList.count} stocks in My List`;
@@ -394,11 +397,7 @@ async function loadResults() {
 
   if (cloudMode) {
     try {
-      const response = await fetch(cloudApiUrl, { cache: "no-store" });
-      const payload = await response.json();
-      if (!response.ok || payload.error || !payload.state) {
-        throw new Error(payload.error || "Cloud results unavailable");
-      }
+      const payload = await fetchSecureCloudState();
       applyPayload(payload.state);
       if (payload.customList?.count != null) {
         elements.customListStatus.textContent = `${payload.customList.count} cloud stocks`;
@@ -444,6 +443,49 @@ async function runScan(listId = state.currentList) {
   } finally {
     setBusy(false);
   }
+}
+
+async function fetchSecureCloudState(attempts = 3) {
+  let lastError;
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    try {
+      const url = new URL(cloudApiUrl, window.location.href);
+      url.searchParams.set("view", "state");
+      url.searchParams.set("tf_refresh", String(Date.now()));
+      const response = await fetch(url, {
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache" }
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload.error || !payload.state) {
+        const error = new Error(payload.error || `Secure cloud results unavailable (${response.status})`);
+        error.status = response.status;
+        throw error;
+      }
+      return payload;
+    } catch (error) {
+      lastError = error;
+      if ([401, 403, 409].includes(Number(error?.status)) || attempt === attempts - 1) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
+    }
+  }
+  throw lastError;
+}
+
+async function refreshCloudState(options = {}) {
+  if (!cloudMode) return;
+  if (state.cloudRefreshInFlight) return state.cloudRefreshInFlight;
+  state.cloudRefreshInFlight = (async () => {
+    await loadResults();
+    if (options.includeLiveMtm !== false) await fetchLiveMtm();
+  })().catch((error) => {
+    if (elements.scanMeta && !state.payload?.scannedAt) {
+      elements.scanMeta.textContent = `Cloud update failed: ${error.message}`;
+    }
+  }).finally(() => {
+    state.cloudRefreshInFlight = null;
+  });
+  return state.cloudRefreshInFlight;
 }
 
 function applyPayload(payload) {
@@ -541,8 +583,12 @@ function renderSummary(payload) {
   const staleText = payload.scannedAt && isStaleScan(payload.scannedAt) ? " | Stale: waiting for next cloud scan" : "";
   const institutionalText = institutionalMeta(payload.institutionalContext);
   const aiText = aiReviewMeta(payload.aiReview);
+  const marketScanAt = payload.fullScanAt || payload.marketScanAt || payload.scannedAt;
+  const separatePortfolioCycle = Date.parse(payload.scannedAt || 0) - Date.parse(marketScanAt || 0) > 60_000;
   const scanTimestamp = payload.scanMode === "EXECUTION_PASS"
     ? `Execution pass ${formatDateTime(payload.executionPassAt || payload.scannedAt)} | Full scan ${formatDateTime(payload.fullScanAt || payload.scannedAt)}`
+    : separatePortfolioCycle
+      ? `Portfolio cycle ${formatDateTime(payload.scannedAt)} | Market scan ${formatDateTime(marketScanAt)}`
     : `Last scan ${formatDateTime(payload.scannedAt)}`;
   elements.scanMeta.textContent = payload.scannedAt
     ? `${scanTimestamp} | ${listLabel} | Benchmark ${benchmarkLabel} | Risk ${payload.marketContext?.riskMode || "NA"}, cap ${compact(payload.marketContext?.exposureCapPct ?? 100)}%${institutionalText}${aiText}${staleText}`
