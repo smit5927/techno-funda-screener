@@ -146,7 +146,8 @@ test("cloud state bypasses stale caches and refreshes when the installed app ret
   const auth = fs.readFileSync(path.join(rootDir, "public", "auth.js"), "utf8");
   const worker = fs.readFileSync(path.join(rootDir, "public", "service-worker.js"), "utf8");
   assert.match(app, /tf_refresh/);
-  assert.match(app, /Cache-Control": "no-cache"/);
+  assert.match(app, /fetch\(url, \{ cache: "no-store" \}\)/);
+  assert.doesNotMatch(app, /headers:\s*\{\s*"Cache-Control"/);
   assert.match(app, /visibilitychange[\s\S]*refreshCloudState/);
   assert.match(app, /setInterval[\s\S]*refreshCloudState/);
   assert.match(app, /Portfolio cycle[\s\S]*Market scan/);

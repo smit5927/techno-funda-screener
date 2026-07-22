@@ -452,10 +452,7 @@ async function fetchSecureCloudState(attempts = 3) {
       const url = new URL(cloudApiUrl, window.location.href);
       url.searchParams.set("view", "state");
       url.searchParams.set("tf_refresh", String(Date.now()));
-      const response = await fetch(url, {
-        cache: "no-store",
-        headers: { "Cache-Control": "no-cache" }
-      });
+      const response = await fetch(url, { cache: "no-store" });
       const payload = await response.json().catch(() => ({}));
       if (!response.ok || payload.error || !payload.state) {
         const error = new Error(payload.error || `Secure cloud results unavailable (${response.status})`);
