@@ -500,9 +500,17 @@ async function userPayload(context: any) {
   const userState = stateResult.data?.state || {};
   const lists = withCustomList(market.lists || {}, symbols);
   const tradeSettings = publicSettings(settings);
+  const marketScanAt = market.fullScanAt || market.scannedAt || marketResult.data?.scan_at || null;
+  const portfolioScanAt = userState.scannedAt || stateResult.data?.scan_at || null;
+  const portfolioMarketScanAt = userState.fullScanAt || userState.marketScanAt || portfolioScanAt;
   const state = {
     ...market,
     ...userState,
+    scannedAt: newestIso(market.scannedAt, marketResult.data?.scan_at, portfolioScanAt),
+    fullScanAt: newestIso(market.fullScanAt, marketScanAt, userState.fullScanAt),
+    marketScanAt,
+    portfolioScanAt,
+    portfolioDataStale: isoTime(portfolioMarketScanAt) < isoTime(marketScanAt),
     lists,
     portfolioSummary: reconcilePortfolioCapital(userState.portfolioSummary, tradeSettings.totalCapital),
     tradeSettings
@@ -581,6 +589,18 @@ function roundMoney(value: number) {
   return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
 }
 
+function isoTime(value: unknown) {
+  const time = Date.parse(String(value || ""));
+  return Number.isFinite(time) ? time : 0;
+}
+
+function newestIso(...values: unknown[]) {
+  return values
+    .map((value) => String(value || ""))
+    .filter(Boolean)
+    .sort((left, right) => isoTime(right) - isoTime(left))[0] || null;
+}
+
 async function decodeMarketPayload(payload: any) {
   if (payload?.encoding !== "gzip-base64") return payload || {};
   const encoded = String(payload.data || "");
@@ -594,14 +614,16 @@ async function decodeMarketPayload(payload: any) {
 
 async function runtimeUsers(body: any) {
   await requireInternal(body);
-  const [{ data: profiles, error }, { data: settings }, { data: watchlists }, { data: states }, { data: telegram }] = await Promise.all([
+  const [{ data: profiles, error }, { data: settings }, { data: watchlists }, { data: states }, { data: telegram }, marketResult] = await Promise.all([
     admin().from("app_profiles").select("user_id, username, role").eq("status", "active"),
     admin().from("app_user_settings").select("*"),
     admin().from("app_watchlists").select("*"),
     admin().from("app_user_states").select("*"),
-    admin().from("app_telegram_configs").select("*")
+    admin().from("app_telegram_configs").select("*"),
+    admin().from("app_market_state").select("scan_at, payload").eq("singleton", true).maybeSingle()
   ]);
   if (error) throw error;
+  if (marketResult.error) throw marketResult.error;
   const byUser = (rows: any[] | null) => new Map((rows || []).map((row: any) => [row.user_id, row]));
   const settingsMap = byUser(settings);
   const watchlistMap = byUser(watchlists);
@@ -609,6 +631,8 @@ async function runtimeUsers(body: any) {
   const telegramMap = byUser(telegram);
   return {
     ok: true,
+    marketScanAt: marketResult.data?.scan_at || null,
+    encodedMarketState: marketResult.data?.payload || null,
     users: (profiles || []).map((profile: any) => ({
       userId: profile.user_id,
       username: profile.username,
@@ -627,6 +651,21 @@ async function saveRuntimeUserState(body: any) {
   const userId = requireUuid(body.userId);
   const resetGeneration = requireUuid(body.resetGeneration);
   const state = body.state && typeof body.state === "object" ? body.state : {};
+  const { data: current, error: currentError } = await admin()
+    .from("app_user_states")
+    .select("scan_at, state, reset_generation")
+    .eq("user_id", userId)
+    .eq("reset_generation", resetGeneration)
+    .maybeSingle();
+  if (currentError) throw currentError;
+  if (!current) {
+    throw httpError("Portfolio was reset while this scan was running. Stale generated state was rejected; the next scan will start cleanly.", 409);
+  }
+  const incomingCompletedAt = state.fullScanAt || state.marketScanAt || state.scannedAt;
+  const currentCompletedAt = current.state?.fullScanAt || current.state?.marketScanAt || current.state?.scannedAt || current.scan_at;
+  if (isoTime(incomingCompletedAt) < isoTime(currentCompletedAt)) {
+    throw httpError("An older completed market scan cannot overwrite a newer portfolio state.", 409);
+  }
   const row = {
     user_id: userId,
     strategy_version: String(body.strategyVersion || "unknown"),
