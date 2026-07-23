@@ -90510,7 +90510,7 @@
     }
   },
   "531228.BO": {
-    "updatedAt": "2026-07-16T09:12:00.905Z",
+    "updatedAt": "2026-07-23T15:30:47.702Z",
     "value": {
       "available": true,
       "score": 4,
@@ -96646,12 +96646,12 @@
     }
   },
   "539091.BO": {
-    "updatedAt": "2026-07-16T09:12:17.115Z",
+    "updatedAt": "2026-07-23T15:30:52.253Z",
     "value": {
       "available": true,
       "score": 6,
       "maxScore": 8,
-      "currentPe": 6.309578,
+      "currentPe": 7.051881,
       "ebitdaMargin": 0.04988630336578615,
       "checks": {
         "netIncomeYoYUp": {
@@ -99454,12 +99454,12 @@
     }
   },
   "540401.BO": {
-    "updatedAt": "2026-07-16T09:12:23.447Z",
+    "updatedAt": "2026-07-23T15:30:53.888Z",
     "value": {
       "available": true,
       "score": 4,
       "maxScore": 8,
-      "currentPe": 19.75,
+      "currentPe": 19.794118,
       "ebitdaMargin": 0.08539481955596194,
       "checks": {
         "netIncomeYoYUp": {
