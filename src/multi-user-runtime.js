@@ -1,7 +1,7 @@
 import { appConfig } from "./config.js";
 import { readTrades } from "./storage.js";
 import { sendTelegramSummary } from "./telegram.js";
-import { updateTradeJournal } from "./trade-journal.js";
+import { updateTradeJournal, visibleWaitingPipeline } from "./trade-journal.js";
 import { portfolioSummary, totalRealizedPnl } from "./portfolio-engine.js";
 import { gunzipSync, gzipSync } from "node:zlib";
 
@@ -377,7 +377,7 @@ export function portfolioState(scan, journal, settings, config = appConfig, proc
     portfolioRules: journal.portfolioRules,
     corporateActionStatus: journal.corporateActionStatus,
     trades: visibleTrades.map(compactStoredTrade),
-    waitingCandidates: visibleCandidates.map(compactStoredCandidate),
+    waitingCandidates: visibleWaitingPipeline(visibleTrades, visibleCandidates).map(compactStoredCandidate),
     candidateDecisionLog: journal.visibleCandidateDecisions || [],
     alertHistory: journal.alertHistory || [],
     tradeEvents: journal.events || []

@@ -124,6 +124,14 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
       trade.executionError = trade.skipReason;
     }
   }
+  candidates = reconcileUnapprovedEntryProposals({
+    trades,
+    candidates,
+    scopeRowBySymbol,
+    scan,
+    settings,
+    config
+  });
   await migrateLegacyOpeningPrices(trades, config);
   await correctActiveExecutionPrices(trades);
   const corporateActionStatus = await updateOpenPositionCorporateActions(
@@ -585,6 +593,135 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
     visibleCandidates: nextJournal.candidates,
     visibleCandidateDecisions: nextJournal.candidateDecisionLog.slice(-50).reverse()
   };
+}
+
+export function visibleWaitingPipeline(trades = [], candidates = []) {
+  const proposals = trades
+    .filter((trade) => trade.status === "PENDING_ENTRY" && !isConfirmedPendingEntry(trade))
+    .map((trade) => ({
+      id: `${trade.id}-morning-queue`,
+      sourceTradeId: trade.id,
+      queueKind: "ENTRY_PROPOSAL",
+      status: "READY_FOR_0830",
+      symbol: trade.symbol,
+      yahooSymbol: trade.yahooSymbol,
+      name: trade.name,
+      industry: trade.industry,
+      firstSignalDate: trade.entrySignalDate,
+      firstSignalClose: trade.candidateContext?.firstSignalClose ?? trade.entrySnapshot?.close,
+      grade: trade.currentGrade || trade.entrySnapshot?.setupGrade || "NA",
+      rank: Number(trade.currentRank || trade.positionRank) || 0,
+      plannedAllocation: Number(trade.plannedAllocation) || 0,
+      plannedRisk: Number(trade.plannedRisk) || 0,
+      latestSnapshot: trade.currentSnapshot || trade.entrySnapshot,
+      skipReason:
+        "Latest completed close is eligible for the next 08:30 portfolio ranking. It becomes an actual pending order only after cash, risk, sector and position-slot approval; approved orders alert at 08:30 and execute at 09:17."
+    }));
+  const deferred = candidates.map((candidate) => ({
+    ...candidate,
+    queueKind: candidate.queueKind || "WAITING_CANDIDATE"
+  }));
+  return [...proposals, ...deferred].sort(
+    (left, right) => Number(right.rank || 0) - Number(left.rank || 0)
+  );
+}
+
+export function reconcileUnapprovedEntryProposals({
+  trades = [],
+  candidates = [],
+  scopeRowBySymbol = new Map(),
+  scan = {},
+  settings = {},
+  config = appConfig
+} = {}) {
+  const seen = new Set();
+  const rules = portfolioConfig(config);
+  for (const trade of trades) {
+    if (trade.status !== "PENDING_ENTRY" || isConfirmedPendingEntry(trade)) continue;
+    const instrument = normalizedInstrumentSymbol(trade.yahooSymbol || trade.symbol);
+    const row = scopeRowBySymbol.get(trade.yahooSymbol || trade.symbol);
+    let reason = "";
+    let decision = null;
+
+    if (seen.has(instrument)) {
+      reason = "Duplicate unapproved entry proposal removed; one instrument can have only one next-08:30 proposal.";
+    } else if (!row) {
+      reason = "Entry proposal expired because the stock is no longer present in the selected portfolio universe.";
+    } else {
+      seen.add(instrument);
+      decision = candidateEntryDecision(
+        trade.candidateContext || {
+          firstSignalDate: trade.entrySignalDate,
+          firstSignalClose: trade.entrySnapshot?.close,
+          peakRank: trade.positionRank,
+          entryCloseDates: [trade.entrySignalDate]
+        },
+        row,
+        config,
+        { qualityPass: rowPassesTradeQuality(row, settings) }
+      );
+      if (!decision.actionable) {
+        reason = decision.reasons.join(" ") || "Latest completed close no longer passes compulsory entry checks.";
+      } else {
+        const structurePlan = buildPositionPlan(
+          row,
+          Number(row.close),
+          {
+            availableCash: rules.totalCapital,
+            availableRisk: rules.totalCapital * rules.maxPortfolioRiskPct / 100,
+            openSlots: 1,
+            sectorExposure: {}
+          },
+          config
+        );
+        if (!structurePlan.eligible) reason = structurePlan.reason;
+      }
+    }
+
+    if (!reason) {
+      trade.orderState = "WAITING_FOR_0830";
+      trade.portfolioApprovedAt = null;
+      trade.capitalReservedAt = null;
+      trade.riskReservedAt = null;
+      trade.executionError = null;
+      trade.currentRank = candidateRank(row);
+      trade.currentGrade = row.setupGrade;
+      trade.currentSnapshot = snapshot(row);
+      trade.lastPrice = row.close;
+      trade.lastPriceDate = row.asOf;
+      trade.candidateContext = candidateContext(trade.candidateContext || {}, row);
+      continue;
+    }
+
+    trade.status = "SKIPPED_ENTRY";
+    trade.orderState = "CANCELLED_BEFORE_ALERT";
+    trade.skipReason = reason;
+    trade.executionError = reason;
+    trade.plannedQuantity = null;
+    trade.plannedAllocation = null;
+    trade.plannedRisk = null;
+    if (!row || decision?.disposition === "EXPIRED") continue;
+
+    const existing = candidates.find((candidate) => sameInstrument(candidate, row));
+    const candidate = upsertCandidate(
+      candidates,
+      row,
+      scan,
+      settings,
+      existing,
+      trade.candidateContext
+    );
+    if (decision && !decision.actionable) {
+      applyCandidateDecision(candidate, decision, scan);
+    } else {
+      candidate.status = /retracement|structural stop|weekly ema13/i.test(reason)
+        ? "WAITING_RETRACEMENT"
+        : "WAITING_ALLOCATION";
+      candidate.skipReason = reason;
+      candidate.lastEvaluatedAt = scan.scannedAt;
+    }
+  }
+  return candidates;
 }
 
 function cancelInvalidPendingPartialExit(trade, row, config) {

@@ -1723,7 +1723,9 @@ function renderCandidates(payload) {
   elements.candidatesBody.innerHTML = candidates
     .map((candidate, index) => `
       <tr data-candidate-index="${index}" title="Open candidate decision details">
-        <td><span class="pill WATCH">${escapeHtml(candidate.status || "WAITING")}</span></td>
+        <td><span class="pill ${candidate.queueKind === "ENTRY_PROPOSAL" ? "ENTRY" : "WATCH"}">${escapeHtml(
+          candidate.status === "READY_FOR_0830" ? "READY 08:30" : candidate.status || "WAITING"
+        )}</span></td>
         <td class="symbolCell"><strong>${escapeHtml(candidate.symbol)}</strong><span>${escapeHtml(candidate.industry || "")}</span></td>
         <td>${escapeHtml(candidate.firstSignalDate || "")}</td>
         <td>${escapeHtml(candidate.grade || "NA")}</td>

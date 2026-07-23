@@ -23,7 +23,11 @@ import {
 } from "./institutional-context.js";
 import { readLatestScan, saveLatestScan } from "./storage.js";
 import { sendTelegramSummary } from "./telegram.js";
-import { tradeSettingsSummary, updateTradeJournal } from "./trade-journal.js";
+import {
+  tradeSettingsSummary,
+  updateTradeJournal,
+  visibleWaitingPipeline
+} from "./trade-journal.js";
 import { buildGtfContext } from "./gtf-context.js";
 import { applyAiDecisionReview } from "./ai-decision-review.js";
 import { portfolioSummary, totalRealizedPnl } from "./portfolio-engine.js";
@@ -157,7 +161,10 @@ export async function runScreener(options = {}) {
   payload.portfolioSummary = visiblePortfolioSummary(journal, config);
   payload.portfolioRules = journal.portfolioRules;
   payload.corporateActionStatus = journal.corporateActionStatus;
-  payload.waitingCandidates = journal.visibleCandidates || journal.candidates || [];
+  payload.waitingCandidates = visibleWaitingPipeline(
+    visibleTrades,
+    journal.visibleCandidates || journal.candidates || []
+  );
   payload.candidateDecisionLog = journal.visibleCandidateDecisions || [];
   payload.alertHistory = journal.alertHistory || [];
   payload.trades = visibleTrades;
@@ -317,7 +324,10 @@ export async function runExecutionPass(options = {}) {
   payload.portfolioSummary = visiblePortfolioSummary(journal, config);
   payload.portfolioRules = journal.portfolioRules;
   payload.corporateActionStatus = journal.corporateActionStatus;
-  payload.waitingCandidates = journal.visibleCandidates || journal.candidates || [];
+  payload.waitingCandidates = visibleWaitingPipeline(
+    visibleTrades,
+    journal.visibleCandidates || journal.candidates || []
+  );
   payload.candidateDecisionLog = journal.visibleCandidateDecisions || [];
   payload.alertHistory = journal.alertHistory || [];
   payload.trades = visibleTrades;
