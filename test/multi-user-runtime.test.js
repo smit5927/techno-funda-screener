@@ -42,6 +42,19 @@ test("execution and approval cycles cannot regress to an older local full scan",
   assert.equal(selectFreshMarketState(local, cloud, { preferRuntime: true }), cloud);
 });
 
+test("equal-time full scan keeps the complete input instead of its compact cloud copy", () => {
+  const scannedAt = "2026-07-23T04:30:00.000Z";
+  const complete = {
+    scannedAt,
+    lists: { "all-market": { results: [{ symbol: "ABC", setupGrade: "A+" }] } }
+  };
+  const compact = {
+    scannedAt,
+    lists: { "all-market": { results: [{ symbol: "ABC" }] } }
+  };
+  assert.equal(selectFreshMarketState(complete, compact), complete);
+});
+
 test("multi-user runtime derives a private custom list without changing common market data", () => {
   const scan = {
     lists: {
@@ -63,6 +76,27 @@ test("multi-user runtime derives a private custom list without changing common m
   assert.equal(market.portfolioSummary, undefined);
   assert.deepEqual(market.lists.default.symbols, []);
   assert.equal(market.lists["all-market"].results[0].symbol, "ABC");
+});
+
+test("compact Nifty 500 symbols hydrate back into full rows for client decisions", () => {
+  const scan = {
+    lists: {
+      "all-market": {
+        results: [
+          { symbol: "ABC", yahooSymbol: "ABC.NS", status: "ENTRY", setupGrade: "A+" },
+          { symbol: "XYZ", yahooSymbol: "XYZ.NS", status: "WATCH", setupGrade: "WATCH" }
+        ]
+      },
+      default: {
+        id: "default",
+        label: "Nifty 500",
+        symbols: ["ABC"]
+      }
+    }
+  };
+  const userScan = scanForUser(scan, []);
+  assert.deepEqual(userScan.lists.default.results.map((row) => row.symbol), ["ABC"]);
+  assert.equal(userScan.lists.default.results[0].setupGrade, "A+");
 });
 
 test("mobile market state keeps decision evidence but removes large execution internals", () => {

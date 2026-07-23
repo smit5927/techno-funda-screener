@@ -122,7 +122,7 @@ export function selectFreshMarketState(scan, runtimeMarket, { preferRuntime = fa
   if (!scan?.lists || preferRuntime) return runtimeMarket;
   const inputTime = completedScanTime(scan);
   const runtimeTime = completedScanTime(runtimeMarket);
-  return runtimeTime >= inputTime ? runtimeMarket : scan;
+  return runtimeTime > inputTime ? runtimeMarket : scan;
 }
 
 function completedScanTime(scan = {}) {
@@ -306,12 +306,32 @@ function pick(object, keys) {
 export function scanForUser(scan = {}, symbols = []) {
   const wanted = new Set(symbols.map(normalizeSymbol).filter(Boolean));
   const allMarket = scan.lists?.["all-market"] || { results: [] };
-  const customResults = (Array.isArray(allMarket.results) ? allMarket.results : [])
+  const allMarketResults = Array.isArray(allMarket.results) ? allMarket.results : [];
+  const customResults = allMarketResults
     .filter((row) => wanted.has(normalizeSymbol(row.symbol || row.yahooSymbol)));
+  const defaultList = scan.lists?.default || { id: "default", label: "Nifty 500" };
+  const defaultSymbols = new Set([
+    ...(Array.isArray(defaultList.symbols) ? defaultList.symbols : []),
+    ...(Array.isArray(defaultList.results)
+      ? defaultList.results.map((row) => row.symbol || row.yahooSymbol)
+      : [])
+  ].map(normalizeSymbol).filter(Boolean));
+  const defaultResults = allMarketResults.filter((row) =>
+    defaultSymbols.has(normalizeSymbol(row.symbol || row.yahooSymbol))
+  );
   return {
     ...scan,
     lists: {
       ...(scan.lists || {}),
+      default: {
+        ...defaultList,
+        id: defaultList.id || "default",
+        label: defaultList.label || "Nifty 500",
+        editable: false,
+        summary: summarizeRows(defaultResults),
+        results: defaultResults,
+        symbols: [...defaultSymbols]
+      },
       custom: {
         id: "custom",
         label: "My Custom List",
