@@ -706,10 +706,10 @@ function renderProcessItem(element, item) {
 function formatProcessTime(value) {
   const time = Date.parse(String(value || ""));
   if (!Number.isFinite(time)) return "NA";
-  const sameDay = isTodayIst(value);
   return new Intl.DateTimeFormat("en-IN", {
     timeZone: "Asia/Kolkata",
-    ...(sameDay ? {} : { day: "2-digit", month: "short" }),
+    day: "2-digit",
+    month: "short",
     hour: "2-digit",
     minute: "2-digit",
     hour12: true
