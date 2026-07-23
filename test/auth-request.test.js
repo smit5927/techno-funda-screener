@@ -152,11 +152,15 @@ test("cloud state bypasses stale caches and refreshes when the installed app ret
   assert.match(app, /visibilitychange[\s\S]*refreshCloudState/);
   assert.match(app, /setInterval[\s\S]*refreshCloudState/);
   assert.match(app, /renderProcessStatus/);
-  assert.match(auth, /20260723-process-audit/);
+  assert.match(auth, /20260723-compact-process-audit/);
   assert.match(auth, /registration\.update\(\)/);
-  assert.match(worker, /techno-funda-shell-v37-process-audit/);
+  assert.match(worker, /techno-funda-shell-v38-compact-process-audit/);
   assert.doesNotMatch(app, /Check Updates/);
   assert.doesNotMatch(html, /id="refreshButton"/);
+  assert.match(html, /<span>Market Scan<\/span><strong>Wait<\/strong>/);
+  assert.match(html, /<span>08:30 Orders<\/span><strong>Wait<\/strong>/);
+  assert.doesNotMatch(html, /Cloud data refreshes automatically/);
+  assert.match(app, /strong\.textContent = completed \? "DONE" : overdue \? "MISSED" : "WAIT"/);
 });
 
 test("authenticated dashboard loads a lightweight portfolio first and full market rows only inside Screener", () => {

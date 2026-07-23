@@ -636,6 +636,7 @@ function renderProcessStatus(payload = {}) {
   renderProcessItem(elements.fullScanProcess, {
     label: fullScanAt ? "COMPLETED" : "WAITING",
     timestamp: fullScanAt,
+    shortDetail: status.fullScan?.rows ? `${compact(status.fullScan.rows)} rows` : "Latest close",
     detail: status.fullScan?.rows
       ? `${compact(status.fullScan.rows)} market rows processed`
       : "Latest close-based market data",
@@ -645,6 +646,9 @@ function renderProcessStatus(payload = {}) {
   renderProcessItem(elements.approvalProcess, {
     label: approvalAt ? "COMPLETED" : "WAITING",
     timestamp: approvalAt,
+    shortDetail: approvalAt
+      ? `${Number(status.morningApproval?.approvedOrders) || 0} orders`
+      : "No cycle today",
     detail: approvalAt
       ? `${Number(status.morningApproval?.approvedOrders) || 0} funded orders approved | Telegram ${status.morningApproval?.telegram || "not recorded"}`
       : "No 08:30 decision cycle recorded today",
@@ -655,6 +659,7 @@ function renderProcessStatus(payload = {}) {
   renderProcessItem(elements.cloudSyncProcess, {
     label: "COMPLETED",
     timestamp: payload.scannedAt,
+    shortDetail: String(payload.scanMode || "FULL_SCAN").replaceAll("_", " "),
     detail: `${String(payload.scanMode || "FULL_SCAN").replaceAll("_", " ")} saved for this portfolio`,
     expectedHour: null,
     requireToday: false
@@ -662,6 +667,9 @@ function renderProcessStatus(payload = {}) {
   renderProcessItem(elements.executionProcess, {
     label: executionAt ? "COMPLETED" : "WAITING",
     timestamp: executionAt,
+    shortDetail: executionAt
+      ? `${Number(status.execution?.filledActions) || 0} fills`
+      : "No cycle today",
     detail: executionAt
       ? `${Number(status.execution?.filledActions) || 0} actions filled`
       : "No 09:17 execution cycle recorded today",
@@ -682,12 +690,30 @@ function renderProcessItem(element, item) {
   const strong = element.querySelector("strong");
   const small = element.querySelector("small");
   element.dataset.state = processState;
-  strong.textContent = completed ? item.label : overdue ? "NOT COMPLETED" : "WAITING";
+  strong.textContent = completed ? "DONE" : overdue ? "MISSED" : "WAIT";
   small.textContent = completed
+    ? `${formatProcessTime(item.timestamp)}${item.shortDetail ? ` · ${item.shortDetail}` : ""}`
+    : validTimestamp
+      ? `Last ${formatProcessTime(item.timestamp)}`
+      : item.shortDetail || "No cycle";
+  element.title = completed
     ? `${formatDateTime(item.timestamp)} | ${item.detail}`
     : validTimestamp
       ? `Last: ${formatDateTime(item.timestamp)} | ${item.detail}`
       : item.detail;
+}
+
+function formatProcessTime(value) {
+  const time = Date.parse(String(value || ""));
+  if (!Number.isFinite(time)) return "NA";
+  const sameDay = isTodayIst(value);
+  return new Intl.DateTimeFormat("en-IN", {
+    timeZone: "Asia/Kolkata",
+    ...(sameDay ? {} : { day: "2-digit", month: "short" }),
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true
+  }).format(new Date(time));
 }
 
 function isTodayIst(value) {

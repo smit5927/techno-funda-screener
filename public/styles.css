@@ -147,8 +147,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 
 .processStatusStrip {
   display: grid;
-  grid-template-columns: repeat(4, minmax(175px, 1fr)) minmax(220px, .85fr);
-  align-items: stretch;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
   gap: 1px;
   padding: 0 max(14px, calc((100vw - 1680px) / 2));
   background: var(--line);
@@ -156,48 +156,48 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 }
 .processStatusItem {
   position: relative;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
   min-width: 0;
-  padding: 8px 12px 9px 15px;
+  min-height: 38px;
+  padding: 5px 11px 5px 18px;
   background: rgba(13, 18, 22, .97);
+  cursor: help;
 }
 .processStatusItem::before {
   content: "";
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 3px;
+  top: 50%;
+  left: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
   background: var(--amber);
+  transform: translateY(-50%);
+  box-shadow: 0 0 0 3px rgba(255, 189, 77, .1);
 }
 .processStatusItem[data-state="completed"]::before { background: var(--green); }
 .processStatusItem[data-state="missed"]::before { background: var(--red); animation: statusPulse 1.8s ease-in-out infinite; }
 .processStatusItem span {
-  display: block;
   color: var(--muted);
-  font-size: 10px;
-  font-weight: 800;
+  font-size: 9px;
+  font-weight: 850;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
-.processStatusItem strong { display: block; margin-top: 2px; color: var(--text); font-size: 13px; }
+.processStatusItem strong { color: var(--text); font-size: 10px; }
 .processStatusItem[data-state="completed"] strong { color: var(--green); }
 .processStatusItem[data-state="missed"] strong { color: var(--red); }
 .processStatusItem small {
-  display: block;
-  margin-top: 1px;
+  min-width: 0;
   overflow: hidden;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 9px;
+  text-align: right;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-.processStatusStrip > p {
-  display: flex;
-  align-items: center;
-  margin: 0;
-  padding: 8px 13px;
-  background: rgba(13, 18, 22, .97);
-  color: var(--muted);
-  font-size: 10px;
-  line-height: 1.35;
 }
 @keyframes statusPulse { 50% { opacity: .38; } }
 
@@ -1089,13 +1089,23 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
   .titleBlock h1 { font-size: 17px; }
   .titleBlock p { display: -webkit-box; overflow: hidden; font-size: 10px; white-space: normal; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
   .processStatusStrip {
-    grid-template-columns: repeat(4, minmax(145px, 1fr));
+    grid-template-columns: repeat(4, minmax(140px, 1fr));
     overflow-x: auto;
     padding: 0;
-    scrollbar-width: thin;
+    scrollbar-width: none;
   }
-  .processStatusStrip > p { display: none; }
-  .processStatusItem { min-width: 145px; }
+  .processStatusStrip::-webkit-scrollbar { display: none; }
+  .processStatusItem {
+    grid-template-columns: auto auto;
+    min-width: 140px;
+    min-height: 40px;
+    gap: 2px 6px;
+    padding: 4px 8px 4px 18px;
+  }
+  .processStatusItem small {
+    grid-column: 1 / -1;
+    text-align: left;
+  }
   .layout { width: calc(100% - 10px); margin-top: 6px; }
   .mainNav { top: 101px; }
   .mainNavInner { width: 100%; min-height: 48px; padding: 0 5px; gap: 5px; }
