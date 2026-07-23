@@ -405,6 +405,7 @@ export async function updateTradeJournal(scan, config = appConfig, options = {})
     }
     if (
       !rotationScheduled &&
+      trades.some((trade) => isFilledHolding(trade)) &&
       !String(plan.reason).startsWith("Sector exposure")
     ) {
       const rotationCheck = candidateEntryDecision(candidate, row, config, {

@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   reconcileUnapprovedEntryProposals,
+  updateTradeJournal,
   visibleWaitingPipeline
 } from "../src/trade-journal.js";
 
@@ -48,6 +49,56 @@ test("stale entry proposal is cancelled before alert and does not reserve an ord
 test("confirmed 09:17 order is kept out of the candidate pipeline", () => {
   const trade = pendingEntry({ orderState: "CONFIRMED_FOR_0917" });
   assert.equal(visibleWaitingPipeline([trade], []).length, 0);
+});
+
+test("cash-only portfolio never labels an unfunded candidate as a rotation wait", async () => {
+  const row = entryRow();
+  const journal = await updateTradeJournal(
+    {
+      scannedAt: "2026-07-23T13:30:00.000Z",
+      marketContext: { asOf: row.asOf, riskMode: "BULL", exposureCapPct: 100 },
+      lists: {
+        custom: { id: "custom", label: "My List", results: [row] }
+      }
+    },
+    {
+      trade: {
+        ...baseTradeConfig(),
+        minimumInitialAllocation: 25_000,
+        scopeListId: "custom",
+        qualityMode: "BEST_ONLY"
+      }
+    },
+    {
+      journal: {
+        portfolioEngineStartedAt: "2026-07-01T00:00:00.000Z",
+        pyramidingStartedAt: "2026-07-01T00:00:00.000Z",
+        pyramidSwingEngineStartedAt: "2026-07-01T00:00:00.000Z",
+        controlledRetestEngineStartedAt: "2026-07-01T00:00:00.000Z",
+        liveModeStartedAt: "2026-07-01T00:00:00.000Z",
+        signalState: { "custom:STRONG.NS": { status: "ENTRY", asOf: "2026-07-22" } },
+        candidates: [{
+          id: "STRONG-candidate",
+          symbol: row.symbol,
+          yahooSymbol: row.yahooSymbol,
+          firstSignalDate: "2026-07-22",
+          firstSignalClose: row.close,
+          peakRank: 190,
+          rank: 190,
+          entryCloseDates: ["2026-07-22", row.asOf]
+        }],
+        trades: []
+      },
+      persist: false,
+      writeSheets: false
+    }
+  );
+
+  const candidate = journal.candidates.find((item) => item.symbol === row.symbol);
+  assert.ok(candidate);
+  assert.equal(candidate.status, "WAITING_CAPITAL");
+  assert.doesNotMatch(candidate.skipReason, /rotation|distinct valid entry closes/i);
+  assert.match(candidate.skipReason, /minimum initial buy value/i);
 });
 
 function pendingEntry(overrides = {}) {
