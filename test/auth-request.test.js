@@ -142,6 +142,7 @@ test("filled holdings and pending execution orders are presented separately", ()
 });
 
 test("cloud state bypasses stale caches and refreshes when the installed app returns to foreground", () => {
+  const html = fs.readFileSync(path.join(rootDir, "public", "index.html"), "utf8");
   const app = fs.readFileSync(path.join(rootDir, "public", "app.js"), "utf8");
   const auth = fs.readFileSync(path.join(rootDir, "public", "auth.js"), "utf8");
   const worker = fs.readFileSync(path.join(rootDir, "public", "service-worker.js"), "utf8");
@@ -150,10 +151,12 @@ test("cloud state bypasses stale caches and refreshes when the installed app ret
   assert.doesNotMatch(app, /headers:\s*\{\s*"Cache-Control"/);
   assert.match(app, /visibilitychange[\s\S]*refreshCloudState/);
   assert.match(app, /setInterval[\s\S]*refreshCloudState/);
-  assert.match(app, /Portfolio cycle[\s\S]*Market scan/);
-  assert.match(auth, /20260722-fast-dashboard/);
+  assert.match(app, /renderProcessStatus/);
+  assert.match(auth, /20260723-process-audit/);
   assert.match(auth, /registration\.update\(\)/);
-  assert.match(worker, /techno-funda-shell-v36-fast-dashboard/);
+  assert.match(worker, /techno-funda-shell-v37-process-audit/);
+  assert.doesNotMatch(app, /Check Updates/);
+  assert.doesNotMatch(html, /id="refreshButton"/);
 });
 
 test("authenticated dashboard loads a lightweight portfolio first and full market rows only inside Screener", () => {

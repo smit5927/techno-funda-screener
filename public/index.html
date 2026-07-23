@@ -57,16 +57,30 @@
       <div class="brandMark"><img src="techno-funda-pms-bull-192-v2.png" alt="" /></div>
       <div class="titleBlock">
         <h1>Techno Funda PMS</h1>
-        <p id="scanMeta">Waiting for first scan</p>
+        <p id="scanMeta" hidden></p>
       </div>
       <div class="actions">
         <button id="installAppButton" class="installAppButton" type="button" title="Install Techno Funda PMS on this device" hidden><span aria-hidden="true">+</span> Install</button>
         <span id="accountName" class="accountName"></span>
         <button id="logoutButton" type="button">Log out</button>
-        <button id="refreshButton" class="primaryAction" type="button" title="Reload the latest published scan and current position values"><span aria-hidden="true">&#8635;</span> Update</button>
         <button id="scanButton" type="button" title="Run scan now">Scan</button>
       </div>
     </header>
+    <section class="processStatusStrip" aria-label="Daily automation status">
+      <div id="fullScanProcess" class="processStatusItem" data-state="waiting">
+        <span>POST-CLOSE MARKET SCAN</span><strong>Waiting</strong><small>No completed scan recorded</small>
+      </div>
+      <div id="cloudSyncProcess" class="processStatusItem" data-state="waiting">
+        <span>CLOUD PORTFOLIO SYNC</span><strong>Waiting</strong><small>No completed sync recorded</small>
+      </div>
+      <div id="approvalProcess" class="processStatusItem" data-state="waiting">
+        <span>08:30 ORDERS + ALERTS</span><strong>Waiting</strong><small>No cycle recorded today</small>
+      </div>
+      <div id="executionProcess" class="processStatusItem" data-state="waiting">
+        <span>09:17 EXECUTION</span><strong>Waiting</strong><small>No cycle recorded today</small>
+      </div>
+      <p>Cloud data refreshes automatically. These timestamps are saved by the workflow itself.</p>
+    </section>
 
     <nav class="mainNav" aria-label="Main navigation">
       <div class="mainNavInner">
@@ -371,12 +385,12 @@
           <input id="totalCapitalInput" type="number" min="10000" step="10000" inputmode="decimal" placeholder="Total capital" aria-label="Total portfolio capital" />
           <input id="addCapitalInput" type="number" min="0" step="10000" inputmode="decimal" placeholder="Add capital" aria-label="Capital amount to add" />
           <input id="removeCapitalInput" type="number" min="0" step="10000" inputmode="decimal" placeholder="Remove capital" aria-label="Capital amount to remove from available free cash" />
-          <input id="minimumInitialAllocationInput" type="number" min="1000" step="1000" inputmode="decimal" placeholder="Minimum buy value" aria-label="Minimum initial buy value" />
+          <input id="minimumInitialAllocationInput" type="number" min="1000" step="1000" inputmode="decimal" placeholder="Auto: Rs 10,000 minimum buy" aria-label="Minimum initial buy value" />
           <input id="maxOpenPositionsInput" type="number" min="1" max="100" step="1" inputmode="numeric" placeholder="Max positions" aria-label="Maximum open positions" />
-          <input id="riskPerTradeInput" type="number" min="0.1" max="10" step="0.1" inputmode="decimal" placeholder="Risk / trade %" aria-label="Risk per trade percent" />
-          <input id="maxPortfolioRiskInput" type="number" min="0.1" max="50" step="0.1" inputmode="decimal" placeholder="Portfolio risk %" aria-label="Maximum portfolio risk percent" />
-          <input id="maxPositionInput" type="number" min="0.1" max="100" step="0.1" inputmode="decimal" placeholder="Position cap %" aria-label="Maximum position allocation percent" />
-          <input id="maxSectorExposureInput" type="number" min="0.1" max="100" step="0.1" inputmode="decimal" placeholder="Sector cap %" aria-label="Maximum sector exposure percent" />
+          <input id="riskPerTradeInput" type="number" min="0.1" max="10" step="0.1" inputmode="decimal" placeholder="Auto: 1% risk / trade" aria-label="Risk per trade percent" />
+          <input id="maxPortfolioRiskInput" type="number" min="0.1" max="50" step="0.1" inputmode="decimal" placeholder="Auto: 6% portfolio risk" aria-label="Maximum portfolio risk percent" />
+          <input id="maxPositionInput" type="number" min="0.1" max="100" step="0.1" inputmode="decimal" placeholder="Auto: 10% position cap" aria-label="Maximum position allocation percent" />
+          <input id="maxSectorExposureInput" type="number" min="0.1" max="100" step="0.1" inputmode="decimal" placeholder="Auto: 25% sector cap" aria-label="Maximum sector exposure percent" />
           <label class="settingsToggle"><input id="pyramidingEnabledInput" type="checkbox" checked /><span>Pyramiding</span></label>
         </div>
         <div class="strategyPolicy" aria-label="Staged position policy">

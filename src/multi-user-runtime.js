@@ -64,7 +64,14 @@ export async function syncMultiUserRuntime(scan, options = {}) {
         writeSheets: false,
         publishActionAlerts: options.publishActionAlerts === true
       });
-      const state = portfolioState(userScan, journal, user.settings || {}, config);
+      const processStatus = processStatusForCycle(
+        user.processStatus || user.journal?.processStatus,
+        userScan,
+        journal,
+        options
+      );
+      journal.processStatus = processStatus;
+      const state = portfolioState(userScan, journal, user.settings || {}, config, processStatus);
       let telegram = { sent: false, reason: "not configured" };
       if (options.sendTelegram === true && config.telegram.botToken && config.telegram.chatId) {
         try {
@@ -74,6 +81,14 @@ export async function syncMultiUserRuntime(scan, options = {}) {
         }
       }
       state.telegram = telegram;
+      if (options.approvalOnly === true && state.processStatus?.morningApproval) {
+        state.processStatus.morningApproval.telegram = telegram.sent
+          ? "SENT"
+          : state.processStatus.morningApproval.approvedOrders > 0
+            ? `FAILED: ${telegram.reason || "delivery unavailable"}`
+            : "NO_ACTION";
+        journal.processStatus = state.processStatus;
+      }
       await postApp({
         action: "save-user-state",
         internalKey: APP_INTERNAL_KEY,
@@ -341,7 +356,7 @@ export function configForUser(settings = {}, telegram = {}) {
   };
 }
 
-export function portfolioState(scan, journal, settings, config = appConfig) {
+export function portfolioState(scan, journal, settings, config = appConfig, processStatus = {}) {
   const visibleTrades = journal.visibleTrades || journal.trades || [];
   const visibleCandidates = journal.visibleCandidates || journal.candidates || [];
   return {
@@ -351,6 +366,7 @@ export function portfolioState(scan, journal, settings, config = appConfig) {
     executionPassAt: scan.executionPassAt,
     scanMode: scan.scanMode,
     executionPass: scan.executionPass,
+    processStatus,
     benchmark: scan.benchmark,
     benchmarkLabel: scan.benchmarkLabel,
     marketContext: scan.marketContext,
@@ -360,12 +376,55 @@ export function portfolioState(scan, journal, settings, config = appConfig) {
     portfolioSummary: portfolioSummary(visibleTrades, visibleCandidates, config),
     portfolioRules: journal.portfolioRules,
     corporateActionStatus: journal.corporateActionStatus,
-    trades: visibleTrades,
-    waitingCandidates: visibleCandidates,
+    trades: visibleTrades.map(compactStoredTrade),
+    waitingCandidates: visibleCandidates.map(compactStoredCandidate),
     candidateDecisionLog: journal.visibleCandidateDecisions || [],
     alertHistory: journal.alertHistory || [],
     tradeEvents: journal.events || []
   };
+}
+
+export function processStatusForCycle(previous = {}, scan = {}, journal = {}, options = {}) {
+  const next = structuredClone(previous && typeof previous === "object" ? previous : {});
+  const trades = journal.visibleTrades || journal.trades || [];
+  const events = Array.isArray(journal.events) ? journal.events : [];
+
+  if (!options.approvalOnly && !options.executionOnly) {
+    const completedAt = scan.fullScanAt || scan.scannedAt;
+    next.fullScan = {
+      status: "COMPLETED",
+      completedAt,
+      marketAsOf: scan.marketContext?.asOf || null,
+      rows: Number(scan.lists?.["all-market"]?.summary?.total) ||
+        Number(scan.lists?.["all-market"]?.results?.length) || 0
+    };
+  }
+
+  if (options.approvalOnly === true) {
+    const summary = summarizeTrades(trades);
+    next.morningApproval = {
+      status: "COMPLETED",
+      completedAt: scan.scannedAt,
+      approvedOrders: summary.pendingEntry + summary.pendingExit + summary.pendingPartialExit,
+      pendingEntry: summary.pendingEntry,
+      pendingExit: summary.pendingExit,
+      pendingPartialExit: summary.pendingPartialExit
+    };
+  }
+
+  if (options.executionOnly === true) {
+    const summary = summarizeTrades(trades);
+    next.execution = {
+      status: "COMPLETED",
+      completedAt: scan.executionPassAt || scan.scannedAt,
+      filledActions: events.filter((event) =>
+        /FILLED|OPENED|CLOSED|PARTIAL_EXIT|PYRAMID|AVERAG/i.test(String(event?.type || ""))
+      ).length,
+      remainingOrders: summary.pendingEntry + summary.pendingExit + summary.pendingPartialExit
+    };
+  }
+
+  return next;
 }
 
 function serializableJournal(journal) {
@@ -376,7 +435,43 @@ function serializableJournal(journal) {
     events,
     ...stored
   } = journal;
-  return stored;
+  return {
+    ...stored,
+    trades: (stored.trades || []).map(compactStoredTrade),
+    candidates: (stored.candidates || []).map(compactStoredCandidate),
+    candidateDecisionLog: (stored.candidateDecisionLog || []).slice(0, 100)
+  };
+}
+
+function compactStoredTrade(trade = {}) {
+  return {
+    ...trade,
+    entrySnapshot: trade.entrySnapshot ? compactMobileRow(trade.entrySnapshot) : trade.entrySnapshot,
+    currentSnapshot: trade.currentSnapshot ? compactMobileRow(trade.currentSnapshot) : trade.currentSnapshot,
+    entryReason: compactReasons(trade.entryReason),
+    exitReason: compactReasons(trade.exitReason),
+    partialExitReason: compactReasons(trade.partialExitReason),
+    pendingReason: compactReasons(trade.pendingReason),
+    candidateContext: trade.candidateContext ? pick(trade.candidateContext, [
+      "grade", "rank", "entryStyle", "firstSignalDate", "firstSignalClose",
+      "confirmedCloses", "runupPct", "executionGapPct", "supertrendDistancePct",
+      "atrExtension", "rankDecay", "reason"
+    ]) : trade.candidateContext
+  };
+}
+
+function compactStoredCandidate(candidate = {}) {
+  return {
+    ...candidate,
+    latestSnapshot: candidate.latestSnapshot ? compactMobileRow(candidate.latestSnapshot) : candidate.latestSnapshot,
+    lastDecision: candidate.lastDecision ? {
+      ...pick(candidate.lastDecision, ["disposition", "outcome", "reason", "asOf", "evaluatedAt"]),
+      metrics: pick(candidate.lastDecision.metrics || {}, [
+        "confirmedEntryCloses", "runupPct", "executionGapPct",
+        "supertrendDistancePct", "atrExtension", "rankDecay"
+      ])
+    } : candidate.lastDecision
+  };
 }
 
 function summarizeTrades(trades = []) {
@@ -427,7 +522,7 @@ function round(value) {
   return Number((Number(value) || 0).toFixed(2));
 }
 
-async function postApp(body) {
+async function postApp(body, attempt = 0) {
   const response = await fetch(APP_API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -435,7 +530,13 @@ async function postApp(body) {
   });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok || payload.error) {
-    throw new Error(payload.error || `App API failed with ${response.status}`);
+    const message = payload.error || `App API failed with ${response.status}`;
+    const retryable = response.status >= 500 || /timeout|temporar|unavailable|connection/i.test(message);
+    if (retryable && attempt < 2) {
+      await new Promise((resolve) => setTimeout(resolve, (attempt + 1) * 1500));
+      return postApp(body, attempt + 1);
+    }
+    throw new Error(message);
   }
   return payload;
 }

@@ -36,6 +36,11 @@ try {
       ? `Multi-user app updated: ${multiUser.processed} portfolios`
       : `Multi-user app sync skipped/partial: ${multiUser.reason || `${multiUser.failed || 0} failed`}`
   );
+  if (!multiUser.ok) {
+    throw new Error(
+      `Completed market scan could not update every portfolio (${multiUser.failed || "unknown"} failed).`
+    );
+  }
   console.log(
     [
       `Scan complete at ${result.scannedAt}`,

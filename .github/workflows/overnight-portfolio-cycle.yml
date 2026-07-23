@@ -1,0 +1,130 @@
+name: Overnight Portfolio Cycle
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Daily Techno Funda PMS
+    types:
+      - completed
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: techno-funda-overnight-portfolio-cycle
+  cancel-in-progress: true
+
+jobs:
+  qualify-evening-scan:
+    runs-on: ubuntu-latest
+    outputs:
+      eligible: ${{ steps.window.outputs.eligible }}
+    steps:
+      - name: Accept only a successful evening close scan
+        id: window
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          UPSTREAM_EVENT: ${{ github.event.workflow_run.event }}
+          UPSTREAM_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          UPSTREAM_STARTED_AT: ${{ github.event.workflow_run.run_started_at }}
+        run: |
+          node - <<'NODE'
+          const fs = require("node:fs");
+          const manual = process.env.EVENT_NAME === "workflow_dispatch";
+          const successfulEveningRun =
+            ["schedule", "workflow_dispatch"].includes(process.env.UPSTREAM_EVENT) &&
+            process.env.UPSTREAM_CONCLUSION === "success";
+          const startedAt = manual ? new Date() : new Date(process.env.UPSTREAM_STARTED_AT || 0);
+          const hour = Number(new Intl.DateTimeFormat("en-GB", {
+            timeZone: "Asia/Kolkata",
+            hour: "2-digit",
+            hour12: false
+          }).format(startedAt));
+          const eligible = (manual || successfulEveningRun) && hour >= 18 && hour <= 23;
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `eligible=${eligible}\n`);
+          console.log(`Evening scan gate: ${eligible ? "accepted" : "ignored"} (IST hour ${hour || "NA"}).`);
+          NODE
+
+  next-session-cycle:
+    needs: qualify-evening-scan
+    if: needs.qualify-evening-scan.outputs.eligible == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 270
+    environment:
+      name: next-session-0830-gate
+    env:
+      DATA_DIR: data
+      DEFAULT_WATCHLIST_PATH: config/universe.csv
+      ALL_MARKET_WATCHLIST_PATH: config/all-market.csv
+      CUSTOM_WATCHLIST_PATH: config/custom-list.csv
+      BENCHMARK_SYMBOL: ^CRSLDX
+      CORPORATE_ACTIONS_ENABLED: "true"
+      CORPORATE_ACTIONS_LOOKBACK_DAYS: "400"
+      TRADE_CAPITAL_PER_STOCK: "100000"
+      TRADE_TOTAL_CAPITAL: "1000000"
+      TRADE_MINIMUM_INITIAL_ALLOCATION: "10000"
+      TRADE_MAX_OPEN_POSITIONS: "15"
+      TRADE_AUTO_POSITION_BREADTH: "true"
+      TRADE_PARTIAL_PROFIT_R: "2"
+      TRADE_MAX_POSITION_PCT: "10"
+      TRADE_RISK_PER_TRADE_PCT: "1"
+      TRADE_MAX_PORTFOLIO_RISK_PCT: "6"
+      TRADE_MAX_SECTOR_EXPOSURE_PCT: "25"
+      TRADE_SCOPE_LIST_ID: "all-market"
+      TRADE_QUALITY_MODE: "BEST_ONLY"
+      TECHNO_FUNDA_CLOUD_API_URL: https://ywvwsumwhmfkqrqrxsvs.supabase.co/functions/v1/techno-funda-api
+      TECHNO_FUNDA_INTERNAL_KEY: ${{ secrets.TECHNO_FUNDA_INTERNAL_KEY }}
+      TECHNO_FUNDA_APP_API_URL: https://nsqcjzwfacthxcwguhzw.supabase.co/functions/v1/techno-funda-app-api
+      TECHNO_FUNDA_APP_INTERNAL_KEY: ${{ secrets.TECHNO_FUNDA_APP_INTERNAL_KEY }}
+    steps:
+      - name: Checkout the strategy used for the next session
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install runtime dependencies
+        run: npm ci --omit=dev
+
+      - name: Wait for 08:30 IST
+        run: node src/wait-until-ist.js 08:30 180
+
+      - name: Approve funded next-session orders and publish alerts
+        run: npm run approve:cloud
+
+      - name: Wait for the 09:17 candle
+        run: node src/wait-until-ist.js 09:18 60
+
+      - name: Execute only the approved orders
+        run: npm run execute:cloud
+
+      - name: Retry after market-data propagation
+        run: |
+          sleep 120
+          npm run execute:cloud
+          sleep 180
+          npm run execute:cloud
+
+  arm-next-post-close-scan:
+    needs: next-session-cycle
+    if: always() && needs.next-session-cycle.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment:
+      name: post-close-1900-gate
+    steps:
+      - name: Checkout timing helper
+        uses: actions/checkout@v5
+
+      - name: Wait for 19:00 IST
+        run: node src/wait-until-ist.js 19:00 30
+
+      - name: Dispatch the next post-close market scan
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run daily-screener.yml --ref main

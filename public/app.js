@@ -39,6 +39,10 @@ const cloudMode = Boolean(cloudApiUrl);
 
 const elements = {
   scanMeta: document.querySelector("#scanMeta"),
+  fullScanProcess: document.querySelector("#fullScanProcess"),
+  cloudSyncProcess: document.querySelector("#cloudSyncProcess"),
+  approvalProcess: document.querySelector("#approvalProcess"),
+  executionProcess: document.querySelector("#executionProcess"),
   totalCount: document.querySelector("#totalCount"),
   entryCount: document.querySelector("#entryCount"),
   exitCount: document.querySelector("#exitCount"),
@@ -86,7 +90,6 @@ const elements = {
   candidateDecisionsEmpty: document.querySelector("#candidateDecisionsEmpty"),
   resultsBody: document.querySelector("#resultsBody"),
   emptyState: document.querySelector("#emptyState"),
-  refreshButton: document.querySelector("#refreshButton"),
   scanButton: document.querySelector("#scanButton"),
   searchInput: document.querySelector("#searchInput"),
   resultCount: document.querySelector("#resultCount"),
@@ -154,7 +157,6 @@ const elements = {
   clearAlertsButton: document.querySelector("#clearAlertsButton")
 };
 
-elements.refreshButton.addEventListener("click", refreshPublishedData);
 elements.scanButton.addEventListener("click", () => runScan());
 elements.brokerageModeSelect?.addEventListener("change", updateBrokerageControlState);
 elements.searchInput.addEventListener("input", (event) => {
@@ -620,21 +622,96 @@ function renderSummary(payload) {
     elements.removeCapitalInput.title = `Maximum removable free cash now: Rs ${compact(withdrawalLimit)}`;
   }
   elements.portfolioRisk.textContent = `${compact(portfolio.portfolioRisk || 0)} (${compact(portfolio.portfolioRiskPct || 0)}%)`;
-  const listLabel = state.currentList === "all" ? "All Lists" : listPayload?.label || state.currentList;
-  const benchmarkLabel = payload.benchmarkLabel || payload.rules?.benchmarkLabel || payload.benchmark;
-  const staleText = payload.scannedAt && isStaleScan(payload.scannedAt) ? " | Stale: waiting for next cloud scan" : "";
-  const institutionalText = institutionalMeta(payload.institutionalContext);
-  const aiText = aiReviewMeta(payload.aiReview);
-  const marketScanAt = payload.fullScanAt || payload.marketScanAt || payload.scannedAt;
-  const separatePortfolioCycle = Date.parse(payload.scannedAt || 0) - Date.parse(marketScanAt || 0) > 60_000;
-  const scanTimestamp = payload.scanMode === "EXECUTION_PASS"
-    ? `Execution pass ${formatDateTime(payload.executionPassAt || payload.scannedAt)} | Full scan ${formatDateTime(payload.fullScanAt || payload.scannedAt)}`
-    : separatePortfolioCycle
-      ? `Portfolio cycle ${formatDateTime(payload.scannedAt)} | Market scan ${formatDateTime(marketScanAt)}`
-    : `Last scan ${formatDateTime(payload.scannedAt)}`;
-  elements.scanMeta.textContent = payload.scannedAt
-    ? `${scanTimestamp} | ${listLabel} | Benchmark ${benchmarkLabel} | Risk ${payload.marketContext?.riskMode || "NA"}, cap ${compact(payload.marketContext?.exposureCapPct ?? 100)}%${institutionalText}${aiText}${staleText}`
-    : "Waiting for first scan";
+  elements.scanMeta.textContent = "";
+  renderProcessStatus(payload);
+}
+
+function renderProcessStatus(payload = {}) {
+  const status = payload.processStatus || {};
+  const fullScanAt = status.fullScan?.completedAt || payload.fullScanAt || payload.marketScanAt;
+  const approvalAt = status.morningApproval?.completedAt ||
+    (payload.scanMode === "MORNING_APPROVAL" ? payload.scannedAt : null);
+  const executionAt = status.execution?.completedAt || payload.executionPassAt;
+
+  renderProcessItem(elements.fullScanProcess, {
+    label: fullScanAt ? "COMPLETED" : "WAITING",
+    timestamp: fullScanAt,
+    detail: status.fullScan?.rows
+      ? `${compact(status.fullScan.rows)} market rows processed`
+      : "Latest close-based market data",
+    expectedHour: null,
+    requireToday: false
+  });
+  renderProcessItem(elements.approvalProcess, {
+    label: approvalAt ? "COMPLETED" : "WAITING",
+    timestamp: approvalAt,
+    detail: approvalAt
+      ? `${Number(status.morningApproval?.approvedOrders) || 0} funded orders approved | Telegram ${status.morningApproval?.telegram || "not recorded"}`
+      : "No 08:30 decision cycle recorded today",
+    expectedHour: 8,
+    expectedMinute: 40,
+    requireToday: true
+  });
+  renderProcessItem(elements.cloudSyncProcess, {
+    label: "COMPLETED",
+    timestamp: payload.scannedAt,
+    detail: `${String(payload.scanMode || "FULL_SCAN").replaceAll("_", " ")} saved for this portfolio`,
+    expectedHour: null,
+    requireToday: false
+  });
+  renderProcessItem(elements.executionProcess, {
+    label: executionAt ? "COMPLETED" : "WAITING",
+    timestamp: executionAt,
+    detail: executionAt
+      ? `${Number(status.execution?.filledActions) || 0} actions filled`
+      : "No 09:17 execution cycle recorded today",
+    expectedHour: 9,
+    expectedMinute: 30,
+    requireToday: true
+  });
+}
+
+function renderProcessItem(element, item) {
+  if (!element) return;
+  const validTimestamp = Number.isFinite(Date.parse(String(item.timestamp || "")));
+  const completedToday = validTimestamp && isTodayIst(item.timestamp);
+  const completed = validTimestamp && (item.requireToday === false || completedToday);
+  const overdue = !completed && item.expectedHour !== null &&
+    isPastIstTime(item.expectedHour, item.expectedMinute || 0);
+  const processState = completed ? "completed" : overdue ? "missed" : "waiting";
+  const strong = element.querySelector("strong");
+  const small = element.querySelector("small");
+  element.dataset.state = processState;
+  strong.textContent = completed ? item.label : overdue ? "NOT COMPLETED" : "WAITING";
+  small.textContent = completed
+    ? `${formatDateTime(item.timestamp)} | ${item.detail}`
+    : validTimestamp
+      ? `Last: ${formatDateTime(item.timestamp)} | ${item.detail}`
+      : item.detail;
+}
+
+function isTodayIst(value) {
+  const time = Date.parse(String(value || ""));
+  if (!Number.isFinite(time)) return false;
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  });
+  return formatter.format(new Date(time)) === formatter.format(new Date());
+}
+
+function isPastIstTime(hour, minute) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Kolkata",
+    hour12: false,
+    hour: "2-digit",
+    minute: "2-digit",
+    weekday: "short"
+  }).formatToParts(new Date()).map((part) => [part.type, part.value]));
+  if (["Sat", "Sun"].includes(parts.weekday)) return false;
+  return Number(parts.hour) * 60 + Number(parts.minute) >= hour * 60 + minute;
 }
 
 function institutionalMeta(context) {
@@ -1667,21 +1744,6 @@ function renderCandidates(payload) {
   });
 }
 
-async function refreshPublishedData() {
-  elements.refreshButton.disabled = true;
-  const previousLabel = elements.refreshButton.textContent;
-  elements.refreshButton.textContent = "Checking...";
-  try {
-    await loadResults();
-    if (state.currentView === "screener") await ensureFullMarketState({ force: true });
-  } catch (error) {
-    elements.scanMeta.textContent = `Update check failed: ${error.message}`;
-  } finally {
-    elements.refreshButton.disabled = false;
-    elements.refreshButton.textContent = previousLabel || "Check Updates";
-  }
-}
-
 function renderCandidateDecisions(payload) {
   const decisions = (payload?.candidateDecisionLog || []).slice(0, 50);
   elements.candidateDecisionsBody.innerHTML = decisions
@@ -1735,12 +1797,12 @@ async function saveTradeSettings() {
         totalCapital: Number(elements.totalCapitalInput.value),
         addCapital,
         removeCapital,
-        minimumInitialAllocation: Number(elements.minimumInitialAllocationInput.value),
+        minimumInitialAllocation: positiveNumberOrNull(elements.minimumInitialAllocationInput.value),
         maxOpenPositions: Number(elements.maxOpenPositionsInput.value),
-        riskPerTradePct: Number(elements.riskPerTradeInput.value),
-        maxPortfolioRiskPct: Number(elements.maxPortfolioRiskInput.value),
-        maxPositionPct: Number(elements.maxPositionInput.value),
-        maxSectorExposurePct: Number(elements.maxSectorExposureInput.value),
+        riskPerTradePct: positiveNumberOrNull(elements.riskPerTradeInput.value),
+        maxPortfolioRiskPct: positiveNumberOrNull(elements.maxPortfolioRiskInput.value),
+        maxPositionPct: positiveNumberOrNull(elements.maxPositionInput.value),
+        maxSectorExposurePct: positiveNumberOrNull(elements.maxSectorExposureInput.value),
         pyramidingEnabled: elements.pyramidingEnabledInput.checked,
         chargesEnabled: elements.chargesEnabledInput.checked,
         brokerageMode: elements.brokerageModeSelect.value,
@@ -2585,7 +2647,6 @@ function exportCsv() {
 
 function setBusy(isBusy) {
   elements.scanButton.disabled = isBusy;
-  elements.refreshButton.disabled = isBusy;
   elements.scanButton.textContent = isBusy ? "Scanning" : "Run Scan";
 }
 
@@ -2603,8 +2664,6 @@ function configureMode() {
   }
   if (!staticMode) return;
   elements.scanButton.hidden = true;
-  elements.refreshButton.textContent = "Check Updates";
-  elements.refreshButton.title = "Reloads the latest automatically published scan and near-live position values; it does not start a new scan";
   if (!cloudMode) elements.editListButton.hidden = true;
   if (elements.accessCodeInput) {
     elements.accessCodeInput.value = localStorage.getItem("tfAccessCode") || "";
@@ -2616,6 +2675,13 @@ function configureMode() {
     elements.telegramAccessCodeInput.value = localStorage.getItem("tfAccessCode") || "";
   }
   updateDownloadLinks(state.payload);
+}
+
+function positiveNumberOrNull(value) {
+  const text = String(value ?? "").trim();
+  if (!text) return null;
+  const number = Number(text);
+  return Number.isFinite(number) && number > 0 ? number : null;
 }
 
 function classForAbove(value, threshold) {

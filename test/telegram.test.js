@@ -117,6 +117,7 @@ test("time-critical approval and execution use isolated lightweight workflows", 
   const fullScanWorkflow = fs.readFileSync(path.join(rootDir, ".github", "workflows", "daily-screener.yml"), "utf8");
   const approvalWorkflow = fs.readFileSync(path.join(rootDir, ".github", "workflows", "morning-approval.yml"), "utf8");
   const executionWorkflow = fs.readFileSync(path.join(rootDir, ".github", "workflows", "execution-pass.yml"), "utf8");
+  const overnightWorkflow = fs.readFileSync(path.join(rootDir, ".github", "workflows", "overnight-portfolio-cycle.yml"), "utf8");
   const executionRunner = fs.readFileSync(path.join(rootDir, "src", "run-execution-pass.js"), "utf8");
   const cloudRunner = fs.readFileSync(path.join(rootDir, "src", "run-cloud-scan.js"), "utf8");
   const approvalRunner = fs.readFileSync(path.join(rootDir, "src", "run-morning-approval.js"), "utf8");
@@ -139,4 +140,11 @@ test("time-critical approval and execution use isolated lightweight workflows", 
   assert.match(cloudRunner, /morningApprovalStatus/);
   assert.match(cloudRunner, /morningCycle\.allowed/);
   assert.match(cloudRunner, /publishActionAlerts/);
+  assert.match(cloudRunner, /could not update every portfolio/);
+  assert.match(overnightWorkflow, /workflow_run:/);
+  assert.match(overnightWorkflow, /name: next-session-0830-gate/);
+  assert.match(overnightWorkflow, /wait-until-ist\.js 08:30 180/);
+  assert.match(overnightWorkflow, /wait-until-ist\.js 09:18 60/);
+  assert.match(overnightWorkflow, /name: post-close-1900-gate/);
+  assert.match(overnightWorkflow, /gh workflow run daily-screener\.yml --ref main/);
 });

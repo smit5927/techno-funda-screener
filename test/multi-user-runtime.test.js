@@ -7,6 +7,7 @@ import {
   journalForUser,
   marketOnlyState,
   portfolioState,
+  processStatusForCycle,
   scanForUser,
   selectFreshMarketState
 } from "../src/multi-user-runtime.js";
@@ -194,4 +195,34 @@ test("user portfolio summary uses only the selected visible trade book", () => {
 
   assert.equal(state.tradeSummary.realizedPnl, -500);
   assert.equal(state.portfolioSummary.realizedPnl, -500);
+});
+
+test("each daily workflow records an independent durable completion audit", () => {
+  const previous = {
+    fullScan: { status: "COMPLETED", completedAt: "2026-07-22T15:20:00.000Z", rows: 5058 }
+  };
+  const approval = processStatusForCycle(
+    previous,
+    { scannedAt: "2026-07-23T03:00:00.000Z", scanMode: "MORNING_APPROVAL" },
+    {
+      trades: [{
+        status: "PENDING_ENTRY",
+        orderState: "CONFIRMED_FOR_0917"
+      }],
+      events: []
+    },
+    { approvalOnly: true }
+  );
+  assert.equal(approval.fullScan.rows, 5058);
+  assert.equal(approval.morningApproval.completedAt, "2026-07-23T03:00:00.000Z");
+  assert.equal(approval.morningApproval.approvedOrders, 1);
+
+  const execution = processStatusForCycle(
+    approval,
+    { scannedAt: "2026-07-23T03:48:00.000Z", executionPassAt: "2026-07-23T03:48:00.000Z" },
+    { trades: [], events: [{ type: "ENTRY_FILLED" }] },
+    { executionOnly: true }
+  );
+  assert.equal(execution.morningApproval.approvedOrders, 1);
+  assert.equal(execution.execution.filledActions, 1);
 });

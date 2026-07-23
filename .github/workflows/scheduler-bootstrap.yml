@@ -1,0 +1,30 @@
+name: Bootstrap Automatic Portfolio Scheduler
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: techno-funda-scheduler-bootstrap
+  cancel-in-progress: true
+
+jobs:
+  arm-first-post-close-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment:
+      name: scheduler-bootstrap-gate
+    steps:
+      - name: Checkout timing helper
+        uses: actions/checkout@v5
+
+      - name: Wait for 19:00 IST
+        run: node src/wait-until-ist.js 19:00 30
+
+      - name: Start the self-sustaining post-close and next-session cycle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run daily-screener.yml --ref main

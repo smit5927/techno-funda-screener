@@ -145,6 +145,62 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .installAppButton { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-color: rgba(101, 181, 255, .55); }
 .installAppButton span { display: grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 50%; font-size: 15px; line-height: 1; }
 
+.processStatusStrip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(175px, 1fr)) minmax(220px, .85fr);
+  align-items: stretch;
+  gap: 1px;
+  padding: 0 max(14px, calc((100vw - 1680px) / 2));
+  background: var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.processStatusItem {
+  position: relative;
+  min-width: 0;
+  padding: 8px 12px 9px 15px;
+  background: rgba(13, 18, 22, .97);
+}
+.processStatusItem::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background: var(--amber);
+}
+.processStatusItem[data-state="completed"]::before { background: var(--green); }
+.processStatusItem[data-state="missed"]::before { background: var(--red); animation: statusPulse 1.8s ease-in-out infinite; }
+.processStatusItem span {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+}
+.processStatusItem strong { display: block; margin-top: 2px; color: var(--text); font-size: 13px; }
+.processStatusItem[data-state="completed"] strong { color: var(--green); }
+.processStatusItem[data-state="missed"] strong { color: var(--red); }
+.processStatusItem small {
+  display: block;
+  margin-top: 1px;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.processStatusStrip > p {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 8px 13px;
+  background: rgba(13, 18, 22, .97);
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.35;
+}
+@keyframes statusPulse { 50% { opacity: .38; } }
+
 .layout {
   width: min(1680px, calc(100vw - 28px));
   margin: 14px auto 30px;
@@ -1032,6 +1088,14 @@ body.appReady .positionsSection { animation: enterUp .4s .14s ease-out both; }
   #scanButton::before { display: none; }
   .titleBlock h1 { font-size: 17px; }
   .titleBlock p { display: -webkit-box; overflow: hidden; font-size: 10px; white-space: normal; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+  .processStatusStrip {
+    grid-template-columns: repeat(4, minmax(145px, 1fr));
+    overflow-x: auto;
+    padding: 0;
+    scrollbar-width: thin;
+  }
+  .processStatusStrip > p { display: none; }
+  .processStatusItem { min-width: 145px; }
   .layout { width: calc(100% - 10px); margin-top: 6px; }
   .mainNav { top: 101px; }
   .mainNavInner { width: 100%; min-height: 48px; padding: 0 5px; gap: 5px; }
