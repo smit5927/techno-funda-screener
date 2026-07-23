@@ -73639,12 +73639,12 @@
     }
   },
   "SUNFLAG.NS": {
-    "updatedAt": "2026-07-15T10:39:56.977Z",
+    "updatedAt": "2026-07-23T04:17:10.665Z",
     "value": {
       "available": true,
       "score": 5,
       "maxScore": 8,
-      "currentPe": 30.636687,
+      "currentPe": 32.061443,
       "ebitdaMargin": 0.12728217529904365,
       "checks": {
         "netIncomeYoYUp": {
@@ -121776,6 +121776,58 @@
           "ok": false,
           "latest": 0.15672875436554132,
           "previous": 0.16694593439977215
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "peRising": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        }
+      }
+    }
+  },
+  "533006.BO": {
+    "updatedAt": "2026-07-23T04:16:46.522Z",
+    "value": {
+      "available": true,
+      "score": 0,
+      "maxScore": 8,
+      "currentPe": null,
+      "ebitdaMargin": null,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "operatingIncomeYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "revenueQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
         },
         "ebitdaMarginYoYUp": {
           "ok": null,
