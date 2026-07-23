@@ -1,4 +1,4 @@
-const CACHE = "techno-funda-shell-v39-visible-process-date";
+const CACHE = "techno-funda-shell-v40-verified-execution-status";
 const SHELL = [
   "./",
   "./styles.css",

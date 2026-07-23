@@ -631,7 +631,13 @@ function renderProcessStatus(payload = {}) {
   const fullScanAt = status.fullScan?.completedAt || payload.fullScanAt || payload.marketScanAt;
   const approvalAt = status.morningApproval?.completedAt ||
     (payload.scanMode === "MORNING_APPROVAL" ? payload.scannedAt : null);
-  const executionAt = status.execution?.completedAt || payload.executionPassAt;
+  const approvalCompletedToday = Boolean(approvalAt && isTodayIst(approvalAt));
+  const approvedOrders = Number(status.morningApproval?.approvedOrders) || 0;
+  const executionRecord = status.execution || {};
+  const executionAt = executionRecord.completedAt || executionRecord.checkedAt || payload.executionPassAt;
+  const filledActions = Number(executionRecord.filledActions) || 0;
+  const executionCompleted = approvalCompletedToday && approvedOrders > 0 &&
+    filledActions > 0 && ["COMPLETED", "PARTIAL"].includes(executionRecord.status);
 
   renderProcessItem(elements.fullScanProcess, {
     label: fullScanAt ? "COMPLETED" : "WAITING",
@@ -665,14 +671,40 @@ function renderProcessStatus(payload = {}) {
     requireToday: false
   });
   renderProcessItem(elements.executionProcess, {
-    label: executionAt ? "COMPLETED" : "WAITING",
-    timestamp: executionAt,
-    shortDetail: executionAt
-      ? `${Number(status.execution?.filledActions) || 0} fills`
-      : "No cycle today",
-    detail: executionAt
-      ? `${Number(status.execution?.filledActions) || 0} actions filled`
-      : "No 09:17 execution cycle recorded today",
+    label: executionCompleted ? "COMPLETED" : "WAITING",
+    timestamp: executionCompleted ? executionAt : null,
+    forcedState: !approvalCompletedToday
+      ? isPastIstTime(9, 30) ? "missed" : "waiting"
+      : approvedOrders === 0
+        ? "skipped"
+        : executionCompleted
+          ? "completed"
+          : isPastIstTime(9, 30) ? "missed" : "waiting",
+    statusLabel: !approvalCompletedToday
+      ? isPastIstTime(9, 30) ? "BLOCKED" : "WAIT"
+      : approvedOrders === 0
+        ? "NO ORDERS"
+        : executionCompleted
+          ? "DONE"
+          : executionAt
+            ? "NO FILL"
+            : "WAIT",
+    shortDetail: !approvalCompletedToday
+      ? "08:30 missing"
+      : approvedOrders === 0
+        ? "No execution needed"
+        : executionCompleted
+          ? `${filledActions} fills`
+          : executionAt
+            ? `${formatProcessTime(executionAt)} · 0 fills`
+            : "No cycle today",
+    detail: !approvalCompletedToday
+      ? "09:17 execution is blocked because no completed 08:30 approval cycle exists today."
+      : approvedOrders === 0
+        ? "The 08:30 cycle approved zero orders, so no 09:17 execution was required."
+        : executionCompleted
+          ? `${filledActions} actions filled`
+          : "Approved orders were not filled in the 09:17 execution cycle.",
     expectedHour: 9,
     expectedMinute: 30,
     requireToday: true
@@ -686,12 +718,14 @@ function renderProcessItem(element, item) {
   const completed = validTimestamp && (item.requireToday === false || completedToday);
   const overdue = !completed && item.expectedHour !== null &&
     isPastIstTime(item.expectedHour, item.expectedMinute || 0);
-  const processState = completed ? "completed" : overdue ? "missed" : "waiting";
+  const processState = item.forcedState || (completed ? "completed" : overdue ? "missed" : "waiting");
   const strong = element.querySelector("strong");
   const small = element.querySelector("small");
   element.dataset.state = processState;
-  strong.textContent = completed ? "DONE" : overdue ? "MISSED" : "WAIT";
-  small.textContent = completed
+  strong.textContent = item.statusLabel || (completed ? "DONE" : overdue ? "MISSED" : "WAIT");
+  small.textContent = item.forcedState
+    ? item.shortDetail || "No cycle"
+    : completed
     ? `${formatProcessTime(item.timestamp)}${item.shortDetail ? ` · ${item.shortDetail}` : ""}`
     : validTimestamp
       ? `Last ${formatProcessTime(item.timestamp)}`

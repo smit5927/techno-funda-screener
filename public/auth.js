@@ -130,7 +130,7 @@ if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
       const registration = await navigator.serviceWorker.register(
-        "service-worker.js?v=20260723-visible-process-date",
+        "service-worker.js?v=20260723-verified-execution-status",
         { updateViaCache: "none" }
       );
       await registration.update();

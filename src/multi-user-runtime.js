@@ -3,6 +3,7 @@ import { readTrades } from "./storage.js";
 import { sendTelegramSummary } from "./telegram.js";
 import { updateTradeJournal, visibleWaitingPipeline } from "./trade-journal.js";
 import { portfolioSummary, totalRealizedPnl } from "./portfolio-engine.js";
+import { istClock } from "./morning-cycle.js";
 import { gunzipSync, gzipSync } from "node:zlib";
 
 const APP_API_URL = process.env.TECHNO_FUNDA_APP_API_URL || "";
@@ -434,17 +435,56 @@ export function processStatusForCycle(previous = {}, scan = {}, journal = {}, op
 
   if (options.executionOnly === true) {
     const summary = summarizeTrades(trades);
+    const checkedAt = scan.executionPassAt || scan.scannedAt;
+    const approval = next.morningApproval;
+    const sameDayApproval = approval?.status === "COMPLETED" &&
+      sameIstDate(approval.completedAt, checkedAt);
+    const filledActions = events.filter((event) =>
+      /FILLED|OPENED|CLOSED|PARTIAL_EXIT|PYRAMID|AVERAG/i.test(String(event?.type || ""))
+    ).length;
+    const remainingOrders = summary.pendingEntry + summary.pendingExit + summary.pendingPartialExit;
+    const approvedOrders = Number(approval?.approvedOrders) || 0;
+
+    if (!sameDayApproval) {
+      next.execution = {
+        status: "BLOCKED_NO_APPROVAL",
+        checkedAt,
+        filledActions: 0,
+        remainingOrders,
+        reason: "No completed 08:30 approval cycle exists for this IST date."
+      };
+      return next;
+    }
+
+    if (approvedOrders === 0) {
+      next.execution = {
+        status: "NOT_REQUIRED",
+        checkedAt,
+        filledActions: 0,
+        remainingOrders: 0,
+        reason: "The 08:30 cycle approved no executable orders."
+      };
+      return next;
+    }
+
     next.execution = {
-      status: "COMPLETED",
-      completedAt: scan.executionPassAt || scan.scannedAt,
-      filledActions: events.filter((event) =>
-        /FILLED|OPENED|CLOSED|PARTIAL_EXIT|PYRAMID|AVERAG/i.test(String(event?.type || ""))
-      ).length,
-      remainingOrders: summary.pendingEntry + summary.pendingExit + summary.pendingPartialExit
+      status: filledActions > 0
+        ? remainingOrders > 0 ? "PARTIAL" : "COMPLETED"
+        : remainingOrders > 0 ? "PENDING" : "NO_FILLS",
+      checkedAt,
+      ...(filledActions > 0 ? { completedAt: checkedAt } : {}),
+      filledActions,
+      remainingOrders
     };
   }
 
   return next;
+}
+
+function sameIstDate(left, right) {
+  const leftClock = istClock(left);
+  const rightClock = istClock(right);
+  return Boolean(leftClock?.date && leftClock.date === rightClock?.date);
 }
 
 function serializableJournal(journal) {

@@ -180,6 +180,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 }
 .processStatusItem[data-state="completed"]::before { background: var(--green); }
 .processStatusItem[data-state="missed"]::before { background: var(--red); animation: statusPulse 1.8s ease-in-out infinite; }
+.processStatusItem[data-state="skipped"]::before { background: var(--blue); }
 .processStatusItem span {
   color: var(--muted);
   font-size: 9px;
@@ -190,6 +191,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .processStatusItem strong { color: var(--text); font-size: 10px; }
 .processStatusItem[data-state="completed"] strong { color: var(--green); }
 .processStatusItem[data-state="missed"] strong { color: var(--red); }
+.processStatusItem[data-state="skipped"] strong { color: var(--blue); }
 .processStatusItem small {
   min-width: 0;
   overflow: hidden;

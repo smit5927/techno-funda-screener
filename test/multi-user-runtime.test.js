@@ -259,4 +259,37 @@ test("each daily workflow records an independent durable completion audit", () =
   );
   assert.equal(execution.morningApproval.approvedOrders, 1);
   assert.equal(execution.execution.filledActions, 1);
+  assert.equal(execution.execution.status, "COMPLETED");
+});
+
+test("09:17 audit is blocked when the same-day 08:30 approval never completed", () => {
+  const execution = processStatusForCycle(
+    {},
+    { scannedAt: "2026-07-23T06:26:00.000Z", executionPassAt: "2026-07-23T06:26:00.000Z" },
+    { trades: [], events: [] },
+    { executionOnly: true }
+  );
+
+  assert.equal(execution.execution.status, "BLOCKED_NO_APPROVAL");
+  assert.equal(execution.execution.filledActions, 0);
+  assert.equal(execution.execution.completedAt, undefined);
+});
+
+test("zero approved 08:30 orders make 09:17 execution unnecessary instead of completed", () => {
+  const execution = processStatusForCycle(
+    {
+      morningApproval: {
+        status: "COMPLETED",
+        completedAt: "2026-07-23T03:00:00.000Z",
+        approvedOrders: 0
+      }
+    },
+    { scannedAt: "2026-07-23T03:48:00.000Z", executionPassAt: "2026-07-23T03:48:00.000Z" },
+    { trades: [], events: [] },
+    { executionOnly: true }
+  );
+
+  assert.equal(execution.execution.status, "NOT_REQUIRED");
+  assert.equal(execution.execution.filledActions, 0);
+  assert.equal(execution.execution.completedAt, undefined);
 });
