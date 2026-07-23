@@ -121841,5 +121841,57 @@
         }
       }
     }
+  },
+  "539487.BO": {
+    "updatedAt": "2026-07-23T04:45:38.751Z",
+    "value": {
+      "available": true,
+      "score": 0,
+      "maxScore": 8,
+      "currentPe": null,
+      "ebitdaMargin": null,
+      "checks": {
+        "netIncomeYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "operatingIncomeYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "revenueQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "epsQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaQuarterYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaMarginQoQUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "ebitdaMarginYoYUp": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        },
+        "peRising": {
+          "ok": null,
+          "latest": null,
+          "previous": null
+        }
+      }
+    }
   }
 }
