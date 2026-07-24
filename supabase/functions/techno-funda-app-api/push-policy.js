@@ -56,7 +56,7 @@ export function pushPayloadForAlert(alert = {}) {
   const body = [allocation, reason].filter(Boolean).join(" | ").slice(0, 220);
   const alertId = clean(alert.id).slice(0, 180);
   return {
-    title: `${symbol} | ${action}`,
+    title: `Techno Funda PMS | ${symbol} | ${action}`,
     body,
     icon: "./techno-funda-pms-bull-192-v2.png",
     badge: "./techno-funda-pms-bull-192-v2.png",

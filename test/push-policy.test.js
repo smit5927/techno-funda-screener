@@ -45,7 +45,7 @@ test("push payload deep-links to the exact actionable alert", () => {
     allocationSummary: "APPROX BUY: Qty 100",
     summary: "Weekly and daily leadership confirmed."
   });
-  assert.equal(payload.title, "ABC | Entry signal ready");
+  assert.equal(payload.title, "Techno Funda PMS | ABC | Entry signal ready");
   assert.match(payload.body, /Qty 100.*leadership/i);
   assert.match(payload.data.url, /view=alerts&alert=entry-ABC-1/);
 });

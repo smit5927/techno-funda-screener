@@ -130,7 +130,7 @@ if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
       const registration = await navigator.serviceWorker.register(
-        "service-worker.js?v=20260723-verified-execution-status",
+        "service-worker.js?v=20260724-branded-navigation",
         { updateViaCache: "none" }
       );
       await registration.update();
@@ -292,7 +292,7 @@ async function showApplication(profile) {
   });
   if (!appLoaded) {
     appLoaded = true;
-    await import("./app.js?v=20260720-weekly-risk");
+    await import("./app.js?v=20260724-branded-navigation");
   }
 }
 

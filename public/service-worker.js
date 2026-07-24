@@ -1,4 +1,4 @@
-const CACHE = "techno-funda-shell-v40-verified-execution-status";
+const CACHE = "techno-funda-shell-v41-branded-navigation";
 const SHELL = [
   "./",
   "./styles.css",

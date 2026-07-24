@@ -152,9 +152,9 @@ test("cloud state bypasses stale caches and refreshes when the installed app ret
   assert.match(app, /visibilitychange[\s\S]*refreshCloudState/);
   assert.match(app, /setInterval[\s\S]*refreshCloudState/);
   assert.match(app, /renderProcessStatus/);
-  assert.match(auth, /20260723-verified-execution-status/);
+  assert.match(auth, /20260724-branded-navigation/);
   assert.match(auth, /registration\.update\(\)/);
-  assert.match(worker, /techno-funda-shell-v40-verified-execution-status/);
+  assert.match(worker, /techno-funda-shell-v41-branded-navigation/);
   assert.doesNotMatch(app, /Check Updates/);
   assert.doesNotMatch(html, /id="refreshButton"/);
   assert.match(html, /<span>Market Scan<\/span><strong>Wait<\/strong>/);
@@ -164,6 +164,10 @@ test("cloud state bypasses stale caches and refreshes when the installed app ret
   assert.match(app, /function formatProcessTime[\s\S]*day: "2-digit",[\s\S]*month: "short"/);
   assert.match(app, /"BLOCKED"[\s\S]*"08:30 missing"/);
   assert.match(app, /"NO ORDERS"[\s\S]*"No execution needed"/);
+  assert.match(app, /window\.addEventListener\("popstate", restoreAppHistory\)/);
+  assert.match(app, /window\.history\.pushState\(appHistoryState/);
+  assert.match(app, /nextView === HOME_VIEW[\s\S]*window\.history\.go/);
+  assert.match(app, /detailSymbol[\s\S]*window\.history\.back\(\)/);
 });
 
 test("authenticated dashboard loads a lightweight portfolio first and full market rows only inside Screener", () => {

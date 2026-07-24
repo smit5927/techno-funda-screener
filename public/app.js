@@ -2,6 +2,9 @@ import { buildDecisionGuide } from "./decision-guide.js?v=20260720-weekly-risk";
 import { buildDetailEvidenceRow } from "./detail-evidence.js?v=20260715-detail-evidence";
 import { remainingOpenLotPerformance } from "./pnl-accounting.js?v=20260718-open-lot-pnl";
 
+const MAIN_VIEWS = ["dashboard", "alerts", "positions", "candidates", "screener", "settings", "admin"];
+const HOME_VIEW = "dashboard";
+
 const state = {
   payload: null,
   rows: [],
@@ -296,7 +299,9 @@ document.addEventListener("visibilitychange", () => {
 });
 window.addEventListener("resize", fitOpenPositionsShell, { passive: true });
 window.visualViewport?.addEventListener("resize", fitOpenPositionsShell, { passive: true });
+window.addEventListener("popstate", restoreAppHistory);
 
+initializeAppHistory(state.currentView);
 configureMode();
 setMainView(state.currentView, { persist: false, scroll: false, animate: false });
 if (![...elements.positionSortSelect.options].some((option) => option.value === state.positionSort)) state.positionSort = "default";
@@ -313,9 +318,18 @@ if (cloudMode) {
 }
 
 function setMainView(view, options = {}) {
-  const allowedViews = ["dashboard", "alerts", "positions", "candidates", "screener", "settings", "admin"];
-  const nextView = allowedViews.includes(view) ? view : "dashboard";
+  const nextView = MAIN_VIEWS.includes(view) ? view : HOME_VIEW;
   const previousView = state.currentView;
+  const historyMode = options.history || (options.persist === false ? "none" : "push");
+  if (
+    nextView === HOME_VIEW &&
+    previousView !== HOME_VIEW &&
+    historyMode === "push" &&
+    Number(window.history.state?.tfDepth) > 0
+  ) {
+    window.history.go(-Number(window.history.state.tfDepth));
+    return;
+  }
   const applyView = () => {
     state.currentView = nextView;
     document.body.dataset.currentView = nextView;
@@ -331,7 +345,13 @@ function setMainView(view, options = {}) {
       localStorage.setItem("tfMainView", nextView);
       const url = new URL(window.location.href);
       url.searchParams.set("view", nextView);
-      window.history.replaceState({}, "", url);
+      url.searchParams.delete("stock");
+      if (nextView !== "alerts") url.searchParams.delete("alert");
+      if (historyMode === "push" && previousView !== nextView) {
+        pushAppHistory(nextView, url);
+      } else if (historyMode === "replace") {
+        replaceAppHistory(url, { view: nextView, detailSymbol: null });
+      }
     }
   };
   const canAnimate = options.animate !== false && previousView !== nextView && typeof document.startViewTransition === "function";
@@ -343,6 +363,69 @@ function setMainView(view, options = {}) {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
   }
+}
+
+function initializeAppHistory(view) {
+  const nextView = MAIN_VIEWS.includes(view) ? view : HOME_VIEW;
+  const currentUrl = new URL(window.location.href);
+  const existing = window.history.state;
+  if (existing?.tfApp) {
+    replaceAppHistory(currentUrl, {
+      view: nextView,
+      alertId: currentUrl.searchParams.get("alert") || null,
+      detailSymbol: null
+    });
+    return;
+  }
+
+  const homeUrl = new URL(currentUrl);
+  homeUrl.searchParams.set("view", HOME_VIEW);
+  homeUrl.searchParams.delete("alert");
+  homeUrl.searchParams.delete("stock");
+  window.history.replaceState(appHistoryState(HOME_VIEW, 0), "", homeUrl);
+  if (nextView !== HOME_VIEW) {
+    currentUrl.searchParams.set("view", nextView);
+    window.history.pushState(appHistoryState(nextView, 1, {
+      alertId: currentUrl.searchParams.get("alert") || null
+    }), "", currentUrl);
+  }
+}
+
+function restoreAppHistory(event) {
+  if (!event.state?.tfApp) return;
+  const nextView = MAIN_VIEWS.includes(event.state.view) ? event.state.view : HOME_VIEW;
+  closeDetail(true);
+  setMainView(nextView, { history: "none", scroll: false, animate: true });
+  state.selectedAlertId = nextView === "alerts" ? event.state.alertId || "" : "";
+  if (event.state.detailSymbol) restoreDetailFromHistory(event.state.detailSymbol);
+  else if (nextView === "alerts") renderAlerts(state.payload);
+}
+
+function appHistoryState(view, depth, extra = {}) {
+  return {
+    tfApp: true,
+    tfDepth: Math.max(0, Number(depth) || 0),
+    view: MAIN_VIEWS.includes(view) ? view : HOME_VIEW,
+    alertId: extra.alertId || null,
+    detailSymbol: extra.detailSymbol || null
+  };
+}
+
+function pushAppHistory(view, url, extra = {}) {
+  const depth = Math.max(0, Number(window.history.state?.tfDepth) || 0) + 1;
+  window.history.pushState(appHistoryState(view, depth, extra), "", url);
+}
+
+function replaceAppHistory(url, changes = {}) {
+  const current = window.history.state?.tfApp
+    ? window.history.state
+    : appHistoryState(state.currentView, 0);
+  window.history.replaceState({
+    ...current,
+    ...changes,
+    tfApp: true,
+    tfDepth: Math.max(0, Number(current.tfDepth) || 0)
+  }, "", url);
 }
 
 async function loadResults() {
@@ -1108,7 +1191,7 @@ function persistPositionSort() {
   const url = new URL(window.location.href);
   url.searchParams.set("sort", state.positionSort);
   url.searchParams.set("direction", state.positionSortDirection);
-  window.history.replaceState({}, "", url);
+  replaceAppHistory(url);
 }
 
 function findLivePosition(trade) {
@@ -1460,7 +1543,7 @@ function rowHtml(row, index) {
   `;
 }
 
-function renderDetail(row, trade = null, candidate = null) {
+function renderDetail(row, trade = null, candidate = null, options = {}) {
   row = buildDetailEvidenceRow(row, trade, candidate);
   const setup = row.setupStrength || {};
   const setupChecks = setup.checks || {};
@@ -1604,12 +1687,38 @@ function renderDetail(row, trade = null, candidate = null) {
   document.body.classList.add("detailOpen");
   elements.detailPanel.scrollTop = 0;
   elements.detailPanel.querySelector(".detailClose")?.addEventListener("click", closeDetail);
+  if (options.history !== false) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("view", state.currentView);
+    url.searchParams.set("stock", row.symbol);
+    if (window.history.state?.detailSymbol) {
+      replaceAppHistory(url, { detailSymbol: row.symbol });
+    } else {
+      pushAppHistory(state.currentView, url, { detailSymbol: row.symbol });
+    }
+  }
 }
 
-function closeDetail() {
+function closeDetail(fromHistory = false) {
+  if (fromHistory !== true && window.history.state?.tfApp && window.history.state.detailSymbol) {
+    window.history.back();
+    return;
+  }
   elements.detailPanel.classList.remove("visible");
   elements.detailBackdrop.classList.remove("visible");
   document.body.classList.remove("detailOpen");
+}
+
+function restoreDetailFromHistory(symbol) {
+  const trade = (state.payload?.trades || []).find((item) => sameSymbol(item.symbol, symbol));
+  const candidate = (state.payload?.waitingCandidates || []).find((item) => sameSymbol(item.symbol, symbol));
+  const row = findStockRow(symbol);
+  if (row) renderDetail(row, trade || null, candidate || null, { history: false });
+}
+
+function sameSymbol(left, right) {
+  const normalize = (value) => String(value || "").replace(/\.(NS|BO)$/i, "").toUpperCase();
+  return Boolean(normalize(left) && normalize(left) === normalize(right));
 }
 
 function setStatusFilter(filter) {
@@ -2144,7 +2253,7 @@ function selectAlert(alertId) {
   const url = new URL(window.location.href);
   url.searchParams.set("view", "alerts");
   url.searchParams.set("alert", alertId);
-  window.history.replaceState({}, "", url);
+  replaceAppHistory(url, { view: "alerts", alertId });
   renderAlerts(state.payload);
 }
 
@@ -2184,7 +2293,7 @@ async function clearAlertHistory() {
     state.selectedAlertId = "";
     const url = new URL(window.location.href);
     url.searchParams.delete("alert");
-    window.history.replaceState({}, "", url);
+    replaceAppHistory(url, { alertId: null });
     renderAlerts(state.payload);
     setAlertActionStatus(`${alerts.length} alerts cleared permanently.`, "good");
   } catch (error) {
