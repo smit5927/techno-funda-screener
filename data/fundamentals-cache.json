@@ -24160,12 +24160,12 @@
     }
   },
   "AIROLAM.NS": {
-    "updatedAt": "2026-07-16T10:34:42.914Z",
+    "updatedAt": "2026-07-24T03:44:22.187Z",
     "value": {
       "available": true,
       "score": 2,
       "maxScore": 8,
-      "currentPe": 48.35,
+      "currentPe": 48.466667,
       "ebitdaMargin": 0.09751796388290343,
       "checks": {
         "netIncomeYoYUp": {
@@ -25868,7 +25868,7 @@
     }
   },
   "ASIANHOTNR.NS": {
-    "updatedAt": "2026-07-16T05:25:46.571Z",
+    "updatedAt": "2026-07-24T03:44:24.123Z",
     "value": {
       "available": true,
       "score": 2,
@@ -29759,12 +29759,12 @@
     }
   },
   "CREST.NS": {
-    "updatedAt": "2026-07-16T05:25:56.206Z",
+    "updatedAt": "2026-07-24T03:45:09.764Z",
     "value": {
       "available": true,
       "score": 0,
       "maxScore": 8,
-      "currentPe": 22.457473,
+      "currentPe": 22.858445,
       "ebitdaMargin": 0.32584190772844485,
       "checks": {
         "netIncomeYoYUp": {
@@ -30383,12 +30383,12 @@
     }
   },
   "DCMNVL.NS": {
-    "updatedAt": "2026-07-16T08:34:03.945Z",
+    "updatedAt": "2026-07-24T03:45:10.380Z",
     "value": {
       "available": true,
       "score": 1,
       "maxScore": 8,
-      "currentPe": 76.455959,
+      "currentPe": 76.595855,
       "ebitdaMargin": 0.06850669099756691,
       "checks": {
         "netIncomeYoYUp": {
@@ -40839,12 +40839,12 @@
     }
   },
   "KSB.NS": {
-    "updatedAt": "2026-07-16T05:26:20.349Z",
+    "updatedAt": "2026-07-24T03:45:22.237Z",
     "value": {
       "available": true,
       "score": 3,
       "maxScore": 8,
-      "currentPe": 62.104377,
+      "currentPe": 60.090909,
       "ebitdaMargin": 0.11375353400964577,
       "checks": {
         "netIncomeYoYUp": {
@@ -60253,7 +60253,7 @@
     }
   },
   "UFBL.NS": {
-    "updatedAt": "2026-07-16T05:26:54.753Z",
+    "updatedAt": "2026-07-24T03:45:39.741Z",
     "value": {
       "available": true,
       "score": 3,
