@@ -262,6 +262,61 @@ test("each daily workflow records an independent durable completion audit", () =
   assert.equal(execution.execution.status, "COMPLETED");
 });
 
+test("a retry keeps same-day fills completed by an earlier execution pass", () => {
+  const execution = processStatusForCycle(
+    {
+      morningApproval: {
+        status: "COMPLETED",
+        completedAt: "2026-07-24T03:00:00.000Z",
+        approvedOrders: 3
+      },
+      execution: {
+        status: "COMPLETED",
+        checkedAt: "2026-07-24T03:50:00.000Z",
+        completedAt: "2026-07-24T03:50:00.000Z",
+        filledActions: 3,
+        remainingOrders: 0
+      }
+    },
+    { scannedAt: "2026-07-24T04:15:00.000Z", executionPassAt: "2026-07-24T04:15:00.000Z" },
+    { trades: [], events: [] },
+    { executionOnly: true }
+  );
+
+  assert.equal(execution.execution.status, "COMPLETED");
+  assert.equal(execution.execution.filledActions, 3);
+  assert.equal(execution.execution.remainingOrders, 0);
+});
+
+test("transaction ledger restores fills when a retry has no in-memory events", () => {
+  const execution = processStatusForCycle(
+    {
+      morningApproval: {
+        status: "COMPLETED",
+        completedAt: "2026-07-24T03:00:00.000Z",
+        approvedOrders: 1
+      }
+    },
+    { scannedAt: "2026-07-24T04:15:00.000Z", executionPassAt: "2026-07-24T04:15:00.000Z" },
+    {
+      trades: [{
+        status: "OPEN",
+        transactions: [{
+          date: "2026-07-24",
+          time: "09:17 IST",
+          side: "BUY",
+          type: "ENTRY_BUY"
+        }]
+      }],
+      events: []
+    },
+    { executionOnly: true }
+  );
+
+  assert.equal(execution.execution.status, "COMPLETED");
+  assert.equal(execution.execution.filledActions, 1);
+});
+
 test("09:17 audit is blocked when the same-day 08:30 approval never completed", () => {
   const execution = processStatusForCycle(
     {},

@@ -314,7 +314,7 @@ if (state.currentView === "screener") ensureFullMarketState();
 if (cloudMode) {
   state.cloudRefreshTimer = window.setInterval(() => {
     if (!document.hidden) refreshCloudState({ includeLiveMtm: false });
-  }, 60_000);
+  }, 15_000);
 }
 
 function setMainView(view, options = {}) {

@@ -28,6 +28,11 @@ test("static website build publishes the authentication helper", () => {
   assert.match(buildSource, /"pnl-accounting\.js"/);
 });
 
+test("visible cloud portfolio state refreshes promptly after 09:17 execution", () => {
+  const appSource = fs.readFileSync(path.join(rootDir, "public", "app.js"), "utf8");
+  assert.match(appSource, /refreshCloudState\(\{ includeLiveMtm: false \}\);\s*\}, 15_000\);/);
+});
+
 test("owner can securely enter and leave a managed client portfolio", () => {
   const html = fs.readFileSync(path.join(rootDir, "public", "index.html"), "utf8");
   const auth = fs.readFileSync(path.join(rootDir, "public", "auth.js"), "utf8");

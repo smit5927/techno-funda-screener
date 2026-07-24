@@ -439,9 +439,19 @@ export function processStatusForCycle(previous = {}, scan = {}, journal = {}, op
     const approval = next.morningApproval;
     const sameDayApproval = approval?.status === "COMPLETED" &&
       sameIstDate(approval.completedAt, checkedAt);
-    const filledActions = events.filter((event) =>
+    const eventFilledActions = events.filter((event) =>
       /FILLED|OPENED|CLOSED|PARTIAL_EXIT|PYRAMID|AVERAG/i.test(String(event?.type || ""))
     ).length;
+    const transactionFilledActions = filledTransactionsForIstDate(trades, checkedAt);
+    const previousExecutionAt = next.execution?.completedAt || next.execution?.checkedAt;
+    const previousFilledActions = sameIstDate(previousExecutionAt, checkedAt)
+      ? Number(next.execution?.filledActions) || 0
+      : 0;
+    const filledActions = Math.max(
+      eventFilledActions,
+      transactionFilledActions,
+      previousFilledActions
+    );
     const remainingOrders = summary.pendingEntry + summary.pendingExit + summary.pendingPartialExit;
     const approvedOrders = Number(approval?.approvedOrders) || 0;
 
@@ -479,6 +489,16 @@ export function processStatusForCycle(previous = {}, scan = {}, journal = {}, op
   }
 
   return next;
+}
+
+function filledTransactionsForIstDate(trades = [], checkedAt) {
+  const executionDate = istClock(checkedAt)?.date;
+  if (!executionDate) return 0;
+
+  return trades.reduce((count, trade) => count + (trade.transactions || []).filter((transaction) =>
+    transaction?.date === executionDate &&
+    ["BUY", "SELL"].includes(String(transaction?.side || "").toUpperCase())
+  ).length, 0);
 }
 
 function sameIstDate(left, right) {
