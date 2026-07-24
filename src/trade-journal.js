@@ -1292,6 +1292,32 @@ export function sameExecutionSlot(rotationExecution, fill) {
   return rotationExecution.exitDate === fill.date && sellTime === buyTime;
 }
 
+export function confirmedEntryFillQuantity({
+  reservedQuantity,
+  reservedAllocation,
+  cashCapacity,
+  riskCapacity,
+  fillPrice,
+  riskPerShare,
+  gapTolerancePct = 5
+} = {}) {
+  const quantity = Math.max(0, Math.floor(Number(reservedQuantity) || 0));
+  const allocation = Math.max(0, Number(reservedAllocation) || 0);
+  const cash = Math.max(0, Number(cashCapacity) || 0);
+  const risk = Math.max(0, Number(riskCapacity) || 0);
+  const price = Math.max(0, Number(fillPrice) || 0);
+  const perShareRisk = Math.max(0.01, Number(riskPerShare) || 0.01);
+  const tolerance = Math.max(0, Number(gapTolerancePct) || 0);
+  if (quantity < 1 || allocation <= 0 || cash <= 0 || risk <= 0 || price <= 0) return 0;
+
+  const allocationWithGapTolerance = allocation * (1 + tolerance / 100);
+  return Math.max(0, Math.min(
+    quantity,
+    Math.floor(Math.min(cash, allocationWithGapTolerance) / price),
+    Math.floor(risk / perShareRisk)
+  ));
+}
+
 async function fillPyramidAdd(trade, row, config, trades, candidates) {
   const pending = trade.pendingAdd;
   if (!pending) return "WAITING";
@@ -1352,11 +1378,14 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
       const reservedAllocation = Number(pending.plannedAllocation) || 0;
       const reservedRisk = Number(pending.plannedRisk) || 0;
       const riskPerShare = reservedQuantity > 0 ? Math.max(0.01, reservedRisk / reservedQuantity) : 0.01;
-      const quantity = Math.min(
+      const quantity = confirmedEntryFillQuantity({
         reservedQuantity,
-        Math.floor(Math.min(reservedAllocation, summary.availableCash + reservedAllocation) / fill.price),
-        Math.floor((summary.availableRisk + reservedRisk) / riskPerShare)
-      );
+        reservedAllocation,
+        cashCapacity: summary.availableCash + reservedAllocation,
+        riskCapacity: summary.availableRisk + reservedRisk,
+        fillPrice: fill.price,
+        riskPerShare
+      });
       if (quantity > 0) {
         plan = {
           ...plan,
@@ -1367,7 +1396,7 @@ async function fillPyramidAdd(trade, row, config, trades, candidates) {
           trailingStop: Number(plan.trailingStop) || Number(pending.plannedStop) || Number(trade.trailingStopPrice)
         };
       } else {
-        trade.executionError = `Confirmed ${actionLabel.toLowerCase()} is still waiting because its reserved cash/risk cannot fit one share at the exact 09:17 price.`;
+        trade.executionError = `Confirmed ${actionLabel.toLowerCase()} is still waiting because one approved share does not fit available cash/risk and the 5% execution-gap tolerance.`;
         return "WAITING";
       }
     }
@@ -1586,13 +1615,16 @@ async function fillEntry(trade, row, config, trades, candidates) {
       ? dynamicPlan.stopPrice
       : Math.min(Number(trade.initialStopPrice) || fill.price * 0.92, fill.price * 0.985);
     const riskPerShare = Math.max(0.01, fill.price - stopPrice);
-    const committedQuantity = Math.min(
+    const committedQuantity = confirmedEntryFillQuantity({
       reservedQuantity,
-      Math.floor(Math.min(reservedAllocation, cashCapacity) / fill.price),
-      Math.floor(riskCapacity / riskPerShare)
-    );
+      reservedAllocation,
+      cashCapacity,
+      riskCapacity,
+      fillPrice: fill.price,
+      riskPerShare
+    });
     if (committedQuantity < 1) {
-      trade.executionError = "Confirmed order is still waiting: exact 09:17 price cannot fit even one share inside its reserved cash and risk. No different stock will be substituted.";
+      trade.executionError = "Confirmed order is still waiting: exact 09:17 price cannot fit one approved share inside available cash/risk and the 5% execution-gap tolerance. No different stock will be substituted.";
       return "WAITING";
     }
     const plan = {
@@ -1616,6 +1648,10 @@ async function fillEntry(trade, row, config, trades, candidates) {
     trade.initialQuantity = quantity;
     trade.investedValue = round(quantity * fill.price);
     trade.originalInvestedValue = trade.investedValue;
+    trade.approvedAllocation = round(reservedAllocation);
+    trade.entryAllocationVariancePct = reservedAllocation > 0
+      ? round((trade.investedValue - reservedAllocation) / reservedAllocation * 100)
+      : 0;
     trade.initialStopPrice = plan.stopPrice;
     trade.trailingStopPrice = plan.stopPrice;
     trade.initialStopSource = plan.stopSource;

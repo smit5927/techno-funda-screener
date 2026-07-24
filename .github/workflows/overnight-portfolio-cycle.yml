@@ -14,7 +14,10 @@ permissions:
 
 concurrency:
   group: techno-funda-overnight-portfolio-cycle
-  cancel-in-progress: true
+  # A daytime code/data refresh can emit another workflow_run while the
+  # previous evening cycle is waiting for 08:30/09:18. Queue it instead of
+  # cancelling the time-critical cycle.
+  cancel-in-progress: false
 
 jobs:
   qualify-evening-scan:

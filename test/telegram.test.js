@@ -142,6 +142,7 @@ test("time-critical approval and execution use isolated lightweight workflows", 
   assert.match(cloudRunner, /publishActionAlerts/);
   assert.match(cloudRunner, /could not update every portfolio/);
   assert.match(overnightWorkflow, /workflow_run:/);
+  assert.match(overnightWorkflow, /group: techno-funda-overnight-portfolio-cycle[\s\S]*cancel-in-progress: false/);
   assert.match(overnightWorkflow, /name: next-session-0830-gate/);
   assert.match(overnightWorkflow, /wait-until-ist\.js 08:30 180/);
   assert.match(overnightWorkflow, /wait-until-ist\.js 09:18 60/);
